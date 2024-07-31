@@ -1,0 +1,48 @@
+.app_dashboard_new_offerings {
+  padding: 1rem;
+  background: var(--neutral-colours-white);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+
+  &__ctt {
+    border: 1px solid #eaeaea;
+    border-radius: 4px;
+    background: var(--neutral-colours-nc-100);
+    padding: 1.125rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+
+    &__item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+
+      &__img {
+        max-width: 100px;
+        width: 100%;
+      }
+
+      &__title {
+        font-family: var(--font-family);
+        font-weight: 500;
+        font-size: 14px;
+        color: #222;
+      }
+
+      &__details {
+        font-family: var(--font-family);
+        font-weight: 500;
+        font-size: 12px;
+        color: #808080;
+      }
+    }
+
+    &__divider {
+      height: 1px;
+      background-color: #e4e4e4;
+      width: 100%;
+    }
+  }
+}

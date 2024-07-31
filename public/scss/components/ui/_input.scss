@@ -1,0 +1,99 @@
+.app_input_con {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  &__lbl {
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 159%;
+    color: #111928;
+  }
+
+  &__spt {
+    font-size: 12px;
+    font-weight: 400;
+
+    &--success {
+      @extend .app_input_con__spt;
+
+      color: var(--green-500);
+    }
+
+    &--helper-text {
+      @extend .app_input_con__spt;
+
+      color: var(--chicago-600);
+    }
+
+    &--error {
+      @extend .app_input_con__spt;
+
+      color: tomato;
+    }
+  }
+
+  &__word__count {
+    font-weight: 400;
+    font-size: 14px;
+    text-align: right;
+    color: var(--chicago-600);
+  }
+}
+
+.app_input {
+  background-color: #f9fafb;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 400;
+
+  &:focus-within {
+    // border-color: hsl(var(--input));
+    border-color: #d1d5db;
+    box-shadow: none;
+  }
+
+  &--lg {
+    height: 45px;
+    padding: 16px;
+  }
+
+  &--xl {
+    height: 53px;
+    padding: 16px;
+    font-weight: 400;
+    font-size: 16px;
+    // color: var(--chicago-950);
+  }
+
+  &--xl::placeholder {
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 159%;
+    color: #989898;
+  }
+
+  &_eye {
+    position: absolute;
+    top: 50%;
+    right: 16px;
+    transform: translateY(-50%);
+  }
+}
+
+.app_input[type='password'] {
+  padding-right: 40px !important;
+}
+
+.app_input_field {
+  // background-color: transparent;
+  border-radius: 8px;
+}
+
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  margin: 0;
+}

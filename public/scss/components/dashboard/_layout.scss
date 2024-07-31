@@ -1,0 +1,236 @@
+:root {
+  --header-h: 80px;
+  --sidebar-w: 240px;
+
+  @include screen('lg') {
+    --sidebar-w: 0px;
+  }
+}
+
+.app_dash_main {
+  background-color: #F2F2F2;
+  color: var(--text-color);
+  height: 100%;
+  min-height: 100vh;
+  font-size: 14px;
+  font-family: 'Manrope', sans-serif !important;
+
+  display: flex;
+
+  &__aside {
+    background-color: var(--primary-color);
+    height: 100%;
+    padding: 24px 0;
+    min-height: 100vh;
+    width: var(--sidebar-w);
+    overflow-y: auto;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 80px;
+
+    @include screen('lg') {
+      display: none;
+    }
+
+    &--mobile {
+      display: flex;
+      --sidebar-w: 240px;
+    }
+
+    &__top {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      &__img {
+        max-width: 83px;
+        margin-bottom: 46px;
+      }
+    }
+
+    &__ul {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      width: 100%;
+      padding: 0 8px;
+
+      &__li {
+        &__a {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 14px;
+          padding-left: 20px;
+          line-height: 16.94px;
+          color: var(--text-color);
+          background-color: transparent;
+          border-radius: 10px;
+
+          &:hover, &.active {
+            background: linear-gradient(89deg, #fc55e0 0%, #990b81 100%);
+            color: #fff;
+            // transition: 0.2s all ease-in-out;
+
+            svg path {
+              fill: #fff;
+            }
+          }
+
+          &:hover {
+            background: linear-gradient(89deg, #fc55e0 0%, #990b81 80%);
+          }
+        }
+
+        .app_dash_main__hdr__rgt__profile {
+          border-left: 0px;
+          display: none;
+          padding: 20px;
+
+          @include screen('lg') {
+            display: flex;
+          }
+        }
+      }
+    }
+
+    &__btm {
+      .app_dash_main__aside__ul {
+        padding: 0;
+      }
+
+      .app_dash_main__aside__ul__li {
+        padding: 0 8px;
+
+        &--idea-x {
+          background-color: #fff;
+          padding: 10px 20px;
+          padding-right: 4px;
+
+          a {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+
+            img {
+              max-width: 24px;
+            }
+
+            span {
+              font-weight: 500;
+            }
+          }
+        }
+      }
+
+      &__spn_bg {
+        background: linear-gradient(89deg, #fc55e0 0%, #990b81 100%);
+        display: none;
+        height: 1px;
+        width: 100%;
+
+        @include screen('lg') {
+          display: block;
+        }
+      }
+    }
+  }
+
+  &__ctt {
+    height: 100%;
+    min-height: 100vh;
+    margin-left: auto;
+    width: calc(100% - var(--sidebar-w));
+    transition: 0.2s all ease-in-out;
+
+    &__mn {
+      height: calc(100% - var(--header-h));
+      overflow-y: auto;
+    }
+  }
+
+  &__hdr {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    min-height: var(--header-h);
+
+    background-color: var(--primary-color);
+    box-shadow: 0px 4px 10px 0px #0000001A;
+
+    &__img_link {
+      display: none;
+
+      @include screen('lg') {
+        display: block;
+      }
+    }
+
+    .app_dash_main__aside__top__img {
+      margin-bottom: 0;
+      margin-top: -4px;
+    }
+
+    &__title {
+      color: var(--text-color);
+      font-size: 18px;
+      font-weight: 500;
+      line-height: 31.8px;
+
+      @include screen('lg') {
+        font-size: 14px;
+        font-weight: 700;
+      }
+
+      span {
+        text-transform: capitalize;
+      }
+    }
+
+    &__rgt {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 24px;
+
+      @include screen('lg') {
+        gap: 12px;
+      }
+
+      .app_input {
+        background-color: #fff;
+      }
+
+      &__menu {
+        cursor: pointer;
+        display: none;
+
+        @include screen('lg') {
+          display: block;
+        }
+      }
+
+      &__profile {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        border-left: 1px solid #808080;
+        padding: 10px 20px;
+
+        @include screen('lg') {
+          display: none;
+        }
+
+        &__title {
+          font-size: 12px;
+          font-weight: 400;
+          line-height: 18px;
+          color: #808080;          
+        }
+      }
+    }
+  }
+}

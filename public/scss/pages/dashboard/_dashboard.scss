@@ -1,0 +1,50 @@
+.app_dashboard_home {
+  &__open__act {
+    background-image: url('../../../media/images/dashboard/get-started.png');
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 40px 16px;
+
+    @include screen('md') {
+      display: none;
+    }
+
+    &--md {
+      display: none;
+
+      @include screen('md') {
+        display: flex;
+      }
+    }
+
+    &__text {
+      font-family: var(--font9);
+      font-weight: 400;
+      font-size: 20px;
+      text-align: center;
+      color: #222;
+
+      span {
+        color: rgba(255, 255, 255, 0.5);
+
+        -webkit-text-stroke: 1px #fc55e0; /* width and color */
+      }
+    }
+
+    &__btn {
+      border-radius: 4px;
+      padding: 12px 25px;
+      box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+      background: linear-gradient(89deg, #fc55e0 0%, #990b81 100%);
+      font-family: var(--font-family);
+      font-weight: 900;
+      font-size: 12px;
+      text-align: center;
+      color: #ffeffd;
+    }
+  }
+}

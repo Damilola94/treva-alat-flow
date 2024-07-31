@@ -1,0 +1,5 @@
+export { CustomerStats } from './customer-stats'
+export { CustomerTable } from './customer-table'
+export { DigitalAdoption } from './digital-adoption'
+export { FinancialInformation } from './financial-information'
+export { Loan } from './loan'

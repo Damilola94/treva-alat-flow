@@ -1,0 +1,24 @@
+.app_user_avi {
+  border-radius: 50%;
+  font-weight: 600;
+
+  --avi-size: 33px;
+
+  height: var(--avi-size);
+  max-height: var(--avi-size);
+  min-height: var(--avi-size);
+  max-width: var(--avi-size);
+  min-width: var(--avi-size);
+  width: var(--avi-size);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  img {
+    border-radius: 50%;
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+  }
+}

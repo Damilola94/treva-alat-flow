@@ -1,0 +1,47 @@
+.app_dashboard_performance_con {
+  background-color: #fff;
+  padding: 12px;
+}
+
+.app_dashboard_performance_score {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  background: url('../../../../media/images/dashboard/performance-pattern.png');
+  background: url('../../../../media/images/dashboard/performance-pattern.png'),
+    linear-gradient(89deg, #fc55e0 0%, #990b81 100%);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  border-radius: 10px;
+  padding: 22px 17px;
+
+  &__label {
+    font-family: var(--font-family);
+    font-weight: 900;
+    font-size: 14px;
+    color: var(--neutral-colours-white);
+  }
+
+  &__grade {
+    font-family: var(--font-family);
+    font-weight: 500;
+    font-size: 96px;
+    color: var(--neutral-colours-white);
+    line-height: 100%;
+  }
+
+  &__score {
+    border-radius: 8px;
+    background-color: #9a1a87;
+    padding: 0.25rem 0.75rem;
+
+    &__text {
+      font-family: var(--font-family);
+      font-weight: 700;
+      font-size: 20px;
+      color: var(--neutral-colours-white);
+    }
+  }
+}
