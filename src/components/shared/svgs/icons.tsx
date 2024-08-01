@@ -1945,3 +1945,57 @@ export function CardReceive (props: SVGProps<SVGSVGElement>) {
     </svg>
   )
 }
+
+export function ArrowLeft () {
+  return (
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 16 16"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M6.37998 3.95312L2.33331 7.99979L6.37998 12.0465"
+        stroke="#262626"
+        strokeWidth="1.5"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M13.6667 8H2.44666"
+        stroke="#262626"
+        strokeWidth="1.5"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+export function Logo () {
+  return (
+    <svg
+      width="34"
+      height="34"
+      viewBox="0 0 34 34"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M14.9325 0.388362C11.6785 0.735785 8.59817 2.03126 6.07396 4.11395C3.54974 6.19664 1.6928 8.97483 0.733657 12.1036C-0.225485 15.2324 -0.244584 18.574 0.678732 21.7135C1.60205 24.8531 3.42711 27.6523 5.92735 29.7637C8.03837 31.5464 10.5586 32.7777 13.2623 33.3473C15.966 33.9169 18.7688 33.8069 21.4196 33.0274C24.0704 32.2478 26.4864 30.8229 28.4513 28.8803C30.4163 26.9377 31.8687 24.5381 32.6785 21.8964C33.4883 19.2547 33.6303 16.4534 33.0916 13.7433C32.553 11.0333 31.3506 8.49916 29.5921 6.3679C27.8337 4.23665 25.574 2.57482 23.0156 1.53127C20.4572 0.487718 17.6799 0.0950248 14.9325 0.388362Z"
+        fill="#262626"
+      />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M6.68243 22.8469C6.68243 20.5403 8.55232 18.6704 10.859 18.6704C13.1656 18.6704 15.0355 20.5403 15.0355 22.8469C15.0355 25.1536 13.1656 27.0234 10.859 27.0234C8.55232 27.0234 6.68243 25.1536 6.68243 22.8469Z"
+        fill="#F6F6F6"
+      />
+    </svg>
+  )
+}

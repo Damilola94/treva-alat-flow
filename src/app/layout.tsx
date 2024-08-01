@@ -1,7 +1,7 @@
 'use client'
 
 // import type { Metadata } from 'next'
-import { Manrope } from 'next/font/google'
+
 import generateColorsCss from '@/lib/colors'
 import { ToastContainer } from 'react-toastify'
 
@@ -10,11 +10,6 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css'
 import 'react-toastify/dist/ReactToastify.css'
 import '../../public/scss/main.scss'
 import { QueryClient, QueryClientProvider } from 'react-query'
-
-const manrope = Manrope({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700']
-})
 
 // export const metadata: Metadata = {
 //   title: 'IRM Web App',
@@ -39,7 +34,7 @@ export default function RootLayout ({
 }>) {
   return (
     <html lang="en">
-      <body suppressHydrationWarning className={manrope.className}>
+      <body suppressHydrationWarning>
         <style type="text/css">{generateColorsCss()}</style>
         <ToastContainer />
 

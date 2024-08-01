@@ -14,7 +14,7 @@ body {
   padding: 0;
   height: 100%;
   font-size: 0.9rem !important; // 14px
-  font-family: "Inter Tight", sans-serif;
+  font-family: var(--second-family);
 }
 
 #__next {
@@ -44,7 +44,7 @@ p {
   margin: 0;
 }
 
-$border-color: #F3F9F9;
+$border-color: #f3f9f9;
 
 select {
   border-radius: 10px !important;
@@ -71,7 +71,6 @@ select {
 }
 
 .btn {
-
   &:focus,
   &:active,
   &:visited,
@@ -90,7 +89,6 @@ select {
 }
 
 select {
-
   &:focus,
   &:active,
   &:visited,

@@ -43,34 +43,39 @@
 
 .app_input {
   background-color: #f9fafb;
-  border-radius: 8px;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 400;
+  border: none;
+  border-bottom: 1px solid #d1d5db;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 12px 0px;
 
   &:focus-within {
     // border-color: hsl(var(--input));
+    border: none;
     border-color: #d1d5db;
+    border-bottom: 1px solid #d1d5db;
     box-shadow: none;
   }
 
   &--lg {
     height: 45px;
-    padding: 16px;
   }
 
   &--xl {
     height: 53px;
-    padding: 16px;
     font-weight: 400;
     font-size: 16px;
     // color: var(--chicago-950);
   }
 
   &--xl::placeholder {
+    font-family: var(--second-family);
     font-weight: 400;
-    font-size: 16px;
-    line-height: 159%;
-    color: #989898;
+    font-size: 14px;
+    line-height: 145%;
+    color: var(--shark-500);
   }
 
   &_eye {
@@ -87,7 +92,7 @@
 
 .app_input_field {
   // background-color: transparent;
-  border-radius: 8px;
+  border-radius: 0px;
 }
 
 input[type='number']::-webkit-inner-spin-button,
