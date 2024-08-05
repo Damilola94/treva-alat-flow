@@ -9,32 +9,28 @@ import { useRouter } from 'next/navigation'
 import { Header } from '@/components/shared/onboarding'
 import { Pill } from '@/components/shared'
 
+enum Professions {
+  Designer = 'Designer',
+  Writer = 'Writer',
+  Influencer = 'Influencer',
+  Photographer = 'Photographer',
+  Freelancer = 'Freelancer',
+  Others = 'Others',
+}
+
 const validationSchema = Yup.object().shape({
   // password: Yup.string().min(8).required()
 })
 
-enum AccountType {
-  Individual = 'individual',
-  Team = 'team'
-}
-
 const initialValues = {
-  accountType: AccountType.Individual as `${AccountType}`
+  accountType: Professions.Designer as `${Professions}`
 }
-
-type InitialValues = ReturnType<() => typeof initialValues>
 
 export default function Page () {
   const rt = useRouter()
   const { isLoading } = queries.login()
 
-  const onSubmit = (values: InitialValues) => {
-    if (values.accountType === AccountType.Individual) {
-      rt.push(routes.onboarding.individual.profession.path)
-    } else {
-      rt.push(routes.onboarding.team.companyDetails.path)
-    }
-  }
+  const onSubmit = () => { rt.push(routes.onboarding.emailVerification.path) }
 
   return (
     <div className="app_auth_login_container">
@@ -58,27 +54,20 @@ export default function Page () {
                 return (
                   <form onSubmit={handleSubmit} className="flex flex-col gap-8">
                     <h3 className="app_auth_login__title">
-                      What kind of account do you want?
+                      What is your profession
                     </h3>
                     <div className="flex flex-col gap-8">
-                      <div className="flex gap-2">
-                        <Pill
-                          // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                          onClick={async () => await setFieldValue('accountType', AccountType.Individual)}
-                          active={values.accountType === AccountType.Individual}
-                          className='w-full'
-                        >
-                          Individual
-                        </Pill>
-
-                        <Pill
-                          // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                          onClick={async () => await setFieldValue('accountType', AccountType.Team)}
-                          active={values.accountType === AccountType.Team}
-                          className='w-full'
-                        >
-                          Team
-                        </Pill>
+                      <div className="flex flex-wrap gap-2">
+                        {Object.entries(Professions).map(([label]) => (
+                          <Pill
+                            key={label}
+                            // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                            onClick={async () => await setFieldValue('accountType', label)}
+                            active={values.accountType === label}
+                          >
+                            {label}
+                          </Pill>
+                        ))}
                       </div>
                     </div>
 

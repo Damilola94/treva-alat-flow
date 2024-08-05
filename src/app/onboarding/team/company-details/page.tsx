@@ -2,24 +2,21 @@
 import React from 'react'
 import { Formik } from 'formik'
 import * as Yup from 'yup'
+import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import queries from '@/services/queries/auth'
 import routes from '@/lib/routes'
 import { useRouter } from 'next/navigation'
 import { Header } from '@/components/shared/onboarding'
-import { Pill } from '@/components/shared'
 
 const validationSchema = Yup.object().shape({
-  // password: Yup.string().min(8).required()
+  // email: Yup.string()
+  //   .email('Please enter a valid email address')
+  //   .required('Please enter your email address')
 })
 
-enum AccountType {
-  Individual = 'individual',
-  Team = 'team'
-}
-
 const initialValues = {
-  accountType: AccountType.Individual as `${AccountType}`
+  fullName: ''
 }
 
 type InitialValues = ReturnType<() => typeof initialValues>
@@ -28,13 +25,7 @@ export default function Page () {
   const rt = useRouter()
   const { isLoading } = queries.login()
 
-  const onSubmit = (values: InitialValues) => {
-    if (values.accountType === AccountType.Individual) {
-      rt.push(routes.onboarding.individual.profession.path)
-    } else {
-      rt.push(routes.onboarding.team.companyDetails.path)
-    }
-  }
+  const onSubmit = () => { rt.push(routes.onboarding.security.path) }
 
   return (
     <div className="app_auth_login_container">
@@ -51,34 +42,39 @@ export default function Page () {
               {(props) => {
                 const {
                   values,
-                  setFieldValue,
-                  handleSubmit
+                  handleChange,
+                  handleBlur,
+                  handleSubmit,
+                  errors,
+                  touched
                 } = props
+
+                const getProps = (args: { name: keyof InitialValues }) => {
+                  const name = args.name
+
+                  return {
+                    name,
+                    id: name,
+                    value: values[name],
+                    onChange: handleChange,
+                    onBlur: handleBlur,
+                    errors,
+                    touched
+                  }
+                }
 
                 return (
                   <form onSubmit={handleSubmit} className="flex flex-col gap-8">
                     <h3 className="app_auth_login__title">
-                      What kind of account do you want?
+                      Your full name
                     </h3>
-                    <div className="flex flex-col gap-8">
-                      <div className="flex gap-2">
-                        <Pill
-                          // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                          onClick={async () => await setFieldValue('accountType', AccountType.Individual)}
-                          active={values.accountType === AccountType.Individual}
-                          className='w-full'
-                        >
-                          Individual
-                        </Pill>
-
-                        <Pill
-                          // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                          onClick={async () => await setFieldValue('accountType', AccountType.Team)}
-                          active={values.accountType === AccountType.Team}
-                          className='w-full'
-                        >
-                          Team
-                        </Pill>
+                    <div className="flex flex-col gap-6">
+                      <div className="">
+                        <Input
+                          {...getProps({ name: 'fullName' })}
+                          placeholder="Enter your full name"
+                          size="xl"
+                        />
                       </div>
                     </div>
 

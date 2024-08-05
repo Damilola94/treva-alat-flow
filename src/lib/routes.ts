@@ -36,12 +36,32 @@ const routes = {
       path: '/onboarding/account-type'
     },
 
+    emailVerification: {
+      path: '/onboarding/email-verification'
+    },
+
     personalDetails: {
       path: '/onboarding/personal-details'
     },
 
     security: {
       path: '/onboarding/security'
+    },
+
+    individual: {
+      path: '/onboarding/individual',
+
+      profession: {
+        path: '/onboarding/individual/profession'
+      }
+    },
+
+    team: {
+      path: '/onboarding/team',
+
+      companyDetails: {
+        path: '/onboarding/team/company-details'
+      }
     }
   }
 }
