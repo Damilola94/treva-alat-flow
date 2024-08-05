@@ -10,13 +10,11 @@ import { useRouter } from 'next/navigation'
 import { Header } from '@/components/shared/onboarding'
 
 const validationSchema = Yup.object().shape({
-  email: Yup.string()
-    .email('Please enter a valid email address')
-    .required('Please enter your email address')
+  password: Yup.string().min(8).required()
 })
 
 const initialValues = {
-  email: process.env.NEXT_PUBLIC_CLIENT_EMAIL ?? ''
+  password: ''
 }
 
 type InitialValues = ReturnType<() => typeof initialValues>
@@ -25,7 +23,7 @@ export default function Page () {
   const rt = useRouter()
   const { isLoading } = queries.login()
 
-  const onSubmit = () => { rt.push(routes.onboarding.personalDetails.path) }
+  const onSubmit = () => { rt.push(routes.onboarding.accountType.path) }
 
   return (
     <div className="app_auth_login_container">
@@ -66,14 +64,14 @@ export default function Page () {
                 return (
                   <form onSubmit={handleSubmit} className="flex flex-col gap-8">
                     <h3 className="app_auth_login__title">
-                      Start your free trial
+                      Create your password
                     </h3>
                     <div className="flex flex-col gap-6">
                       <div className="">
                         <Input
-                          {...getProps({ name: 'email' })}
-                          type="email"
-                          placeholder="Enter your email address"
+                          {...getProps({ name: 'password' })}
+                          type="password"
+                          placeholder="At least 8 charaters"
                           size="xl"
                         />
                       </div>

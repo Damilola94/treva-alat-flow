@@ -1,4 +1,7 @@
+'use client'
+
 import { ArrowLeft } from '@/components/shared'
+import { useRouter } from 'next/navigation'
 import React, { type ReactNode } from 'react'
 
 interface IProps {
@@ -8,12 +11,14 @@ interface IProps {
 export default function Layout (props: IProps) {
   const { children } = props
 
+  const rt = useRouter()
+
   return (
     <div className="app_auth_login_layout">
       <div className="app_auth_login_layout__bg">
         <div className="flex w-full justify-end">
           <button type="button">
-            <div className="app_auth_login_layout__bg__cct__back">
+            <div onClick={() => { rt.back() }} className="app_auth_login_layout__bg__cct__back">
               <ArrowLeft />
             </div>
           </button>

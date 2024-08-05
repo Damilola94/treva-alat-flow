@@ -5,48 +5,39 @@ import * as Yup from 'yup'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import queries from '@/services/queries/auth'
-import { Logo } from '@/components/shared'
-import Link from 'next/link'
+import routes from '@/lib/routes'
+import { useRouter } from 'next/navigation'
+import { Header } from '@/components/shared/onboarding'
 
 const validationSchema = Yup.object().shape({
-  email: Yup.string()
-    .email('Please enter a valid email address')
-    .required('Please enter your email address')
+  // email: Yup.string()
+  //   .email('Please enter a valid email address')
+  //   .required('Please enter your email address')
 })
 
 const initialValues = {
-  email: process.env.NEXT_PUBLIC_CLIENT_EMAIL ?? ''
+  fullName: ''
 }
 
-export default function Login () {
-  const { mutate, isLoading } = queries.login()
+type InitialValues = ReturnType<() => typeof initialValues>
+
+export default function Page () {
+  const rt = useRouter()
+  const { isLoading } = queries.login()
+
+  const onSubmit = () => { rt.push(routes.onboarding.security.path) }
 
   return (
     <div className="app_auth_login_container">
-      <div className="app_auth_login_container__header flex justify-between items-center">
-        <div className="flex items-center gap-3">
-          <Logo />
-          <h2 className="app_auth_login_container__header__logo__title">
-            Creathrivity
-          </h2>
-        </div>
+      <Header />
 
-        <div className="flex items-center gap-2">
-          <p className="app_auth_login_container__header__account">
-            Already have an account?
-          </p>
-          <Link href={'#'}>
-            <p className="app_auth_login_container__header__signin">Sign in</p>
-          </Link>
-        </div>
-      </div>
       <div className="app_auth_login_container__upper">
         <div className="app_auth_login">
           <div>
             <Formik
               initialValues={initialValues}
               validationSchema={validationSchema}
-              onSubmit={mutate}
+              onSubmit={onSubmit}
             >
               {(props) => {
                 const {
@@ -57,24 +48,32 @@ export default function Login () {
                   errors,
                   touched
                 } = props
+
+                const getProps = (args: { name: keyof InitialValues }) => {
+                  const name = args.name
+
+                  return {
+                    name,
+                    id: name,
+                    value: values[name],
+                    onChange: handleChange,
+                    onBlur: handleBlur,
+                    errors,
+                    touched
+                  }
+                }
+
                 return (
                   <form onSubmit={handleSubmit} className="flex flex-col gap-8">
                     <h3 className="app_auth_login__title">
-                      Start your free trial
+                      Your full name
                     </h3>
                     <div className="flex flex-col gap-6">
                       <div className="">
                         <Input
-                          name="email"
-                          type="email"
-                          id="email"
-                          placeholder="Enter your email address"
+                          {...getProps({ name: 'fullName' })}
+                          placeholder="Enter your full name"
                           size="xl"
-                          value={values.email}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          errors={errors}
-                          touched={touched}
                         />
                       </div>
                     </div>

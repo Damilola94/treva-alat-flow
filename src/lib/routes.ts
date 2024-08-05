@@ -32,8 +32,16 @@ const routes = {
   onboarding: {
     path: '/onboarding',
 
-    signUp: {
-      path: '/onboarding/sign-up'
+    accountType: {
+      path: '/onboarding/account-type'
+    },
+
+    personalDetails: {
+      path: '/onboarding/personal-details'
+    },
+
+    security: {
+      path: '/onboarding/security'
     }
   }
 }
