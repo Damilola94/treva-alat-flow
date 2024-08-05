@@ -6,12 +6,12 @@ const routes = {
   auth: {
     path: '/auth',
 
-    login: {
-      path: '/auth/login'
+    signIn: {
+      path: '/auth/sign-in'
     },
 
-    logout: {
-      path: '/auth/logout'
+    signOut: {
+      path: '/auth/sign-out'
     }
   },
 
@@ -26,6 +26,14 @@ const routes = {
 
     customerInformation: {
       path: '/dashboard/customer-information'
+    }
+  },
+
+  onboarding: {
+    path: '/onboarding',
+
+    signUp: {
+      path: '/onboarding/sign-up'
     }
   }
 }

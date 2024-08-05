@@ -34,7 +34,7 @@ function Main ({ children }: { children: React.ReactNode }) {
       setMounted(true)
     } else {
       toast.error('Token expired')
-      push(`${routes.auth.login.path}?next=${asPath}`)
+      push(`${routes.auth.signIn.path}?next=${asPath}`)
     }
   }, [asPath, push])
 

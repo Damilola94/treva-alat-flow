@@ -29,8 +29,8 @@ const menuItems = [
 ]
 
 const logoutItem = {
-  label: 'Logout',
-  href: routes.auth.logout.path,
+  label: 'Sign out',
+  href: routes.auth.signOut.path,
   icon: <Login />
 }
 

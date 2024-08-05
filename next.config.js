@@ -1,9 +1,11 @@
 /** @type {import('next').NextConfig} */
 
+const namespace = process.env.NEXT_PUBLIC_ASSET_PREFIX_NAMESPACE;
+
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-  basePath: process.env.NEXT_PUBLIC_ASSET_PREFIX_DISABLED ? undefined : '/streak-web',
+  basePath: process.env.NEXT_PUBLIC_ASSET_PREFIX_DISABLED ? undefined : `/${namespace}`,
   images: {
     remotePatterns: [
       {
@@ -20,12 +22,12 @@ const nextConfig = {
     return [
       {
         "source": "/",
-        "destination": "/auth/login",
+        "destination": "/auth/sign-in",
         "permanent": false
       },
       {
-        "source": "/streak-web",
-        "destination": "/streak-web/auth/login",
+        "source": `/${namespace}`,
+        "destination": `/${namespace}/auth/sign-in`,
         "permanent": false
       }
     ];
@@ -33,8 +35,8 @@ const nextConfig = {
   async rewrites() {
     return [
       {
-        source: '/streak-web/auth/login',
-        destination: '/streak-web/index/auth/login'
+        source: `/${namespace}/auth/sign-in`,
+        destination: `/${namespace}/index/auth/sign-in`
       }
     ];
   }

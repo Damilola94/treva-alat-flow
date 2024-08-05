@@ -8,6 +8,7 @@ const services = {
 
 const config = {
   baseUrl,
+  namespace: process.env.NEXT_PUBLIC_ASSET_PREFIX_NAMESPACE,
   pagination: { PageNumber: '1', PageSize: '10' },
   services,
   tokenKey: 'str-weer-tkey',
