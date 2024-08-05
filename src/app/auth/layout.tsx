@@ -1,8 +1,23 @@
 'use client'
 
+import React, { useState, type ReactNode } from 'react'
 import { ArrowLeft } from '@/components/shared'
 import { useRouter } from 'next/navigation'
-import React, { type ReactNode } from 'react'
+import { Carousel } from 'react-responsive-carousel'
+import Image from 'next/image'
+import auth from '@/lib/assets/auth'
+
+const titleArray = [
+  'Empower Your Creativity',
+  'Enhance Client Relations',
+  'Join a Thriving Community'
+]
+
+const detailsArray = [
+  'Creathrivity streamlines business operations, reducing administrative tasks so you can focus on your creative work.',
+  'Simplify transactions and communication with Creathrivity, improving client interactions and your professional image.',
+  'Creathrivity offers industry-specific tools and a supportive community, tailored to the needs of creative professionals.'
+]
 
 interface IProps {
   children: ReactNode
@@ -10,36 +25,70 @@ interface IProps {
 
 export default function Layout (props: IProps) {
   const { children } = props
+  const [bgIndex, setBgIndex] = useState(0)
 
   const rt = useRouter()
 
   return (
     <div className="app_auth_login_layout">
       <div className="app_auth_login_layout__bg">
-        <div className="flex w-full justify-end">
+        <Carousel
+          className="app_auth_login_layout__carousel"
+          autoPlay
+          infiniteLoop
+          interval={5000}
+          showIndicators={false}
+          showArrows={false}
+          showStatus={false}
+          onChange={(index) => {
+            setBgIndex(index)
+          }}
+        >
+          <div>
+            <Image src={auth.authBg} alt="bg" />
+          </div>
+
+          <div>
+            <Image src={auth.authBg2} alt="bg" />
+          </div>
+
+          <div>
+            <Image src={auth.authBg3} alt="bg" />
+          </div>
+        </Carousel>
+        <div className="flex w-full justify-end app_auth_login_layout__bg__relative">
           <button type="button">
-            <div onClick={() => { rt.back() }} className="app_auth_login_layout__bg__cct__back">
+            <div
+              onClick={() => {
+                rt.back()
+              }}
+              className="app_auth_login_layout__bg__cct__back"
+            >
               <ArrowLeft />
             </div>
           </button>
         </div>
-        <div className="app_auth_login_layout__bg__cct">
+        <div className="app_auth_login_layout__bg__cct app_auth_login_layout__bg__relative">
           <div className="app_auth_login_layout__bg__cct__indicator flex gap-4 item-center">
-            <div className="app_auth_login_layout__bg__cct__indicator__item active"></div>
+            {[0, 1, 2].map((index) => {
+              const active = index === bgIndex ? 'active' : ''
 
-            <div className="app_auth_login_layout__bg__cct__indicator__item "></div>
-
-            <div className="app_auth_login_layout__bg__cct__indicator__item "></div>
+              return (
+                <div
+                  key={index}
+                  className={`app_auth_login_layout__bg__cct__indicator__item ${active}`}
+                ></div>
+              )
+            })}
           </div>
 
           <div className="flex flex-col gap-4">
             <h3 className="app_auth_login_layout__bg__cct__title">
-              Empower Your Creativity
+              {titleArray[bgIndex]}
             </h3>
 
             <p className="app_auth_login_layout__bg__cct__details">
-              Creathrivity streamlines business operations, reducing
-              administrative tasks so you can focus on your creative work.
+              {detailsArray[bgIndex]}
             </p>
           </div>
         </div>
