@@ -12,6 +12,10 @@ const routes = {
 
     signOut: {
       path: '/auth/sign-out'
+    },
+
+    verification: {
+      path: '/auth/verification'
     }
   },
 

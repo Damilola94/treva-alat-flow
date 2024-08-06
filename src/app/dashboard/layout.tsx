@@ -1,12 +1,14 @@
 'use client'
 
 import { Header, Sidebar } from '@/components/shared/dashboard'
+import { Button } from '@/components/ui/button'
 import config from '@/lib/config'
 import featureFlags from '@/lib/feature-flags'
 import routes from '@/lib/routes'
 import { decodeJwt } from '@/lib/utils'
 import { getLocalStorage } from '@/services/helper'
 import { Inter } from 'next/font/google'
+import Link from 'next/link'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { Suspense, useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
@@ -40,6 +42,24 @@ function Main ({ children }: { children: React.ReactNode }) {
 
   if (!mounted) {
     return null
+  }
+
+  if (mounted) {
+    return (
+      <div className="h-full flex flex-col justify-center items-center gap-3">
+        WIP : )
+
+        <Link href={routes.auth.signOut.path}>
+          <Button
+            size="lg"
+            backgroundColor="shark-950"
+            className="w-full app_auth_login__btn"
+          >
+            Sign out
+          </Button>
+        </Link>
+      </div>
+    )
   }
 
   return (

@@ -232,3 +232,20 @@
     color: #fff;
   }
 }
+
+.app_auth_verification {
+  &__p {
+    font-family: var(--second-family);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 23.2px;
+    text-align: left;
+
+    &__span {
+      font-size: 20px;
+      font-weight: 500;
+      line-height: 29px;
+      text-align: left;
+    }
+  }
+}

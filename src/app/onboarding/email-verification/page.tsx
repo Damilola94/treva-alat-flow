@@ -8,9 +8,7 @@ import routes from '@/lib/routes'
 import { useRouter } from 'next/navigation'
 import { Header } from '@/components/shared/onboarding'
 
-const validationSchema = Yup.object().shape({
-  password: Yup.string().min(8).required()
-})
+const validationSchema = Yup.object().shape({})
 
 const initialValues = {
   password: ''
@@ -20,7 +18,9 @@ export default function Page () {
   const rt = useRouter()
   const { isLoading } = queries.login()
 
-  const onSubmit = () => { rt.push(routes.onboarding.accountType.path) }
+  const onSubmit = () => { rt.push(routes.auth.verification.path) }
+
+  const email = process.env.NEXT_PUBLIC_CLIENT_EMAIL ?? ''
 
   return (
     <div className="app_auth_login_container">
@@ -44,10 +44,16 @@ export default function Page () {
                     <h3 className="app_auth_login__title">
                       Email Verification
                     </h3>
-                    <div className="flex flex-col gap-6">
-                    </div>
 
-                    <div className="">
+                    <div className="flex flex-col gap-8">
+                      <p className="app_auth_verification__p">
+                        We have sent an email to
+                        <br />
+                        <span className="app_auth_verification__p__span">{email}.</span>
+                        <br />
+                        <br />
+                        Verify your email to begin
+                      </p>
                       <Button
                         size="xl"
                         isLoading={isLoading}
