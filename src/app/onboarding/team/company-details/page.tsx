@@ -1,5 +1,5 @@
 'use client'
-import React from 'react'
+import React, { useState } from 'react'
 import { Formik } from 'formik'
 import * as Yup from 'yup'
 import { Input } from '@/components/ui/input'
@@ -8,15 +8,22 @@ import queries from '@/services/queries/auth'
 import routes from '@/lib/routes'
 import { useRouter } from 'next/navigation'
 import { Header } from '@/components/shared/onboarding'
+import { Pill } from '@/components/shared'
+
+enum CompanySize {
+  '1-10' = '1-10',
+  '11-50' = '11-50',
+  '101 - 500' = '101 - 500',
+  '501 - 2000+' = '501 - 2000+',
+}
 
 const validationSchema = Yup.object().shape({
-  // email: Yup.string()
-  //   .email('Please enter a valid email address')
-  //   .required('Please enter your email address')
+  companyName: Yup.string().min(3).required()
 })
 
 const initialValues = {
-  fullName: ''
+  companyName: '',
+  companySize: CompanySize['1-10']
 }
 
 type InitialValues = ReturnType<() => typeof initialValues>
@@ -24,8 +31,15 @@ type InitialValues = ReturnType<() => typeof initialValues>
 export default function Page () {
   const rt = useRouter()
   const { isLoading } = queries.login()
+  const [show, setShow] = useState(false)
 
-  const onSubmit = () => { rt.push(routes.onboarding.security.path) }
+  const onSubmit = () => {
+    if (show) {
+      rt.push(routes.onboarding.team.profession.path)
+    } else {
+      setShow(true)
+    }
+  }
 
   return (
     <div className="app_auth_login_container">
@@ -42,6 +56,7 @@ export default function Page () {
               {(props) => {
                 const {
                   values,
+                  setFieldValue,
                   handleChange,
                   handleBlur,
                   handleSubmit,
@@ -66,16 +81,34 @@ export default function Page () {
                 return (
                   <form onSubmit={handleSubmit} className="flex flex-col gap-8">
                     <h3 className="app_auth_login__title">
-                      Your full name
+                      Your company {show ? 'size' : 'name'}
                     </h3>
+
                     <div className="flex flex-col gap-6">
-                      <div className="">
-                        <Input
-                          {...getProps({ name: 'fullName' })}
-                          placeholder="Enter your full name"
-                          size="xl"
-                        />
-                      </div>
+                      {show
+                        ? (
+                          <div className="flex flex-wrap gap-2">
+                            {Object.entries(CompanySize).map(([label]) => (
+                              <Pill
+                                key={label}
+                                // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                                onClick={async () => await setFieldValue('companySize', label)}
+                                active={values.companySize === label}
+                              >
+                                {label}
+                              </Pill>
+                            ))}
+                          </div>
+                          )
+                        : (
+                          <div className="">
+                            <Input
+                              {...getProps({ name: 'companyName' })}
+                              placeholder="Enter company name"
+                              size="xl"
+                            />
+                          </div>
+                          )}
                     </div>
 
                     <div className="">

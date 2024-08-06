@@ -65,6 +65,10 @@ const routes = {
 
       companyDetails: {
         path: '/onboarding/team/company-details'
+      },
+
+      profession: {
+        path: '/onboarding/team/profession'
       }
     }
   }
