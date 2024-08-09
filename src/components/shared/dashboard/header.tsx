@@ -1,14 +1,12 @@
 import { useEffect, useState } from 'react'
-import Image from 'next/image'
 import {
   usePathname,
   useRouter,
   useSelectedLayoutSegments
 } from 'next/navigation'
-import { ArrowCircleRight, ArrowRightToBracket, Bell } from '../svgs'
+import { ArrowCircleRight, ArrowRightToBracket, Bell, Logo } from '../svgs'
 import Link from 'next/link'
 import routes from '@/lib/routes'
-import logos from '@/lib/assets/logos'
 
 function capitalizeFirstLetter (text: string) {
   return text.replace(/\b\w/g, function (char) {
@@ -62,11 +60,12 @@ export function Header () {
         className="app_dash_main__hdr__img_link"
         href={routes.dashboard.entry.path}
       >
-        <Image
-          className="app_dash_main__aside__top__img"
-          src={logos.logoDashboard}
-          alt="logo"
-        />
+        <div className="flex items-center gap-3">
+          <Logo />
+          <h2 className="app_auth_login_container__header__logo__title">
+            Creathrivity
+          </h2>
+        </div>
       </Link>
 
       <div className="app_dash_main__hdr__title">{bread}</div>
@@ -75,7 +74,9 @@ export function Header () {
         <div className="flex items-center gap-4">
           <Bell />
 
-          <ArrowRightToBracket />
+          <Link href={routes.auth.signOut.path}>
+            <ArrowRightToBracket />
+          </Link>
         </div>
       </div>
     </header>

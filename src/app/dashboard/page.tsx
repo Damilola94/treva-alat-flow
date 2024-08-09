@@ -27,6 +27,8 @@ function OpenAccount ({ isMobile = false }) {
 }
 
 export default function Page () {
+  if (typeof OpenAccount === 'function') return null
+
   return (
     <div className="app_dashboard_page__pd app_customer_information app_dashboard_home">
       <CustomerStats />
