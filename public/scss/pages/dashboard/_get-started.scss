@@ -1,0 +1,46 @@
+.app_get_started {
+  &__bg {
+    min-height: 255px;
+    background-image: url('../../../media/images/dashboard/get-started-bg.png');
+    background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    display: flex;
+    align-items: flex-end;
+    padding: 2.5rem 1rem;
+
+    &__ctt {
+      max-width: 650px;
+      margin: 0 auto;
+      width: 100%;
+
+      &__text {
+        font-family: var(--third-family);
+        font-weight: 400;
+        font-size: 28px;
+        line-height: 145%;
+        letter-spacing: -0.08em;
+        color: #fff;
+
+        span {
+          font-weight: 500;
+        }
+      }
+    }
+  }
+
+  &__ctt {
+    max-width: 650px;
+    margin: 0 auto;
+    width: 100%;
+
+    &__title {
+      font-family: var(--third-family);
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 150%;
+      letter-spacing: -0.04em;
+      color: #000;
+    }
+  }
+}

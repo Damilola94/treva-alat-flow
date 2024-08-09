@@ -30,6 +30,10 @@ const routes = {
 
     customerInformation: {
       path: '/dashboard/customer-information'
+    },
+
+    getStarted: {
+      path: '/dashboard/get-started'
     }
   },
 

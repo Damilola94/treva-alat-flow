@@ -1,48 +1,106 @@
 'use client'
 
-import logos from '@/lib/assets/logos'
 import routes from '@/lib/routes'
-import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 
-import { Devices, Hashtag, Login, People } from '..'
+import {
+  Column,
+  File,
+  GlobeAlt,
+  Grid,
+  Like,
+  Logo,
+  Receipt,
+  Reminder,
+  Users
+} from '..'
 import dashboard from '@/lib/assets/dashboard'
-import { Profile } from './profile'
-import externalLinks from '@/lib/external-links'
 import { useIsActive } from '@/hooks/use-active-route'
 
 const dr = routes.dashboard
 
 const menuItems = [
-  { label: 'Dashboard', href: dr.entry.path, icon: <Hashtag /> },
+  { id: 1, label: 'Get started', href: dr.getStarted.path, icon: <GlobeAlt /> },
   {
-    label: 'Customer Information',
-    icon: <People />,
-    href: dr.customerInformation.path
+    id: 2,
+    label: 'Dashboard',
+    icon: <Grid />,
+    href: dr.entry.path
   },
   {
-    label: 'Account Management',
-    icon: <Devices />,
-    href: dr.accountManagement.path
+    id: 3,
+    label: 'Project Management',
+    icon: <Column />,
+    href: '#'
+  },
+  {
+    id: 4,
+    label: 'Client Management',
+    icon: <Users />,
+    href: '#'
+  },
+  {
+    id: 5,
+    label: 'Invoice & Payment',
+    icon: <Receipt />,
+    href: '#'
+  },
+
+  {
+    id: 6,
+    label: 'Contracts',
+    icon: <File />,
+    href: '#'
+  },
+  {
+    id: 7,
+    label: 'Reminders and Notification',
+    icon: <Reminder />,
+    href: '#'
+  },
+
+  {
+    id: 8,
+    label: 'Reviews and Feedback',
+    icon: <Like />,
+    href: '#'
   }
 ]
 
-const logoutItem = {
-  label: 'Sign out',
-  href: routes.auth.signOut.path,
-  icon: <Login />
+interface ISidebarItem {
+  item: {
+    label: string
+    href: string
+    icon: JSX.Element
+  }
+}
+
+const SidebarItem = (props: ISidebarItem) => {
+  const { item } = props
+  const { isActive } = useIsActive()
+
+  const activeCN = isActive(item?.href) ? 'active' : ''
+
+  return (
+    <div className={`app_dash_main__aside__links__item ${activeCN}`}>
+      <Link
+        className={`app_dash_main__aside__links__item__a ${''}`}
+        href={item?.href}
+      >
+        <div className="app_dash_main__aside__links__item__ctt">
+          {item?.icon}
+
+          <p className="app_dash_main__aside__links__item__ctt__p">
+            {item?.label}
+          </p>
+        </div>
+      </Link>
+    </div>
+  )
 }
 
 export function Sidebar ({ mobile = false }) {
-  const router = useRouter()
-
-  const { isActive } = useIsActive()
-
-  const handleLogout = () => {
-    router.push(logoutItem.href)
-  }
-
   return (
     <aside
       className={`app_dash_main__aside app_dash_main__aside--${
@@ -51,66 +109,35 @@ export function Sidebar ({ mobile = false }) {
       style={{ backgroundImage: `url('${dashboard.dashBg.src}')` }}
     >
       <div className="app_dash_main__aside__top">
-        <Link href={routes.dashboard.entry.path}>
-          <Image
-            className="app_dash_main__aside__top__img"
-            src={logos.logoDashboard}
-            alt="logo"
-          />
-        </Link>
+        <div className="w-full px-6">
+          <Link href={routes.dashboard.entry.path}>
+            <div className="flex items-center gap-3">
+              <Logo />
+              <h2 className="app_auth_login_container__header__logo__title">
+                Creathrivity
+              </h2>
+            </div>
+          </Link>
+        </div>
 
-        <ul className="app_dash_main__aside__ul">
+        <div className="app_dash_main__aside__links">
           {menuItems.map((item) => (
-            <li className="app_dash_main__aside__ul__li" key={item.label}>
-              <Link
-                className={`app_dash_main__aside__ul__li__a ${
-                  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-                  isActive(item.href) ? 'active' : ''
-                }`}
-                href={item?.href ?? ''}
-              >
-                {item.icon}
-                {item.label}
-              </Link>
-            </li>
+            <SidebarItem key={item.id} item={item} />
           ))}
-        </ul>
+        </div>
       </div>
 
       <div className="app_dash_main__aside__btm">
-        <span className="app_dash_main__aside__btm__spn_bg" />
+        <div className="app_dash_main__aside__btm__avi">
+          <Image src={dashboard.avi} alt="avi" className="w-full" />
+        </div>
 
-        <ul className="app_dash_main__aside__ul">
-          <li className="app_dash_main__aside__ul__li">
-            <Link href={'#'}>
-              <Profile />
-            </Link>
-          </li>
-
-          <li className="app_dash_main__aside__ul__li app_dash_main__aside__ul__li--idea-x">
-            <a
-              href={externalLinks.IDEA_X}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Image src={logos.ideaX} alt="" />
-
-              <div>
-                Powered by <span>IDEAx Labs</span>
-              </div>
-            </a>
-          </li>
-
-          <li className={['app_dash_main__aside__ul__li'].join(' ')}>
-            <a
-              className={'app_dash_main__aside__ul__li__a cursor-pointer'}
-              onClick={handleLogout}
-            >
-              {logoutItem.icon}
-              {logoutItem.label}
-            </a>
-          </li>
-        </ul>
+        <div className="flex-1">
+          <p className="app_dash_main__aside__btm__name">Moyinoluwa</p>
+          <p className="app_dash_main__aside__btm__email">
+            moyinoluwa@gmail.com
+          </p>
+        </div>
       </div>
     </aside>
   )
