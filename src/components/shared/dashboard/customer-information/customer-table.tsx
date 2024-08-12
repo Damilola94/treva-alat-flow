@@ -77,12 +77,13 @@ export function CustomerTable () {
                 return (
                   <tr key={item.accountNumber + index}>
                     <td className="image">
-                      <Link
-                        href={href}
-                      >
+                      <Link href={href}>
                         <div className="app_customer_table__avi">
                           <Image
-                            src={getAvatar({ name: `${item.firstName} ${item.lastName}`, length: 2 })}
+                            src={getAvatar({
+                              name: `${item.firstName} ${item.lastName}`,
+                              length: 2
+                            })}
                             alt="avi"
                             className="w-full"
                             height={50}
@@ -92,25 +93,15 @@ export function CustomerTable () {
                       </Link>
                     </td>
                     <td>
-                      <Link
-                        href={href}
-                      >
+                      <Link href={href}>
                         {item.firstName} {item.middleName} {item.lastName}
                       </Link>
                     </td>
                     <td>
-                      <Link
-                        href={href}
-                      >
-                        {item.email ?? '--'}
-                      </Link>
+                      <Link href={href}>{item.email ?? '--'}</Link>
                     </td>
                     <td>
-                      <Link
-                        href={href}
-                      >
-                        {item.phoneNumber ?? '--'}
-                      </Link>
+                      <Link href={href}>{item.phoneNumber ?? '--'}</Link>
                     </td>
                     <td className="action">
                       <div className="flex items-center gap-1">
@@ -124,7 +115,7 @@ export function CustomerTable () {
                           className="flex items-center justify-center"
                         >
                           <MoreSquare className="hidden md:block" />
-                          <ChevronRight className="md:hidden" />
+                          <ChevronRight />
                         </button>
                       </div>
                     </td>
@@ -132,15 +123,17 @@ export function CustomerTable () {
                 )
               })}
 
-              {isLoading && !data?.responseData?.length && (
-                Array(Number(config.pagination.PageSize)).fill(0).map((_, index) => (
-                  <tr key={index}>
-                    <td colSpan={5}>
-                      <Skeleton height={64} />
-                    </td>
-                  </tr>
-                ))
-              )}
+              {isLoading &&
+                !data?.responseData?.length &&
+                Array(Number(config.pagination.PageSize))
+                  .fill(0)
+                  .map((_, index) => (
+                    <tr key={index}>
+                      <td colSpan={5}>
+                        <Skeleton height={64} />
+                      </td>
+                    </tr>
+                  ))}
             </tbody>
           </table>
         </div>

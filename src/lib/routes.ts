@@ -33,7 +33,27 @@ const routes = {
     },
 
     getStarted: {
-      path: '/dashboard/get-started'
+      path: '/dashboard/get-started',
+
+      professionalDetails: {
+        path: '/dashboard/get-started/professional-details'
+      },
+
+      socialMediaDetails: {
+        path: '/dashboard/get-started/social-media-details'
+      },
+
+      bio: {
+        path: '/dashboard/get-started/bio'
+      },
+
+      teamSetup: {
+        path: '/dashboard/get-started/team-setup'
+      },
+
+      done: {
+        path: '/dashboard/get-started/done'
+      }
     }
   },
 

@@ -4,10 +4,12 @@
   gap: 8px;
 
   &__lbl {
+    font-family: var(--third-family);
     font-weight: 500;
-    font-size: 16px;
-    line-height: 159%;
-    color: #111928;
+    font-size: 14px;
+    line-height: 145%;
+    letter-spacing: -0.04em;
+    color: #000;
   }
 
   &__spt {
@@ -28,7 +30,7 @@
 
     &--error {
       @extend .app_input_con__spt;
-
+      font-family: var(--second-family);
       color: tomato;
     }
   }
@@ -42,7 +44,6 @@
 }
 
 .app_input {
-  background-color: #f9fafb;
   font-size: 15px;
   font-weight: 400;
   border: none;
@@ -50,6 +51,8 @@
   border-radius: 0;
   box-shadow: none;
   padding: 12px 0px;
+  background-color: transparent;
+  font-family: var(--second-family);
 
   &:focus-within {
     // border-color: hsl(var(--input));
