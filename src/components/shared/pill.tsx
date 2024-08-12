@@ -6,13 +6,21 @@ interface IProps {
   className?: string
   onClick?: () => void
   selected?: boolean
+  size?: 'md'
 }
 
 export function Pill (props: IProps) {
-  const { active, children, className, onClick, selected } = props
+  const { active, children, className, onClick, selected, size } = props
+
+  const cName = [
+    'app_pill',
+    (active ?? selected) && 'app_pill--active',
+    `app_pill--${size}`,
+    className
+  ].join(' ')
 
   return (
-    <div onClick={onClick} className={['app_pill', (active ?? selected) && 'app_pill--active', className].join(' ')}>
+    <div onClick={onClick} className={cName}>
       {children}
     </div>
   )
