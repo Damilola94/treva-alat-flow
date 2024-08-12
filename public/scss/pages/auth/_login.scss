@@ -146,6 +146,10 @@
       font-size: 14px;
       line-height: 145%;
       color: var(--shark-500);
+
+      @include screen('sm') {
+        display: none;
+      }
     }
 
     &__signin {
@@ -167,6 +171,10 @@
         letter-spacing: -0.08em;
         text-align: center;
         color: var(--shark-950);
+
+        @include screen('lg') {
+          display: none;
+        }
       }
     }
   }
