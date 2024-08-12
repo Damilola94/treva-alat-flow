@@ -1,6 +1,9 @@
 import { Pill } from '@/components/shared'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import dashboard from '@/lib/assets/dashboard'
+import { numberFormat } from '@/lib/numbers'
+import Image from 'next/image'
 import React from 'react'
 
 enum Tasks {
@@ -14,10 +17,31 @@ enum Projects {
   'Completed Project' = 'Completed Project'
 }
 
-function PlusIcon () {
+function PlusIcon ({ fill = 'white' }) {
   return (
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M10.8333 3.33333C10.8333 2.8731 10.4602 2.5 10 2.5C9.53976 2.5 9.16667 2.8731 9.16667 3.33333V9.16667H3.33333C2.8731 9.16667 2.5 9.53976 2.5 10C2.5 10.4602 2.8731 10.8333 3.33333 10.8333H9.16667V16.6667C9.16667 17.1269 9.53976 17.5 10 17.5C10.4602 17.5 10.8333 17.1269 10.8333 16.6667V10.8333H16.6667C17.1269 10.8333 17.5 10.4602 17.5 10C17.5 9.53976 17.1269 9.16667 16.6667 9.16667H10.8333V3.33333Z" fill="white"/>
+      <path d="M10.8333 3.33333C10.8333 2.8731 10.4602 2.5 10 2.5C9.53976 2.5 9.16667 2.8731 9.16667 3.33333V9.16667H3.33333C2.8731 9.16667 2.5 9.53976 2.5 10C2.5 10.4602 2.8731 10.8333 3.33333 10.8333H9.16667V16.6667C9.16667 17.1269 9.53976 17.5 10 17.5C10.4602 17.5 10.8333 17.1269 10.8333 16.6667V10.8333H16.6667C17.1269 10.8333 17.5 10.4602 17.5 10C17.5 9.53976 17.1269 9.16667 16.6667 9.16667H10.8333V3.33333Z" fill={fill} />
+    </svg>
+  )
+}
+
+function EllIcon () {
+  return (
+    <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g filter="url(#filter0_b_87_5448)">
+        <circle cx="14" cy="14" r="14" fill="#262626" />
+      </g>
+      <circle cx="8" cy="14" r="2" fill="#F6F6F6" />
+      <circle cx="14" cy="14" r="2" fill="#F6F6F6" />
+      <circle cx="20" cy="14" r="2" fill="#F6F6F6" />
+      <defs>
+        <filter id="filter0_b_87_5448" x="-10" y="-10" width="48" height="48" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
+          <feFlood floodOpacity="0" result="BackgroundImageFix" />
+          <feGaussianBlur in="BackgroundImageFix" stdDeviation="5" />
+          <feComposite in2="SourceAlpha" operator="in" result="effect1_backgroundBlur_87_5448" />
+          <feBlend mode="normal" in="SourceGraphic" in2="effect1_backgroundBlur_87_5448" result="shape" />
+        </filter>
+      </defs>
     </svg>
   )
 }
@@ -56,10 +80,52 @@ function EmptyState () {
   )
 }
 
+const kpis = [
+  { label: 'Active Project', value: '0' },
+  { label: 'Completed Project', value: '0' },
+  { label: 'To-do Task', value: '0' },
+  { label: <>Wallet balance <EllIcon /></>, value: numberFormat(0) }
+]
+
 export default function Page () {
   return (
     <div className="app_dashboard_page app_dashboard_home">
-      <div className="app_dashboard_home__task app_dashboard_page__px">
+      <div className="app_dashboard_home__header">
+        <div className="app_dashboard_home__header__profile_con app_dashboard_page__px">
+          <div className="app_dashboard_home__header__profile">
+            <div className="app_dash_main__aside__btm__avi">
+              <Image src={dashboard.avi} alt="avi" className="w-full" />
+            </div>
+            <h4 className="app_dashboard_home__header__profile__h4">Welcome, Moyinoluwa</h4>
+          </div>
+
+          <Button
+            size="md"
+            backgroundColor='text-color-100'
+            color="shark-950"
+            className="app_auth_login__btn"
+          >
+            <PlusIcon fill='var(--shark-950)' />
+            Create  Project
+          </Button>
+        </div>
+
+        <div className="app_dashboard_home__kpis grid grid-cols-4 app_dashboard_page__px">
+          {kpis.map((item, index) => {
+            const IS_WALLET = kpis.length === index + 1
+
+            return (
+              <div className={`app_dashboard_home__kpis__item ${IS_WALLET ? 'app_dashboard_home__kpis__item--wallet' : ''}`} key={index}>
+                <h6 className="app_dashboard_home__kpis__item__h6">{item.label}</h6>
+
+                <p className="app_dashboard_home__kpis__item__value">{item.value}</p>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+
+      <div className="app_dashboard_home__task app_dashboard_page__px pt-4">
         <div className="app_dashboard_home__task__hdr flex-wrap gap-2">
           <div className="flex flex-wrap gap-2">
             {Object.entries(Tasks).map(([label]) => (

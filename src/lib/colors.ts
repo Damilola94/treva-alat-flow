@@ -23,6 +23,9 @@ export const rootColors = {
 
   'neutral-colours-white': '#fff',
 
+  'iris-60': '#A5A6F6',
+
+  'text-color-100': '#F1F1F1',
   'text-color-200': '#E7E7E7',
   'text-color-400': '#808080',
 
