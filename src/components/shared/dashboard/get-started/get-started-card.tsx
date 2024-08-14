@@ -2,6 +2,42 @@ import React from 'react'
 import Image, { type StaticImageData } from 'next/image'
 import { ChevronRight, Logo } from '../../svgs'
 import { RenderIf } from '../../render-if'
+import Link from 'next/link'
+import routes from '@/lib/routes'
+
+const steps = [
+  {
+    id: 1,
+    label: 'Professional details',
+    details:
+      "You're almost there! Complete your onboarding to unlock the full potential of",
+    href: routes.dashboard.getStarted.professionalDetails.path
+  },
+
+  {
+    id: 2,
+    label: 'Social media details',
+    details:
+      "You're almost there! Complete your onboarding to unlock the full potential of ",
+    href: routes.dashboard.getStarted.socialMediaDetails.path
+  },
+
+  {
+    id: 3,
+    label: 'Bio',
+    details:
+      "You're almost there! Complete your onboarding to unlock the full potential of",
+    href: routes.dashboard.getStarted.bio.path
+  },
+
+  {
+    id: 4,
+    label: 'Select plan',
+    details:
+      "You're almost there! Complete your onboarding to unlock the full potential of",
+    href: routes.dashboard.getStarted.selectPlan.path
+  }
+]
 
 interface IProps {
   item: {
@@ -38,93 +74,54 @@ export function GetStartedCard (props: IProps) {
         <div className="flex flex-col">
           <RenderIf condition={showSteps}>
             <div className="app_get_started_card__steps flex flex-col">
-              <div className="app_get_started_card__steps__item flex gap-4">
-                <div className="app_get_started_card__steps__item__logo">
-                  <Logo width={24} height={24} />
-                </div>
+              {steps.map((item) => (
+                <Link key={item.id} href={item.href}>
+                  <div className="app_get_started_card__steps__item flex gap-4">
+                    <div className="app_get_started_card__steps__item__logo">
+                      <Logo width={24} height={24} />
+                    </div>
 
-                <div className="app_get_started_card__steps__item__ctt flex-1 flex flex-col gap-2">
-                  <div className="flex justify-between">
-                    <h3 className="app_get_started_card__steps__item__ctt__title">
-                      Professional details
-                    </h3>
-                    <ChevronRight />
+                    <div className="app_get_started_card__steps__item__ctt flex-1 flex flex-col gap-2">
+                      <div className="flex justify-between">
+                        <h3 className="app_get_started_card__steps__item__ctt__title">
+                          {item.label}
+                        </h3>
+                        <ChevronRight />
+                      </div>
+                      <p className="app_get_started_card__steps__item__ctt__text">
+                        {item.details}
+                      </p>
+                    </div>
                   </div>
-                  <p className="app_get_started_card__steps__item__ctt__text">
-                    You&apos;re almost there! Complete your onboarding to unlock
-                    the full potential of
-                  </p>
-                </div>
-              </div>
-
-              <div className="app_get_started_card__steps__item flex gap-4">
-                <div className="app_get_started_card__steps__item__logo">
-                  <Logo width={24} height={24} />
-                </div>
-
-                <div className="app_get_started_card__steps__item__ctt flex-1 flex flex-col gap-2">
-                  <div className="flex justify-between">
-                    <h3 className="app_get_started_card__steps__item__ctt__title">
-                      Social media details
-                    </h3>
-                    <ChevronRight />
-                  </div>
-                  <p className="app_get_started_card__steps__item__ctt__text">
-                    You&apos;re almost there! Complete your onboarding to unlock
-                    the full potential of
-                  </p>
-                </div>
-              </div>
-
-              <div className="app_get_started_card__steps__item flex gap-4">
-                <div className="app_get_started_card__steps__item__logo">
-                  <Logo width={24} height={24} />
-                </div>
-
-                <div className="app_get_started_card__steps__item__ctt flex-1 flex flex-col gap-2">
-                  <div className="flex justify-between">
-                    <h3 className="app_get_started_card__steps__item__ctt__title">
-                      Bio
-                    </h3>
-                    <ChevronRight />
-                  </div>
-                  <p className="app_get_started_card__steps__item__ctt__text">
-                    You&apos;re almost there! Complete your onboarding to unlock
-                    the full potential of
-                  </p>
-                </div>
-              </div>
-
-              <div className="app_get_started_card__steps__item flex gap-4">
-                <div className="app_get_started_card__steps__item__logo">
-                  <Logo width={24} height={24} />
-                </div>
-
-                <div className="app_get_started_card__steps__item__ctt flex-1 flex flex-col gap-2">
-                  <div className="flex justify-between">
-                    <h3 className="app_get_started_card__steps__item__ctt__title">
-                      Select plan
-                    </h3>
-                    <ChevronRight />
-                  </div>
-                  <p className="app_get_started_card__steps__item__ctt__text">
-                    You&apos;re almost there! Complete your onboarding to unlock
-                    the full potential of
-                  </p>
-                </div>
-              </div>
+                </Link>
+              ))}
             </div>
           </RenderIf>
 
           <div className="app_get_started_card__action">
             <div className="flex items-center justify-between">
-              <button
-                className="app_get_started_card__action__btn"
-                type="button"
-                onClick={handleClick}
-              >
-                {item?.btnText}
-              </button>
+              <RenderIf condition={showSteps}>
+                <Link
+                  href={routes.dashboard.getStarted.professionalDetails.path}
+                >
+                  <button
+                    className="app_get_started_card__action__btn"
+                    type="button"
+                  >
+                    {item?.btnText}
+                  </button>
+                </Link>
+              </RenderIf>
+
+              <RenderIf condition={!showSteps}>
+                <button
+                  className="app_get_started_card__action__btn"
+                  type="button"
+                  onClick={handleClick}
+                >
+                  {item?.btnText}
+                </button>
+              </RenderIf>
 
               <p className="app_get_started_card__action__text">
                 {item?.bottomInfo}

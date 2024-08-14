@@ -47,6 +47,10 @@ const routes = {
         path: '/dashboard/get-started/bio'
       },
 
+      selectPlan: {
+        path: '/dashboard/get-started/select-plan'
+      },
+
       teamSetup: {
         path: '/dashboard/get-started/team-setup'
       },
