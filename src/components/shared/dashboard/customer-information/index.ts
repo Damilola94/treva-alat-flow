@@ -1,6 +1,0 @@
-export { BirthdayModal } from './birthday-modal'
-export { CustomerTable } from './customer-table'
-export { Demographics } from './demographics'
-export { FinancialSegment } from './financial-segment'
-export { Psychographics } from './psychographics'
-export { Sidebar } from './sidebar'
