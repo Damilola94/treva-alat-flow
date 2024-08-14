@@ -32,7 +32,7 @@ const menuItems = [
     id: 3,
     label: 'Project Management',
     icon: <Column />,
-    href: '#'
+    href: dr.projectManagement.path
   },
   {
     id: 4,

@@ -23,7 +23,7 @@ function ChevronVIcon () {
 export function ProjectsTable () {
   if (IS_EMPTY) {
     return (
-      <div className="app_dashboard_home__task__ctt">
+      <div className="app_dashboard_home__task__ctt app_dashboard_home__task__ctt--empty">
         <EmptyState />
 
         <div className="flex flex-col gap-1">
@@ -37,7 +37,7 @@ export function ProjectsTable () {
   return (
     <div className="app_dashboard_home__task__ctt">
       <div className="w-full text-left relative rounded-xl overflow-auto">
-        <div className="shadow-sm overflow-hidden my-4">
+        <div className="shadow-sm overflow-hidden">
           <table className="border-collapse table-auto w-full app_table">
             <thead>
               <tr className="app_table__tr">

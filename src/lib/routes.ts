@@ -24,14 +24,6 @@ const routes = {
       path: '/dashboard'
     },
 
-    accountManagement: {
-      path: '/dashboard/account-management'
-    },
-
-    customerInformation: {
-      path: '/dashboard/customer-information'
-    },
-
     getStarted: {
       path: '/dashboard/get-started',
 
@@ -58,6 +50,10 @@ const routes = {
       done: {
         path: '/dashboard/get-started/done'
       }
+    },
+
+    projectManagement: {
+      path: '/dashboard/project-management'
     }
   },
 

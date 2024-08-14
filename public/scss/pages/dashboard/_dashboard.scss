@@ -104,8 +104,12 @@
       justify-content: center;
       align-items: center;
       text-align: center;
-      padding: 36px 0px;
+      padding: 16px 0px;
       gap: 16px;
+
+      &--empty {
+        padding: 36px 0px;
+      }
 
       &__title {
         font-family: var(--second-family);
