@@ -66,7 +66,7 @@ const menuItems = [
     icon: <Like />,
     href: '#'
   }
-]
+].filter((item) => item.href !== '#')
 
 interface ISidebarItem {
   item: {
