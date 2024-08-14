@@ -28,6 +28,7 @@ export const rootColors = {
   'text-color-100': '#F1F1F1',
   'text-color-200': '#E7E7E7',
   'text-color-400': '#808080',
+  'text-color-500': '#333333',
 
   'shark-50': '#f6f6f6',
   'shark-100': '#e7e7e7',

@@ -1,5 +1,6 @@
 export { FileButton } from './file-button'
 export { Modal } from './modal'
+export { Pagination } from './pagination'
 export { Pill } from './pill'
 export { RenderIf } from './render-if'
 export { SuccessMessage } from './success-message'
