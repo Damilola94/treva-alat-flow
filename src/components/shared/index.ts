@@ -1,3 +1,4 @@
+export * from './badge'
 export { FileButton } from './file-button'
 export { Modal } from './modal'
 export { Pagination } from './pagination'

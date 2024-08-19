@@ -20,6 +20,8 @@ const useBreadcrumb = () => {
   const rt = useRouter()
   const segments = useSelectedLayoutSegments()
 
+  let title = 'Dashboard'
+
   if (segments.length) {
     const sgt = segments[0]
     const hasChildren = segments.length > 1
@@ -40,10 +42,16 @@ const useBreadcrumb = () => {
       )
     }
 
-    return <span>{capitalizeFirstLetter(sgt).replace('-', ' ')}</span>
+    title = capitalizeFirstLetter(sgt).replace('-', ' ')
+
+    if (title === 'Invoice And-Payment') {
+      title = 'Invoice & Payment'
+    }
+
+    return <span>{title}</span>
   }
 
-  return <span>Dashboard</span>
+  return <span>{title}</span>
 }
 
 export function Header () {

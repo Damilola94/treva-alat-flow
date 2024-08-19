@@ -44,7 +44,7 @@ const menuItems = [
     id: 5,
     label: 'Invoice & Payment',
     icon: <Receipt />,
-    href: '#'
+    href: dr.invoiceAndPayment.path
   },
 
   {

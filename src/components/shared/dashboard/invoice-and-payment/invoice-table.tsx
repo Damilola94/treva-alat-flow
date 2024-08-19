@@ -1,6 +1,6 @@
-import { Badge, type BadgeProps } from '../badge'
-import { Pagination } from '../pagination'
-import { EmptyState } from '../svgs'
+import { Badge, type BadgeProps } from '../../badge'
+import { Pagination } from '../../pagination'
+import { EmptyState } from '../../svgs'
 
 const IS_EMPTY = false
 
@@ -14,8 +14,8 @@ const statusMap: Record<number, { title: string, status: BadgeProps['status'] }>
 const thead = [
   { label: 'Project name' },
   { label: 'Client' },
+  { label: 'Amount' },
   { label: 'Due date', isSortable: true },
-  { label: 'Priority' },
   { label: 'Status' }
 ]
 
@@ -28,7 +28,7 @@ function ChevronVIcon () {
   )
 }
 
-export function ProjectsTable () {
+export function InvoiceTable () {
   if (IS_EMPTY) {
     return (
       <div className="app_dashboard_home__task__ctt app_dashboard_home__task__ctt--empty">
@@ -36,7 +36,7 @@ export function ProjectsTable () {
 
         <div className="flex flex-col gap-1">
           <p className="app_dashboard_home__task__ctt__title">No task yet</p>
-          <p className="app_dashboard_home__task__ctt__desc">Click “add new request” button to get started</p>
+          <p className="app_dashboard_home__task__ctt__desc">Click “add invoice” button to get started</p>
         </div>
       </div>
     )
@@ -73,10 +73,10 @@ export function ProjectsTable () {
                     <div className="app_table__tbody__td__ctt">X - Clients name</div>
                   </td>
                   <td className="app_table__tbody__td">
-                    <div className="app_table__tbody__td__ctt">Month day, year</div>
+                    <div className="app_table__tbody__td__ctt">Amount</div>
                   </td>
                   <td className="app_table__tbody__td">
-                    <div className="app_table__tbody__td__ctt">One-time</div>
+                    <div className="app_table__tbody__td__ctt">Month day, year</div>
                   </td>
                   <td className="app_table__tbody__td">
                     <div className="app_table__tbody__td__ctt">

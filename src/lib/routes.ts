@@ -52,6 +52,10 @@ const routes = {
       }
     },
 
+    invoiceAndPayment: {
+      path: '/dashboard/invoice-and-payment'
+    },
+
     projectManagement: {
       path: '/dashboard/project-management'
     }
