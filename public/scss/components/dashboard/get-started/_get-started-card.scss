@@ -1,0 +1,85 @@
+.app_get_started_card {
+  max-width: 313px;
+  width: 100%;
+  background: #fff;
+  border: 1px solid var(--shark-100);
+  border-radius: 20px;
+  overflow: hidden;
+
+  &__ctt {
+    padding: 0 1rem;
+    &__title {
+      font-family: var(--third-family);
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 145%;
+      letter-spacing: -0.04em;
+      color: #000;
+    }
+
+    &__text {
+      font-family: var(--second-family);
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 150%;
+      color: var(--shark-400);
+    }
+  }
+  &__action {
+    padding: 1rem;
+    padding-bottom: 1.5rem;
+    border-top: 1px solid var(--shark-100);
+
+    &__btn {
+      border-radius: 20px;
+      padding: 12px 20px;
+      background: var(--shark-50);
+      font-family: var(--third-family);
+      font-weight: 500;
+      font-size: 12px;
+      line-height: 145%;
+      letter-spacing: -0.04em;
+      color: #111928;
+    }
+
+    &__text {
+      font-family: var(--third-family);
+      font-weight: 500;
+      font-size: 12px;
+      line-height: 145%;
+      letter-spacing: -0.04em;
+      color: var(--shark-300);
+    }
+  }
+
+  &__steps {
+    &__item {
+      border-top: 1px solid var(--shark-100);
+      padding: 1rem;
+
+      &__logo {
+        width: 24px;
+        height: 24px;
+      }
+
+      &__ctt {
+        &__title {
+          font-family: var(--third-family);
+          font-weight: 500;
+          font-size: 14px;
+          line-height: 145%;
+          letter-spacing: -0.04em;
+          color: #000;
+        }
+
+        &__text {
+          font-family: var(--second-family);
+          font-weight: 400;
+          font-size: 14px;
+          line-height: 150%;
+          color: var(--shark-400);
+        }
+      }
+    }
+  }
+}

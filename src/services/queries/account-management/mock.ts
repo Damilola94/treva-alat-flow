@@ -1,0 +1,183 @@
+export const customerDetails = {
+  isSuccess: true,
+  responseCode: '200',
+  responseMessage: 'Successful',
+  responseData: {
+    firstName: 'TOYOSI',
+    middleName: 'EZEKIEL',
+    lastName: 'EGBEDEYI',
+    gender: 'M',
+    address: '40, BELIEVERS QUARTERS OSAJIN APETE IBADAN  ',
+    city: 'IBADAN',
+    state: 'OYO',
+    country: 'NIGERIA',
+    dateOfBirth: '1982-04-24T00:00:00',
+    phoneNumber: '+234(805)0672685',
+    clearBalance: 4996,
+    accountNumber: '125618928',
+    onAlat: true,
+    onUssd: false,
+    onAfb: 'No',
+    hasCard: false
+  },
+  metaData: null
+}
+
+export const customers = {
+  isSuccess: true,
+  responseCode: '200',
+  responseMessage: 'Successful',
+  responseData: [
+    {
+      firstName: 'TOYOSI',
+      middleName: 'EZEKIEL',
+      lastName: 'EGBEDEYI',
+      gender: 'M',
+      address: '40, BELIEVERS QUARTERS OSAJIN APETE IBADAN  ',
+      city: 'IBADAN',
+      state: 'OYO',
+      country: 'NIGERIA',
+      dateOfBirth: '1982-04-24T00:00:00',
+      phoneNumber: '+234(805)0672685',
+      accountNumber: '125618928'
+    },
+    {
+      firstName: 'WURAOLA',
+      middleName: 'REBECCA',
+      lastName: 'OLABODE',
+      gender: 'F',
+      address: 'LAGOS ISLAND LAGOS ISLAND LAGOS ISLAND',
+      city: 'IBADAN',
+      state: 'OYO',
+      country: 'NIGERIA',
+      dateOfBirth: '2007-01-24T00:00:00',
+      phoneNumber: '+234(701)9414981',
+      accountNumber: '288997276'
+    },
+    {
+      firstName: 'WURAOLA',
+      middleName: 'REBECCA',
+      lastName: 'OLABODE',
+      gender: 'F',
+      address: '37, IREWOLEDE COMMUNITY LIFEFORTE JUNCTION  ',
+      city: 'IBADAN',
+      state: 'OYO',
+      country: 'NIGERIA',
+      dateOfBirth: '2007-01-24T00:00:00',
+      phoneNumber: '+234(701)9414981',
+      accountNumber: '288997276'
+    },
+    {
+      firstName: 'EUNICE',
+      middleName: 'OMOTOLA',
+      lastName: 'ADEYEMI',
+      gender: 'F',
+      address: 'LAGOS ISLAND LAGOS ISLAND LAGOS ISLAND',
+      city: 'LAGOS',
+      state: 'LAGOS',
+      country: 'NIGERIA',
+      dateOfBirth: '2010-05-01T00:00:00',
+      phoneNumber: '+234(904)7550596',
+      accountNumber: '288997362'
+    },
+    {
+      firstName: 'OLUWAPELUMI',
+      middleName: 'SHARON',
+      lastName: 'ELUYODE',
+      gender: 'F',
+      address: 'LAGOS ISLAND LAGOS ISLAND LAGOS ISLAND',
+      city: 'IBADAN',
+      state: 'OYO',
+      country: 'NIGERIA',
+      dateOfBirth: '2008-01-20T00:00:00',
+      phoneNumber: '+234(814)0862300',
+      accountNumber: '288997427'
+    },
+    {
+      firstName: 'OLUWAPELUMI',
+      middleName: 'SHARON',
+      lastName: 'ELUYODE',
+      gender: 'F',
+      address: '31 ONIGBAKETU AWOTAN  ',
+      city: 'IBADAN',
+      state: 'OYO',
+      country: 'NIGERIA',
+      dateOfBirth: '2008-01-20T00:00:00',
+      phoneNumber: '+234(814)0862300',
+      accountNumber: '288997427'
+    },
+    {
+      firstName: 'AISHA',
+      middleName: 'OLUWAJOMILOJU',
+      lastName: 'IBRAHIM',
+      gender: 'F',
+      address: 'NO 15, ALATARE ESTATE OLOGUNERU OLONDE  ',
+      city: 'IBADAN',
+      state: 'OYO',
+      country: 'NIGERIA',
+      dateOfBirth: '2007-10-08T00:00:00',
+      phoneNumber: '+234(802)2711794',
+      accountNumber: '288997537'
+    },
+    {
+      firstName: 'AISHA',
+      middleName: 'OLUWAJOMILOJU',
+      lastName: 'IBRAHIM',
+      gender: 'F',
+      address: 'LAGOS ISLAND LAGOS ISLAND LAGOS ISLAND',
+      city: 'IBADAN',
+      state: 'OYO',
+      country: 'NIGERIA',
+      dateOfBirth: '2007-10-08T00:00:00',
+      phoneNumber: '+234(802)2711794',
+      accountNumber: '288997537'
+    },
+    {
+      firstName: 'DANIEL',
+      middleName: 'ABIDEMI',
+      lastName: 'OLADEJI',
+      gender: 'M',
+      address: 'LAGOS ISLAND LAGOS ISLAND LAGOS ISLAND',
+      city: 'IBADAN',
+      state: 'OYO',
+      country: 'NIGERIA',
+      dateOfBirth: '2007-08-21T00:00:00',
+      phoneNumber: '+234(810)9151407',
+      accountNumber: '288999108'
+    },
+    {
+      firstName: 'DANIEL',
+      middleName: 'ABIDEMI',
+      lastName: 'OLADEJI',
+      gender: 'M',
+      address: '20, AKERE STREET APETE  ',
+      city: 'IBADAN',
+      state: 'OYO',
+      country: 'NIGERIA',
+      dateOfBirth: '2007-08-21T00:00:00',
+      phoneNumber: '+234(810)9151407',
+      accountNumber: '288999108'
+    },
+    {
+      firstName: 'ZAINAB',
+      middleName: 'AMOKE',
+      lastName: 'JAMIU',
+      gender: 'F',
+      address: 'TL OYESHINA MODEL SECONDARY SCHOOL MONATAN AREA IB',
+      city: 'LAGOS',
+      state: 'LAGOS',
+      country: 'NIGERIA',
+      dateOfBirth: '2005-05-05T00:00:00',
+      phoneNumber: '+234(810)8337470',
+      accountNumber: '289019308'
+    }
+  ],
+  metaData: {
+    totalCount: 11,
+    pageSize: 50,
+    currentPage: 1,
+    totalPages: 1,
+    hasNext: false,
+    hasPrevious: false
+  }
+}

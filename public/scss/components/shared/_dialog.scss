@@ -1,0 +1,19 @@
+.app_sheet {
+  &__ctt {
+    border-right-width: 0;
+    padding: 0;
+    width: auto;
+
+    button.absolute {
+      display: none;
+    }
+  }
+}
+
+.app_modal__ctt {
+  &__close {
+    position: absolute;
+    top: -55px;
+    right: 0;
+  }
+}

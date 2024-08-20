@@ -1,0 +1,22 @@
+.app_dashboard_page {
+  height: 100%;
+  width: 100%;
+
+  .app_dashboard_page__pd {
+    padding: 20px;
+
+    @include screen('sm') {
+      padding: 20px 16px;
+    }
+  }
+
+  .app_dashboard_page__px {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+
+  .app_dashboard_page__py {
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+}

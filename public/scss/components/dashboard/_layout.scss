@@ -1,0 +1,224 @@
+:root {
+  --header-h: 53px;
+  --sidebar-w: 301px;
+
+  @include screen('lg') {
+    --sidebar-w: 0px;
+  }
+}
+
+.app_dash_main {
+  background-color: #f2f2f2;
+  color: var(--text-color);
+  height: 100%;
+  min-height: 100vh;
+  font-size: 14px;
+  font-family: 'Manrope', sans-serif !important;
+
+  display: flex;
+
+  &__aside {
+    background-color: #fff;
+    height: 100%;
+    padding: 24px 0;
+    // min-height: 100vh;
+    width: var(--sidebar-w);
+    overflow-y: auto;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 80px;
+
+    @include screen('lg') {
+      display: none;
+    }
+
+    &--mobile {
+      display: flex;
+      --sidebar-w: 240px;
+    }
+
+    &__top {
+      display: flex;
+      flex-direction: column;
+      gap: 2.25rem;
+      // align-items: center;
+
+      &__img {
+        max-width: 83px;
+        margin-bottom: 46px;
+      }
+    }
+
+    &__links {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+
+      &__item {
+        padding: 0 1rem;
+        border-right: 4px solid transparent;
+        border-left: 4px solid transparent;
+
+        &__ctt {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+          padding: 0.75rem 0.5rem;
+
+          &__p {
+            font-family: var(--second-family);
+            font-weight: 400;
+            font-size: 14px;
+            line-height: 145%;
+            color: #3d3d3d;
+          }
+
+          path {
+            fill: #888888;
+          }
+        }
+      }
+
+      &__item.active {
+        border-right-color: #7879f1;
+        .app_dash_main__aside__links__item__ctt {
+          background: rgba(165, 166, 246, 0.2);
+        }
+
+        .app_dash_main__aside__links__item__ctt__p {
+          color: var(--shark-950);
+        }
+
+        path {
+          fill: #000;
+        }
+      }
+    }
+
+    &__btm {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0 1.5rem;
+
+      &__avi {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        overflow: hidden;
+      }
+
+      &__name {
+        font-family: var(--second-family);
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 145%;
+        color: #262626;
+      }
+
+      &__email {
+        font-family: var(--second-family);
+        font-weight: 400;
+        font-size: 14px;
+        line-height: 145%;
+        color: var(--shark-300);
+      }
+    }
+  }
+
+  &__ctt {
+    height: 100%;
+    min-height: 100vh;
+    margin-left: auto;
+    width: calc(100% - var(--sidebar-w));
+    transition: 0.2s all ease-in-out;
+    background-color: #f4f6fb;
+
+    &__mn {
+      height: calc(100% - var(--header-h));
+      overflow-y: auto;
+    }
+  }
+
+  &__hdr {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    min-height: var(--header-h);
+
+    background-color: var(--primary-color);
+    box-shadow: 0px 4px 10px 0px #0000001a;
+
+    &__img_link {
+      display: none;
+
+      @include screen('lg') {
+        display: block;
+      }
+    }
+
+    .app_dash_main__aside__top__img {
+      margin-bottom: 0;
+      margin-top: -4px;
+    }
+
+    &__title {
+      font-family: var(--second-family);
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 150%;
+      letter-spacing: -0.01em;
+      color: #000;
+
+      span {
+        text-transform: capitalize;
+      }
+    }
+
+    &__rgt {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 24px;
+
+      @include screen('lg') {
+        gap: 12px;
+      }
+
+      .app_input {
+        background-color: #fff;
+      }
+
+      &__menu {
+        cursor: pointer;
+        display: none;
+
+        @include screen('lg') {
+          display: block;
+        }
+      }
+
+      &__profile {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        border-left: 1px solid #808080;
+        padding: 10px 20px;
+
+        @include screen('lg') {
+          display: none;
+        }
+
+        &__title {
+          font-size: 12px;
+          font-weight: 400;
+          line-height: 18px;
+          color: #808080;
+        }
+      }
+    }
+  }
+}

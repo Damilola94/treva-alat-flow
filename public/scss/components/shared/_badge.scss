@@ -1,0 +1,17 @@
+.app_badge {
+  padding: 2px 12px;
+  background-color: #E7F6EC;
+  border-radius: 12px;
+  color: #036B26;
+  text-align: center;
+
+  &--pending {
+    background-color: #FEF6E7;
+    color: #865503;
+  }
+
+  &--danger {
+    background-color: #F6E7E7;
+    color: #9E0A05;
+  }
+}

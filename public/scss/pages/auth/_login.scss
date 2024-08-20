@@ -1,0 +1,263 @@
+.app_auth_login_layout {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  background-color: var(--primary-color);
+
+  &__bg {
+    max-width: 607px;
+    background-image: url('../../../media/images/auth/auth-bg.png');
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 60px;
+    position: relative;
+
+    @include screen('xl') {
+      padding: 60px 40px;
+    }
+
+    @include screen('lg') {
+      display: none;
+    }
+
+    &__relative {
+      position: relative;
+      z-index: 9;
+    }
+
+    &__cct {
+      // max-width: 415px;
+      display: flex;
+      flex-direction: column;
+      gap: 2.5rem;
+
+      &__back {
+        width: 28px;
+        height: 28px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 50%;
+        background-color: var(--shark-50);
+        opacity: 0.5;
+      }
+
+      &__indicator {
+        &__item {
+          background-color: var(--shark-50);
+          width: 60px;
+          height: 5px;
+          border-radius: 0.5rem;
+          opacity: 0.5;
+        }
+
+        &__item.active {
+          opacity: 1;
+        }
+      }
+
+      &__title {
+        font-family: var(--third-family);
+        font-weight: 500;
+        font-size: 32px;
+        letter-spacing: -0.08em;
+        color: var(--shark-50);
+      }
+
+      &__details {
+        font-family: var(--second-family);
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 145%;
+        color: var(--shark-50);
+        max-width: 415px;
+      }
+    }
+
+    &__text {
+      font-weight: 800;
+      font-size: 64px;
+      line-height: 147%;
+      color: #fff;
+
+      text-shadow: 1px 1px 0 var(--primary-color),
+        -1px 1px 0 var(--primary-color), -1px -1px 0 var(--primary-color),
+        1px -1px 0 var(--primary-color);
+
+      span {
+        color: var(--primary-color);
+      }
+    }
+  }
+
+  &__carousel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+
+    .carousel-slider {
+      height: 100%;
+    }
+  }
+
+  &__cct {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 60px;
+
+    @include screen('xl') {
+      padding: 60px 40px;
+    }
+
+    @include screen('lg') {
+      max-width: 100%;
+    }
+
+    @include screen('sm') {
+      padding: 30px 16px;
+    }
+  }
+}
+
+.app_auth_login_container {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  justify-content: space-between;
+
+  &__header {
+    &__account {
+      font-family: var(--second-family);
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 145%;
+      color: var(--shark-500);
+
+      @include screen('sm') {
+        display: none;
+      }
+    }
+
+    &__signin {
+      font-family: var(--second-family);
+      font-weight: 500;
+      font-size: 12px;
+      color: var(--shark-950);
+      border: 1px solid var(--shark-950);
+      border-radius: 30px;
+      padding: 14px 16px;
+    }
+
+    &__logo {
+      &__title {
+        font-family: var(--third-family);
+        font-weight: 500;
+        font-size: 18px;
+        line-height: 120%;
+        letter-spacing: -0.08em;
+        text-align: center;
+        color: var(--shark-950);
+
+        @include screen('lg') {
+          display: none;
+        }
+      }
+    }
+  }
+
+  &__upper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+
+    &__logo {
+      max-width: 80px;
+    }
+  }
+
+  &__lower {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+
+    &__text {
+      text-align: center;
+      font-family: var(--font3);
+      font-weight: 400;
+      font-size: 12px;
+      line-height: 150%;
+      color: #828282;
+    }
+  }
+}
+
+.app_auth_login {
+  border-radius: 10px;
+  max-width: 473px;
+  width: 100%;
+  padding: 36px 24px;
+
+  @include screen('sm') {
+    padding: 30px 16px;
+  }
+
+  &__title {
+    font-family: var(--third-family);
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 120%;
+    letter-spacing: -0.08em;
+    color: var(--shark-950);
+  }
+
+  &__logo {
+    max-width: 60px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  &__btn {
+    // color: var(---white);
+    border-radius: 30px;
+    padding: 14px 16px;
+    font-family: var(--second-family);
+    font-weight: 500;
+    font-size: 12px;
+    color: #fff;
+  }
+}
+
+.app_auth_verification {
+  &__p {
+    font-family: var(--second-family);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 23.2px;
+    text-align: left;
+
+    &__span {
+      font-size: 20px;
+      font-weight: 500;
+      line-height: 29px;
+      text-align: left;
+    }
+  }
+}
