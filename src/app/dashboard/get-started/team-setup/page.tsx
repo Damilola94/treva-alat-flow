@@ -126,7 +126,7 @@ export default function Page () {
                       <div className="">
                         <Button
                           size="xl"
-                          backgroundColor="shark-950"
+                          backgroundColor="primary-blue-500"
                           className="w-full py-3 px-12"
                         >
                           Save & Continue

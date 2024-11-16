@@ -14,6 +14,8 @@ export const rootColors = {
   white: '#fff',
 
   'primary-color': '#fafafa',
+  'primary-color-200': '#00DAD9',
+  'primary-color-500': '#A5A6F6',
 
   'wema-purple': '#9A1A87',
 
@@ -29,6 +31,7 @@ export const rootColors = {
   'text-color-200': '#E7E7E7',
   'text-color-400': '#808080',
   'text-color-500': '#333333',
+  'text-color-900': '#262626',
 
   'shark-50': '#f6f6f6',
   'shark-100': '#e7e7e7',
@@ -40,7 +43,9 @@ export const rootColors = {
   'shark-700': '#4f4f4f',
   'shark-800': '#454545',
   'shark-900': '#3d3d3d',
-  'shark-950': '#262626'
+  'shark-950': '#262626',
+
+  'primary-blue-500': '#7B37F0'
 }
 
 export type Color = ReturnType<() => typeof rootColors>

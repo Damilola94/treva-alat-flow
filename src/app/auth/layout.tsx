@@ -44,17 +44,15 @@ export default function Layout (props: IProps) {
             setBgIndex(index)
           }}
         >
-          <div>
-            <Image src={auth.authBg} alt="bg" />
-          </div>
-
-          <div>
-            <Image src={auth.authBg2} alt="bg" />
-          </div>
-
-          <div>
-            <Image src={auth.authBg3} alt="bg" />
-          </div>
+          {[auth.authBg1, auth.authBg2, auth.authBg3].map((src, index) => (
+            <div key={index}>
+              <Image
+                src={src}
+                alt="carousel background"
+                objectFit="object-fill"
+              />
+            </div>
+          ))}
         </Carousel>
         <div className="flex w-full justify-end app_auth_login_layout__bg__relative">
           <button type="button">

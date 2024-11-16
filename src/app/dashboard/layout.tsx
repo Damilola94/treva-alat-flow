@@ -1,7 +1,11 @@
 'use client'
 
 import { Suspense, useEffect, useState } from 'react'
-import { Header, Sidebar } from '@/components/shared/dashboard'
+import {
+  Header,
+  Sidebar,
+  SubscribeToPlan
+} from '@/components/shared/dashboard'
 import { Inter } from 'next/font/google'
 
 const inter = Inter({
@@ -20,14 +24,15 @@ function Main ({ children }: { children: React.ReactNode }) {
   if (!mounted) return null
 
   return (
-    <main className="app_dash_main flex-1">
-      <Sidebar />
-
-      <div className="app_dash_main__ctt">
-        <Header />
-
-        <div className="app_dash_main__ctt__mn">
-          <div className="app_dashboard_page">{children}</div>
+    <main className="app_dash_main flex-col">
+      <SubscribeToPlan />
+      <div className="app_dash_main flex-1">
+        <Sidebar />
+        <div className="app_dash_main__ctt">
+          <Header />
+          <div className="app_dash_main__ctt__mn">
+            <div className="app_dashboard_page">{children}</div>
+          </div>
         </div>
       </div>
     </main>

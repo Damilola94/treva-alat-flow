@@ -1,17 +1,13 @@
-import routes from '@/lib/routes'
-import Link from 'next/link'
-import { Logo } from '../svgs'
+import routes from '@/lib/routes';
+import Link from 'next/link';
+import { Logo } from '../svgs';
 
-export function Header () {
+export function Header() {
   return (
     <div className="app_auth_login_container__header flex justify-between items-center">
       <div className="flex items-center gap-3">
         <Logo />
-        <h2 className="app_auth_login_container__header__logo__title">
-          Creathrivity
-        </h2>
       </div>
-
       <div className="flex items-center gap-2">
         <p className="app_auth_login_container__header__account">
           Already have an account?
@@ -21,5 +17,5 @@ export function Header () {
         </Link>
       </div>
     </div>
-  )
+  );
 }

@@ -1,10 +1,12 @@
+/* eslint-disable @typescript-eslint/comma-dangle */
+/* eslint-disable @typescript-eslint/semi */
 'use client'
 
 import { useEffect, useState } from 'react'
 import {
   usePathname,
   useRouter,
-  useSelectedLayoutSegments
+  useSelectedLayoutSegments,
 } from 'next/navigation'
 import { ArrowCircleRight, ArrowRightToBracket, Bell, Logo } from '../svgs'
 import Link from 'next/link'
@@ -47,12 +49,15 @@ const useBreadcrumb = () => {
     if (title === 'Invoice And-Payment') {
       title = 'Invoice & Payment'
     }
+    if (title === 'Get Started') {
+      title = 'Get started guide'
+    }
 
     return <span>{title}</span>
   }
 
   return <span>{title}</span>
-}
+};
 
 export function Header () {
   const bread = useBreadcrumb()
@@ -72,9 +77,6 @@ export function Header () {
       >
         <div className="flex items-center gap-3">
           <Logo />
-          <h2 className="app_auth_login_container__header__logo__title">
-            Creathrivity
-          </h2>
         </div>
       </Link>
 

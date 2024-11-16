@@ -81,7 +81,7 @@ export default function Page () {
                       <Button
                         size="xl"
                         isLoading={isLoading}
-                        backgroundColor="shark-950"
+                        backgroundColor="primary-blue-500"
                         className="w-full app_auth_login__btn"
                       >
                         Next

@@ -26,11 +26,8 @@ export default function Login () {
   return (
     <div className="app_auth_login_container">
       <div className="app_auth_login_container__header flex justify-between items-center">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center">
           <Logo />
-          <h2 className="app_auth_login_container__header__logo__title">
-            Creathrivity
-          </h2>
         </div>
 
         <div className="flex items-center gap-2">
@@ -98,7 +95,7 @@ export default function Login () {
                       <Button
                         size="xl"
                         isLoading={isLoading}
-                        backgroundColor="shark-950"
+                        backgroundColor="primary-blue-500"
                         className="w-full app_auth_login__btn"
                       >
                         Submit

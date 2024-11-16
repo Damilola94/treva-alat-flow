@@ -1,4 +1,5 @@
 export { Header } from './header'
+export { SubscribeToPlan } from './subscribe-to-plan'
 export { Profile } from './profile'
 export { ProjectsTable } from './projects-table'
 export { Sidebar } from './sidebar'

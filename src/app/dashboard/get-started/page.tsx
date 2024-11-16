@@ -49,7 +49,6 @@ export default function Page () {
         }`}
       >
         <GetStartedCard item={cards[0]} />
-
         <GetStartedCard
           item={cards[1]}
           handleClick={() => {
