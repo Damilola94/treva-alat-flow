@@ -39,7 +39,6 @@ export default function Page () {
   return (
     <div className="app_auth_login_container">
       <Header />
-
       <div className="app_auth_login_container__upper">
         <div className="app_auth_login">
           <div>

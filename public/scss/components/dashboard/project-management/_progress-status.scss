@@ -1,0 +1,14 @@
+.app_get_started_progress_status {
+  &__label {
+    font-family: var(--second-family);
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 145%;
+    letter-spacing: -0.02em;
+    color: var(--shark-300);
+  }
+
+  &__label.active {
+    color: var(--shark-950);
+  }
+}

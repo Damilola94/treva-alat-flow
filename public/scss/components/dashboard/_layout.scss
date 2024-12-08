@@ -142,6 +142,35 @@
     }
   }
 
+  &__stp_left {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0rem;
+    gap: 2.5rem;
+    top: 0;
+    z-index: 1000;
+    position: sticky;
+    width: 100%;
+    padding: 0px 25px 0px 25px;
+    min-height: var(--header-h);
+    background-color: var(--primary-color-500);
+    box-shadow: 0px 4px 10px 0px #0000001a;
+
+    &__title {
+      font-family: var(--second-family);
+      font-weight: 600;
+      font-size: 12px;
+      line-height: 150%;
+      letter-spacing: 0.005em;
+      color: #000;
+
+      span {
+        text-transform: capitalize;
+      }
+    }
+  }
+
   &__stp {
     display: flex;
     justify-content: center;

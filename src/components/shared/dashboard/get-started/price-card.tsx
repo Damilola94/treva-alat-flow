@@ -35,13 +35,13 @@ const PricingCards: React.FC = () => {
     <div className="pricing-cards">
       <div className="billing-toggle">
         <button
-          className={billingCycle === 'Monthly' ? 'active' : ''}
+          className={billingCycle === 'Monthly' ? '' : 'active'}
           onClick={() => { setBillingCycle('Monthly') }}
         >
           Monthly
         </button>
         <button
-          className={billingCycle === 'Yearly' ? 'active' : ''}
+          className={billingCycle === 'Yearly' ? '' : 'active'}
           onClick={() => { setBillingCycle('Yearly') }}
         >
           Yearly

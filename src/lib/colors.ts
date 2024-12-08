@@ -1,9 +1,10 @@
 export const rootColors = {
   'green-200': '#BCF0DA',
   'green-500': '#0E9F6E',
+  'green-900': '#26A17B',
 
   'grey-600': '#475367',
-
+  
   'heather-200': '#D7DEE6',
   'heather-950': '#2E323D',
 
@@ -27,12 +28,17 @@ export const rootColors = {
 
   'iris-60': '#A5A6F6',
 
+
+  'treva-purple-50': '#EFF1FE',
+  'treva-purple-100': '#E2E4FD',
+
   'text-color-100': '#F1F1F1',
   'text-color-200': '#E7E7E7',
   'text-color-400': '#808080',
   'text-color-500': '#333333',
   'text-color-900': '#262626',
 
+  'shark-40': '#d1d5db',
   'shark-50': '#f6f6f6',
   'shark-100': '#e7e7e7',
   'shark-200': '#d1d1d1',

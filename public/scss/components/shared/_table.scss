@@ -2,7 +2,7 @@
   &__tr {
     &__th {
       &:first-child {
-        border-top-left-radius: 8px;
+        border-top-left-radius: 18px;
 
         .app_table__tr__th__ctt {
           border-top-left-radius: 8px;
@@ -28,9 +28,9 @@
           border-right: none;
         }
       }
-   
+
       &__ctt {
-        border: 1px solid #E6E7EC;
+        border: 1px solid #e6e7ec;
 
         background-color: var(--iris-60);
         color: var(--shark-50);
@@ -50,7 +50,35 @@
         &:first-child {
           padding-left: 16px;
         }
-  
+
+        &:last-child {
+          padding-right: 16px;
+        }
+      }
+
+      &__edit {
+        border: 1px solid #e6e7ec;
+
+        background-color: var(--shark-100);
+        color: var(--shark-950);
+        padding: 8px;
+        min-height: 44px;
+        width: 100%;
+
+        font-family: var(--first-family);
+        font-size: 12px;
+        font-weight: 600;
+        line-height: 17.4px;
+
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 12px;
+
+        &:first-child {
+          padding-left: 16px;
+        }
+
         &:last-child {
           padding-right: 16px;
         }
@@ -62,31 +90,31 @@
     color: var(--text-color-400);
     font-family: var(--second-family);
     font-size: 14px;
-    font-weight: 400;
+    font-weight: 00;
     line-height: 21px;
 
     &__td {
       &:first-child {
         .app_table__tbody__td__ctt {
-          border-left: 1px solid #E6E7EC;
+          border-left: 1px solid #e6e7ec;
         }
       }
 
       &:last-child {
         .app_table__tbody__td__ctt {
-          border-right: 1px solid #E6E7EC;
+          border-right: 1px solid #e6e7ec;
         }
       }
 
       &__ctt {
-        border-bottom: 1px solid #E5E7EB;
+        border-bottom: 1px solid #e5e7eb;
         padding: 16px;
       }
     }
   }
 
   &__pagination {
-    border: 1px solid #E6E7EC;
+    border: 1px solid #e6e7ec;
     border-radius: 0 0 8px 8px;
     border-top: none;
     display: flex;
@@ -94,4 +122,3 @@
     padding: 24px 0;
   }
 }
-

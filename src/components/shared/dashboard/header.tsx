@@ -8,11 +8,11 @@ import {
   useRouter,
   useSelectedLayoutSegments,
 } from 'next/navigation'
-import { ArrowCircleRight, ArrowRightToBracket, Bell, Logo } from '../svgs'
+import { ArrowCircleRight, ArrowLeft, ArrowRightToBracket, Bell, Logo } from '../svgs'
 import Link from 'next/link'
 import routes from '@/lib/routes'
 
-function capitalizeFirstLetter (text: string) {
+function capitalizeFirstLetter(text: string) {
   return text.replace(/\b\w/g, function (char) {
     return char.toUpperCase()
   })
@@ -26,23 +26,6 @@ const useBreadcrumb = () => {
 
   if (segments.length) {
     const sgt = segments[0]
-    const hasChildren = segments.length > 1
-
-    // eslint-disable-next-line no-constant-condition
-    if (false && hasChildren) {
-      return (
-        <div className="flex items-center gap-2">
-          <ArrowCircleRight
-            className="cursor-pointer"
-            onClick={() => {
-              rt.back()
-            }}
-          />
-
-          <span>{capitalizeFirstLetter(sgt).replace('-', ' ')}</span>
-        </div>
-      )
-    }
 
     title = capitalizeFirstLetter(sgt).replace('-', ' ')
 
@@ -57,13 +40,17 @@ const useBreadcrumb = () => {
   }
 
   return <span>{title}</span>
-};
+}
 
-export function Header () {
+export function Header() {
   const bread = useBreadcrumb()
   const pt = usePathname()
+  const rt = useRouter()
 
   const [, setOpen] = useState(false)
+
+  // Show back arrow only for the specific route pattern
+  const showBackArrow = pt.startsWith('/dashboard/project-management/')
 
   useEffect(() => {
     setOpen(false)
@@ -80,7 +67,17 @@ export function Header () {
         </div>
       </Link>
 
-      <div className="app_dash_main__hdr__title">{bread}</div>
+      <div className="app_dash_main__hdr__title flex space-x-5 justify-center items-center">
+        {showBackArrow && (
+          <button
+            onClick={() => rt.back()}
+            className="flex items-center gap-2 text-primary hover:text-primary-dark"
+          >
+            <ArrowLeft />
+          </button>
+        )}
+        {bread}
+      </div>
 
       <div className="app_dash_main__hdr__rgt">
         <div className="flex items-center gap-4">

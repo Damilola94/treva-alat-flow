@@ -41,7 +41,7 @@ export interface ButtonProps
   extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'color'>,
   VariantProps<typeof buttonVariants> {
   asChild?: boolean
-  backgroundColor?: keyof Color
+  backgroundColor?: keyof Color | string
   color?: keyof Color
   fontWeight?: string
   isLoading?: boolean

@@ -14,6 +14,19 @@ const routes = {
       path: '/auth/sign-out'
     },
 
+    forgotPassword: {
+      path: '/auth/forgot-password',
+      resetEmail: {
+        path: '/auth/forgot-password/reset-email'
+      },
+      resetPassword: {
+        path: '/auth/forgot-password/reset-password'
+      },
+      passwordResetSuccessful: {
+        path: '/auth/forgot-password/password-reset-successful'
+      }
+    },
+
     verification: {
       path: '/auth/verification'
     }
@@ -58,6 +71,10 @@ const routes = {
 
     projectManagement: {
       path: '/dashboard/project-management'
+    },
+
+    clientManagement: {
+      path: '/dashboard/client-management'
     }
   },
 

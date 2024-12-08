@@ -38,7 +38,7 @@ const menuItems = [
     id: 4,
     label: 'Client Management',
     icon: <Users />,
-    href: '#'
+    href: dr.clientManagement.path
   },
   {
     id: 5,

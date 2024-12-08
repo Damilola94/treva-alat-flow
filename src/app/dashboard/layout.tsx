@@ -1,10 +1,12 @@
 'use client'
 
 import { Suspense, useEffect, useState } from 'react'
+import { usePathname } from 'next/navigation'
 import {
   Header,
   Sidebar,
-  SubscribeToPlan
+  SubscribeToPlan,
+  SubscribeToPlanLeft
 } from '@/components/shared/dashboard'
 import { Inter } from 'next/font/google'
 
@@ -14,18 +16,19 @@ const inter = Inter({
 })
 
 function Main ({ children }: { children: React.ReactNode }) {
-  // eslint-disable-next-line @typescript-eslint/unbound-method
   const [mounted, setMounted] = useState(false)
+  const pathname = usePathname()
 
   useEffect(() => {
     setMounted(true)
   }, [])
 
   if (!mounted) return null
+console.log(pathname, "pathname");
 
   return (
     <main className="app_dash_main flex-col">
-      <SubscribeToPlan />
+      {pathname === '/dashboard/get-started' ? <SubscribeToPlan /> : <SubscribeToPlanLeft/>}
       <div className="app_dash_main flex-1">
         <Sidebar />
         <div className="app_dash_main__ctt">

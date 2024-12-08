@@ -58,9 +58,7 @@ export default function Login () {
                 } = props
                 return (
                   <form onSubmit={handleSubmit} className="flex flex-col gap-8">
-                    <h3 className="app_auth_login__title">
-                      Sign in
-                    </h3>
+                    <h3 className="app_auth_login__title">Sign in</h3>
                     <div className="flex flex-col gap-8">
                       <div className="">
                         <Input
@@ -76,7 +74,6 @@ export default function Login () {
                           touched={touched}
                         />
                       </div>
-
                       <Input
                         name="password"
                         type="password"
@@ -90,7 +87,6 @@ export default function Login () {
                         touched={touched}
                       />
                     </div>
-
                     <div className="">
                       <Button
                         size="xl"
@@ -101,6 +97,11 @@ export default function Login () {
                         Submit
                       </Button>
                     </div>
+                    <Link href={routes.auth.forgotPassword.path}>
+                      <h3 className="app_auth_login__forgot_password">
+                        Forgot password?
+                      </h3>
+                    </Link>
                   </form>
                 )
               }}

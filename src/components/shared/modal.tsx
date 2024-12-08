@@ -1,40 +1,32 @@
-import React, { type ReactNode } from 'react'
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
-import { type DialogProps } from '@radix-ui/react-dialog'
-import { CloseSquare } from '.'
+import React, { type ReactNode } from 'react';
 
-interface IProps extends DialogProps {
-  handleClose?: () => void
-  children: ReactNode
-  trigger?: ReactNode
-  className?: string
+interface ModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  children: ReactNode;
+  className?: string;
+  from: 'right' | 'middle';
 }
 
-export function Modal (props: IProps) {
-  const {
-    handleClose,
-    children,
-    trigger,
-    className = '',
-    ...restProps
-  } = props
+export function AnimatedModal({ isOpen, onClose, children, from, className = '' }: ModalProps) {
+  if (!isOpen) return null;
+
+  const animationClass =
+    from === 'right'
+      ? 'animate-slide-in-right'
+      : 'animate-fade-in-glow';
 
   return (
-    <Dialog {...restProps}>
-      {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
-      <DialogContent
-        className={`sm:max-w-[590px] app_img_dialog app_modal__ctt ${className}`}
+    <div
+      className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999]"
+      onClick={onClose}
+    >
+      <div
+        className={`bg-white rounded-2xl shadow-lg transition-transform duration-300 z-50 ${animationClass} ${className}`}
+        onClick={(e) => e.stopPropagation()}
       >
-        {handleClose && (
-          <div className="app_modal__ctt__close">
-            <button onClick={handleClose}>
-              <CloseSquare />
-            </button>
-          </div>
-        )}
-
         {children}
-      </DialogContent>
-    </Dialog>
-  )
+      </div>
+    </div>
+  );
 }
