@@ -18,5 +18,5 @@ export function Profile () {
         <span className="app_dash_main__hdr__rgt__profile__title">RM</span>
       </div>
     </div>
-  ) 
+  )
 }

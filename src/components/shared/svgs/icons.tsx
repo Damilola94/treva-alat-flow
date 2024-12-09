@@ -1,10 +1,10 @@
 import { type SVGProps } from 'react';
 
 interface IProps {
-  stroke?: string;
+  stroke?: string
 }
 
-export function BinWithBG(props: SVGProps<SVGSVGElement>) {
+export function BinWithBG (props: SVGProps<SVGSVGElement>) {
   return (
     <svg
       width="62"
@@ -27,15 +27,15 @@ export function BinWithBG(props: SVGProps<SVGSVGElement>) {
           y2="165.5"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="white" />
-          <stop offset="1" stop-color="#F45F5F" />
+          <stop stopColor="white" />
+          <stop offset="1" stopColor="#F45F5F" />
         </linearGradient>
       </defs>
     </svg>
   );
 }
 
-export function EditPencilGray(props: SVGProps<SVGSVGElement>) {
+export function EditPencilGray (props: SVGProps<SVGSVGElement>) {
   return (
     <svg
       width="20"
@@ -54,7 +54,7 @@ export function EditPencilGray(props: SVGProps<SVGSVGElement>) {
   );
 }
 
-export function BinGray(props: SVGProps<SVGSVGElement>) {
+export function BinGray (props: SVGProps<SVGSVGElement>) {
   return (
     <svg
       width="20"
@@ -85,7 +85,7 @@ export function BinGray(props: SVGProps<SVGSVGElement>) {
   );
 }
 
-export function FlagOutline(props: SVGProps<SVGSVGElement>) {
+export function FlagOutline (props: SVGProps<SVGSVGElement>) {
   return (
     <svg
       width="14"
@@ -104,7 +104,7 @@ export function FlagOutline(props: SVGProps<SVGSVGElement>) {
   );
 }
 
-export function Calendar(props: SVGProps<SVGSVGElement>) {
+export function Calendar (props: SVGProps<SVGSVGElement>) {
   return (
     <svg
       width="14"
@@ -131,7 +131,7 @@ export function Calendar(props: SVGProps<SVGSVGElement>) {
   );
 }
 
-export function CalendarWithMark(props: SVGProps<SVGSVGElement>) {
+export function CalendarWithMark (props: SVGProps<SVGSVGElement>) {
   return (
     <svg
       width="14"
@@ -166,7 +166,7 @@ export function CalendarWithMark(props: SVGProps<SVGSVGElement>) {
   );
 }
 
-export function ArrowCircleRight(props: SVGProps<SVGSVGElement>) {
+export function ArrowCircleRight (props: SVGProps<SVGSVGElement>) {
   return (
     <svg
       width="32"
@@ -195,7 +195,7 @@ export function ArrowCircleRight(props: SVGProps<SVGSVGElement>) {
   );
 }
 
-export function EditIcon(props: SVGProps<SVGSVGElement>) {
+export function EditIcon (props: SVGProps<SVGSVGElement>) {
   return (
     <svg
       width="25"
@@ -214,7 +214,7 @@ export function EditIcon(props: SVGProps<SVGSVGElement>) {
   );
 }
 
-export function ClientIcon() {
+export function ClientIcon () {
   return (
     <svg
       width="22"
@@ -251,7 +251,7 @@ export function ClientIcon() {
   );
 }
 
-export function PersonalIcon() {
+export function PersonalIcon () {
   return (
     <svg
       width="14"
@@ -272,7 +272,7 @@ export function PersonalIcon() {
   );
 }
 
-export function ArrowDown() {
+export function ArrowDown () {
   return (
     <svg
       width="17"
@@ -293,7 +293,7 @@ export function ArrowDown() {
   );
 }
 
-export function ArrowDownBulk() {
+export function ArrowDownBulk () {
   return (
     <svg
       width="16"
@@ -314,7 +314,7 @@ export function ArrowDownBulk() {
   );
 }
 
-export function ArrowUpRight() {
+export function ArrowUpRight () {
   return (
     <svg
       width="20"
@@ -331,7 +331,7 @@ export function ArrowUpRight() {
   );
 }
 
-export function Bubble() {
+export function Bubble () {
   return (
     <svg
       width="18"
@@ -359,7 +359,7 @@ export function Bubble() {
   );
 }
 
-export function Cake() {
+export function Cake () {
   return (
     <svg
       width="18"
@@ -414,7 +414,7 @@ export function Cake() {
   );
 }
 
-export function CalenderAlt() {
+export function CalenderAlt () {
   return (
     <svg
       width="20"
@@ -441,7 +441,7 @@ export function CalenderAlt() {
   );
 }
 
-export function Calculator() {
+export function Calculator () {
   return (
     <svg
       width="24"
@@ -510,7 +510,7 @@ export function Calculator() {
   );
 }
 
-export function Call() {
+export function Call () {
   return (
     <svg
       width="18"
@@ -529,7 +529,7 @@ export function Call() {
   );
 }
 
-export function CardTick(props: SVGProps<SVGSVGElement>) {
+export function CardTick (props: SVGProps<SVGSVGElement>) {
   const { width = 24, height = 25 } = props;
   return (
     <svg
@@ -581,7 +581,7 @@ export function CardTick(props: SVGProps<SVGSVGElement>) {
   );
 }
 
-export function Cards() {
+export function Cards () {
   return (
     <svg
       width="24"
@@ -632,7 +632,7 @@ export function Cards() {
   );
 }
 
-export function CloseSquare() {
+export function CloseSquare () {
   return (
     <svg
       width="40"
@@ -663,7 +663,7 @@ export function CloseSquare() {
   );
 }
 
-export function ChatAlt() {
+export function ChatAlt () {
   return (
     <svg
       width="19"
@@ -694,7 +694,7 @@ export function ChatAlt() {
   );
 }
 
-export function Check() {
+export function Check () {
   return (
     <svg
       width="18"
@@ -713,7 +713,7 @@ export function Check() {
   );
 }
 
-export function Coins() {
+export function Coins () {
   return (
     <svg
       width="20"
@@ -732,7 +732,7 @@ export function Coins() {
   );
 }
 
-export function Devices() {
+export function Devices () {
   return (
     <svg
       width="24"
@@ -757,7 +757,7 @@ export function Devices() {
   );
 }
 
-export function Dislike() {
+export function Dislike () {
   return (
     <svg
       width="18"
@@ -776,7 +776,7 @@ export function Dislike() {
   );
 }
 
-export function DotsV() {
+export function DotsV () {
   return (
     <svg
       width="19"
@@ -801,7 +801,7 @@ export function DotsV() {
   );
 }
 
-export function Edit() {
+export function Edit () {
   return (
     <svg
       width="18"
@@ -834,7 +834,7 @@ export function Edit() {
   );
 }
 
-export function Ellipsis() {
+export function Ellipsis () {
   return (
     <svg
       width="24"
@@ -858,7 +858,7 @@ export function Ellipsis() {
   );
 }
 
-export function Export({ fill = 'white' }) {
+export function Export ({ fill = 'white' }) {
   return (
     <svg
       width="18"
@@ -875,7 +875,7 @@ export function Export({ fill = 'white' }) {
   );
 }
 
-export function FavoriteChart() {
+export function FavoriteChart () {
   return (
     <svg
       width="17"
@@ -906,7 +906,7 @@ export function FavoriteChart() {
   );
 }
 
-export function Filter() {
+export function Filter () {
   return (
     <svg
       width="18"
@@ -933,7 +933,7 @@ export function Filter() {
   );
 }
 
-export function Flag() {
+export function Flag () {
   return (
     <svg
       width="18"
@@ -952,7 +952,7 @@ export function Flag() {
   );
 }
 
-export function Grid2() {
+export function Grid2 () {
   return (
     <svg
       width="20"
@@ -977,7 +977,7 @@ export function Grid2() {
   );
 }
 
-export function Hashtag({ fill = '#222222', ...props }) {
+export function Hashtag ({ fill = '#222222', ...props }) {
   return (
     <svg
       width="24"
@@ -997,7 +997,7 @@ export function Hashtag({ fill = '#222222', ...props }) {
   );
 }
 
-export function Heart() {
+export function Heart () {
   return (
     <svg
       width="19"
@@ -1014,7 +1014,7 @@ export function Heart() {
   );
 }
 
-export function ImageIcon() {
+export function ImageIcon () {
   return (
     <svg
       width="19"
@@ -1037,7 +1037,7 @@ export function ImageIcon() {
   );
 }
 
-export function Key() {
+export function Key () {
   return (
     <svg
       width="18"
@@ -1061,7 +1061,7 @@ export function Key() {
   );
 }
 
-export function Login({ fill = '#222222', ...props }) {
+export function Login ({ fill = '#222222', ...props }) {
   return (
     <svg
       width="24"
@@ -1083,7 +1083,7 @@ export function Login({ fill = '#222222', ...props }) {
   );
 }
 
-export function Menu(props: SVGProps<SVGSVGElement>) {
+export function Menu (props: SVGProps<SVGSVGElement>) {
   return (
     <svg
       width="24"
@@ -1101,7 +1101,7 @@ export function Menu(props: SVGProps<SVGSVGElement>) {
   );
 }
 
-export function Messages() {
+export function Messages () {
   return (
     <svg
       width="18"
@@ -1136,7 +1136,7 @@ export function Messages() {
   );
 }
 
-export function Message(props: SVGProps<SVGSVGElement>) {
+export function Message (props: SVGProps<SVGSVGElement>) {
   return (
     <svg
       width="15"
@@ -1178,7 +1178,7 @@ export function Message(props: SVGProps<SVGSVGElement>) {
   );
 }
 
-export function MoreSquare(props: SVGProps<SVGSVGElement>) {
+export function MoreSquare (props: SVGProps<SVGSVGElement>) {
   return (
     <svg
       width="24"
@@ -1220,7 +1220,7 @@ export function MoreSquare(props: SVGProps<SVGSVGElement>) {
   );
 }
 
-export function Mobile() {
+export function Mobile () {
   return (
     <svg
       width="20"
@@ -1254,7 +1254,7 @@ export function Mobile() {
   );
 }
 
-export function Multiply() {
+export function Multiply () {
   return (
     <svg
       width="24"
@@ -1271,7 +1271,7 @@ export function Multiply() {
   );
 }
 
-export function Notification({
+export function Notification ({
   fill = '#222222',
   ...props
 }: SVGProps<SVGSVGElement>) {
@@ -1296,7 +1296,7 @@ export function Notification({
   );
 }
 
-export function NotificationBing() {
+export function NotificationBing () {
   return (
     <svg
       width="17"
@@ -1326,7 +1326,7 @@ export function NotificationBing() {
   );
 }
 
-export function People({ fill = '#222222', ...props }) {
+export function People ({ fill = '#222222', ...props }) {
   return (
     <svg
       width="24"
@@ -1364,7 +1364,7 @@ export function People({ fill = '#222222', ...props }) {
   );
 }
 
-export function PlusIcon({ fill = 'white' }) {
+export function PlusIcon ({ fill = 'white' }) {
   return (
     <svg
       width="20"
@@ -1381,7 +1381,7 @@ export function PlusIcon({ fill = 'white' }) {
   );
 }
 
-export function Power() {
+export function Power () {
   return (
     <svg
       width="20"
@@ -1400,7 +1400,7 @@ export function Power() {
   );
 }
 
-export function ProfileAdd() {
+export function ProfileAdd () {
   return (
     <svg
       width="24"
@@ -1441,7 +1441,7 @@ export function ProfileAdd() {
   );
 }
 
-export function ProfileRemove() {
+export function ProfileRemove () {
   return (
     <svg
       width="24"
@@ -1475,7 +1475,7 @@ export function ProfileRemove() {
   );
 }
 
-export function ProfileCircle() {
+export function ProfileCircle () {
   return (
     <svg
       width="18"
@@ -1506,7 +1506,7 @@ export function ProfileCircle() {
   );
 }
 
-export function Profile2User(props: IProps) {
+export function Profile2User (props: IProps) {
   const { stroke = '#9A1A87' } = props;
 
   return (
@@ -1549,7 +1549,7 @@ export function Profile2User(props: IProps) {
   );
 }
 
-export function ProfileUpload() {
+export function ProfileUpload () {
   return (
     <svg
       width="300"
@@ -1612,7 +1612,7 @@ export function ProfileUpload() {
   );
 }
 
-export function Settings() {
+export function Settings () {
   return (
     <svg
       width="20"
@@ -1637,7 +1637,7 @@ export function Settings() {
   );
 }
 
-export function Securitycard() {
+export function Securitycard () {
   return (
     <svg
       width="18"
@@ -1683,7 +1683,7 @@ export function Securitycard() {
   );
 }
 
-export function ShareAlt() {
+export function ShareAlt () {
   return (
     <svg
       width="19"
@@ -1702,7 +1702,7 @@ export function ShareAlt() {
   );
 }
 
-export function SignOut() {
+export function SignOut () {
   return (
     <svg
       width="18"
@@ -1723,7 +1723,7 @@ export function SignOut() {
   );
 }
 
-export function Stars() {
+export function Stars () {
   return (
     <svg
       width="20"
@@ -1754,7 +1754,7 @@ export function Stars() {
   );
 }
 
-export function UserGroup() {
+export function UserGroup () {
   return (
     <svg
       width="20"
@@ -1799,7 +1799,7 @@ export function UserGroup() {
   );
 }
 
-export function User() {
+export function User () {
   return (
     <svg
       width="18"
@@ -1824,7 +1824,7 @@ export function User() {
   );
 }
 
-export function UserOctagon() {
+export function UserOctagon () {
   return (
     <svg
       width="18"
@@ -1855,7 +1855,7 @@ export function UserOctagon() {
   );
 }
 
-export function TagUser({ fill = '#222222' }) {
+export function TagUser ({ fill = '#222222' }) {
   return (
     <svg
       width="18"
@@ -1887,7 +1887,7 @@ export function TagUser({ fill = '#222222' }) {
   );
 }
 
-export function TicketStar() {
+export function TicketStar () {
   return (
     <svg
       width="24"
@@ -1928,7 +1928,7 @@ export function TicketStar() {
   );
 }
 
-export function Warning() {
+export function Warning () {
   return (
     <svg
       width="17"
@@ -1945,7 +1945,7 @@ export function Warning() {
   );
 }
 
-export function Money4() {
+export function Money4 () {
   return (
     <svg
       width="18"
@@ -2000,7 +2000,7 @@ export function Money4() {
   );
 }
 
-export function EmptyWallet() {
+export function EmptyWallet () {
   return (
     <svg
       width="18"
@@ -2037,7 +2037,7 @@ export function EmptyWallet() {
   );
 }
 
-export function Moneys(props: SVGProps<SVGSVGElement>) {
+export function Moneys (props: SVGProps<SVGSVGElement>) {
   const { stroke = '#00C213' } = props;
   return (
     <svg
@@ -2086,7 +2086,7 @@ export function Moneys(props: SVGProps<SVGSVGElement>) {
   );
 }
 
-export function CardReceive(props: SVGProps<SVGSVGElement>) {
+export function CardReceive (props: SVGProps<SVGSVGElement>) {
   const { stroke = '#00C213' } = props;
 
   return (
@@ -2140,7 +2140,7 @@ export function CardReceive(props: SVGProps<SVGSVGElement>) {
   );
 }
 
-export function ArrowLeft() {
+export function ArrowLeft () {
   return (
     <svg
       width="16"
@@ -2169,7 +2169,7 @@ export function ArrowLeft() {
   );
 }
 
-export function CheckBox(props: SVGProps<SVGSVGElement>) {
+export function CheckBox (props: SVGProps<SVGSVGElement>) {
   const { width, height } = props;
 
   return (
@@ -2211,7 +2211,7 @@ export function CheckBox(props: SVGProps<SVGSVGElement>) {
   );
 }
 
-export function SmallLogo(props: SVGProps<SVGSVGElement>) {
+export function SmallLogo (props: SVGProps<SVGSVGElement>) {
   const { width, height } = props;
 
   return (
@@ -2253,7 +2253,7 @@ export function SmallLogo(props: SVGProps<SVGSVGElement>) {
   );
 }
 
-export function Logo(props: SVGProps<SVGSVGElement>) {
+export function Logo (props: SVGProps<SVGSVGElement>) {
   const { width = 116, height = 35 } = props;
 
   return (
@@ -2280,7 +2280,7 @@ export function Logo(props: SVGProps<SVGSVGElement>) {
         y={7}
         maskUnits="userSpaceOnUse"
         style={{
-          maskType: 'alpha',
+          maskType: 'alpha'
         }}
       >
         <path
@@ -2302,7 +2302,7 @@ export function Logo(props: SVGProps<SVGSVGElement>) {
   );
 }
 
-export function Bell() {
+export function Bell () {
   return (
     <svg
       width="24"
@@ -2319,7 +2319,7 @@ export function Bell() {
   );
 }
 
-export function ArrowRLeftToBracket() {
+export function ArrowRLeftToBracket () {
   return (
     <svg
       width="16"
@@ -2348,7 +2348,7 @@ export function ArrowRLeftToBracket() {
   );
 }
 
-export function ArrowRightToBracket() {
+export function ArrowRightToBracket () {
   return (
     <svg
       width="14"
@@ -2376,7 +2376,7 @@ export function ArrowRightToBracket() {
   );
 }
 
-export function GlobeAlt() {
+export function GlobeAlt () {
   return (
     <svg
       width="20"
@@ -2453,7 +2453,7 @@ export function GlobeAlt() {
   );
 }
 
-export function Grid() {
+export function Grid () {
   return (
     <svg
       width="20"
@@ -2498,7 +2498,7 @@ export function Grid() {
   );
 }
 
-export function Column() {
+export function Column () {
   return (
     <svg
       width="20"
@@ -2519,7 +2519,7 @@ export function Column() {
   );
 }
 
-export function Users() {
+export function Users () {
   return (
     <svg
       width="20"
@@ -2548,7 +2548,7 @@ export function Users() {
   );
 }
 
-export function Receipt() {
+export function Receipt () {
   return (
     <svg
       width="20"
@@ -2567,7 +2567,7 @@ export function Receipt() {
   );
 }
 
-export function File() {
+export function File () {
   return (
     <svg
       width="20"
@@ -2590,7 +2590,7 @@ export function File() {
   );
 }
 
-export function Reminder() {
+export function Reminder () {
   return (
     <svg
       width="20"
@@ -2611,7 +2611,7 @@ export function Reminder() {
   );
 }
 
-export function Like() {
+export function Like () {
   return (
     <svg
       width="20"
@@ -2628,7 +2628,7 @@ export function Like() {
   );
 }
 
-export function SetupFlower() {
+export function SetupFlower () {
   return (
     <svg
       width="24"
@@ -2651,7 +2651,7 @@ export function SetupFlower() {
   );
 }
 
-export function ChevronLeft() {
+export function ChevronLeft () {
   return (
     <svg
       width="21"
@@ -2668,7 +2668,7 @@ export function ChevronLeft() {
   );
 }
 
-export function ChevronRight() {
+export function ChevronRight () {
   return (
     <svg
       width="21"
@@ -2685,7 +2685,7 @@ export function ChevronRight() {
   );
 }
 
-export function CheckCircleFilled(props: SVGProps<SVGSVGElement>) {
+export function CheckCircleFilled (props: SVGProps<SVGSVGElement>) {
   const { width = 24, height = 24, fill = '#A5A6F6' } = props;
 
   return (
@@ -2715,7 +2715,7 @@ export function CheckCircleFilled(props: SVGProps<SVGSVGElement>) {
   );
 }
 
-export function CheckCircle(props: SVGProps<SVGSVGElement>) {
+export function CheckCircle (props: SVGProps<SVGSVGElement>) {
   const { width = 24, height = 24 } = props;
 
   return (
@@ -2740,7 +2740,7 @@ export function CheckCircle(props: SVGProps<SVGSVGElement>) {
   );
 }
 
-export function CheckboxBlankCircle(props: SVGProps<SVGSVGElement>) {
+export function CheckboxBlankCircle (props: SVGProps<SVGSVGElement>) {
   const { fill = '#B0B0B0' } = props;
 
   return (
@@ -2766,7 +2766,7 @@ export function CheckboxBlankCircle(props: SVGProps<SVGSVGElement>) {
   );
 }
 
-export function Upload() {
+export function Upload () {
   return (
     <svg
       width="16"

@@ -4,15 +4,15 @@ import { Calendar, FlagOutline, CalendarWithMark } from '@/components/shared';
 
 interface IProps {
   item: {
-    img: StaticImageData;
-    title?: string;
-    btnText1?: string;
-  };
-  handleClick?: () => void;
-  showSteps?: boolean;
+    img: StaticImageData
+    title?: string
+    btnText1?: string
+  }
+  handleClick?: () => void
+  showSteps?: boolean
 }
 
-export function CreateTaskCard(props: IProps) {
+export function CreateTaskCard (props: IProps) {
   const { item, handleClick } = props;
 
   return (

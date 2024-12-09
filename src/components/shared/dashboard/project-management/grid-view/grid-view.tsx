@@ -21,7 +21,7 @@ const TaskCard = () => (
   </div>
 );
 
-export function TaskGirdView() {
+export function TaskGirdView () {
   return (
     <div className="task-board">
       <div className="task-section task-section--todo">

@@ -4,7 +4,7 @@ export const rootColors = {
   'green-900': '#26A17B',
 
   'grey-600': '#475367',
-  
+
   'heather-200': '#D7DEE6',
   'heather-950': '#2E323D',
 

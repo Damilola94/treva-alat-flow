@@ -6,7 +6,7 @@ import routes from '@/lib/routes';
 import { Header } from '@/components/shared/onboarding';
 import Link from 'next/link';
 
-export default function Page() {
+export default function Page () {
   const { isLoading } = queries.login();
 
   return (

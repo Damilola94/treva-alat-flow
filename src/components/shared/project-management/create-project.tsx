@@ -3,25 +3,25 @@ import Image, { type StaticImageData } from 'next/image';
 
 interface IProps {
   item: {
-    img: StaticImageData;
-    title: string;
-    details?: string;
-    btnText1?: string;
-    btnText2?: string;
-    modalType?: string;
-    createProject: {
-      icon: React.JSX.Element;
-      title: string;
-      details: string;
-    }[];
-    bottomInfo?: string;
-  };
-  handleClick?: () => void;
-  handleProject?: () => void;
-  showSteps?: boolean;
+    img: StaticImageData
+    title: string
+    details?: string
+    btnText1?: string
+    btnText2?: string
+    modalType?: string
+    createProject: Array<{
+      icon: React.JSX.Element
+      title: string
+      details: string
+    }>
+    bottomInfo?: string
+  }
+  handleClick?: () => void
+  handleProject?: () => void
+  showSteps?: boolean
 }
 
-export function CreateProjectCard(props: IProps) {
+export function CreateProjectCard (props: IProps) {
   const { item, handleClick, handleProject } = props;
 
   return (
@@ -32,20 +32,23 @@ export function CreateProjectCard(props: IProps) {
       <div className={'flex flex-col gap-9 justify-between flex-1'}>
         <div className="project_management_card__ctt">
           <div className="flex flex-col gap-2">
-            <p  className="project_management_card__ctt__title">{item?.title}</p>
+            <p className="project_management_card__ctt__title">{item?.title}</p>
           </div>
           <div className="grid grid-cols-2 gap-6">
             {item?.createProject.map((project, index) => (
               <div
                 key={index}
                 className="project_management_card__ctt__option"
-                onClick={() => handleClick && handleClick()}
+                onClick={() => {
+                  if (handleClick) handleClick();
+                }}
               >
                 <div className="">{project.icon}</div>
                 <div className="">
                   <h3 className="project_management_card__ctt__option__title">
                     {project.title}
                   </h3>
+                  ;
                   <p className="project_management_card__ctt__option__details">
                     {project.details}
                   </p>

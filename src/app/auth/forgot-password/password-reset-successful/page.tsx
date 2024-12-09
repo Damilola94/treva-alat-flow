@@ -8,7 +8,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import auth from '@/lib/assets/auth';
 
-export default function Page() {
+export default function Page () {
   const { isLoading } = queries.login();
 
   return (

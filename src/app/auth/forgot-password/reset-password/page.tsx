@@ -12,15 +12,15 @@ import routes from '@/lib/routes';
 const validationSchema = Yup.object().shape({
   email: Yup.string()
     .email('Please enter a valid email address')
-    .required('Please enter your email address'),
+    .required('Please enter your email address')
 });
 
 const initialValues = {
   password: process.env.NEXT_PUBLIC_CLIENT_EMAIL ?? '',
-  confirm: process.env.NEXT_PUBLIC_CLIENT_PASSWORD ?? '',
+  confirm: process.env.NEXT_PUBLIC_CLIENT_PASSWORD ?? ''
 };
 
-export default function ResetPassword() {
+export default function ResetPassword () {
   const { mutate, isLoading } = queries.login();
 
   return (
@@ -54,7 +54,7 @@ export default function ResetPassword() {
                   handleBlur,
                   handleSubmit,
                   errors,
-                  touched,
+                  touched
                 } = props;
                 return (
                   <form onSubmit={handleSubmit} className="flex flex-col gap-8">

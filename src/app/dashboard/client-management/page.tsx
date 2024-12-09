@@ -9,7 +9,7 @@ import {
   TakeATour,
   AddClient,
   DeleteClient,
-  EditClient,
+  EditClient
 } from '@/components/shared/client-management';
 import projectManagement from '@/lib/assets/project-management';
 
@@ -20,7 +20,7 @@ const viewTakeATour = {
     "You're almost there! Complete your onboarding to unlock the full potential of Creathrivity and start achieving your goals today.",
   btnText1: 'Start tour',
   btnText2: 'Skip',
-  bottomInfo: '',
+  bottomInfo: ''
 };
 
 const deleteClient = {
@@ -28,14 +28,14 @@ const deleteClient = {
   title: 'Are you sure you want to delete this client',
   details: 'Client’s record will be deleted Permanently',
   btnText1: 'Cancel',
-  btnText2: 'Delete',
+  btnText2: 'Delete'
 };
 
 enum Clients {
   'All Client' = 'All Client',
 }
 
-export default function Page() {
+export default function Page () {
   const [takeATour, setTakeATour] = useState(true);
   const [addClientForm, setAddClientForm] = useState(true);
   const [editForm, setEditForm] = useState(true);
@@ -67,7 +67,7 @@ export default function Page() {
               from: 'right',
               onClose: handleAddProjectClick,
               className:
-                'absolute bottom-0 right-0 h-[calc(100vh-20px)] w-full sm:w-[350px] bg-white p-0 flex flex-col mb-2 mr-2',
+                'absolute bottom-0 right-0 h-[calc(100vh-20px)] w-full sm:w-[350px] bg-white p-0 flex flex-col mb-2 mr-2'
             }}
           >
             <AddClient />
@@ -83,7 +83,7 @@ export default function Page() {
               from: 'right',
               onClose: onEdit,
               className:
-                'absolute bottom-0 right-0 h-[calc(100vh-20px)] w-full sm:w-[350px] bg-white p-0 flex flex-col mb-2 mr-2',
+                'absolute bottom-0 right-0 h-[calc(100vh-20px)] w-full sm:w-[350px] bg-white p-0 flex flex-col mb-2 mr-2'
             }}
           >
             <EditClient />
@@ -98,7 +98,7 @@ export default function Page() {
               isOpen: true,
               from: 'middle',
               onClose: handleTakeTourClick,
-              className: 'sm:max-w-[300px] h-[420px] p-0',
+              className: 'sm:max-w-[300px] h-[420px] p-0'
             }}
           >
             <TakeATour item={viewTakeATour} handleClick={handleTakeTourClick} />
@@ -113,7 +113,7 @@ export default function Page() {
               isOpen: true,
               from: 'middle',
               onClose: onDelete,
-              className: 'sm:max-w-[450px] h-[300px] p-0',
+              className: 'sm:max-w-[450px] h-[300px] p-0'
             }}
           >
             <DeleteClient item={deleteClient} handleClick={onDelete} />

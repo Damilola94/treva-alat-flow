@@ -1,14 +1,14 @@
 import React, { type ReactNode } from 'react';
 
 interface ModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  children: ReactNode;
-  className?: string;
-  from: 'right' | 'middle';
+  isOpen: boolean
+  onClose: () => void
+  children: ReactNode
+  className?: string
+  from: 'right' | 'middle'
 }
 
-export function AnimatedModal({ isOpen, onClose, children, from, className = '' }: ModalProps) {
+export function AnimatedModal ({ isOpen, onClose, children, from, className = '' }: ModalProps) {
   if (!isOpen) return null;
 
   const animationClass =
@@ -23,7 +23,7 @@ export function AnimatedModal({ isOpen, onClose, children, from, className = '' 
     >
       <div
         className={`bg-white rounded-2xl shadow-lg transition-transform duration-300 z-50 ${animationClass} ${className}`}
-        onClick={(e) => e.stopPropagation()}
+        onClick={(e) => { e.stopPropagation(); }}
       >
         {children}
       </div>

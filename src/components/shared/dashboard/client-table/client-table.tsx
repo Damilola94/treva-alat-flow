@@ -1,9 +1,11 @@
 import { Pagination } from '../../pagination';
 import { EmptyState, BinGray, EditPencilGray } from '../../svgs';
+import Image from 'next/image';
+import clientManagement from '@/lib/assets/client-management';
 
 interface IProps {
-  onEdit?: (id: string) => void;
-  onDelete?: (id: string) => void;
+  onEdit?: (id: string) => void
+  onDelete?: (id: string) => void
 }
 const IS_EMPTY = false;
 
@@ -12,10 +14,10 @@ const thead = [
   { label: 'Email address' },
   { label: 'Phone number' },
   { label: 'Birthday' },
-  { label: '' },
+  { label: '' }
 ];
 
-export function ClientTable(props: IProps) {
+export function ClientTable (props: IProps) {
   const { onEdit, onDelete } = props;
   if (IS_EMPTY) {
     return (
@@ -50,7 +52,12 @@ export function ClientTable(props: IProps) {
                 return (
                   <tr className="cursor-pointer hover:bg-gray-100" key={index}>
                     <td className="app_table__tbody__td font-medium text-[--text-color-500]">
-                      <div className="app_table__tbody__td__ctt">
+                      <div className="app_table__tbody__td__ctt flex justify-center items-center -ml-5">
+                        <Image
+                          src={clientManagement?.femaleClient}
+                          alt="female"
+                          className="w-6 h-6 rounded-full border-2 border-white object-cover mr-3"
+                        />
                         Moyin Aakindal
                       </div>
                     </td>

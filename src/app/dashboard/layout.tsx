@@ -24,7 +24,7 @@ function Main ({ children }: { children: React.ReactNode }) {
   }, [])
 
   if (!mounted) return null
-console.log(pathname, "pathname");
+  console.log(pathname, 'pathname');
 
   return (
     <main className="app_dash_main flex-col">

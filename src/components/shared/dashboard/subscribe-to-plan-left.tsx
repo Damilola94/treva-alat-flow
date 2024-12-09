@@ -1,8 +1,8 @@
 'use client';
 import { Button } from '@/components/ui/button';
-import { SetupFlower} from '@/components/shared/svgs'
+import { SetupFlower } from '@/components/shared/svgs'
 
-export function SubscribeToPlanLeft() {
+export function SubscribeToPlanLeft () {
   return (
     <header className="app_dash_main__stp_left -z-50">
       <div className="flex justify-center items-center space-x-5">

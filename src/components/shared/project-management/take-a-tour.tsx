@@ -3,24 +3,24 @@ import Image, { type StaticImageData } from 'next/image';
 
 interface IProps {
   item: {
-    img: StaticImageData;
-    title: string;
-    details?: string;
-    btnText1?: string;
-    btnText2?: string;
-    modalType?: string;
+    img: StaticImageData
+    title: string
+    details?: string
+    btnText1?: string
+    btnText2?: string
+    modalType?: string
     createProject?: {
-      icon: string;
-      title: string;
-      details: string;
-    };
-    bottomInfo?: string;
-  };
-  handleClick?: () => void;
-  showSteps?: boolean;
+      icon: string
+      title: string
+      details: string
+    }
+    bottomInfo?: string
+  }
+  handleClick?: () => void
+  showSteps?: boolean
 }
 
-export function TakeATour(props: IProps) {
+export function TakeATour (props: IProps) {
   const { item, handleClick } = props;
   return (
     <div className="project_management_card flex flex-col gap-4">

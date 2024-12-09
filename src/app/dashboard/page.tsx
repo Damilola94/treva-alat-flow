@@ -20,7 +20,7 @@ enum Projects {
   'Completed Project' = 'Completed Project',
 }
 
-function EllIcon() {
+function EllIcon () {
   return (
     <svg
       width="28"
@@ -74,11 +74,11 @@ const kpis = [
         Wallet balance <EllIcon />
       </>
     ),
-    value: numberFormat(0),
-  },
+    value: numberFormat(0)
+  }
 ];
 
-export default function Page() {
+export default function Page () {
   return (
     <div className="app_dashboard_page app_dashboard_home">
       <div className="app_dashboard_home__header">

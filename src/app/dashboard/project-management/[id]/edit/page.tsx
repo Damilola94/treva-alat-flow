@@ -1,11 +1,11 @@
 'use client';
 
-import { EditIcon, Pill, PlusIcon,AnimatedModal,RenderIf } from '@/components/shared';
+import { EditIcon, Pill, PlusIcon, AnimatedModal, RenderIf } from '@/components/shared';
 import { Formik } from 'formik';
 import { EditProjectsTable, TaskGirdView } from '@/components/shared/dashboard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import React, { Fragment,useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import { Select } from '@/components/shared/select';
 import projectManagement from '@/lib/assets/project-management';
 import Image from 'next/image';
@@ -13,20 +13,19 @@ import { ButtonGroup } from './button-group';
 import { ProgressBar } from './progress-tag';
 import { CreateTaskCard } from '@/components/shared/project-management';
 
-
 const createTask = {
   img: projectManagement.topcover,
   title: '{Task name}',
-  btnText1: 'Close',
+  btnText1: 'Close'
 }
 
 const initialValues = {
-  description: '',
+  description: ''
 };
 
 const options = [
   { value: 'Table', label: 'Table' },
-  { value: 'Grid', label: 'Grid' },
+  { value: 'Grid', label: 'Grid' }
 ];
 
 enum Projects {
@@ -36,20 +35,19 @@ enum Projects {
   'Invoice' = 'Invoice',
 }
 
-export default function Page() {
+export default function Page () {
   const [addTask, setAddTask] = useState(true)
   const [viewType, setViewType] = useState('Grid');
 
-
-  const handleAddTask =  () => {
+  const handleAddTask = () => {
     setAddTask(!addTask)
   }
 
   const handleViewChange = (selectedOption: {
-    value: string;
-    label: string;
+    value: string
+    label: string
   }) => {
-    setViewType(selectedOption.value); 
+    setViewType(selectedOption.value);
   };
 
   return (
@@ -117,7 +115,7 @@ export default function Page() {
               handleBlur,
               handleSubmit,
               errors,
-              touched,
+              touched
             } = props;
             return (
               <form onSubmit={handleSubmit} className="-mt-5">
@@ -162,9 +160,11 @@ export default function Page() {
           </div>
         </div>
 
-        {viewType === 'Grid' ? (
+        {viewType === 'Grid'
+          ? (
           <TaskGirdView />
-        ) : (
+            )
+          : (
           <div>
             <div className="my-10">
               <div className="flex space-x-3 items-center my-5">
@@ -202,7 +202,7 @@ export default function Page() {
               <EditProjectsTable />
             </div>
           </div>
-        )}
+            )}
       </div>
     </div>
   );

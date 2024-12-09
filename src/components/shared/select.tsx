@@ -1,17 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
 
 interface Option {
-  value: string;
-  label: string;
+  value: string
+  label: string
 }
 
 interface SelectProps {
-  options: Option[];
-  placeholder?: string;
-  onChange?: (option: Option) => void;
+  options: Option[]
+  placeholder?: string
+  onChange?: (option: Option) => void
 }
 
-export function Select({ options, placeholder = 'Select an option', onChange }: SelectProps) {
+export function Select ({ options, placeholder = 'Select an option', onChange }: SelectProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState<Option | null>(null);
   const selectRef = useRef<HTMLDivElement>(null);
@@ -22,7 +22,7 @@ export function Select({ options, placeholder = 'Select an option', onChange }: 
     if (onChange) onChange(option);
   };
 
-  const toggleDropdown = () => setIsOpen((prev) => !prev);
+  const toggleDropdown = () => { setIsOpen((prev) => !prev); };
 
   const handleClickOutside = (event: MouseEvent) => {
     if (selectRef.current && !selectRef.current.contains(event.target as Node)) {
@@ -32,7 +32,7 @@ export function Select({ options, placeholder = 'Select an option', onChange }: 
 
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    return () => { document.removeEventListener('mousedown', handleClickOutside); };
   }, []);
 
   return (
@@ -53,7 +53,7 @@ export function Select({ options, placeholder = 'Select an option', onChange }: 
               className={`app_select-option ${
                 selectedOption?.value === option.value ? 'app_select-option--selected' : ''
               }`}
-              onClick={() => handleOptionClick(option)}
+              onClick={() => { handleOptionClick(option); }}
             >
               {option.label}
             </div>

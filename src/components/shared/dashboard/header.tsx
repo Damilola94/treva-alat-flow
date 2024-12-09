@@ -8,18 +8,17 @@ import {
   useRouter,
   useSelectedLayoutSegments,
 } from 'next/navigation'
-import { ArrowCircleRight, ArrowLeft, ArrowRightToBracket, Bell, Logo } from '../svgs'
+import { ArrowLeft, ArrowRightToBracket, Bell, Logo } from '../svgs'
 import Link from 'next/link'
 import routes from '@/lib/routes'
 
-function capitalizeFirstLetter(text: string) {
+function capitalizeFirstLetter (text: string) {
   return text.replace(/\b\w/g, function (char) {
     return char.toUpperCase()
   })
 }
 
 const useBreadcrumb = () => {
-  const rt = useRouter()
   const segments = useSelectedLayoutSegments()
 
   let title = 'Dashboard'
@@ -42,7 +41,7 @@ const useBreadcrumb = () => {
   return <span>{title}</span>
 }
 
-export function Header() {
+export function Header () {
   const bread = useBreadcrumb()
   const pt = usePathname()
   const rt = useRouter()
@@ -70,7 +69,7 @@ export function Header() {
       <div className="app_dash_main__hdr__title flex space-x-5 justify-center items-center">
         {showBackArrow && (
           <button
-            onClick={() => rt.back()}
+            onClick={() => { rt.back(); }}
             className="flex items-center gap-2 text-primary hover:text-primary-dark"
           >
             <ArrowLeft />

@@ -1,6 +1,4 @@
-import { Checkbox } from '@/components/ui/checkbox';
 import { EmptyState } from '../../../svgs';
-import { useState } from 'react';
 
 const IS_EMPTY = false;
 
@@ -8,7 +6,7 @@ const thead = [
   { label: 'Name' },
   { label: 'Due date' },
   { label: 'Priority' },
-  { label: '' },
+  { label: '' }
 ];
 
 const tasks = [
@@ -17,25 +15,25 @@ const tasks = [
     dueDate: '{Month day, year}',
     priority: 'High',
     priorityColor: 'red',
-    status: 'Pending',
+    status: 'Pending'
   },
   {
     name: '{Project name}',
     dueDate: '{Month day, year}',
     priority: 'Medium',
     priorityColor: 'orange',
-    status: 'Completed',
+    status: 'Completed'
   },
   {
     name: '{Project name}',
     dueDate: '{Month day, year}',
     priority: 'Low',
     priorityColor: 'green',
-    status: 'Pending',
-  },
+    status: 'Pending'
+  }
 ];
 
-export function EditProjectsTable() {
+export function EditProjectsTable () {
   if (IS_EMPTY) {
     return (
       <div className="app_dashboard_home__task__ctt app_dashboard_home__task__ctt--empty">
@@ -85,7 +83,7 @@ export function EditProjectsTable() {
                           className="project_action_group__app_priority_tag__dot"
                           style={{
                             backgroundColor:
-                              task.priorityColor || 'transparent',
+                              task.priorityColor || 'transparent'
                           }}
                         />
                         {task.priority}
