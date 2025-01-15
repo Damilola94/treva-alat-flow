@@ -37,7 +37,11 @@ const nextConfig = {
       {
         source: `/${namespace}/auth/sign-in`,
         destination: `/${namespace}/index/auth/sign-in`
-      }
+      },
+      {
+        source: '/_next/static/:path*',
+        destination: '/_next/static/:path*',
+      },
     ];
   }
 };

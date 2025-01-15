@@ -48,7 +48,6 @@ export function CreateProjectCard (props: IProps) {
                   <h3 className="project_management_card__ctt__option__title">
                     {project.title}
                   </h3>
-                  ;
                   <p className="project_management_card__ctt__option__details">
                     {project.details}
                   </p>

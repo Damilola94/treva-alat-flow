@@ -12,12 +12,12 @@
     background-repeat: no-repeat;
     flex: 1;
     display: flex;
-    // background-color: var(--shark-950);
+    background-color: var(--shark-950);
     flex-direction: column;
     justify-content: space-between;
     padding: 60px;
     margin: 10px;
-    // border-radius: 20px;
+    border-radius: 20px;
     position: relative;
 
     @include screen('xl') {
