@@ -2,6 +2,10 @@
 
 /* eslint-disable @typescript-eslint/no-misused-promises */
 
+// eslint-disable-next-line
+
+/* eslint-disable */
+
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { Button } from '@/components/ui/button';
@@ -16,17 +20,17 @@ const validationSchema = Yup.object().shape({
   professions: Yup.array()
     .of(Yup.string())
     .min(1, 'Select at least one profession')
-    .required(),
+    .required()
 });
 
 const initialValues = {
-  professions: [] as string[],
+  professions: [] as string[]
 };
 
 type InitialValues = typeof initialValues;
 
-export function Profession(props?: {
-  onSubmit?: (values: InitialValues) => void;
+export function Profession (props?: {
+  onSubmit?: (values: InitialValues) => void
 }) {
   const rt = useRouter();
   const { isLoading } = queries.login();
@@ -74,19 +78,25 @@ export function Profession(props?: {
                     </h3>
                     <div className="flex flex-col gap-8">
                       <div className="flex flex-wrap gap-2">
-                        {!professions ? (
-                          <div>Loading professions...</div>
-                        ) : (
-                          professions.data.map(({ name, id }: any) => (
-                            <Pill
-                              key={id}
-                              onClick={() => toggleProfession(id)}
-                              active={values.professions.includes(id)}
-                            >
-                              {name}
-                            </Pill>
-                          ))
-                        )}
+                      <div className="flex flex-wrap gap-2">
+                        {
+                          !professions 
+                            ? (
+                                <div>Loading professions...</div>
+                              )
+                            : (
+                                professions.data.map(({ name, id }: any) => (
+                                  <Pill
+                                    key={id}
+                                    onClick={() => { toggleProfession(id); } }
+                                    active={values.professions.includes(id)}
+                                  >
+                                    {name}
+                                  </Pill>
+                                ))
+                              )
+                        }
+                      </div>
                       </div>
                     </div>
 

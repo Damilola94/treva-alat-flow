@@ -4,20 +4,20 @@ import React, {
   createContext,
   useContext,
   useState,
-  type ReactNode,
-} from 'react';
+  type ReactNode
+} from 'react'
 
 interface FormData {
-  email: string;
-  fullName: string;
-  password: string;
-  accountType: string;
-  professions: string[];
+  email: string
+  fullName: string
+  password: string
+  accountType: string
+  professions: string[]
 }
 
 interface FormContextProps {
-  formData: FormData;
-  setFormData: (data: Partial<FormData>) => void;
+  formData: FormData
+  setFormData: (data: Partial<FormData>) => void
 }
 
 const FormContext = createContext<FormContextProps | null>(null);
@@ -28,11 +28,11 @@ export const FormProvider = ({ children }: { children: ReactNode }) => {
     fullName: '',
     password: '',
     accountType: '',
-    professions: [],
+    professions: []
   });
 
   const setFormData = (data: Partial<FormData>) => {
-    setFormDataState((prev) => ({ ...prev, ...data }));
+    setFormDataState((prev) => ({ ...prev, ...data }))
   };
 
   return (
@@ -45,7 +45,7 @@ export const FormProvider = ({ children }: { children: ReactNode }) => {
 export const useForm = () => {
   const context = useContext(FormContext);
   if (!context) {
-    throw new Error('useForm must be used within a FormProvider');
+    throw new Error('useForm must be used within a FormProvider')
   }
   return context;
 };

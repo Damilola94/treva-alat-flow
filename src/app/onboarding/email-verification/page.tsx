@@ -4,8 +4,6 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { Button } from '@/components/ui/button';
 import queries from '@/services/queries/auth';
-import routes from '@/lib/routes';
-import { useRouter } from 'next/navigation';
 import { Header } from '@/components/shared/onboarding';
 import { useForm } from '../context/onboard-context';
 import { extractName } from '@/lib/utils';
@@ -13,32 +11,30 @@ import { extractName } from '@/lib/utils';
 const validationSchema = Yup.object().shape({});
 
 const initialValues = {
-  email: '',
-};
+  email: ''
+}
 
-export default function Page() {
-  const rt = useRouter();
+export default function Page () {
   const { formData } = useForm();
-  const { isLoading, mutate } = queries.create();
- 
+  const { isLoading, mutate } = queries.create()
   const onSubmit = () => {
     const { email, professions, fullName, password, accountType } = formData;
-    const { firstName, lastName } = extractName(fullName);
+    const { firstName, lastName } = extractName(fullName)
 
     const payload = {
       accountType,
       email,
       password,
-      firstName: firstName,
-      lastName: lastName,
+      firstName,
+      lastName,
       professionIds: professions,
       organization: {
         name: 'string',
-        organizationSizeId: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
-      },
-    };
-    mutate(payload);
-  };
+        organizationSizeId: '3fa85f64-5717-4562-b3fc-2c963f66afa6'
+      }
+    }
+    mutate(payload)
+  }
 
   const email = formData.email ?? '';
 
@@ -65,7 +61,7 @@ export default function Page() {
 
                     <div className="flex flex-col gap-8">
                       <p className="app_auth_verification__p">
-                        We'll send an email to
+                        We will send an email to
                         <br />
                         <span className="app_auth_verification__p__span">
                           <strong>{email}</strong>

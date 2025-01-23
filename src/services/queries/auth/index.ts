@@ -5,7 +5,7 @@ import {
   errorToast,
   handleErrors,
   setLocalStorage,
-  successToast,
+  successToast
 } from '../../helper';
 import queryKey from './keys';
 import routes from '@/lib/routes';
@@ -13,7 +13,6 @@ import { useRouter } from 'next/navigation';
 import { type AxiosError } from 'axios';
 import { type Request } from '../../api';
 import { getMockApiData } from '@/lib/utils';
-import featureFlags from '@/lib/feature-flags';
 import { type CreateUserBody } from './types';
 import config from '@/lib/config';
 
@@ -21,7 +20,7 @@ const mock = {
   email: 'ayobami.aladenoye+streak@wemabank.com',
   userName: 'bambam',
   accessToken: 'string',
-  refreshToken: 'string',
+  refreshToken: 'string'
 };
 
 const BASE_URL = config.services;
@@ -38,7 +37,7 @@ const useCreate = (options = {}) => {
     },
     onError: (err: AxiosError) => {
       errorToast(handleErrors(err));
-    },
+    }
   });
 
   return {
@@ -47,9 +46,9 @@ const useCreate = (options = {}) => {
       mutate({
         url: `${BASE_URL.onboarding}/create-account`,
         body,
-        auth: false,
+        auth: false
       });
-    },
+    }
   };
 };
 
@@ -63,7 +62,7 @@ const useLogin = (options = {}) => {
     {
       mutationKey: [queryKey.login],
       ...options,
-      onSuccess: (data) => {        
+      onSuccess: (data) => {
         if (data.statusCode === '200') {
           setLocalStorage(config.tokenKey, data?.responseData);
           successToast('Sign in successful');
@@ -74,8 +73,8 @@ const useLogin = (options = {}) => {
       },
       onError: (err: AxiosError) => {
         errorToast(handleErrors(err));
-      },
-    },
+      }
+    }
   );
   return {
     ...response,
@@ -84,10 +83,9 @@ const useLogin = (options = {}) => {
         url: `${BASE_URL.auth}/login`,
         body,
         mockData: getMockApiData(mock),
-        // useMock: featureFlags.MOCK_DATA_ENABLED,
-        auth: false,
+        auth: false
       });
-    },
+    }
   };
 };
 
@@ -98,8 +96,8 @@ const useRead = (options = {}) => {
     {
       ...options,
       onSuccess: () => {},
-      onError: () => {},
-    },
+      onError: () => {}
+    }
   );
 
   return response;

@@ -14,16 +14,16 @@ const validationSchema = Yup.object().shape({});
 
 enum AccountType {
   Individual = 'Individual',
-  Team = 'Company',
+  Team = 'Company'
 }
 
 const initialValues = {
-  accountType: AccountType.Individual as `${AccountType}`,
+  accountType: AccountType.Individual as `${AccountType}`
 };
 
 type InitialValues = ReturnType<() => typeof initialValues>;
 
-export default function Page() {
+export default function Page () {
   const rt = useRouter();
   const { isLoading } = queries.login();
   const { setFormData } = useForm();
@@ -63,7 +63,7 @@ export default function Page() {
                           onClick={async () =>
                             await setFieldValue(
                               'accountType',
-                              AccountType.Individual,
+                              AccountType.Individual
                             )
                           }
                           active={values.accountType === AccountType.Individual}
