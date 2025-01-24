@@ -1,26 +1,42 @@
-'use client'
-import React from 'react'
-import { Formik } from 'formik'
-import * as Yup from 'yup'
-import { Button } from '@/components/ui/button'
-import queries from '@/services/queries/auth'
-import routes from '@/lib/routes'
-import { useRouter } from 'next/navigation'
-import { Header } from '@/components/shared/onboarding'
+'use client';
+import React from 'react';
+import { Formik } from 'formik';
+import * as Yup from 'yup';
+import { Button } from '@/components/ui/button';
+import queries from '@/services/queries/auth';
+import { Header } from '@/components/shared/onboarding';
+import { useForm } from '../context/onboard-context';
+import { extractName } from '@/lib/utils';
 
-const validationSchema = Yup.object().shape({})
+const validationSchema = Yup.object().shape({});
 
 const initialValues = {
-  password: ''
+  email: ''
 }
 
 export default function Page () {
-  const rt = useRouter()
-  const { isLoading } = queries.login()
+  const { formData } = useForm();
+  const { isLoading, mutate } = queries.create()
+  const onSubmit = () => {
+    const { email, professions, fullName, password, accountType } = formData;
+    const { firstName, lastName } = extractName(fullName)
 
-  const onSubmit = () => { rt.push(routes.auth.verification.path) }
+    const payload = {
+      accountType,
+      email,
+      password,
+      firstName,
+      lastName,
+      professionIds: professions,
+      organization: {
+        name: 'string',
+        organizationSizeId: '3fa85f64-5717-4562-b3fc-2c963f66afa6'
+      }
+    }
+    mutate(payload)
+  }
 
-  const email = process.env.NEXT_PUBLIC_CLIENT_EMAIL ?? ''
+  const email = formData.email ?? '';
 
   return (
     <div className="app_auth_login_container">
@@ -35,9 +51,7 @@ export default function Page () {
               onSubmit={onSubmit}
             >
               {(props) => {
-                const {
-                  handleSubmit
-                } = props
+                const { handleSubmit } = props;
 
                 return (
                   <form onSubmit={handleSubmit} className="flex flex-col gap-8">
@@ -47,9 +61,11 @@ export default function Page () {
 
                     <div className="flex flex-col gap-8">
                       <p className="app_auth_verification__p">
-                        We have sent an email to
+                        We will send an email to
                         <br />
-                        <span className="app_auth_verification__p__span">{email}.</span>
+                        <span className="app_auth_verification__p__span">
+                          <strong>{email}</strong>
+                        </span>
                         <br />
                         <br />
                         Verify your email to begin
@@ -60,16 +76,16 @@ export default function Page () {
                         backgroundColor="primary-blue-500"
                         className="w-full app_auth_login__btn"
                       >
-                        Next
+                        Sign Up
                       </Button>
                     </div>
                   </form>
-                )
+                );
               }}
             </Formik>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }

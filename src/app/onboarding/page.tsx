@@ -1,36 +1,45 @@
-'use client'
-import React from 'react'
-import { Formik } from 'formik'
-import * as Yup from 'yup'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import queries from '@/services/queries/auth'
-import routes from '@/lib/routes'
-import { useRouter } from 'next/navigation'
-import { Header } from '@/components/shared/onboarding'
+'use client';
+
+import React from 'react';
+import { Formik } from 'formik';
+import * as Yup from 'yup';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import queries from '@/services/queries/auth';
+import routes from '@/lib/routes';
+import { useRouter } from 'next/navigation';
+import { Header } from '@/components/shared/onboarding';
+import { useForm } from './context/onboard-context';
+
+interface FormData {
+  email: string
+}
+
+const initialValues: FormData = {
+  email: ''
+};
 
 const validationSchema = Yup.object().shape({
   email: Yup.string()
     .email('Please enter a valid email address')
     .required('Please enter your email address')
-})
+});
 
-const initialValues = {
-  email: process.env.NEXT_PUBLIC_CLIENT_EMAIL ?? ''
-}
-
-type InitialValues = ReturnType<() => typeof initialValues>
+type InitialValues = ReturnType<() => typeof initialValues>;
 
 export default function Page () {
-  const rt = useRouter()
-  const { isLoading } = queries.login()
+  const rt = useRouter();
+  const { isLoading } = queries.login();
+  const { setFormData } = useForm();
 
-  const onSubmit = () => { rt.push(routes.onboarding.personalDetails.path) }
+  const onSubmit = (values: FormData) => {
+    setFormData(values);
+    rt.push(routes.onboarding.personalDetails.path);
+  };
 
   return (
     <div className="app_auth_login_container">
       <Header />
-
       <div className="app_auth_login_container__upper">
         <div className="app_auth_login">
           <div>
@@ -47,11 +56,10 @@ export default function Page () {
                   handleSubmit,
                   errors,
                   touched
-                } = props
+                } = props;
 
                 const getProps = (args: { name: keyof InitialValues }) => {
-                  const name = args.name
-
+                  const name = args.name;
                   return {
                     name,
                     id: name,
@@ -60,8 +68,8 @@ export default function Page () {
                     onBlur: handleBlur,
                     errors,
                     touched
-                  }
-                }
+                  };
+                };
 
                 return (
                   <form onSubmit={handleSubmit} className="flex flex-col gap-8">
@@ -90,12 +98,12 @@ export default function Page () {
                       </Button>
                     </div>
                   </form>
-                )
+                );
               }}
             </Formik>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }

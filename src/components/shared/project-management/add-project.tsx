@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
-'use client'
-import React, { useState } from 'react'
-import { Formik } from 'formik'
-import * as Yup from 'yup'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import queries from '@/services/queries/auth'
-import { ArrowRight, Pill } from '@/components/shared'
+'use client';
+import React, { useState } from 'react';
+import { Formik } from 'formik';
+import * as Yup from 'yup';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import queries from '@/services/queries/auth';
+import { ArrowRight, Pill } from '@/components/shared';
 import Image from 'next/image';
-import projectManagement from '@/lib/assets/project-management'
+import projectManagement from '@/lib/assets/project-management';
 
-type UserType = 'Client' | 'Personal'
+type UserType = 'Client' | 'Personal';
 
 const validationSchema = Yup.object().shape({
   ProjecTitle: Yup.string().required('Please enter a project title'),
@@ -29,17 +29,19 @@ const initialValues = {
   ProjectDescription: '',
   ExpectedDeliveryDate: '',
   accountType: AccountType.Low as `${AccountType}`
-}
+};
 
 export function AddProject () {
-  const { mutate, isLoading } = queries.login()
-  const [userType, setUserType] = useState<UserType>('Client')
+  const { mutate, isLoading } = queries.login();
+  const [userType, setUserType] = useState<UserType>('Client');
   return (
     <div className="app_auth_login_container relative">
-      <div className="project_management_card__bg">
-        <Image src={projectManagement.topGradient} alt="top gradient" className="w-full" />
-      </div>
-      <div className="app_auth_login_container__upper !-mt-80">
+        <Image
+          src={projectManagement.topImageCreateProject}
+          alt="take a tour"
+          className="w-full"
+        />
+      <div className="app_auth_login_container__upper">
         <div className="app_auth_login">
           <div>
             <h3 className="app_auth_login__title">{userType === 'Personal' ? 'Add new project' : 'Add personal project'}</h3>
@@ -47,7 +49,7 @@ export function AddProject () {
               <button
                 className={userType === 'Personal' ? '' : 'active'}
                 onClick={() => {
-                  setUserType('Client')
+                  setUserType('Client');
                 }}
               >
                 Personal
@@ -55,7 +57,7 @@ export function AddProject () {
               <button
                 className={userType === 'Client' ? '' : 'active'}
                 onClick={() => {
-                  setUserType('Personal')
+                  setUserType('Personal');
                 }}
               >
                 Client
@@ -75,7 +77,7 @@ export function AddProject () {
                   handleSubmit,
                   errors,
                   touched
-                } = props
+                } = props;
                 return (
                   <form onSubmit={handleSubmit} className="flex flex-col gap-8">
                     <div className="flex flex-col gap-8">
@@ -186,12 +188,12 @@ export function AddProject () {
                       </Button>
                     </div>
                   </form>
-                )
+                );
               }}
             </Formik>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }
