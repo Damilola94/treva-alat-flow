@@ -1,13 +1,34 @@
 'use client';
 
-import { EmptyState, Pill, PlusIcon } from '@/components/shared';
+import { AnimatedModal, ClientIcon, EmptyState, PersonalIcon, Pill, PlusIcon, RenderIf } from '@/components/shared';
 import { ProjectsTable } from '@/components/shared/dashboard';
+import { AddProject, CreateProjectCard } from '@/components/shared/project-management';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import dashboard from '@/lib/assets/dashboard';
+import projectManagement from '@/lib/assets/project-management';
 import { numberFormat } from '@/lib/numbers';
 import Image from 'next/image';
-import React from 'react';
+import React, { Fragment, useState } from 'react';
+// import { createAProject } from './project-management/page';
+
+const createAProject = {
+  img: projectManagement.topImageProject,
+  title: 'Add new project',
+  createProject: [
+    {
+      icon: <PersonalIcon />,
+      title: 'Personal',
+      details: 'Support a cause by making one-time donations.'
+    },
+    {
+      icon: <ClientIcon />,
+      title: 'Client',
+      details: 'Support a cause by making one-time donations.'
+    }
+  ],
+  btnText1: 'Proceed'
+}
 
 enum Tasks {
   'Due Task' = 'Due Task',
@@ -79,8 +100,57 @@ const kpis = [
 ];
 
 export default function Page () {
+  const [addProject, setAddProject] = useState(true)
+  const [addProjectForm, setAddProjectForm] = useState(true)
+
+  const handleAddProjectClick = () => {
+    setAddProject(!addProject)
+  }
+
+  const handleProjectFormClick = () => {
+    setAddProject(!addProject)
+    setAddProjectForm(!addProjectForm)
+  }
+
+  const handleProjectFormClose = () => {
+    setAddProjectForm(!addProjectForm)
+  }
   return (
     <div className="app_dashboard_page app_dashboard_home">
+        <RenderIf condition={!addProject}>
+        <Fragment>
+          <AnimatedModal
+            {...{
+              isOpen: true,
+              from: 'middle',
+              onClose: handleAddProjectClick,
+              className: 'sm:max-w-[450px] h-[420px] p-0'
+            }}
+          >
+            <CreateProjectCard
+              item={createAProject}
+              handleProject={handleProjectFormClick}
+              handleClick={handleAddProjectClick}
+            />
+          </AnimatedModal>
+        </Fragment>
+      </RenderIf>
+
+      <RenderIf condition={!addProjectForm}>
+        <Fragment>
+          <AnimatedModal
+            {...{
+              isOpen: true,
+              from: 'right',
+              onClose: handleProjectFormClose,
+              className:
+                'absolute bottom-0 right-0 h-[calc(100vh-20px)] w-full sm:w-[350px] bg-white p-0 flex flex-col mb-2 mr-2'
+            }}
+          >
+            <AddProject />
+          </AnimatedModal>
+        </Fragment>
+      </RenderIf>
       <div className="app_dashboard_home__header">
         <div className="app_dashboard_home__header__profile_con app_dashboard_page__px">
           <div className="app_dashboard_home__header__profile">
@@ -96,6 +166,8 @@ export default function Page () {
             backgroundColor="text-color-100"
             color="shark-950"
             className="app_auth_login__btn"
+            onClick={handleAddProjectClick}
+
           >
             <PlusIcon fill="var(--shark-950)" />
             Create Project

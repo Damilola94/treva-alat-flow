@@ -6,14 +6,16 @@ import * as Yup from 'yup'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import queries from '@/services/queries/auth'
-import { Pill } from '@/components/shared'
+import { ArrowRight, Pill } from '@/components/shared'
+import Image from 'next/image';
+import projectManagement from '@/lib/assets/project-management'
 
 type UserType = 'Client' | 'Personal'
 
 const validationSchema = Yup.object().shape({
-  email: Yup.string()
-    .email('Please enter a valid email address')
-    .required('Please enter your email address')
+  ProjecTitle: Yup.string().required('Please enter a project title'),
+  ProjectDescription: Yup.string().required('Please enter a project description'),
+  ExpectedDeliveryDate: Yup.string().required('Please enter a expected delivery date')
 })
 
 enum AccountType {
@@ -23,8 +25,9 @@ enum AccountType {
 }
 
 const initialValues = {
-  email: process.env.NEXT_PUBLIC_CLIENT_EMAIL ?? '',
-  password: process.env.NEXT_PUBLIC_CLIENT_PASSWORD ?? '',
+  ProjecTitle: '',
+  ProjectDescription: '',
+  ExpectedDeliveryDate: '',
   accountType: AccountType.Low as `${AccountType}`
 }
 
@@ -33,10 +36,13 @@ export function AddProject () {
   const [userType, setUserType] = useState<UserType>('Client')
   return (
     <div className="app_auth_login_container relative">
-      <div className="app_auth_login_container__upper">
+      <div className="project_management_card__bg">
+        <Image src={projectManagement.topGradient} alt="top gradient" className="w-full" />
+      </div>
+      <div className="app_auth_login_container__upper !-mt-80">
         <div className="app_auth_login">
           <div>
-            <h3 className="app_auth_login__title">Add personal project</h3>
+            <h3 className="app_auth_login__title">{userType === 'Personal' ? 'Add new project' : 'Add personal project'}</h3>
             <div className="billing-toggle">
               <button
                 className={userType === 'Personal' ? '' : 'active'}
@@ -75,12 +81,12 @@ export function AddProject () {
                     <div className="flex flex-col gap-8">
                       <div className="">
                         <Input
-                          name="email"
-                          type="email"
-                          id="email"
+                          name="ProjecTitle"
+                          type="text"
+                          id="ProjecTitle"
                           placeholder="Project title"
                           size="xl"
-                          value={values.email}
+                          value={values.ProjecTitle}
                           onChange={handleChange}
                           onBlur={handleBlur}
                           errors={errors}
@@ -88,24 +94,24 @@ export function AddProject () {
                         />
                       </div>
                       <Input
-                        name="password"
-                        type="password"
-                        id="password"
+                        name="ProjectDescription"
+                        type="text"
+                        id="ProjectDescription"
                         placeholder="Project description"
                         size="xl"
-                        value={values.password}
+                        value={values.ProjectDescription}
                         onChange={handleChange}
                         onBlur={handleBlur}
                         errors={errors}
                         touched={touched}
                       />
                       <Input
-                        name="password"
+                        name="ExpectedDeliveryDate"
                         type="date"
-                        id="password"
+                        id="ExpectedDeliveryDate"
                         placeholder="Expected delivery date"
                         size="xl"
-                        value={values.password}
+                        value={values.ExpectedDeliveryDate}
                         onChange={handleChange}
                         onBlur={handleBlur}
                         errors={errors}
@@ -113,6 +119,7 @@ export function AddProject () {
                       />
                     </div>
                     <div className="flex flex-col gap-8 my-5">
+                      <p className='text-[#6D6D6D]'>Project Priority</p>
                       <div className="flex gap-2">
                         <Pill
                           size="md"
@@ -156,7 +163,7 @@ export function AddProject () {
                         isLoading={isLoading}
                         backgroundColor="transparent"
                         color="primary-blue-500"
-                        className="w-full hover:bg-transparent ml-10 app_auth_login__btn"
+                        className="w-full hover:bg-transparent ml-10 app_auth_login__btn border border-[#F1F1F1]"
                       >
                         Save
                       </Button>
@@ -164,9 +171,18 @@ export function AddProject () {
                         size="md"
                         isLoading={isLoading}
                         backgroundColor="primary-blue-500"
-                        className="w-full app_auth_login__btn"
+                        className="w-full app_auth_login__btn flex items-center justify-center gap-2"
                       >
-                        Create Project
+                        {userType === 'Personal'
+                          ? (
+                          <>
+                            Proceed to Invoice
+                            <ArrowRight stroke='#fff' />
+                          </>
+                            )
+                          : (
+                              'Create Project'
+                            )}
                       </Button>
                     </div>
                   </form>

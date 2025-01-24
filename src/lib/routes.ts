@@ -66,7 +66,27 @@ const routes = {
     },
 
     invoiceAndPayment: {
-      path: '/dashboard/invoice-and-payment'
+      path: '/dashboard/invoice-and-payment',
+
+      projectDetails: {
+        path: '/dashboard/invoice-and-payment/project-details'
+      },
+
+      deliverables: {
+        path: '/dashboard/invoice-and-payment/deliverables'
+      },
+
+      payment: {
+        path: '/dashboard/invoice-and-payment/payment'
+      },
+
+      agreement: {
+        path: '/dashboard/invoice-and-payment/agreement'
+      },
+
+      review: {
+        path: '/dashboard/invoice-and-payment/review'
+      }
     },
 
     projectManagement: {

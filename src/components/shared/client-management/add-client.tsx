@@ -7,6 +7,8 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import queries from '@/services/queries/auth'
 import { Upload } from '@/components/shared'
+import Image from 'next/image'
+import projectManagement from '@/lib/assets/project-management'
 
 const validationSchema = Yup.object().shape({
   email: Yup.string()
@@ -30,7 +32,9 @@ export function AddClient () {
   const { mutate, isLoading } = queries.login()
   return (
     <div className="app_auth_login_container relative">
-      <div className="app_auth_login_container__upper">
+        <Image src={projectManagement.topGradient} alt="top gradient" className="w-full" />
+
+      <div className="app_auth_login_container__upper !-mt-96">
         <div className="app_auth_login">
           <div>
             <h3 className="app_auth_login__title mb-5">
@@ -121,7 +125,7 @@ export function AddClient () {
                         isLoading={isLoading}
                         backgroundColor="transparent"
                         color="primary-blue-500"
-                        className="w-full hover:bg-transparent ml-10 app_auth_login__btn"
+                        className="w-full hover:bg-transparent ml-10 app_auth_login__btn border border-[#F1F1F1]"
                       >
                         Close
                       </Button>

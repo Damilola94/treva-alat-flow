@@ -7,6 +7,8 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import queries from '@/services/queries/auth'
 import { Upload } from '@/components/shared'
+import Image from 'next/image'
+import projectManagement from '@/lib/assets/project-management'
 
 const validationSchema = Yup.object().shape({
   email: Yup.string()
@@ -30,11 +32,12 @@ export function EditClient () {
   const { mutate, isLoading } = queries.login()
   return (
     <div className="app_auth_login_container relative">
-      <div className="app_auth_login_container__upper">
+      <Image src={projectManagement.topGradient} alt="top gradient" className="w-full" />
+      <div className="app_auth_login_container__upper !-mt-80">
         <div className="app_auth_login">
           <div>
             <h3 className="app_auth_login__title mb-5">
-            Edit client
+              Edit client
             </h3>
             <Formik
               initialValues={initialValues}
@@ -121,7 +124,7 @@ export function EditClient () {
                         isLoading={isLoading}
                         backgroundColor="transparent"
                         color="primary-blue-500"
-                        className="w-full hover:bg-transparent ml-10 app_auth_login__btn"
+                        className="w-full border border-[#F1F1F1] hover:bg-transparent ml-10 app_auth_login__btn"
                       >
                         Close
                       </Button>
@@ -131,7 +134,7 @@ export function EditClient () {
                         backgroundColor="primary-blue-500"
                         className="w-full app_auth_login__btn"
                       >
-                       Save changes
+                        Save changes
                       </Button>
                     </div>
                   </form>

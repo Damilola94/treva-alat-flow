@@ -1,4 +1,4 @@
-export function ArrowRight () {
+export function ArrowRight ({ stroke = '#EC2F3B' }) {
   return (
     <svg
       width="20"
@@ -9,14 +9,14 @@ export function ArrowRight () {
     >
       <path
         d="M4.75 10.5H15.25"
-        stroke="#EC2F3B"
+        stroke={stroke}
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
         d="M10 5.25L15.25 10.5L10 15.75"
-        stroke="#EC2F3B"
+        stroke={stroke}
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"

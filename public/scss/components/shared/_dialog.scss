@@ -17,3 +17,98 @@
     right: 0;
   }
 }
+
+.app_img_dialog {
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+
+  @include screen('sm') {
+    width: 94% !important;
+  }
+
+  img {
+    border-radius: 8px;
+    object-fit: contain;
+  }
+
+  svg {
+    display: none;
+  }
+}
+
+.app_modal {
+  &__ctt {
+    svg {
+      display: block;
+    }
+
+    background-color: #fff;
+    border-radius: 16px;
+    padding: 48px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+
+    @include screen('md') {
+      gap: 16px;
+      padding: 24px;
+    }
+
+    button.absolute {
+      display: none;
+    }
+
+    &__top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      button {
+        background-color: var(--chicago-50);
+        border-radius: 50%;
+        height: 48px;
+        width: 48px;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+    }
+
+    &__mid {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      gap: 16px;
+
+      &__h2 {
+        font-size: 32px;
+        font-weight: 700;
+      }
+
+      p {
+        font-size: 16px;
+
+        span {
+          font-weight: 500;
+        }
+      }
+    }
+  }
+}
+
+.app_sheet {
+  &__ctt {
+    padding: 0;
+    width: auto;
+
+    button.absolute {
+      display: none;
+    }
+  }
+}

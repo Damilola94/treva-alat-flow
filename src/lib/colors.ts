@@ -1,4 +1,6 @@
 export const rootColors = {
+  'error-500': '#F9403A',
+
   'green-200': '#BCF0DA',
   'green-500': '#0E9F6E',
   'green-900': '#26A17B',
@@ -30,6 +32,7 @@ export const rootColors = {
 
   'treva-purple-50': '#EFF1FE',
   'treva-purple-100': '#E2E4FD',
+  'treva-purple-500': '#7D6CE8',
 
   'text-color-100': '#F1F1F1',
   'text-color-200': '#E7E7E7',
