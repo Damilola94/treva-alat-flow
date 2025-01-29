@@ -1,0 +1,212 @@
+.app_get_started {
+  &__bg {
+    min-height: 255px;
+    background-image: url('../../../media/images/dashboard/get-started-bg.png');
+    background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    display: flex;
+    align-items: flex-end;
+    padding: 2.5rem 1rem;
+
+    &__ctt {
+      max-width: 650px;
+      margin: 0 auto;
+      width: 100%;
+
+      &__text {
+        font-family: var(--third-family);
+        font-weight: 400;
+        font-size: 28px;
+        line-height: 145%;
+        letter-spacing: -0.08em;
+        color: #fff;
+
+        span {
+          font-weight: 500;
+        }
+      }
+    }
+  }
+
+  &__ctt {
+    max-width: 650px;
+    margin: 0 auto;
+    width: 100%;
+
+    &__title {
+      font-family: var(--third-family);
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 150%;
+      letter-spacing: -0.04em;
+      color: #000;
+    }
+  }
+}
+
+.app_get_started_professional_details {
+  &__form {
+    max-width: 450px;
+    width: 100%;
+    background: #fff;
+    margin: 0 auto;
+    border: 1px solid var(--shark-100);
+    border-radius: 20px;
+    padding: 24px;
+    padding-top: 26px;
+
+    &__title {
+      font-family: var(--second-family);
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 150%;
+      letter-spacing: -0.01em;
+      color: #000;
+    }
+  }
+}
+
+.app_upload_con {
+  border: 1px solid #e5e5e8;
+  border-radius: 8px;
+  &__title {
+    font-family: var(--third-family);
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 145%;
+    letter-spacing: -0.04em;
+    text-align: center;
+    color: #000;
+  }
+
+  &__description {
+    font-family: var(--second-family);
+    font-weight: 400;
+    font-size: 11px;
+    line-height: 145%;
+    text-align: center;
+    color: #83868d;
+  }
+}
+
+.app_get_started_done {
+  &__text {
+    font-family: var(--third-family);
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 120%;
+    letter-spacing: -0.08em;
+    text-align: center;
+    color: var(--shark-950);
+  }
+}
+
+.pricing-cards {
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 20px;
+  display: flex;
+  flex-direction: column; 
+  align-items: center; 
+
+  .billing-toggle {
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    margin-bottom: 20px;
+    border: 1px solid #000;
+    width: fit-content;
+    background-color: #fff;
+    border-radius: 20px;
+   
+    button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      background-color: #000;
+      color: #fff;
+      font-weight: bold;
+      transition: all 0.3s ease;
+
+      &.active {
+        background-color: #fff;
+        color: #333;
+      }
+
+      &:hover {
+        color: var(--primary-blue-500);
+      }
+    }
+  }
+
+  .plans {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+
+    &__plan-top-card {
+      padding: 35px 35px 20px 20px;
+      height: fit-content;
+      border-radius: 20px 20px 0px 0px;
+      margin: -20px -20px 0px -20px;
+    }
+
+    &__plan {
+      flex: 1;
+      padding: 20px;
+      border-radius: 20px;
+      text-align: left;
+      border: 1px solid;
+      border-color: var(--shark-950);
+
+      &__title {
+        font-family: var(--second-fami6ly);
+        font-size: 30px;
+        font-weight: 600;
+        line-height: 24px;
+        letter-spacing: -0.07em;
+      }
+
+      p {
+        color: #555;
+        font-size: 14px;
+        margin: 10px 0px 15px 0px;
+      }
+
+      ul {
+        list-style: none;
+        padding: 0;
+        margin: 20px 0;
+
+        li {
+          display: flex;
+          align-items: center;
+          margin-bottom: 10px;
+          font-size: 14px;
+          color: #333;
+          gap: 8px;
+        }
+      }
+
+      &__buy-plan {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 20px;
+        background-color: #7b1fa2;
+        color: #fff;
+        font-weight: bold;
+        cursor: pointer;
+        font-size: 16px;
+
+        &:hover {
+          background-color: #6a1b9a;
+        }
+      }
+    }
+  }
+}

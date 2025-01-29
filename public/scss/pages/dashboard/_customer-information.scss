@@ -1,0 +1,155 @@
+.app_customer_information {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  overflow-y: auto;
+
+  &__upper {
+    display: flex;
+    gap: 20px;
+
+    @include screen('md') {
+      flex-direction: column;
+    }
+  }
+
+  &__lower {
+    flex: 1;
+    display: flex;
+    gap: 20px;
+
+    @include screen('md') {
+      flex-direction: column-reverse;
+    }
+
+    &__table {
+      flex: 1;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    &__sidebar {
+      max-width: 324px;
+      width: 100%;
+      flex: 1;
+      border-radius: 8px;
+      background-color: #fff;
+      padding: 20px;
+
+      @include screen('md') {
+        max-width: unset;
+      }
+    }
+  }
+
+  &__financial__con {
+    max-width: 518px;
+
+    @include screen('md') {
+      max-width: unset;
+      width: 100%;
+    }
+
+    &__banner {
+      background: linear-gradient(89deg, #fc55e0 0%, #990b81 100%);
+      padding: 1.5rem 2rem;
+      border-radius: 10px;
+
+      &__text {
+        font-weight: 600;
+        font-size: 18px;
+        color: var(--neutral-colours-white);
+
+        span {
+          display: inline-block;
+          color: #222;
+          background-color: #ffeffd;
+          border-radius: 4px;
+          padding: 0.25rem;
+        }
+      }
+    }
+  }
+}
+
+.app_personal_information_con {
+  border-radius: 8px;
+  background: var(--neutral-colours-white);
+  padding: 20px;
+
+  @include screen('sm') {
+    padding: 16px;
+  }
+}
+
+.app_personal_information {
+  &__header {
+    &__btn {
+      border: 1px solid #f5f5f5;
+      border-radius: 4px;
+      padding: 10px 18px;
+      background: var(--neutral-colours-nc-100);
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 129%;
+      color: var(--text-color);
+    }
+
+    &__btn.full {
+      background: linear-gradient(89deg, #fc55e0 0%, #990b81 100%);
+      color: var(--neutral-colours-white);
+    }
+  }
+
+  &__ctt {
+    &__con {
+      padding: 35px 30px;
+      background: var(--neutral-colours-nc-100);
+      border: 1px solid #f5f5f5;
+      border-radius: 4px;
+    }
+
+    &__upper {
+      &__avi {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+      }
+    }
+
+    &__flex {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 20px 55px;
+
+      @include screen('xl') {
+        justify-content: unset;
+        // display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(186px, 1fr));
+      }
+    }
+
+    &__label {
+      font-weight: 500;
+      font-size: 12px;
+      letter-spacing: 0.02em;
+      color: #808080;
+    }
+
+    &__value {
+      font-weight: 500;
+      font-size: 14px;
+      letter-spacing: 0.02em;
+      color: var(--text-color);
+    }
+
+    &__value.empty {
+      color: #808080;
+    }
+
+    &__imgae {
+      max-width: 131px;
+    }
+  }
+}
