@@ -5,7 +5,8 @@ const services = {
   customerManagement: '/customer-management/api',
   onboarding: '/onboarding',
   auth: '/auth',
-  professions: '/professions'
+  professions: '/professions',
+  clients: '/clients'
 }
 
 const config = {
