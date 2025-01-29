@@ -30,8 +30,6 @@ const useCreate = (options = {}) => {
     mutationKey: [queryKey.create],
     ...options,
     onSuccess: (data) => {
-      console.log(data, 'datadatadatadata');
-
       successToast('Verification mail sent');
       setLocalStorage(config.tokenKey, data?.fullName);
     },
@@ -64,7 +62,7 @@ const useLogin = (options = {}) => {
       ...options,
       onSuccess: (data) => {
         if (data.statusCode === '200') {
-          setLocalStorage(config.tokenKey, data?.responseData);
+          setLocalStorage(config.tokenKey, data?.data);
           successToast('Sign in successful');
           setTimeout(() => {
             router.push(routes.dashboard.entry.path);
@@ -103,6 +101,10 @@ const useRead = (options = {}) => {
   return response;
 };
 
-const queries = { create: useCreate, login: useLogin, read: useRead };
+const queries = {
+  create: useCreate,
+  login: useLogin,
+  read: useRead
+};
 
 export default queries;

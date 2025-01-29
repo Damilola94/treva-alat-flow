@@ -1,10 +1,16 @@
 import { Pagination } from '../../pagination';
+<<<<<<< HEAD
 import { BinGray, EditPencilGray, EmptyStatus } from '../../svgs';
 import Image from 'next/image';
 import clientManagement from '@/lib/assets/client-management';
 import { EmptyState } from '../empty-state';
 import queries from '@/services/queries/client-management';
 import { Skeleton } from '@/components/ui/skeleton';
+=======
+import { EmptyState, BinGray, EditPencilGray } from '../../svgs';
+import Image from 'next/image';
+import clientManagement from '@/lib/assets/client-management';
+>>>>>>> origin/dev
 
 interface IProps {
   onEdit?: (id: string) => void

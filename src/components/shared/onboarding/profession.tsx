@@ -42,14 +42,6 @@ export function Profession (props?: {
     rt.push(routes.onboarding.emailVerification.path);
   };
 
-  // const pprofessions = {
-  //   data: [
-  //     { name: 'Entrepreneur', id: 'f445fbf8-d5ff-4d0f-8101-0f81059edabb' },
-  //     { name: 'Others', id: '031fb812-aef5-4e7c-b0ff-59123c65dc6b' },
-  //     { name: 'Photographer', id: '076cbb45-b4df-4fef-b51e-7fb7beb67b83' },
-  //   ],
-  // };
-
   return (
     <div className="app_auth_login_container">
       <Header />
