@@ -16,7 +16,37 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'innovarionstr.blob.core.windows.net',
       },
+      {
+        protocol: 'https',
+        hostname: 'www.shutterstock.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'treva-api.somee.com',
+      },
     ],
+  },
+
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [    
+          {
+            key: 'Content-Security-Policy',
+            value: `object-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; img-src 'self' data: https://ui-avatars.com https://innovarionstr.blob.core.windows.net https://www.shutterstock.com https://treva-api.somee.com;`
+          },     
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff'
+          },
+          {
+            key: 'X-Frame-Options',
+            value: 'SAMEORIGIN'
+          }
+        ]
+      }
+    ];
   },
   async redirects() {
     return [

@@ -61,7 +61,9 @@ export default function Page () {
             'absolute bottom-0 right-0 h-[calc(100vh-20px)] w-full sm:w-[350px] bg-white p-0 flex flex-col mb-2 mr-2'
         }}
       >
-        <AddClient />
+        <AddClient onClose={function (): void {
+          throw new Error('Function not implemented.')
+        } } />
       </AnimatedModal>
       <div className="flex justify-center items-center gap-4">
         <ProgressStatus label="Project details" checked />

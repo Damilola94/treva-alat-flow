@@ -19,19 +19,12 @@ const validationSchema = Yup.object().shape({
   emailAddress: Yup.string()
     .email('Please enter a valid email address')
     .required('Please enter an email address'),
-  phoneNumber: Yup.string().required('Please enter a phone number'),
+  phoneNumber: Yup.string().matches(
+    /^[0-9]{11}$/,
+    'Please enter a valid phone number'
+  ),
   birthday: Yup.date().required('Please enter your birthday'),
-  image: Yup.mixed()
-    .required('Please select an image')
-    .test('fileType', 'Unsupported file format', (value) => {
-      if (!value || !(value instanceof File)) return false;
-      const supportedFormats = ['image/jpeg', 'image/png', 'image/jpg'];
-      return supportedFormats.includes(value.type);
-    })
-    .test('fileSize', 'File size is too large', (value) => {
-      const maxSize = 2 * 1024 * 1024; // 2MB
-      return value && value instanceof File && value.size <= maxSize;
-    })
+  image: Yup.mixed().required('Image is required')
 });
 
 const initialValues = {
@@ -48,14 +41,38 @@ export function AddClient ({ onClose }: IProps) {
   const { mutate, isLoading } = queries.create()
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [imagePreview, setImagePreview] = useState<string>('')
+
   const fileInputRef = useRef<HTMLInputElement | null>(null)
 
   const onSubmit = (values: InitialValues) => {
+    console.log(values.image, 'Submitting Image'); // ✅ Ensure this logs the image file
+
     mutate({
       ...values,
-      image: values.image
+      image: values.image // ✅ Use Formik's values.image
     });
+
     console.log(values, 'values');
+    console.log(values.image, 'Selected Image');
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, setFieldValue: (field: string, value: any) => void) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedFile(file); // Update state for preview
+
+      // ✅ Set image in Formik
+      setFieldValue('image', file);
+
+      // Show preview
+      const reader = new FileReader();
+      reader.onload = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   return (
@@ -88,6 +105,7 @@ export function AddClient ({ onClose }: IProps) {
                       <div className="">
                         <Input
                           name="fullName"
+                          type="text"
                           id="fullName"
                           placeholder="Client full name"
                           size="xl"
@@ -101,6 +119,7 @@ export function AddClient ({ onClose }: IProps) {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <Input
                           name="emailAddress"
+                          type='email'
                           id="emailAddress"
                           placeholder="Email address"
                           size="xl"
@@ -113,6 +132,7 @@ export function AddClient ({ onClose }: IProps) {
                         <Input
                           name="phoneNumber"
                           id="phoneNumber"
+                          type='text'
                           placeholder="Phone number"
                           size="xl"
                           value={values.phoneNumber}
@@ -140,7 +160,7 @@ export function AddClient ({ onClose }: IProps) {
                       </div>
                     </div>
                     <div className="app_upload_con py-5 px-4 flex flex-col gap-3 items-center">
-                      <input
+                      {/* <input
                         type="file"
                         id="image"
                         name="image"
@@ -154,7 +174,18 @@ export function AddClient ({ onClose }: IProps) {
                             void props.setFieldValue('image', file);
                           }
                         }}
+                      /> */}
+
+                      <input
+                        type="file"
+                        id="image"
+                        name="image"
+                        accept="image/png, image/jpeg, image/jpg"
+                        ref={fileInputRef}
+                        style={{ display: 'none' }}
+                        onChange={(e) => { handleFileChange(e, props.setFieldValue); }}
                       />
+
                       <Button
                         type="button"
                         onClick={() => fileInputRef.current?.click()}
@@ -196,7 +227,7 @@ export function AddClient ({ onClose }: IProps) {
                     )}
 
                     <div className="flex gap-4 w-fu`">
-                    {/* flex justify-between space-x-10 absolute bottom-0 w-full -left-5 mb-5 m */}
+                      {/* flex justify-between space-x-10 absolute bottom-0 w-full -left-5 mb-5 m */}
                       <Button
                         size="md"
                         type='button'

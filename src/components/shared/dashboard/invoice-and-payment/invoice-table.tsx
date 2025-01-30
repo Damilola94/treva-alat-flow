@@ -1,6 +1,6 @@
 import { Badge, type BadgeProps } from '../../badge'
 import { Pagination } from '../../pagination'
-import { EmptyState } from '../../svgs'
+import { EmptyStatus } from '../../svgs'
 
 const IS_EMPTY = false
 
@@ -32,7 +32,7 @@ export function InvoiceTable () {
   if (IS_EMPTY) {
     return (
       <div className="app_dashboard_home__task__ctt app_dashboard_home__task__ctt--empty">
-        <EmptyState />
+        <EmptyStatus />
 
         <div className="flex flex-col gap-1">
           <p className="app_dashboard_home__task__ctt__title">No task yet</p>

@@ -1,7 +1,9 @@
 import React from 'react'
 import { BinWithBG } from '../svgs'
+import queries from '@/services/queries/client-management'
 
 interface IProps {
+  clientId: string
   item: {
     title: string
     details?: string
@@ -20,7 +22,12 @@ interface IProps {
 }
 
 export function DeleteClient (props: IProps) {
-  const { item, handleClick } = props
+  const { clientId, item, handleClick } = props;
+
+  const { mutate: deleteClient, isLoading: isDeleting } = queries.delete()
+  const handleDelete = () => {
+    deleteClient(clientId)
+  }
   return (
     <div className="delete_card flex flex-col gap-4">
       <div className={'flex flex-col gap-9 justify-between flex-1'}>
@@ -46,9 +53,10 @@ export function DeleteClient (props: IProps) {
             <button
               className="delete_card__action__btn1"
               type="button"
-              onClick={handleClick}
+              onClick={handleDelete}
+              disabled={isDeleting}
             >
-              {item?.btnText2}
+             {isDeleting ? 'Deleting...' : item?.btnText2}
             </button>
           </div>
         </div>

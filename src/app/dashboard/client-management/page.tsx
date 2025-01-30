@@ -39,8 +39,13 @@ export default function Page () {
   const [takeATour, setTakeATour] = useState(true);
   const [addClientForm, setAddClientForm] = useState(true);
   const [editForm, setEditForm] = useState(true);
+  const [deleteClientId, setDeleteClientId] = useState<string | null>(null);
   const [deleteForm, setDeleteForm] = useState(false);
 
+  const onDelete = (id: string) => {
+    setDeleteClientId(id);
+    setDeleteForm(!deleteForm);
+  };
   const handleAddProjectClick = () => {
     setAddClientForm(!addClientForm);
   };
@@ -53,9 +58,9 @@ export default function Page () {
     setEditForm(!editForm);
   };
 
-  const onDelete = () => {
-    setDeleteForm(!deleteForm);
-  };
+  // const onDelete = () => {
+  //   setDeleteForm(!deleteForm);
+  // };
 
   return (
     <div className="app_dashboard_page app_dashboard_home">
@@ -116,7 +121,8 @@ export default function Page () {
               className: 'sm:max-w-[450px] h-[300px] p-0'
             }}
           >
-            <DeleteClient item={deleteClient} handleClick={onDelete} />
+            {deleteClientId && <DeleteClient clientId={deleteClientId} item={deleteClient} handleClick={() => { setDeleteForm(false); }} />}
+            {/* <DeleteClient clientId={client.id} item={deleteClient} handleClick={onDelete} /> */}
           </AnimatedModal>
         </Fragment>
       </RenderIf>

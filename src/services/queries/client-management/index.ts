@@ -14,17 +14,23 @@ import { type ClientManagement } from './types';
 
 const BASE_URL = config.services;
 
-const useCreate = (options = {}) => {
+const useCreate = (options = { onSuccess: () => { } }) => {
+  const queryClient = useQueryClient()
   const { mutate, ...response } = useMutation(api.post, {
     mutationKey: [queryKey.create],
     ...options,
-    onSuccess: () => {
-      successToast('Client added successfully');
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: [queryKey.read]
+      })
+
+      options.onSuccess()
+      successToast('Client added')
     },
     onError: (err: AxiosError) => {
-      errorToast(handleErrors(err));
+      errorToast(handleErrors(err))
     }
-  });
+  })
 
   interface Body {
     fullName: string
@@ -45,6 +51,7 @@ const useCreate = (options = {}) => {
       if (body.image) {
         formData.append('Image', body.image);
       }
+      console.log(formData, 'form data');
       const config = {
         headers: {
           'Content-Type': 'multipart/form-data'
@@ -59,25 +66,32 @@ const useCreate = (options = {}) => {
   };
 };
 
-const useRead = (options = {}) => {
+const useRead = ({ pageNumber = 1, pageSize = 50 } = {}, options = {}) => {
   const response = useQuery(
-    [queryKey.read],
-    async () => await api.get({ url: `${BASE_URL.clientManagement}`, auth: true }),
+    [queryKey.read, pageNumber, pageSize],
+    async () => {
+      const queryParams = new URLSearchParams()
+      queryParams.append('PageNumber', pageNumber.toString())
+      queryParams.append('PageSize', pageSize.toString())
+
+      const url = `${BASE_URL.clientManagement}?${queryParams.toString()}`
+      return await api.get({ url })
+    },
     {
       ...options,
-      onSuccess: () => { },
+      onSuccess: () => {},
       onError: (err: AxiosError) => {
         errorToast(handleErrors(err))
       }
     }
-  );
+  )
 
   return {
     ...response,
-    data: (response.data) as ApiResponse<ClientManagement> | undefined
-
+    data: (response.data || undefined) as ApiResponse<ClientManagement[]> | undefined,
+    metaData: response.data?.metaData
   }
-};
+}
 
 const useUpdate = (options: { onSuccess: () => void }) => {
   const {
@@ -156,12 +170,12 @@ const useDelete = (options = { onSuccess: () => { } }) => {
     mutate: (clientId: string) => {
       const config = {
         headers: {
-          'Content-Type': 'multipart/form-data'
+          'Content-Type': 'application/json'
         }
       }
 
       mutate({
-        url: `${BASE_URL.clientManagement}/clients/${clientId}`,
+        url: `${BASE_URL.clientManagement}/${clientId}`,
         ...config
       })
     }

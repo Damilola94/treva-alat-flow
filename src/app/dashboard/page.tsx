@@ -42,7 +42,7 @@ enum Projects {
   'Completed Project' = 'Completed Project',
 }
 
-function EllIcon() {
+function EllIcon () {
   return (
     <svg
       width="28"
@@ -100,11 +100,7 @@ const kpis = [
   }
 ];
 
-<<<<<<< HEAD
-export default function Page() {
-=======
 export default function Page () {
->>>>>>> origin/dev
   const [addProject, setAddProject] = useState(true)
   const [addProjectForm, setAddProjectForm] = useState(true)
 
@@ -122,11 +118,7 @@ export default function Page () {
   }
   return (
     <div className="app_dashboard_page app_dashboard_home">
-<<<<<<< HEAD
       <RenderIf condition={!addProject}>
-=======
-        <RenderIf condition={!addProject}>
->>>>>>> origin/dev
         <Fragment>
           <AnimatedModal
             {...{
@@ -189,14 +181,8 @@ export default function Page () {
 
             return (
               <div
-<<<<<<< HEAD
                 className={`app_dashboard_home__kpis__item ${IS_WALLET ? 'app_dashboard_home__kpis__item--wallet' : ''
                   }`}
-=======
-                className={`app_dashboard_home__kpis__item ${
-                  IS_WALLET ? 'app_dashboard_home__kpis__item--wallet' : ''
-                }`}
->>>>>>> origin/dev
                 key={index}
               >
                 <h6 className="app_dashboard_home__kpis__item__h6">
@@ -233,7 +219,6 @@ export default function Page () {
         </div>
 
         <div className="app_dashboard_home__task__ctt app_dashboard_home__task__ctt--empty">
-<<<<<<< HEAD
           <EmptyState
             icon={<EmptyStatus />}
             title="No task yet"
@@ -241,20 +226,11 @@ export default function Page () {
           />
 
           {/* <div className="flex flex-col gap-1">
-=======
-          <EmptyState />
-
-          <div className="flex flex-col gap-1">
->>>>>>> origin/dev
             <p className="app_dashboard_home__task__ctt__title">No task yet</p>
             <p className="app_dashboard_home__task__ctt__desc">
               Click “add new request” button to get started
             </p>
-<<<<<<< HEAD
           </div> */}
-=======
-          </div>
->>>>>>> origin/dev
         </div>
       </div>
 
