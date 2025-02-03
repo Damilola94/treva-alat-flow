@@ -53,12 +53,12 @@ export function ClientTable (props: IProps) {
               </tr>
             </thead>
             <tbody className="bg-white app_table__tbody">
-              {/* Rendering rows dynamically from fetched data */}
               {isLoading
                 ? (
                   <>
-                    <Skeleton />
-                    <Skeleton />
+                    {/* <Skeleton />
+                    <Skeleton /> */}
+                    {isLoading && [...Array(3)].map((_, index) => <Skeleton key={index} columns={4} />)}
                   </>
                   )
                 : (

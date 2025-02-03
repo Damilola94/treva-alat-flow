@@ -1,35 +1,124 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 'use client'
-import React from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import { Formik } from 'formik'
 import * as Yup from 'yup'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import queries from '@/services/queries/auth'
-import { Upload } from '@/components/shared'
+import { Delete, Upload } from '@/components/shared'
 import Image from 'next/image'
 import projectManagement from '@/lib/assets/project-management'
+import queries from '@/services/queries/client-management'
+import { toast } from 'react-toastify'
+
+interface IProps {
+  id: string
+  item: string
+  handleClick: () => void
+  onClose: () => void
+}
 
 const validationSchema = Yup.object().shape({
-  email: Yup.string()
+  fullName: Yup.string().required('Please enter a full name'),
+  emailAddress: Yup.string()
     .email('Please enter a valid email address')
-    .required('Please enter your email address')
-})
+    .required('Please enter an email address'),
+  phoneNumber: Yup.string()
+    .matches(/^[0-9]{11}$/, 'Phone number must be exactly 11 digits')
+    .required('Phone number is required'),
+  birthday: Yup.date().required('Please enter your birthday'),
+  image: Yup.mixed().required('Image is required')
+});
 
-enum AccountType {
-  Low = 'low',
-  Medium = 'medium',
-  High = 'high',
+const defaultInitialValues = {
+  fullName: '',
+  emailAddress: '',
+  phoneNumber: '',
+  birthday: '',
+  image: null
 }
 
-const initialValues = {
-  email: process.env.NEXT_PUBLIC_CLIENT_EMAIL ?? '',
-  password: process.env.NEXT_PUBLIC_CLIENT_PASSWORD ?? '',
-  accountType: AccountType.Low as `${AccountType}`
-}
+type InitialValues = ReturnType<() => typeof defaultInitialValues>
 
-export function EditClient () {
-  const { mutate, isLoading } = queries.login()
+export function EditClient ({ id, onClose }: IProps) {
+  const { data } = queries.readone({ clientId: id })
+  const { mutate, isLoading: isMutateLoading } = queries.update({
+    onSuccess: () => {
+      onClose();
+    }
+  })
+
+  const [initialValues, setInitialValues] = useState<InitialValues>(defaultInitialValues)
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [imagePreview, setImagePreview] = useState<string>('')
+
+  const fileInputRef = useRef<HTMLInputElement | null>(null)
+
+  useEffect(() => {
+    console.log('Fetched data:', data);
+    if (data) {
+      const newInitialValues = {
+        fullName: data.fullName ?? '',
+        emailAddress: data.emailAddress ?? '',
+        phoneNumber: String(data.phoneNumber ?? ''),
+        birthday: data.birthday ? data.birthday.split('T')[0] : '',
+        image: data.image && typeof data.image !== 'string' ? data.image : null
+      };
+      console.log('Setting initial values:', newInitialValues);
+      setInitialValues(newInitialValues);
+    }
+  }, [data]);
+
+  const onSubmit = (_values: InitialValues) => {
+    mutate({
+      id,
+      fullName: _values.fullName,
+      emailAddress: _values.emailAddress,
+      phoneNumber: _values.phoneNumber,
+      birthday: _values.birthday,
+      image: _values.image
+    });
+  };
+
+  const handleFileChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    setFieldValue: (field: string, value: any) => void
+  ) => {
+    const file = e.target.files?.[0];
+
+    if (file) {
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+
+      if (allowedTypes.includes(file.type)) {
+        setSelectedFile(file);
+        setFieldValue('image', file);
+
+        const reader = new FileReader();
+        reader.onload = () => {
+          setImagePreview(reader.result as string);
+        };
+        reader.readAsDataURL(file);
+      } else {
+        toast.error('Unsupported file type. Please upload a JPEG, PNG, or JPG file.');
+
+        setSelectedFile(null);
+        setFieldValue('image', null);
+
+        if (e.target) {
+          e.target.value = '';
+        }
+      }
+    } else {
+      setSelectedFile(null);
+      setFieldValue('image', null);
+    }
+  };
+
+  // if (isDataLoading) {
+  //   return <div>Loading...</div>;
+  // }
+
   return (
     <div className="app_auth_login_container relative">
       <Image src={projectManagement.topGradient} alt="top gradient" className="w-full" />
@@ -40,9 +129,10 @@ export function EditClient () {
               Edit client
             </h3>
             <Formik
+              enableReinitialize
               initialValues={initialValues}
               validationSchema={validationSchema}
-              onSubmit={mutate}
+              onSubmit={onSubmit}
             >
               {(props) => {
                 const {
@@ -58,83 +148,136 @@ export function EditClient () {
                     <div className="flex flex-col gap-8">
                       <div className="">
                         <Input
-                          name="email"
-                          type="email"
-                          id="email"
+                          name="fullName"
+                          type="text"
+                          id="fullName"
                           placeholder="Client full name"
                           size="xl"
-                          value={values.email}
+                          value={values.fullName}
                           onChange={handleChange}
                           onBlur={handleBlur}
                           errors={errors}
                           touched={touched}
                         />
                       </div>
-                      <div className="flex justify-center items-center space-x-5">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <Input
-                          name="email"
-                          type="text"
-                          id="email"
+                          name="emailAddress"
+                          type='email'
+                          id="emailAddress"
                           placeholder="Email address"
                           size="xl"
-                          value={values.password}
+                          value={values.emailAddress}
                           onChange={handleChange}
                           onBlur={handleBlur}
                           errors={errors}
                           touched={touched}
                         />
                         <Input
-                          name="pNumber"
-                          type="text"
-                          id="pNumber"
+                          name="phoneNumber"
+                          id="phoneNumber"
+                          type='text'
                           placeholder="Phone number"
                           size="xl"
-                          value={values.password}
+                          value={values.phoneNumber}
                           onChange={handleChange}
                           onBlur={handleBlur}
                           errors={errors}
                           touched={touched}
                         />
                       </div>
-                      <Input
-                        name="birthday"
-                        type="date"
-                        id="birthday"
-                        placeholder="Birthday"
-                        size="xl"
-                        value={values.password}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        errors={errors}
-                        touched={touched}
-                      />
-                    </div>
-                    <div className="app_upload_con py-5 px-4 flex flex-col gap-3 items-center">
-                      <Upload />
-                      <div className="flex flex-col gap-1">
-                        <p className="app_upload_con__title">Upload your CV</p>
-                        <p className="app_upload_con__description">
-                          PDF, PNG, JPG, GIF | 10MB max.
-                        </p>
+                      <div className="flex flex-col gap-2">
+                        <label htmlFor="birthday" className="text-sm font-medium text-gray-700">
+                          Date of Birth
+                        </label>
+                        <Input
+                          name="birthday"
+                          id="birthday"
+                          type="date"
+                          size="xl"
+                          value={values.birthday}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          errors={errors}
+                          touched={touched}
+                        />
                       </div>
                     </div>
-                    <div className="flex justify-between space-x-10 absolute bottom-0 w-full -left-5 mb-5 m">
+                    <div className="app_upload_con py-5 px-4 flex flex-col gap-3 items-center">
+                      <input
+                        type="file"
+                        id="image"
+                        name="image"
+                        accept="image/png, image/jpeg, image/jpg"
+                        ref={fileInputRef}
+                        style={{ display: 'none' }}
+                        onChange={(e) => { handleFileChange(e, props.setFieldValue); }}
+                      />
+                      {errors.image && touched.image && (
+                        <div className="text-red-500 text-sm mt-1">{errors.image}</div>
+                      )}
+
+                      <Button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        className="flex flex-col"
+                      >
+                        <div className="pt-5">
+                          <Upload />
+                        </div>
+                        <div className="flex flex-col gap-1 pb-5">
+                          <p className="app_upload_con__title">Upload client’s image</p>
+                          <p className="app_upload_con__description">
+                            PDF, PNG, JPG | 10MB max.
+                          </p>
+                        </div>
+                      </Button>
+
+                    </div>
+                    {selectedFile && (
+                      <div className="flex items-center justify-between w-full app_upload_con rounded-lg p-4">
+                        <div className="flex items-center gap-3">
+                          <div>
+                            <p className="font-medium text-sm text-gray-900">
+                              {selectedFile.name}
+                            </p>
+                            <p className="text-xs text-gray-500">{(selectedFile.size / 1024 / 1024).toFixed(2)} MB</p>
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSelectedFile(null);
+                            void props.setFieldValue('image', null);
+                          }}
+                          className="text-gray-500 hover:text-gray-900"
+                        >
+                          <Delete className="w-5 h-5" />
+                        </button>
+                      </div>
+                    )}
+
+                    <div className="flex gap-4 w-fu`">
+                      {/* flex justify-between space-x-10 absolute bottom-0 w-full -left-5 mb-5 m */}
                       <Button
                         size="md"
-                        isLoading={isLoading}
+                        type='button'
                         backgroundColor="transparent"
                         color="primary-blue-500"
-                        className="w-full border border-[#F1F1F1] hover:bg-transparent ml-10 app_auth_login__btn"
+                        className="w-full hover:bg-transparent app_auth_login__btn border border-[#F1F1F1]"
+                        onClick={onClose}
                       >
                         Close
                       </Button>
                       <Button
                         size="md"
-                        isLoading={isLoading}
+                        isLoading={isMutateLoading}
+                        type="submit"
                         backgroundColor="primary-blue-500"
                         className="w-full app_auth_login__btn"
+                        disabled={!selectedFile}
                       >
-                        Save changes
+                        Add client
                       </Button>
                     </div>
                   </form>

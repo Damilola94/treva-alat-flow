@@ -39,6 +39,7 @@ export default function Page () {
   const [takeATour, setTakeATour] = useState(true);
   const [addClientForm, setAddClientForm] = useState(true);
   const [editForm, setEditForm] = useState(true);
+  const [editClientId, setEditClientId] = useState<string | null>(null);
   const [deleteClientId, setDeleteClientId] = useState<string | null>(null);
   const [deleteForm, setDeleteForm] = useState(false);
 
@@ -50,17 +51,22 @@ export default function Page () {
     setAddClientForm(!addClientForm);
   };
 
+  const handleDeleteClient = () => {
+    setDeleteForm(!deleteForm)
+  }
+
   const handleTakeTourClick = () => {
     setTakeATour(!takeATour);
   };
 
-  const onEdit = () => {
+  const onEdit = (id: string) => {
+    setEditClientId(id)
     setEditForm(!editForm);
   };
 
-  // const onDelete = () => {
-  //   setDeleteForm(!deleteForm);
-  // };
+  const handleEditClient = () => {
+    setEditForm(!deleteForm);
+  };
 
   return (
     <div className="app_dashboard_page app_dashboard_home">
@@ -91,7 +97,8 @@ export default function Page () {
                 'absolute bottom-0 right-0 h-[calc(100vh-20px)] w-full sm:w-[350px] bg-white p-0 flex flex-col mb-2 mr-2'
             }}
           >
-            <EditClient />
+            {/* <EditClient onClose={handleEditClient}/> */}
+            {editClientId && <EditClient id={editClientId} item={editClientId} handleClick={() => { setEditForm(false); }} onClose={handleEditClient} />}
           </AnimatedModal>
         </Fragment>
       </RenderIf>
@@ -121,8 +128,7 @@ export default function Page () {
               className: 'sm:max-w-[450px] h-[300px] p-0'
             }}
           >
-            {deleteClientId && <DeleteClient clientId={deleteClientId} item={deleteClient} handleClick={() => { setDeleteForm(false); }} />}
-            {/* <DeleteClient clientId={client.id} item={deleteClient} handleClick={onDelete} /> */}
+              {deleteClientId && <DeleteClient clientId={deleteClientId} item={deleteClient} handleClick={() => { setDeleteForm(false); }} onClose={handleDeleteClient} />}
           </AnimatedModal>
         </Fragment>
       </RenderIf>

@@ -4,6 +4,7 @@ import queries from '@/services/queries/client-management'
 
 interface IProps {
   clientId: string
+  onClose: () => void
   item: {
     title: string
     details?: string
@@ -22,9 +23,13 @@ interface IProps {
 }
 
 export function DeleteClient (props: IProps) {
-  const { clientId, item, handleClick } = props;
+  const { clientId, item, handleClick, onClose } = props;
 
-  const { mutate: deleteClient, isLoading: isDeleting } = queries.delete()
+  const { mutate: deleteClient, isLoading: isDeleting } = queries.delete({
+    onSuccess: () => {
+      onClose();
+    }
+  })
   const handleDelete = () => {
     deleteClient(clientId)
   }

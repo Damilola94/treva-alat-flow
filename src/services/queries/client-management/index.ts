@@ -14,17 +14,20 @@ import { type ClientManagement } from './types';
 
 const BASE_URL = config.services;
 
-const useCreate = (options = { onSuccess: () => { } }) => {
+const useCreate = (options: { onSuccess: () => void }) => {
+  const {
+    onSuccess = () => {}
+  } = options
   const queryClient = useQueryClient()
   const { mutate, ...response } = useMutation(api.post, {
     mutationKey: [queryKey.create],
     ...options,
     onSuccess: async () => {
+      onSuccess()
       await queryClient.invalidateQueries({
         queryKey: [queryKey.read]
       })
 
-      options.onSuccess()
       successToast('Client added')
     },
     onError: (err: AxiosError) => {
@@ -43,25 +46,25 @@ const useCreate = (options = { onSuccess: () => { } }) => {
   return {
     ...response,
     mutate: (body: Body) => {
-      const formData = new FormData()
-      formData.append('FullName', body.fullName)
-      formData.append('EmailAddress', body.emailAddress)
-      formData.append('PhoneNumber', body.phoneNumber)
-      formData.append('Birthday', body.birthday)
-      if (body.image) {
+      const formData = new FormData();
+      formData.append('FullName', body.fullName);
+      formData.append('EmailAddress', body.emailAddress);
+      formData.append('PhoneNumber', body.phoneNumber);
+      formData.append('Birthday', body.birthday);
+
+      if (body.image instanceof File) {
         formData.append('Image', body.image);
+      } else {
+        throw new Error('Image is required and must be a valid file');
       }
-      console.log(formData, 'form data');
-      const config = {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      }
+
       mutate({
         url: `${BASE_URL.clientManagement}`,
         body: formData,
-        ...config
-      });
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
     }
   };
 };
@@ -93,20 +96,42 @@ const useRead = ({ pageNumber = 1, pageSize = 50 } = {}, options = {}) => {
   }
 }
 
+const useReadOne = ({ clientId = '', pageNumber = 1, pageSize = 50 } = {}, options = {}) => {
+  const url = `${BASE_URL.clientManagement}/${clientId}`
+
+  const response = useQuery(
+    [queryKey.readOne, clientId, pageNumber, pageSize], async () => await api.get({ url }),
+    {
+      ...options,
+      enabled: !!clientId,
+      onSuccess: () => {},
+      onError: (err: AxiosError) => {
+        errorToast(handleErrors(err))
+      }
+    }
+  )
+
+  return {
+    ...response,
+    data: response.data ? (response.data as ClientManagement) : undefined,
+    metaData: response.data?.metaData
+  }
+}
+
 const useUpdate = (options: { onSuccess: () => void }) => {
   const {
-    onSuccess = () => { }
+    onSuccess = () => {}
   } = options
   const queryClient = useQueryClient()
-
   const { mutate, ...response } = useMutation(api.put, {
-    mutationKey: [queryKey.update],
+    mutationKey: [queryKey.create],
     ...options,
     onSuccess: async () => {
       onSuccess()
       await queryClient.invalidateQueries({
         queryKey: [queryKey.read]
       })
+
       successToast('Client updated')
     },
     onError: (err: AxiosError) => {
@@ -133,33 +158,38 @@ const useUpdate = (options: { onSuccess: () => void }) => {
       formData.append('Birthday', body.birthday)
       formData.append('ClientId', body.id)
 
-      if (body.image) {
-        formData.append('Image', body.image)
+      if (body.image instanceof File) {
+        formData.append('Image', body.image);
+      } else {
+        throw new Error('Image is required and must be a valid file');
       }
-      const config = {
+
+      mutate({
+        url: `${BASE_URL.clientManagement}/${body.id}`,
+        body: formData,
         headers: {
           'Content-Type': 'multipart/form-data'
         }
-      }
-      mutate({
-        url: `${BASE_URL.clientManagement}/clients/${body.id}`,
-        body: formData,
-        ...config
       });
     }
   }
 }
 
-const useDelete = (options = { onSuccess: () => { } }) => {
+const useDelete = (options: { onSuccess: () => void }) => {
+  const {
+    onSuccess = () => {}
+  } = options
   const queryClient = useQueryClient()
 
   const { mutate, ...response } = useMutation(api.delete, {
     mutationKey: [queryKey.delete],
     ...options,
     onSuccess: async () => {
+      onSuccess()
       await queryClient.invalidateQueries({
         queryKey: [queryKey.read]
       })
+      successToast('Client deleted')
     },
     onError: (err: AxiosError) => {
       errorToast(handleErrors(err))
@@ -182,6 +212,6 @@ const useDelete = (options = { onSuccess: () => { } }) => {
   }
 }
 
-const queries = { create: useCreate, read: useRead, update: useUpdate, delete: useDelete };
+const queries = { create: useCreate, read: useRead, update: useUpdate, delete: useDelete, readone: useReadOne };
 
 export default queries;

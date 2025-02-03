@@ -9,6 +9,7 @@ import { Delete, Upload } from '@/components/shared'
 import Image from 'next/image'
 import projectManagement from '@/lib/assets/project-management'
 import queries from '@/services/queries/client-management'
+import { toast } from 'react-toastify'
 
 interface IProps {
   onClose: () => void
@@ -19,10 +20,9 @@ const validationSchema = Yup.object().shape({
   emailAddress: Yup.string()
     .email('Please enter a valid email address')
     .required('Please enter an email address'),
-  phoneNumber: Yup.string().matches(
-    /^[0-9]{11}$/,
-    'Please enter a valid phone number'
-  ),
+  phoneNumber: Yup.string()
+    .matches(/^[0-9]{11}$/, 'Phone number must be exactly 11 digits')
+    .required('Phone number is required'),
   birthday: Yup.date().required('Please enter your birthday'),
   image: Yup.mixed().required('Image is required')
 });
@@ -38,7 +38,11 @@ const initialValues = {
 type InitialValues = ReturnType<() => typeof initialValues>
 
 export function AddClient ({ onClose }: IProps) {
-  const { mutate, isLoading } = queries.create()
+  const { mutate, isLoading } = queries.create({
+    onSuccess: () => {
+      onClose();
+    }
+  })
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -46,32 +50,44 @@ export function AddClient ({ onClose }: IProps) {
 
   const fileInputRef = useRef<HTMLInputElement | null>(null)
 
-  const onSubmit = (values: InitialValues) => {
-    console.log(values.image, 'Submitting Image'); // ✅ Ensure this logs the image file
-
-    mutate({
-      ...values,
-      image: values.image // ✅ Use Formik's values.image
-    });
-
-    console.log(values, 'values');
-    console.log(values.image, 'Selected Image');
+  const onSubmit = (
+    _values: InitialValues) => {
+    mutate(
+      { ..._values, image: _values.image }
+    );
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, setFieldValue: (field: string, value: any) => void) => {
+  const handleFileChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    setFieldValue: (field: string, value: any) => void
+  ) => {
     const file = e.target.files?.[0];
+
     if (file) {
-      setSelectedFile(file); // Update state for preview
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
 
-      // ✅ Set image in Formik
-      setFieldValue('image', file);
+      if (allowedTypes.includes(file.type)) {
+        setSelectedFile(file);
+        setFieldValue('image', file);
 
-      // Show preview
-      const reader = new FileReader();
-      reader.onload = () => {
-        setImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+        const reader = new FileReader();
+        reader.onload = () => {
+          setImagePreview(reader.result as string);
+        };
+        reader.readAsDataURL(file);
+      } else {
+        toast.error('Unsupported file type. Please upload a JPEG, PNG, or JPG file.');
+
+        setSelectedFile(null);
+        setFieldValue('image', null);
+
+        if (e.target) {
+          e.target.value = '';
+        }
+      }
+    } else {
+      setSelectedFile(null);
+      setFieldValue('image', null);
     }
   };
 
@@ -160,22 +176,6 @@ export function AddClient ({ onClose }: IProps) {
                       </div>
                     </div>
                     <div className="app_upload_con py-5 px-4 flex flex-col gap-3 items-center">
-                      {/* <input
-                        type="file"
-                        id="image"
-                        name="image"
-                        accept="image/png, image/jpeg, image/jpg"
-                        ref={fileInputRef}
-                        style={{ display: 'none' }}
-                        onChange={(e) => {
-                          const file = e.target.files?.[0];
-                          if (file) {
-                            setSelectedFile(file);
-                            void props.setFieldValue('image', file);
-                          }
-                        }}
-                      /> */}
-
                       <input
                         type="file"
                         id="image"
@@ -185,6 +185,9 @@ export function AddClient ({ onClose }: IProps) {
                         style={{ display: 'none' }}
                         onChange={(e) => { handleFileChange(e, props.setFieldValue); }}
                       />
+                      {errors.image && touched.image && (
+                        <div className="text-red-500 text-sm mt-1">{errors.image}</div>
+                      )}
 
                       <Button
                         type="button"
@@ -241,9 +244,10 @@ export function AddClient ({ onClose }: IProps) {
                       <Button
                         size="md"
                         isLoading={isLoading}
-                        type='submit'
+                        type="submit"
                         backgroundColor="primary-blue-500"
                         className="w-full app_auth_login__btn"
+                        disabled={!selectedFile}
                       >
                         Add client
                       </Button>
