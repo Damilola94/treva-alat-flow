@@ -12,6 +12,7 @@ import {
   EditClient
 } from '@/components/shared/client-management';
 import projectManagement from '@/lib/assets/project-management';
+import queries from '@/services/queries/client-management';
 
 const viewTakeATour = {
   img: projectManagement.topImage,
@@ -31,9 +32,9 @@ const deleteClient = {
   btnText2: 'Delete'
 };
 
-enum Clients {
-  'All Client' = 'All Client',
-}
+// enum Clients {
+//   'All Client' = 'All Client',
+// }
 
 export default function Page () {
   const [takeATour, setTakeATour] = useState(true);
@@ -42,6 +43,19 @@ export default function Page () {
   const [editClientId, setEditClientId] = useState<string | null>(null);
   const [deleteClientId, setDeleteClientId] = useState<string | null>(null);
   const [deleteForm, setDeleteForm] = useState(false);
+  const [search, setSearch] = useState('');
+
+  const { refetch } = queries.read({ search });
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value);
+    void refetch();
+  };
+
+  const clearSearch = () => {
+    setSearch('');
+    void refetch();
+  };
 
   const onDelete = (id: string) => {
     setDeleteClientId(id);
@@ -97,7 +111,6 @@ export default function Page () {
                 'absolute bottom-0 right-0 h-[calc(100vh-20px)] w-full sm:w-[350px] bg-white p-0 flex flex-col mb-2 mr-2'
             }}
           >
-            {/* <EditClient onClose={handleEditClient}/> */}
             {editClientId && <EditClient id={editClientId} item={editClientId} handleClick={() => { setEditForm(false); }} onClose={handleEditClient} />}
           </AnimatedModal>
         </Fragment>
@@ -136,7 +149,7 @@ export default function Page () {
       <div className="app_dashboard_home__task app_dashboard_page__px">
         <div className="app_dashboard_home__task__hdr flex-wrap gap-2 mt-4">
           <div className="flex flex-wrap gap-2">
-            {Object.entries(Clients).map(([label]) => (
+            {/* {Object.entries(Clients).map(([label]) => (
               <Pill
                 key={label}
                 size="md"
@@ -144,16 +157,19 @@ export default function Page () {
               >
                 {label}
               </Pill>
-            ))}
+            ))} */}
+            <Pill size="md" active={search === ''} onClick={clearSearch}>
+              All Clients
+            </Pill>
           </div>
 
           <div className="flex gap-2">
-            {false &&
             <Input
               placeholder="Search for project"
               className="app_navbar__right__searchbar"
+              value={search}
+              onChange={handleSearchChange}
             />
-      }
             <Button
               size="md"
               onClick={handleAddProjectClick}
@@ -166,7 +182,7 @@ export default function Page () {
           </div>
         </div>
 
-        <ClientTable onEdit={onEdit} onDelete={onDelete} />
+        <ClientTable onEdit={onEdit} onDelete={onDelete} search={search} />
       </div>
     </div>
   );
