@@ -148,10 +148,12 @@ export default function Page () {
           </div>
 
           <div className="flex gap-2">
+            {false &&
             <Input
               placeholder="Search for project"
               className="app_navbar__right__searchbar"
             />
+      }
             <Button
               size="md"
               onClick={handleAddProjectClick}

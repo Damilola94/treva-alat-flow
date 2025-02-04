@@ -5,6 +5,7 @@ import clientManagement from '@/lib/assets/client-management';
 import { EmptyState } from '../empty-state';
 import queries from '@/services/queries/client-management';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useEffect } from 'react';
 
 interface IProps {
   onEdit?: (id: string) => void
@@ -22,9 +23,13 @@ const thead = [
 ];
 
 export function ClientTable (props: IProps) {
-  const { data: clients, isLoading } = queries.read();
+  const { data: clients, refetch, isLoading } = queries.read();
 
   const { onEdit, onDelete } = props;
+
+  useEffect(() => {
+    void refetch()
+  }, [clients, refetch]);
 
   if (!isLoading && (!clients?.data || clients.data.length === 0)) {
     return (

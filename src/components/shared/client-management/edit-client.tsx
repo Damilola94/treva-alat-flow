@@ -19,36 +19,33 @@ interface IProps {
 }
 
 const validationSchema = Yup.object().shape({
-  fullName: Yup.string().required('Please enter a full name'),
-  emailAddress: Yup.string()
-    .email('Please enter a valid email address')
-    .required('Please enter an email address'),
+  fullName: Yup.string().optional(),
+  emailAddress: Yup.string().email('Please enter a valid email address').optional(),
   phoneNumber: Yup.string()
     .matches(/^[0-9]{11}$/, 'Phone number must be exactly 11 digits')
-    .required('Phone number is required'),
-  birthday: Yup.date().required('Please enter your birthday'),
-  image: Yup.mixed().required('Image is required')
+    .optional(),
+  birthday: Yup.date().optional()
 });
 
-const defaultInitialValues = {
+const initialValues = {
   fullName: '',
   emailAddress: '',
   phoneNumber: '',
   birthday: '',
-  image: null
+  image: null as File | null
 }
 
-type InitialValues = ReturnType<() => typeof defaultInitialValues>
+type InitialValues = ReturnType<() => typeof initialValues>
 
 export function EditClient ({ id, onClose }: IProps) {
-  const { data } = queries.readone({ clientId: id })
-  const { mutate, isLoading: isMutateLoading } = queries.update({
+  const clientId = id
+  const { data, refetch } = queries.readone({ clientId })
+  const { mutate, isLoading } = queries.update({
     onSuccess: () => {
+      void refetch()
       onClose();
     }
   })
-
-  const [initialValues, setInitialValues] = useState<InitialValues>(defaultInitialValues)
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [imagePreview, setImagePreview] = useState<string>('')
@@ -56,29 +53,27 @@ export function EditClient ({ id, onClose }: IProps) {
   const fileInputRef = useRef<HTMLInputElement | null>(null)
 
   useEffect(() => {
-    console.log('Fetched data:', data);
-    if (data) {
-      const newInitialValues = {
-        fullName: data.fullName ?? '',
-        emailAddress: data.emailAddress ?? '',
-        phoneNumber: String(data.phoneNumber ?? ''),
-        birthday: data.birthday ? data.birthday.split('T')[0] : '',
-        image: data.image && typeof data.image !== 'string' ? data.image : null
-      };
-      console.log('Setting initial values:', newInitialValues);
-      setInitialValues(newInitialValues);
-    }
-  }, [data]);
+    if (data) { /* empty */ }
+  }, [data, clientId])
 
   const onSubmit = (_values: InitialValues) => {
-    mutate({
-      id,
+    const formData: {
+      id: string
+      fullName: string
+      emailAddress: string
+      phoneNumber: string
+      birthday: string
+      image?: File | null
+    } = {
+      id: clientId,
       fullName: _values.fullName,
       emailAddress: _values.emailAddress,
       phoneNumber: _values.phoneNumber,
       birthday: _values.birthday,
       image: _values.image
-    });
+    };
+
+    mutate(formData);
   };
 
   const handleFileChange = (
@@ -115,9 +110,9 @@ export function EditClient ({ id, onClose }: IProps) {
     }
   };
 
-  // if (isDataLoading) {
-  //   return <div>Loading...</div>;
-  // }
+  if (!data) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="app_auth_login_container relative">
@@ -130,7 +125,14 @@ export function EditClient ({ id, onClose }: IProps) {
             </h3>
             <Formik
               enableReinitialize
-              initialValues={initialValues}
+              initialValues={{
+                ...initialValues,
+                fullName: data?.fullName ?? '',
+                emailAddress: data?.emailAddress ?? '',
+                phoneNumber: String(data?.phoneNumber ?? ''),
+                birthday: data.birthday ? data.birthday.split('T')[0] : '',
+                image: data?.image ? null : null
+              }}
               validationSchema={validationSchema}
               onSubmit={onSubmit}
             >
@@ -271,13 +273,12 @@ export function EditClient ({ id, onClose }: IProps) {
                       </Button>
                       <Button
                         size="md"
-                        isLoading={isMutateLoading}
+                        isLoading={isLoading}
                         type="submit"
                         backgroundColor="primary-blue-500"
                         className="w-full app_auth_login__btn"
-                        disabled={!selectedFile}
                       >
-                        Add client
+                        Update client
                       </Button>
                     </div>
                   </form>

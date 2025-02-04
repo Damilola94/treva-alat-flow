@@ -113,7 +113,7 @@ const useReadOne = ({ clientId = '', pageNumber = 1, pageSize = 50 } = {}, optio
 
   return {
     ...response,
-    data: response.data ? (response.data as ClientManagement) : undefined,
+    data: response.data?.data as ClientManagement | undefined,
     metaData: response.data?.metaData
   }
 }
@@ -121,47 +121,46 @@ const useReadOne = ({ clientId = '', pageNumber = 1, pageSize = 50 } = {}, optio
 const useUpdate = (options: { onSuccess: () => void }) => {
   const {
     onSuccess = () => {}
-  } = options
-  const queryClient = useQueryClient()
+  } = options;
+  const queryClient = useQueryClient();
   const { mutate, ...response } = useMutation(api.put, {
-    mutationKey: [queryKey.create],
+    mutationKey: [queryKey.update],
     ...options,
     onSuccess: async () => {
-      onSuccess()
+      onSuccess();
       await queryClient.invalidateQueries({
         queryKey: [queryKey.read]
-      })
-
-      successToast('Client updated')
+      });
+      successToast('Client updated');
     },
     onError: (err: AxiosError) => {
-      errorToast(handleErrors(err))
+      errorToast(handleErrors(err));
     }
-  })
+  });
 
   interface Body {
     id: string
-    fullName: string
-    emailAddress: string
-    phoneNumber: string
-    birthday: string
-    image: File | null
+    fullName?: string
+    emailAddress?: string
+    phoneNumber?: string
+    birthday?: string
+    image?: File | null
   }
 
   return {
     ...response,
     mutate: (body: Body) => {
-      const formData = new FormData()
-      formData.append('FullName', body.fullName)
-      formData.append('EmailAddress', body.emailAddress)
-      formData.append('PhoneNumber', body.phoneNumber)
-      formData.append('Birthday', body.birthday)
-      formData.append('ClientId', body.id)
+      const formData = new FormData();
+      if (body.fullName) formData.append('FullName', body.fullName);
+      if (body.emailAddress) formData.append('EmailAddress', body.emailAddress);
+      if (body.phoneNumber) formData.append('PhoneNumber', body.phoneNumber);
+      if (body.birthday) formData.append('Birthday', body.birthday);
+      formData.append('ClientId', body.id);
 
       if (body.image instanceof File) {
         formData.append('Image', body.image);
-      } else {
-        throw new Error('Image is required and must be a valid file');
+      } else if (body.image === null) {
+        formData.append('Image', ''); // Ensures backend receives an empty value
       }
 
       mutate({
@@ -172,8 +171,8 @@ const useUpdate = (options: { onSuccess: () => void }) => {
         }
       });
     }
-  }
-}
+  };
+};
 
 const useDelete = (options: { onSuccess: () => void }) => {
   const {
