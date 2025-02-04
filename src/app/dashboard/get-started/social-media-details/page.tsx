@@ -31,7 +31,8 @@ export default function Page () {
         <ProgressStatus label="Social media details" active />
         <ProgressStatus label="Bio" />
         <ProgressStatus label="Select plan" />
-        <ProgressStatus label="Team setup" />
+        <ProgressStatus label="Finish" />
+        {/* <ProgressStatus label="Team setup" /> */}
       </div>
 
       <div className="app_get_started_professional_details__form flex flex-col gap-10">
@@ -126,7 +127,7 @@ export default function Page () {
                       <div className="">
                         <Button
                           size="xl"
-                          backgroundColor="shark-950"
+                          backgroundColor="primary-blue-500"
                           className="w-full py-3 px-12"
                         >
                           Save & Continue

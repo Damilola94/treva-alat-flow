@@ -7,11 +7,7 @@ export function Header () {
     <div className="app_auth_login_container__header flex justify-between items-center">
       <div className="flex items-center gap-3">
         <Logo />
-        <h2 className="app_auth_login_container__header__logo__title">
-          Creathrivity
-        </h2>
       </div>
-
       <div className="flex items-center gap-2">
         <p className="app_auth_login_container__header__account">
           Already have an account?

@@ -3,7 +3,10 @@ const baseUrl = process.env.NEXT_PUBLIC_API_URL ?? ''
 const services = {
   accountManagement: '/account-management/api',
   customerManagement: '/customer-management/api',
-  onboarding: '/onboarding/api'
+  onboarding: '/onboarding',
+  auth: '/auth',
+  professions: '/professions',
+  clientManagement: '/clients'
 }
 
 const config = {

@@ -1,6 +1,6 @@
 export * from './badge'
 export { FileButton } from './file-button'
-export { Modal } from './modal'
+export { AnimatedModal } from './modal'
 export { Pagination } from './pagination'
 export { Pill } from './pill'
 export { RenderIf } from './render-if'

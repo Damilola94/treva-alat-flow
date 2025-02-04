@@ -13,7 +13,6 @@ export function Profile () {
       <div className="app_user_avi">
         <Image width={33} height={33} src={getAvatar({ background: 'F6EAF4', name, length: fullName ? 2 : 1 })} alt="" />
       </div>
-
       <div className="flex flex-col">
         <p className='capitalize'>{name}</p>
         <span className="app_dash_main__hdr__rgt__profile__title">RM</span>

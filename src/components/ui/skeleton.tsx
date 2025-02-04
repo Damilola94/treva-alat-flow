@@ -1,22 +1,24 @@
 import { cn } from '@/lib/utils'
 
-interface IProps extends React.HTMLAttributes<HTMLDivElement> {
+interface IProps extends React.HTMLAttributes<HTMLTableRowElement> {
   height?: number | string
+  columns: number
 }
 
 function Skeleton (props: IProps) {
-  const { className, height = 150, ...prop } = props
+  const { className, columns, height = 50, ...prop } = props
+
   return (
-    <div className="app_skeleton">
-      <div
-        className={cn(
-          'animate-pulse rounded-md bg-muted app_skeleton__bg',
-          className
-        )}
-        {...prop}
-        style={{ height: `${height}px` }}
-      />
-    </div>
+    <tr className={cn('animate-pulse app_skeleton', className)} {...prop}>
+      {[...Array(columns)].map((_, index) => (
+        <td key={index} className="p-2">
+          <div
+            className="rounded-md bg-muted app_skeleton__bg w-full"
+            style={{ height: `${height}px` }}
+          />
+        </td>
+      ))}
+    </tr>
   )
 }
 

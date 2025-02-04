@@ -1,6 +1,6 @@
 import React from 'react'
 import Image, { type StaticImageData } from 'next/image'
-import { ChevronRight, Logo } from '../../svgs'
+import { ChevronRight, SmallLogo } from '../../svgs'
 import { RenderIf } from '../../render-if'
 import Link from 'next/link'
 import routes from '@/lib/routes'
@@ -78,7 +78,7 @@ export function GetStartedCard (props: IProps) {
                 <Link key={item.id} href={item.href}>
                   <div className="app_get_started_card__steps__item flex gap-4">
                     <div className="app_get_started_card__steps__item__logo">
-                      <Logo width={24} height={24} />
+                      <SmallLogo width={24} height={24} />
                     </div>
 
                     <div className="app_get_started_card__steps__item__ctt flex-1 flex flex-col gap-2">
@@ -97,7 +97,6 @@ export function GetStartedCard (props: IProps) {
               ))}
             </div>
           </RenderIf>
-
           <div className="app_get_started_card__action">
             <div className="flex items-center justify-between">
               <RenderIf condition={showSteps}>

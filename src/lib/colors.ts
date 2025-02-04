@@ -1,6 +1,9 @@
 export const rootColors = {
+  'error-500': '#F9403A',
+
   'green-200': '#BCF0DA',
   'green-500': '#0E9F6E',
+  'green-900': '#26A17B',
 
   'grey-600': '#475367',
 
@@ -14,6 +17,8 @@ export const rootColors = {
   white: '#fff',
 
   'primary-color': '#fafafa',
+  'primary-color-200': '#00DAD9',
+  'primary-color-500': '#A5A6F6',
 
   'wema-purple': '#9A1A87',
 
@@ -25,11 +30,17 @@ export const rootColors = {
 
   'iris-60': '#A5A6F6',
 
+  'treva-purple-50': '#EFF1FE',
+  'treva-purple-100': '#E2E4FD',
+  'treva-purple-500': '#7D6CE8',
+
   'text-color-100': '#F1F1F1',
   'text-color-200': '#E7E7E7',
   'text-color-400': '#808080',
   'text-color-500': '#333333',
+  'text-color-900': '#262626',
 
+  'shark-40': '#d1d5db',
   'shark-50': '#f6f6f6',
   'shark-100': '#e7e7e7',
   'shark-200': '#d1d1d1',
@@ -40,7 +51,9 @@ export const rootColors = {
   'shark-700': '#4f4f4f',
   'shark-800': '#454545',
   'shark-900': '#3d3d3d',
-  'shark-950': '#262626'
+  'shark-950': '#262626',
+
+  'primary-blue-500': '#7B37F0'
 }
 
 export type Color = ReturnType<() => typeof rootColors>

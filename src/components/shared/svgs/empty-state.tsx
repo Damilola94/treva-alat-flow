@@ -1,4 +1,4 @@
-export function EmptyState () {
+export function EmptyStatus () {
   return (
     <svg width="87" height="86" viewBox="0 0 87 86" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M43.5 73.5021C59.7364 73.5021 72.8985 68.3387 72.8985 61.9694C72.8985 55.6 59.7364 50.4366 43.5 50.4366C27.2637 50.4366 14.1016 55.6 14.1016 61.9694C14.1016 68.3387 27.2637 73.5021 43.5 73.5021Z" fill="white"/>

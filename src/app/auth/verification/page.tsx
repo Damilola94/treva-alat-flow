@@ -48,7 +48,7 @@ export default function Page () {
                 <Link href={routes.auth.signIn.path}>
                   <Button
                     size="xl"
-                    backgroundColor="shark-950"
+                    backgroundColor="primary-blue-500"
                     className="w-full app_auth_login__btn"
                   >
                     Sign in

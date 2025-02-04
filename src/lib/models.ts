@@ -1,8 +1,8 @@
 export interface ApiResponse<T> {
   isSuccess?: boolean
-  responseCode?: string
-  responseMessage?: string
-  responseData?: T
+  statusCode?: string
+  message?: string
+  data?: T
   metaData?: {
     totalCount: number
     pageSize: number

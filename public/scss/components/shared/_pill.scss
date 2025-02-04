@@ -10,9 +10,9 @@
   text-align: center;
 
   &--active {
-    border: 1px solid var(--shark-950, #262626);
+    border: 1px solid var(--primary-blue-500, #262626);
     box-shadow: 0px 4px 20px 0px #0000000D;
-    color: var(--shark-950);
+    color: var(--primary-blue-500);
   }
 
   &--md {

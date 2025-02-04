@@ -14,6 +14,19 @@ const routes = {
       path: '/auth/sign-out'
     },
 
+    forgotPassword: {
+      path: '/auth/forgot-password',
+      resetEmail: {
+        path: '/auth/forgot-password/reset-email'
+      },
+      resetPassword: {
+        path: '/auth/forgot-password/reset-password'
+      },
+      passwordResetSuccessful: {
+        path: '/auth/forgot-password/password-reset-successful'
+      }
+    },
+
     verification: {
       path: '/auth/verification'
     }
@@ -53,11 +66,35 @@ const routes = {
     },
 
     invoiceAndPayment: {
-      path: '/dashboard/invoice-and-payment'
+      path: '/dashboard/invoice-and-payment',
+
+      projectDetails: {
+        path: '/dashboard/invoice-and-payment/project-details'
+      },
+
+      deliverables: {
+        path: '/dashboard/invoice-and-payment/deliverables'
+      },
+
+      payment: {
+        path: '/dashboard/invoice-and-payment/payment'
+      },
+
+      agreement: {
+        path: '/dashboard/invoice-and-payment/agreement'
+      },
+
+      review: {
+        path: '/dashboard/invoice-and-payment/review'
+      }
     },
 
     projectManagement: {
       path: '/dashboard/project-management'
+    },
+
+    clientManagement: {
+      path: '/dashboard/client-management'
     }
   },
 

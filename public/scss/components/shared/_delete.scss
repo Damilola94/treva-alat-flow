@@ -1,0 +1,64 @@
+.delete_card {
+  overflow: hidden;
+  text-align: center;
+
+  &__ctt {
+    padding: 0 1rem;
+    justify-content: center;
+    align-items: center;
+    &__title {
+      font-family: var(--third-family);
+      font-weight: 600;
+      font-size: 18px;
+      max-width: 80%;
+      line-height: 145%;
+      letter-spacing: -0.04em;
+      color: #000;
+    }
+    &__text {
+      font-family: var(--second-family);
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 150%;
+      color: var(--shark-400);
+    }
+    
+  }
+  &__action {
+    padding: 1rem;
+    padding-bottom: 1.5rem;
+
+    &__btn1 {
+      border-radius: 20px;
+      padding: 10px;
+      background: #F14343;
+      font-family: var(--third-family);
+      font-weight: 600;
+      width: 100%;
+      font-size: 13px;
+      line-height: 145%;
+      letter-spacing: -0.04em;
+      color: white;
+    }
+    &__btn2 {
+      border-radius: 20px;
+      padding: 10px;
+      font-family: var(--third-family);
+      font-weight: 600;
+      font-size: 13px;
+      line-height: 145%;
+      letter-spacing: -0.04em;
+      color: var(--text-color-500);
+      border: 1px solid;
+      width: 100%;
+    }
+    &__text {
+      font-family: var(--third-family);
+      font-weight: 500;
+      font-size: 12px;
+      line-height: 145%;
+      letter-spacing: -0.04em;
+      color: var(--shark-300);
+    }
+  }
+}
