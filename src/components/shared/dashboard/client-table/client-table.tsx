@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Pagination } from '../../pagination';
 import { BinGray, EditPencilGray, EmptyStatus } from '../../svgs';
 import Image from 'next/image';
@@ -5,14 +6,12 @@ import clientManagement from '@/lib/assets/client-management';
 import { EmptyState } from '../empty-state';
 import queries from '@/services/queries/client-management';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useEffect } from 'react';
 
 interface IProps {
   onEdit?: (id: string) => void
   onDelete?: (id: string) => void
+  search: string
 }
-
-// const IS_EMPTY = false;
 
 const thead = [
   { label: 'Client' },
@@ -23,15 +22,15 @@ const thead = [
 ];
 
 export function ClientTable (props: IProps) {
-  const { data: clients, refetch, isLoading } = queries.read();
+  const { data: clientData, refetch, isLoading } = queries.read({ search: props.search });
 
   const { onEdit, onDelete } = props;
 
   useEffect(() => {
     void refetch()
-  }, [clients, refetch]);
+  }, [clientData, refetch, props.search]);
 
-  if (!isLoading && (!clients?.data || clients.data.length === 0)) {
+  if (!isLoading && (!clientData?.data || clientData.data.length === 0)) {
     return (
       <div className="app_dashboard_home__task__ctt app_dashboard_home__task__ctt--empty">
         <EmptyState
@@ -61,13 +60,11 @@ export function ClientTable (props: IProps) {
               {isLoading
                 ? (
                   <>
-                    {/* <Skeleton />
-                    <Skeleton /> */}
-                    {isLoading && [...Array(3)].map((_, index) => <Skeleton key={index} columns={4} />)}
+                    {[...Array(3)].map((_, index) => <Skeleton key={index} columns={4} />)}
                   </>
                   )
                 : (
-                    clients?.data?.map((client: any) => (
+                    clientData?.data?.map((client: any) => (
                     <tr className="cursor-pointer hover:bg-gray-100" key={client.id}>
                       <td className="app_table__tbody__td font-medium text-[--text-color-500]">
                         <div className="app_table__tbody__td__ctt flex justify-center items-center -ml-5">

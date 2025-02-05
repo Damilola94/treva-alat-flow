@@ -69,13 +69,14 @@ const useCreate = (options: { onSuccess: () => void }) => {
   };
 };
 
-const useRead = ({ pageNumber = 1, pageSize = 50 } = {}, options = {}) => {
+const useRead = ({ pageNumber = 1, pageSize = 50, search = '' } = {}, options = {}) => {
   const response = useQuery(
     [queryKey.read, pageNumber, pageSize],
     async () => {
       const queryParams = new URLSearchParams()
       queryParams.append('PageNumber', pageNumber.toString())
       queryParams.append('PageSize', pageSize.toString())
+      if (search) queryParams.append('SearchKey', search);
 
       const url = `${BASE_URL.clientManagement}?${queryParams.toString()}`
       return await api.get({ url })
