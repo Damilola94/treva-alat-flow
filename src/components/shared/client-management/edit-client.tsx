@@ -8,8 +8,8 @@ import { Button } from '@/components/ui/button'
 import { Delete, Upload } from '@/components/shared'
 import Image from 'next/image'
 import projectManagement from '@/lib/assets/project-management'
-import queries from '@/services/queries/client-management'
 import { toast } from 'react-toastify'
+import clientQueries from '@/services/queries/client-management'
 
 interface IProps {
   id: string
@@ -39,8 +39,8 @@ type InitialValues = ReturnType<() => typeof initialValues>
 
 export function EditClient ({ id, onClose }: IProps) {
   const clientId = id
-  const { data, refetch } = queries.readone({ clientId })
-  const { mutate, isLoading } = queries.update({
+  const { data, refetch } = clientQueries.readone({ clientId })
+  const { mutate, isLoading } = clientQueries.update({
     onSuccess: () => {
       void refetch()
       onClose();
@@ -259,7 +259,7 @@ export function EditClient ({ id, onClose }: IProps) {
                       </div>
                     )}
 
-                    <div className="flex gap-4 w-fu`">
+                    <div className="flex gap-4 w-full">
                       {/* flex justify-between space-x-10 absolute bottom-0 w-full -left-5 mb-5 m */}
                       <Button
                         size="md"

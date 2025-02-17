@@ -90,7 +90,17 @@ const routes = {
     },
 
     projectManagement: {
-      path: '/dashboard/project-management'
+      path: '/dashboard/project-management',
+
+      personalProject: {
+        path: '/dashboard/project-management/personal-project',
+        create: {
+          path: '/dashboard/project-management/personal-project/create'
+        }
+      },
+      clientProject: {
+        path: '/dashboard/project-management/client-project'
+      }
     },
 
     clientManagement: {

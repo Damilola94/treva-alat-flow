@@ -91,6 +91,12 @@
   }
 }
 
+.project_management_card__ctt__option.selected {
+  border: 2px solid blue;
+  background-color: #f0f0f0;
+}
+
+
 .billing-toggle {
   display: flex;
   justify-content: space-between;

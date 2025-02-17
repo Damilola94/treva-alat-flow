@@ -6,7 +6,8 @@ const services = {
   onboarding: '/onboarding',
   auth: '/auth',
   professions: '/professions',
-  clientManagement: '/clients'
+  clientManagement: '/clients',
+  project: '/projects'
 }
 
 const config = {

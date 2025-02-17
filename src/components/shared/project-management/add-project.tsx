@@ -1,21 +1,26 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import queries from '@/services/queries/auth';
-import { ArrowRight, Pill } from '@/components/shared';
+import { ArrowRight, Pill, RenderIf } from '@/components/shared';
 import Image from 'next/image';
 import projectManagement from '@/lib/assets/project-management';
+import queries from '@/services/queries/projects';
+import clientQueries from '@/services/queries/client-management';
 
-type UserType = 'Client' | 'Personal';
+interface IProps {
+  onClose: () => void
+}
+
+type UserType = 1 | 2 ;
 
 const validationSchema = Yup.object().shape({
-  ProjecTitle: Yup.string().required('Please enter a project title'),
-  ProjectDescription: Yup.string().required('Please enter a project description'),
-  ExpectedDeliveryDate: Yup.string().required('Please enter a expected delivery date')
+  title: Yup.string().required('Please enter a project title'),
+  description: Yup.string().required('Please enter a project description'),
+  expectedDeliveryDate: Yup.string().required('Please enter a expected delivery date')
 })
 
 enum AccountType {
@@ -24,49 +29,60 @@ enum AccountType {
   High = 'high',
 }
 
-const initialValues = {
-  ProjecTitle: '',
-  ProjectDescription: '',
-  ExpectedDeliveryDate: '',
-  accountType: AccountType.Low as `${AccountType}`
-};
+export function AddProject ({ onClose }: IProps) {
+  const [userType, setUserType] = useState<UserType>(1);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [selected, setSelected] = useState<string | null>(null);
 
-export function AddProject () {
-  const { mutate, isLoading } = queries.login();
-  const [userType, setUserType] = useState<UserType>('Client');
+  const initialValues = {
+    title: '',
+    description: '',
+    expectedDeliveryDate: '',
+    priority: AccountType.Low as `${AccountType}`,
+    totalAmount: undefined,
+    clientId: '',
+    projectType: userType
+  };
+
+  type InitialValues = ReturnType<() => typeof initialValues>
+
+  const { mutate, isLoading } = queries.create({
+    onSuccess: () => {
+      onClose();
+    }
+  });
+  const { data, refetch } = clientQueries.read();
+
+  useEffect(() => {
+    if (data && userType === 1) {
+      void refetch();
+    }
+  }, [userType, refetch, data]);
+
+  const onSubmit = (
+    _values: InitialValues) => {
+    mutate(
+      { ..._values }
+    );
+  };
+
   return (
-    <div className="app_auth_login_container relative">
-        <Image
-          src={projectManagement.topImageCreateProject}
-          alt="take a tour"
-          className="w-full"
-        />
-      <div className="app_auth_login_container__upper">
+    <div className="app_auth_login_container relative !overflow-y-auto">
+      <Image
+        src={projectManagement.topGradient}
+        alt="take a tour"
+        className=""
+      />
+      <div className="app_auth_login_container__upper !-mt-40">
         <div className="app_auth_login">
           <div>
-            <h3 className="app_auth_login__title">{userType === 'Personal' ? 'Add new project' : 'Add personal project'}</h3>
+            <h3 className="app_auth_login__title">{userType === 1 ? 'Add personal project' : 'Add client project'}</h3>
             <div className="billing-toggle">
-              <button
-                className={userType === 'Personal' ? '' : 'active'}
-                onClick={() => {
-                  setUserType('Client');
-                }}
-              >
-                Personal
-              </button>
-              <button
-                className={userType === 'Client' ? '' : 'active'}
-                onClick={() => {
-                  setUserType('Personal');
-                }}
-              >
-                Client
-              </button>
             </div>
             <Formik
               initialValues={initialValues}
               validationSchema={validationSchema}
-              onSubmit={mutate}
+              onSubmit={onSubmit}
             >
               {(props) => {
                 const {
@@ -78,17 +94,44 @@ export function AddProject () {
                   errors,
                   touched
                 } = props;
+                const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+                  const { value } = event.target;
+                  setSelected(value);
+                  void setFieldValue('clientId', value);
+                };
+
                 return (
                   <form onSubmit={handleSubmit} className="flex flex-col gap-8">
+                    <div className="billing-toggle">
+                      <button
+                        className={userType === 1 ? '' : 'active'}
+                        onClick={() => {
+                          setUserType(1);
+                          void props.setFieldValue('projectType', 'PersonalProject');
+                        }}
+                      >
+                        Personal
+                      </button>
+                      <button
+                        className={userType === 2 ? '' : 'active'}
+                        onClick={() => {
+                          setUserType(2);
+                          void props.setFieldValue('projectType', 'ClientProject');
+                        }}
+                      >
+                        Client
+                      </button>
+
+                    </div>
                     <div className="flex flex-col gap-8">
                       <div className="">
                         <Input
-                          name="ProjecTitle"
+                          name="title"
                           type="text"
-                          id="ProjecTitle"
+                          id="title"
                           placeholder="Project title"
                           size="xl"
-                          value={values.ProjecTitle}
+                          value={values.title}
                           onChange={handleChange}
                           onBlur={handleBlur}
                           errors={errors}
@@ -96,29 +139,86 @@ export function AddProject () {
                         />
                       </div>
                       <Input
-                        name="ProjectDescription"
+                        name="description"
                         type="text"
-                        id="ProjectDescription"
+                        id="description"
                         placeholder="Project description"
                         size="xl"
-                        value={values.ProjectDescription}
+                        value={values.description}
                         onChange={handleChange}
                         onBlur={handleBlur}
                         errors={errors}
                         touched={touched}
                       />
-                      <Input
-                        name="ExpectedDeliveryDate"
-                        type="date"
-                        id="ExpectedDeliveryDate"
-                        placeholder="Expected delivery date"
-                        size="xl"
-                        value={values.ExpectedDeliveryDate}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        errors={errors}
-                        touched={touched}
-                      />
+                      {userType === 1
+                        ? (
+                          <Input
+                            name="expectedDeliveryDate"
+                            type="date"
+                            id="expectedDeliveryDate"
+                            placeholder="Expected delivery date"
+                            size="xl"
+                            value={values.expectedDeliveryDate}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            errors={errors}
+                            touched={touched}
+                          />
+                          )
+                        : (
+                          <>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <Input
+                                name="expectedDeliveryDate"
+                                type="date"
+                                id="expectedDeliveryDate"
+                                placeholder="Expected delivery date"
+                                size="xl"
+                                value={values.expectedDeliveryDate}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                errors={errors}
+                                touched={touched} />
+                              <Input
+                                name="totalAmount"
+                                type="text"
+                                id="totalAmount"
+                                placeholder="Amount"
+                                size="xl"
+                                value={values.totalAmount}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                errors={errors}
+                                touched={touched} />
+                            </div>
+
+                            <div className="relative w-full">
+                              <select
+                                name="clientId"
+                                value={values.clientId ?? ''}
+                                onChange={handleSelectChange}
+                                className="w-full border-b-[#d1d5db] p-2 focus:ring-1 focus:ring-[#7B37F0] bg-white text-left"
+                              >
+                                <option value="" disabled>
+                                  Select an option
+                                </option>
+                                {data?.data?.map((item) => (
+                                  <option key={item.id} value={item.id}>
+                                    {item.fullName}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+                            <RenderIf condition={!!errors.clientId}>
+                              <div>
+                                <p className="app_input_con__spt--error">
+                                  {errors.clientId}
+                                </p>
+                              </div>
+                            </RenderIf>
+                          </>
+                          )}
+
                     </div>
                     <div className="flex flex-col gap-8 my-5">
                       <p className='text-[#6D6D6D]'>Project Priority</p>
@@ -126,9 +226,9 @@ export function AddProject () {
                         <Pill
                           size="md"
                           onClick={async () =>
-                            await setFieldValue('accountType', AccountType.Low)
+                            await setFieldValue('priority', AccountType.Low)
                           }
-                          active={values.accountType === AccountType.Low}
+                          active={values.priority === AccountType.Low}
                           className="w-full"
                         >
                           Low
@@ -138,11 +238,11 @@ export function AddProject () {
                           size="md"
                           onClick={async () =>
                             await setFieldValue(
-                              'accountType',
+                              'priority',
                               AccountType.Medium
                             )
                           }
-                          active={values.accountType === AccountType.Medium}
+                          active={values.priority === AccountType.Medium}
                           className="w-full"
                         >
                           Medium
@@ -150,37 +250,40 @@ export function AddProject () {
                         <Pill
                           size="md"
                           onClick={async () =>
-                            await setFieldValue('accountType', AccountType.High)
+                            await setFieldValue('priority', AccountType.High)
                           }
-                          active={values.accountType === AccountType.High}
+                          active={values.priority === AccountType.High}
                           className="w-full"
                         >
                           High
                         </Pill>
                       </div>
                     </div>
-                    <div className="flex justify-between space-x-10 absolute bottom-0 w-full -left-5 mb-5 m">
+                    <div className="flex justify-between items-center gap-5">
                       <Button
+                        type='button'
                         size="md"
                         isLoading={isLoading}
                         backgroundColor="transparent"
                         color="primary-blue-500"
-                        className="w-full hover:bg-transparent ml-10 app_auth_login__btn border border-[#F1F1F1]"
+                        className="w-full app_auth_login__btn flex items-center justify-center gap-2 hover:bg-transparent border border-[#F1F1F1]"
+                        onClick={onClose}
                       >
                         Save
                       </Button>
                       <Button
+                        type='submit'
                         size="md"
                         isLoading={isLoading}
                         backgroundColor="primary-blue-500"
                         className="w-full app_auth_login__btn flex items-center justify-center gap-2"
                       >
-                        {userType === 'Personal'
+                        {userType === 1
                           ? (
-                          <>
-                            Proceed to Invoice
-                            <ArrowRight stroke='#fff' />
-                          </>
+                            <>
+                              Proceed to Invoice
+                              <ArrowRight stroke='#fff' />
+                            </>
                             )
                           : (
                               'Create Project'

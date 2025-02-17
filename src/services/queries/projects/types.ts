@@ -1,0 +1,21 @@
+export interface ProjectManagement {
+  id: string
+  title: string
+  description: string
+  projectType: string
+  expectedDeliveryDate: string
+  priority: string
+  status: string
+  totalAmount: string
+  clientId: string
+  //   projectAgreementUrl: string
+  taskName: string
+  startDate: string
+  dueDate: string
+  taskPriority: string
+  taskId: string
+  // taskStatus: string
+  deliverableName: string
+  amount: string
+  deliverableId: string
+}

@@ -1,6 +1,6 @@
 import React from 'react'
 import { BinWithBG } from '../svgs'
-import queries from '@/services/queries/client-management'
+import clientQueries from '@/services/queries/client-management'
 
 interface IProps {
   clientId: string
@@ -25,7 +25,7 @@ interface IProps {
 export function DeleteClient (props: IProps) {
   const { clientId, item, handleClick, onClose } = props;
 
-  const { mutate: deleteClient, isLoading: isDeleting } = queries.delete({
+  const { mutate: deleteClient, isLoading: isDeleting } = clientQueries.delete({
     onSuccess: () => {
       onClose();
     }

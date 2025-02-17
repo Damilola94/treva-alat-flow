@@ -212,6 +212,6 @@ const useDelete = (options: { onSuccess: () => void }) => {
   }
 }
 
-const queries = { create: useCreate, read: useRead, update: useUpdate, delete: useDelete, readone: useReadOne };
+const clientQueries = { create: useCreate, read: useRead, update: useUpdate, delete: useDelete, readone: useReadOne };
 
-export default queries;
+export default clientQueries;

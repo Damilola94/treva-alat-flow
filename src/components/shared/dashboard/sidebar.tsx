@@ -30,15 +30,15 @@ const menuItems = [
   },
   {
     id: 3,
-    label: 'Project Management',
-    icon: <Column />,
-    href: dr.projectManagement.path
-  },
-  {
-    id: 4,
     label: 'Client Management',
     icon: <Users />,
     href: dr.clientManagement.path
+  },
+  {
+    id: 4,
+    label: 'Project Management',
+    icon: <Column />,
+    href: dr.projectManagement.path
   },
   {
     id: 5,
