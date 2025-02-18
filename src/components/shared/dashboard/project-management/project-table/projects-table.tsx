@@ -1,12 +1,20 @@
+import queries from '@/services/queries/projects'
 import { Badge, type BadgeProps } from '../../../badge'
 import { Pagination } from '../../../pagination'
-import { EmptyStatus } from '../../../svgs'
+import { BinGray, EditPencilGray, EmptyStatus } from '../../../svgs'
 import { useRouter } from 'next/navigation'
+import { Button } from '@/components/ui/button'
+import { Eye } from 'lucide-react'
+import { useEffect } from 'react'
+import { EmptyState } from '../../empty-state'
+import { Skeleton } from '@/components/ui/skeleton'
+import Link from 'next/link'
 
 interface IProps {
   onClick?: (id: string) => void
+  onEdit?: (id: string) => void
+  onDelete?: (id: string) => void
 }
-const IS_EMPTY = false
 
 const statusMap: Record<
 number,
@@ -23,8 +31,21 @@ const thead = [
   { label: 'Client' },
   { label: 'Due date', isSortable: true },
   { label: 'Priority' },
-  { label: 'Status' }
+  { label: 'Status' },
+  { label: '' }
 ]
+
+enum AccountType {
+  Low = 'Low',
+  Medium = 'Medium',
+  High = 'High',
+}
+
+const priorityMapping: Record<number, AccountType> = {
+  1: AccountType.Low,
+  2: AccountType.Medium,
+  3: AccountType.High
+};
 
 function ChevronVIcon () {
   return (
@@ -49,22 +70,27 @@ function ChevronVIcon () {
 
 export function ProjectsTable (props: IProps) {
   const rt = useRouter()
+  const { data, refetch, isLoading } = queries.read()
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { onEdit, onDelete } = props;
+
+  useEffect(() => {
+    void refetch()
+  }, [data, refetch]);
 
   const handleRowSelect = (value: string) => {
-    rt.push(`/dashboard/project-management/${value}/edit`)
+    rt.push(`/dashboard/project-management/${value}`)
   }
-  if (IS_EMPTY) {
+  if (!isLoading && (!data || data.length === 0)) {
     return (
-      <div className="app_dashboard_home__task__ctt app_dashboard_home__task__ctt--empty">
-        <EmptyStatus />
-        <div className="flex flex-col gap-1">
-          <p className="app_dashboard_home__task__ctt__title">No task yet</p>
-          <p className="app_dashboard_home__task__ctt__desc">
-            Click “add new request” button to get started
-          </p>
+        <div className="app_dashboard_home__task__ctt app_dashboard_home__task__ctt--empty">
+          <EmptyState
+            icon={<EmptyStatus />}
+            title="No project yet"
+            description="Click “add project button to get started"
+          />
         </div>
-      </div>
-    )
+    );
   }
 
   return (
@@ -77,9 +103,8 @@ export function ProjectsTable (props: IProps) {
                 {thead.map(({ label, isSortable }) => (
                   <th
                     key={label}
-                    className={`app_table__tr__th ${
-                      isSortable ? 'cursor-pointer' : ''
-                    }`}
+                    className={`app_table__tr__th ${isSortable ? 'cursor-pointer' : ''
+                      }`}
                   >
                     <div className="app_table__tr__th__ctt">
                       {label}
@@ -90,43 +115,78 @@ export function ProjectsTable (props: IProps) {
                 ))}
               </tr>
             </thead>
-            <tbody className="bg-white app_table__tbody">
-              {[0, 1, 2, 3].map((_, index) => {
-                const id = `project-${index + 1}`
 
-                return (
-                  <tr
-                    onClick={() => { handleRowSelect(id) }}
-                    className="cursor-pointer hover:bg-gray-100"
-                    key={index}
-                  >
-                    <td className="app_table__tbody__td font-medium text-[--text-color-500]">
-                      <div className="app_table__tbody__td__ctt">
-                        Project name
-                      </div>
-                    </td>
-                    <td className="app_table__tbody__td text-[--text-color-500]">
-                      <div className="app_table__tbody__td__ctt">
-                        X - Clients name
-                      </div>
-                    </td>
-                    <td className="app_table__tbody__td">
-                      <div className="app_table__tbody__td__ctt">
-                        Month day, year
-                      </div>
-                    </td>
-                    <td className="app_table__tbody__td">
-                      <div className="app_table__tbody__td__ctt">One-time</div>
-                    </td>
-                    <td className="app_table__tbody__td">
-                      <div className="app_table__tbody__td__ctt">
-                        <Badge {...statusMap[index]} />
-                      </div>
-                    </td>
-                  </tr>
+            <tbody className="bg-white app_table__tbody">
+            {isLoading
+              ? (
+                  <>
+                    {[...Array(3)].map((_, index) => <Skeleton key={index} columns={4} />)}
+                  </>
                 )
-              })}
+              : (
+                  data?.map((project, index) => (
+                <tr
+                  // onClick={() => { handleRowSelect(project.id); }}
+                  className="cursor-pointer hover:bg-gray-100"
+                  key={index}
+                >
+                  <td className="app_table__tbody__td font-medium text-[--text-color-500]">
+                    <div className="app_table__tbody__td__ctt">
+                      {project.title}
+                    </div>
+                  </td>
+                  <td className="app_table__tbody__td text-[--text-color-500]">
+                    <div className="app_table__tbody__td__ctt">
+                      {project.description}
+                    </div>
+                  </td>
+                  <td className="app_table__tbody__td">
+                    <div className="app_table__tbody__td__ctt">
+                      {new Date(project.expectedDeliveryDate).toLocaleDateString()}
+                    </div>
+                  </td>
+                  <td className="app_table__tbody__td">
+                    <div className={`app_table__priority app_table__priority--${['low', 'medium', 'high'][Number(project.priority)] || 'low'}`}>
+                      <span className="app_table__priority__dot"></span>
+                      {priorityMapping[Number(project.priority)] || 'Low'}
+                    </div>
+                  </td>
+                  <td className="app_table__tbody__td">
+                    <div className="app_table__tbody__td__ctt">
+                      <Badge {...statusMap[Number(project.status)]} />
+                    </div>
+                  </td>
+                  <td className="app_table__tbody__td">
+                    <div className="app_table__tbody__td__ctt flex gap-2">
+                      <Button variant="outline" size="icon" onClick={() => { handleRowSelect(project.id); }}>
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                      {/* <Button variant="outline" size="icon"  onClick={() => {
+                              if (onEdit) {
+                                onEdit(project.id);
+                              }
+                            }}>
+                        <EditPencilGray className="h-4 w-4" />
+                      </Button> */}
+                       <Link href={`/dashboard/project-management/personal-project/${project.id}/edit`}>
+                          <Button variant="outline" size="icon">
+                            <EditPencilGray className="h-4 w-4" />
+                          </Button>
+                        </Link>
+                      <Button variant="outline" size="icon" onClick={() => {
+                        if (onDelete) {
+                          onDelete(project.id);
+                        }
+                      }}>
+                        <BinGray className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </td>
+                </tr>
+                  ))
+                )}
             </tbody>
+
           </table>
 
           <div className="bg-white app_table__pagination">

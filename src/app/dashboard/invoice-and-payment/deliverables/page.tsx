@@ -6,10 +6,8 @@ import { ProgressStatus } from '@/components/shared/dashboard/get-started';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 import routes from '@/lib/routes';
-import { AnimatedModal, CalendarWithMark, Delete, EditIcon, Money4, PlusIcon, RenderIf } from '@/components/shared';
+import { CalendarWithMark, Delete, EditIcon, Money4, PlusIcon, RenderIf } from '@/components/shared';
 import { Modal } from '@/components/shared/decisionModal';
-import { AddDeliverables } from '@/components/shared/invoice-and-payment.tsx/add-deliverables';
-import { EditDeliverables } from '@/components/shared/invoice-and-payment.tsx/edit-deliverables';
 
 const validationSchema = Yup.object().shape({
   deliverableName: Yup.string().required('Please enter a deliverable name'),
@@ -49,11 +47,11 @@ const staticDeliverables = [
 export default function Page () {
   const router = useRouter();
   const [editForm, setEditForm] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [, setIsModalOpen] = useState(false);
   const [isDecisionModalOpen, setIsDecisionModalOpen] = useState(false);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [deliverables, setDeliverables] = useState(staticDeliverables);
+  const [deliverables] = useState(staticDeliverables);
 
   const handleCloseModal = () => {
     setIsDecisionModalOpen(false)
@@ -61,23 +59,10 @@ export default function Page () {
 
   const handleFormSubmit = () => {
     router.push('/dashboard/invoice-and-payment/payment');
-
-    // router.push(routes.dashboard.invoiceAndPayment.payment.path);
   };
 
-  //   const handleModalSubmit = (values: any) => {
-  //     setDeliverables([...deliverables, values]);
+  //   const closeModal = () => {
   //     setIsModalOpen(false);
-  //   };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
-
-  //   const handleDelete = (index: any) => {
-  //     const updatedDeliverables = deliverables.filter((_, i) => i !== index);
-  //     setDeliverables(updatedDeliverables);
-  //     setIsDecisionModalOpen(false);
   //   };
 
   const onEdit = () => {
@@ -86,7 +71,7 @@ export default function Page () {
 
   return (
         <div className="app_get_started_professional_details py-6 px-4 flex flex-col gap-14">
-            <AnimatedModal
+            {/* <AnimatedModal
                 {...{
                   isOpen: isModalOpen,
                   from: 'right',
@@ -95,12 +80,12 @@ export default function Page () {
                         'absolute bottom-0 right-0 h-[calc(100vh-20px)] w-full sm:w-[350px] bg-white p-0 flex flex-col mb-2 mr-2'
                 }}
             >
-                <AddDeliverables />
-            </AnimatedModal>
+                <AddDeliverables  />
+            </AnimatedModal> */}
 
             <RenderIf condition={!editForm}>
                 <Fragment>
-                    <AnimatedModal
+                    {/* <AnimatedModal
                         {...{
                           isOpen: true,
                           from: 'right',
@@ -110,7 +95,7 @@ export default function Page () {
                         }}
                     >
                         <EditDeliverables />
-                    </AnimatedModal>
+                    </AnimatedModal> */}
                 </Fragment>
             </RenderIf>
 

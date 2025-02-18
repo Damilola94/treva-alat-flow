@@ -5,9 +5,17 @@ import { Formik } from 'formik'
 import * as Yup from 'yup'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import queries from '@/services/queries/auth'
 import projectManagement from '@/lib/assets/project-management'
 import Image from 'next/image'
+import queries from '@/services/queries/projects'
+
+interface IProps {
+  onClose: () => void
+  projectId: string
+  onAddDeliverable: (values: any) => void
+  setDeliverableId: (id: string) => void
+
+}
 
 const validationSchema = Yup.object().shape({
   deliverableName: Yup.string().required('Please enter a deliverable name'),
@@ -25,22 +33,41 @@ enum AccountType {
   High = 'high',
 }
 
-const initialValues = {
-  deliverableName: '',
-  description: '',
-  startDate: '',
-  dueDate: '',
-  amount: '',
-  accountType: AccountType.Low as `${AccountType}`
+export function AddDeliverables (props: IProps) {
+  const { onClose, projectId, setDeliverableId } = props
 
-};
+  const { mutate, isLoading } = queries.createDeliverables({
+    onSuccess: (response) => {
+      if (response?.data?.id) {
+        const deliverableId = response.data.id; // Extract ID directly
+        setDeliverableId(deliverableId);
+      } else {
+        console.warn('Project ID not found. Polling...');
+      }
+      onClose();
+    }
+  });
 
-export function AddDeliverables () {
-  const { mutate, isLoading } = queries.login()
+  const initialValues = {
+    projectId,
+    deliverableName: '',
+    description: '',
+    startDate: '',
+    dueDate: '',
+    amount: '',
+    accountType: AccountType.Low as `${AccountType}`
+
+  };
+
+  type InitialValues = ReturnType<() => typeof initialValues>
+
+  const onSubmit = (_values: InitialValues) => {
+    mutate({ ..._values });
+  };
 
   return (
         <div className="app_auth_login_container relative">
-      <Image src={projectManagement.topGradient} alt="top gradient" className="w-full" />
+            <Image src={projectManagement.topGradient} alt="top gradient" className="w-full" />
             <div className="app_auth_login_container__upper !-mt-80">
                 <div className="app_auth_login">
                     <div>
@@ -50,7 +77,7 @@ export function AddDeliverables () {
                         <Formik
                             initialValues={initialValues}
                             validationSchema={validationSchema}
-                            onSubmit={mutate}
+                            onSubmit={onSubmit}
                         >
                             {({
                               values,
@@ -127,10 +154,12 @@ export function AddDeliverables () {
                                     <div className="flex justify-between space-x-10 absolute bottom-0 w-full -left-5 mb-5">
                                         <Button
                                             size="md"
+                                            type="button"
                                             backgroundColor="transparent"
                                             color="primary-blue-500"
-                                            isLoading={isLoading}
                                             className="w-full hover:bg-transparent ml-10 app_auth_login__btn border border-[text-color-100]"
+                                             onClick={onClose}
+
                                         >
                                             Close
                                         </Button>
@@ -139,6 +168,8 @@ export function AddDeliverables () {
                                             size="md"
                                             backgroundColor="primary-blue-500"
                                             className="w-full app_auth_login__btn"
+                                            isLoading={isLoading}
+
                                         >
                                             Add
                                         </Button>

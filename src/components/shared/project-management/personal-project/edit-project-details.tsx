@@ -1,0 +1,180 @@
+'use client'
+import { useEffect, useState } from 'react'
+import { Formik } from 'formik'
+import * as Yup from 'yup'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { Pill } from '@/components/shared'
+import queries from '@/services/queries/projects'
+import { UserType } from '@/services/queries/projects/enums'
+
+interface IProps {
+  projectId: string
+  handleNext: () => void
+}
+
+const validationSchema = Yup.object().shape({
+  title: Yup.string().required('Please enter a project title'),
+  description: Yup.string().required('Please enter a project description'),
+  expectedDeliveryDate: Yup.string().required('Please enter an expected delivery date')
+})
+
+enum AccountType {
+  Low = 'low',
+  Medium = 'medium',
+  High = 'high',
+}
+
+const priorityMapping: Record<number, AccountType> = {
+  1: AccountType.Low,
+  2: AccountType.Medium,
+  3: AccountType.High
+};
+
+export function EditProjectDetails (props: IProps) {
+  const { projectId, handleNext } = props
+  const [initialValues, setInitialValues] = useState({
+    title: '',
+    description: '',
+    expectedDeliveryDate: '',
+    priority: AccountType.Low as `${AccountType}`,
+    projectType: UserType.PersonalProject
+  })
+
+  const { data: projectData, isLoading: isLoadingProject } = queries.readone({ projectId })
+  const { mutate: updateProject, isLoading: isUpdating } = queries.update({
+    onSuccess: () => {
+      handleNext()
+    }
+  })
+
+  useEffect(() => {
+    if (projectData) {
+      setInitialValues({
+        title: projectData.title || '',
+        description: projectData.description || '',
+        expectedDeliveryDate: projectData.expectedDeliveryDate ? projectData.expectedDeliveryDate.split('T')[0] : '',
+        priority: priorityMapping[projectData?.priority] ?? AccountType.Low,
+        projectType: UserType.PersonalProject
+      })
+    }
+  }, [projectData])
+
+  const onSubmit = (values: typeof initialValues) => {
+    updateProject({ projectId, ...values })
+  }
+
+  if (isLoadingProject) {
+    return <div>Loading...</div>
+  }
+
+  return (
+        <div className="app_get_started_professional_details py-6 px-4 flex flex-col gap-14">
+            <div className="app_get_started_professional_details__form flex flex-col gap-10 !overflow-y-auto">
+                <h3 className="app_get_started_professional_details__form__title">Edit Project Details</h3>
+                <div>
+                    <Formik
+                        initialValues={initialValues}
+                        validationSchema={validationSchema}
+                        onSubmit={onSubmit}
+                        enableReinitialize
+                    >
+                        {(props) => {
+                          const { values, handleChange, setFieldValue, handleBlur, handleSubmit, errors, touched } = props
+
+                          return (
+                                <form onSubmit={handleSubmit} className="flex flex-col gap-8">
+                                    <div className="flex flex-col gap-8">
+                                        <div className="">
+                                            <Input
+                                                name="title"
+                                                type="text"
+                                                id="title"
+                                                placeholder="Project title"
+                                                size="xl"
+                                                value={values.title}
+                                                onChange={handleChange}
+                                                onBlur={handleBlur}
+                                                errors={errors}
+                                                touched={touched}
+                                            />
+                                        </div>
+                                        <Input
+                                            name="description"
+                                            type="text"
+                                            id="description"
+                                            placeholder="Project description"
+                                            size="xl"
+                                            value={values.description}
+                                            onChange={handleChange}
+                                            onBlur={handleBlur}
+                                            errors={errors}
+                                            touched={touched}
+                                        />
+                                        <Input
+                                            name="expectedDeliveryDate"
+                                            type="date"
+                                            id="expectedDeliveryDate"
+                                            placeholder="Expected delivery date"
+                                            size="xl"
+                                            value={values.expectedDeliveryDate}
+                                            onChange={handleChange}
+                                            onBlur={handleBlur}
+                                            errors={errors}
+                                            touched={touched}
+                                        />
+                                    </div>
+                                    <div className="flex flex-col gap-8 my-5">
+                                        <p className="text-[#6D6D6D]">Project Priority</p>
+                                        <div className="flex gap-2">
+                                            <Pill
+                                                size="md"
+                                                // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                                                onClick={async () => await setFieldValue('priority', AccountType.Low)}
+                                                active={values.priority === AccountType.Low}
+                                                className="w-full"
+                                            >
+                                                Low
+                                            </Pill>
+
+                                            <Pill
+                                                size="md"
+                                                // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                                                onClick={async () => await setFieldValue('priority', AccountType.Medium)}
+                                                active={values.priority === AccountType.Medium}
+                                                className="w-full"
+                                            >
+                                                Medium
+                                            </Pill>
+
+                                            <Pill
+                                                size="md"
+                                                // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                                                onClick={async () => await setFieldValue('priority', AccountType.High)}
+                                                active={values.priority === AccountType.High}
+                                                className="w-full"
+                                            >
+                                                High
+                                            </Pill>
+                                        </div>
+                                    </div>
+                                    <div className="">
+                                        <Button
+                                            type="submit"
+                                            size="md"
+                                            isLoading={isUpdating}
+                                            backgroundColor="primary-blue-500"
+                                            className="w-1/2 app_auth_login__btn flex items-center justify-center gap-2"
+                                        >
+                                            Save and Continue
+                                        </Button>
+                                    </div>
+                                </form>
+                          )
+                        }}
+                    </Formik>
+                </div>
+            </div>
+        </div>
+  )
+}

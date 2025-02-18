@@ -1,4 +1,4 @@
-export function ArrowRight ({ stroke = '#EC2F3B' }) {
+export function ArrowRight ({ stroke = '#FFF' }) {
   return (
     <svg
       width="20"

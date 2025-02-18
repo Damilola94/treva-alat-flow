@@ -18,6 +18,8 @@ import {
   AddProject
 } from '@/components/shared/project-management'
 import projectManagement from '@/lib/assets/project-management'
+import { EditProject } from '@/components/shared/dashboard/project-management/project-table/edit-project'
+import { DeleteProject } from '@/components/shared/dashboard/project-management/project-table/delete-project'
 
 const createAProject = {
   img: projectManagement.topImageProject,
@@ -47,6 +49,14 @@ const viewTakeATour = {
   bottomInfo: ''
 }
 
+const deleteClient = {
+  img: projectManagement.topImage,
+  title: 'Are you sure you want to delete this project',
+  details: 'Project record will be deleted Permanently',
+  btnText1: 'Cancel',
+  btnText2: 'Delete'
+};
+
 enum Projects {
   'All Projects' = 'All Projects',
   'Pending Project' = 'Pending Project',
@@ -57,6 +67,26 @@ export default function Page () {
   const [takeATour, setTakeATour] = useState(true)
   const [addProject, setAddProject] = useState(true)
   const [addProjectForm, setAddProjectForm] = useState(true)
+
+  const [editForm, setEditForm] = useState(false);
+  const [editProjectId, setEditProjectId] = useState<string | null>(null);
+
+  const [deleteForm, setDeleteForm] = useState(false);
+  const [deleteProjectId, setDeleteProjectId] = useState<string | null>(null);
+
+  const handleEditProject = (id: string) => {
+    setEditProjectId(id)
+    setEditForm(true)
+  }
+
+  const handleCloseEditForm = () => {
+    setEditForm(false)
+    setEditProjectId(null)
+  }
+
+  // const handleEditClient = () => {
+  //   setEditForm(!deleteForm);
+  // };
 
   const handleAddProjectClick = () => {
     setAddProject(!addProject)
@@ -75,13 +105,22 @@ export default function Page () {
     setAddProjectForm(!addProjectForm)
   }
 
+  const onDelete = (id: string) => {
+    setDeleteProjectId(id);
+    setDeleteForm(!deleteForm);
+  };
+
+  const handleDeleteProject = () => {
+    setDeleteForm(!deleteForm)
+  }
+
   return (
     <div className="app_dashboard_page app_dashboard_home">
       <RenderIf condition={!addProject}>
         <Fragment>
           <AnimatedModal
             {...{
-              isOpen: true,
+              isOpen: !addProject,
               from: 'middle',
               onClose: handleAddProjectClick,
               className: 'sm:max-w-[450px] h-[420px] p-0'
@@ -91,6 +130,7 @@ export default function Page () {
               item={createAProject}
               handleProject={handleProjectFormClick}
               handleClick={handleAddProjectClick}
+              onClose={handleAddProjectClick}
             />
           </AnimatedModal>
         </Fragment>
@@ -100,29 +140,66 @@ export default function Page () {
         <Fragment>
           <AnimatedModal
             {...{
-              isOpen: true,
+              isOpen: !addProjectForm,
               from: 'right',
               onClose: handleProjectFormClose,
               className:
                 'absolute bottom-0 right-0 h-[calc(100vh-20px)] w-full sm:w-[350px] bg-white p-0 flex flex-col mb-2 mr-2'
             }}
           >
-            <AddProject />
+            <AddProject onClose={handleProjectFormClose} />
           </AnimatedModal>
         </Fragment>
+      </RenderIf>
+
+      <RenderIf condition={editForm}>
+        <AnimatedModal
+          isOpen={editForm}
+          from="right"
+          onClose={handleCloseEditForm}
+          className="absolute bottom-0 right-0 h-[calc(100vh-20px)] w-full sm:w-[350px] bg-white p-0 flex flex-col mb-2 mr-2"
+        >
+          {editProjectId && (
+            <EditProject
+              id={editProjectId}
+              item={editProjectId}
+              handleClick={handleCloseEditForm}
+              onClose={handleCloseEditForm}
+              setProjectId={setEditProjectId}
+              setDeliverableId={() => { }}
+              handleNext={() => { }}
+              onAddDeliverable={() => { }}
+            />
+          )}
+        </AnimatedModal>
       </RenderIf>
 
       <RenderIf condition={takeATour}>
         <Fragment>
           <AnimatedModal
             {...{
-              isOpen: true,
+              isOpen: takeATour,
               from: 'middle',
               onClose: handleTakeTourClick,
               className: 'sm:max-w-[300px] h-[420px] p-0'
             }}
           >
             <TakeATour item={viewTakeATour} handleClick={handleTakeTourClick} />
+          </AnimatedModal>
+        </Fragment>
+      </RenderIf>
+
+      <RenderIf condition={deleteForm}>
+        <Fragment>
+          <AnimatedModal
+            {...{
+              isOpen: true,
+              from: 'middle',
+              onClose: onDelete,
+              className: 'sm:max-w-[450px] h-[300px] p-0'
+            }}
+          >
+            {deleteProjectId && <DeleteProject projectId={deleteProjectId} item={deleteClient} handleClick={() => { setDeleteForm(false); }} onClose={handleDeleteProject} />}
           </AnimatedModal>
         </Fragment>
       </RenderIf>
@@ -157,7 +234,7 @@ export default function Page () {
             </Button>
           </div>
         </div>
-        <ProjectsTable />
+        <ProjectsTable onEdit={handleEditProject} onDelete={onDelete} />
       </div>
     </div>
   )

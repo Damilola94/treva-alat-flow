@@ -15,6 +15,7 @@ export interface Request {
 
 const del = async ({ url, body: data }: Request) => (await axiosInstance.delete(url, {
   data
+
 })).data
 
 const get = async ({ url, auth = true, ...req }: Request) => {

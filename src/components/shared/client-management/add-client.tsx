@@ -8,8 +8,8 @@ import { Button } from '@/components/ui/button'
 import { Delete, Upload } from '@/components/shared'
 import Image from 'next/image'
 import projectManagement from '@/lib/assets/project-management'
-import queries from '@/services/queries/client-management'
 import { toast } from 'react-toastify'
+import clientQueries from '@/services/queries/client-management'
 
 interface IProps {
   onClose: () => void
@@ -38,7 +38,7 @@ const initialValues = {
 type InitialValues = ReturnType<() => typeof initialValues>
 
 export function AddClient ({ onClose }: IProps) {
-  const { mutate, isLoading } = queries.create({
+  const { mutate, isLoading } = clientQueries.create({
     onSuccess: () => {
       onClose();
     }

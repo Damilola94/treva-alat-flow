@@ -132,6 +132,7 @@ export default function Page () {
               item={createAProject}
               handleProject={handleProjectFormClick}
               handleClick={handleAddProjectClick}
+              onClose={handleProjectFormClick}
             />
           </AnimatedModal>
         </Fragment>
@@ -148,7 +149,7 @@ export default function Page () {
                 'absolute bottom-0 right-0 h-[calc(100vh-20px)] w-full sm:w-[350px] bg-white p-0 flex flex-col mb-2 mr-2'
             }}
           >
-            <AddProject />
+            <AddProject onClose={handleProjectFormClose} />
           </AnimatedModal>
         </Fragment>
       </RenderIf>
