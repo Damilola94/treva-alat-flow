@@ -10,12 +10,11 @@ import Image from 'next/image';
 import projectManagement from '@/lib/assets/project-management';
 import queries from '@/services/queries/projects';
 import clientQueries from '@/services/queries/client-management';
+import { ProjectType } from '@/services/queries/projects/enums';
 
 interface IProps {
   onClose: () => void
 }
-
-type UserType = 1 | 2 ;
 
 const validationSchema = Yup.object().shape({
   title: Yup.string().required('Please enter a project title'),
@@ -30,7 +29,7 @@ enum AccountType {
 }
 
 export function AddProject ({ onClose }: IProps) {
-  const [userType, setUserType] = useState<UserType>(1);
+  const [userType, setUserType] = useState<ProjectType>(ProjectType.PersonalProject);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selected, setSelected] = useState<string | null>(null);
 
@@ -54,7 +53,7 @@ export function AddProject ({ onClose }: IProps) {
   const { data, refetch } = clientQueries.read();
 
   useEffect(() => {
-    if (data && userType === 1) {
+    if (data && userType === ProjectType.PersonalProject) {
       void refetch();
     }
   }, [userType, refetch, data]);
@@ -76,7 +75,7 @@ export function AddProject ({ onClose }: IProps) {
       <div className="app_auth_login_container__upper !-mt-40">
         <div className="app_auth_login">
           <div>
-            <h3 className="app_auth_login__title">{userType === 1 ? 'Add personal project' : 'Add client project'}</h3>
+            <h3 className="app_auth_login__title">{userType === ProjectType.PersonalProject ? 'Add personal project' : 'Add client project'}</h3>
             <div className="billing-toggle">
             </div>
             <Formik
@@ -104,18 +103,18 @@ export function AddProject ({ onClose }: IProps) {
                   <form onSubmit={handleSubmit} className="flex flex-col gap-8">
                     <div className="billing-toggle">
                       <button
-                        className={userType === 1 ? '' : 'active'}
+                        className={userType === ProjectType.PersonalProject ? '' : 'active'}
                         onClick={() => {
-                          setUserType(1);
+                          setUserType(ProjectType.PersonalProject);
                           void props.setFieldValue('projectType', 'PersonalProject');
                         }}
                       >
                         Personal
                       </button>
                       <button
-                        className={userType === 2 ? '' : 'active'}
+                        className={userType === ProjectType.ClientProject ? '' : 'active'}
                         onClick={() => {
-                          setUserType(2);
+                          setUserType(ProjectType.ClientProject);
                           void props.setFieldValue('projectType', 'ClientProject');
                         }}
                       >
@@ -150,7 +149,7 @@ export function AddProject ({ onClose }: IProps) {
                         errors={errors}
                         touched={touched}
                       />
-                      {userType === 1
+                      {userType === ProjectType.PersonalProject
                         ? (
                           <Input
                             name="expectedDeliveryDate"
@@ -278,7 +277,7 @@ export function AddProject ({ onClose }: IProps) {
                         backgroundColor="primary-blue-500"
                         className="w-full app_auth_login__btn flex items-center justify-center gap-2"
                       >
-                        {userType === 1
+                        {userType === ProjectType.PersonalProject
                           ? (
                             <>
                               Proceed to Invoice

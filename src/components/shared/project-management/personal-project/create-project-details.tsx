@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Pill } from '@/components/shared'
 import queries from '@/services/queries/projects'
 import { type InitialStep1Values } from '@/app/dashboard/project-management/personal-project/create/page'
-import { UserType } from '@/services/queries/projects/enums'
+import { ProjectType } from '@/services/queries/projects/enums'
 
 interface IProps {
   handleNext: (formData: InitialStep1Values) => void
@@ -30,7 +30,7 @@ enum AccountType {
 export function PersonalProjectDetails (props: IProps) {
   const { handleNext, setProjectId } = props
 
-  const [userType] = useState<UserType>(UserType.PersonalProject);
+  const [userType] = useState<ProjectType>(ProjectType.PersonalProject);
 
   const { mutate, isLoading } = queries.create({
     onSuccess: (response) => {

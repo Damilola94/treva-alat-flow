@@ -1,3 +1,41 @@
+.app_dashboard_group_header {
+  border-bottom: 1px solid var(--chicago-100);
+  flex-wrap: wrap;
+  gap: 8px;
+
+  &__btn {
+    background-color: #fff;
+    border: 1px solid var(--chicago-100);
+    border-radius: 24px;
+    padding: 8px 16px;
+    font-weight: 400;
+    font-size: 14px;
+    color: var(--chicago-500);
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+}
+
+.app_popover {
+  &__content {
+    border-radius: 16px;
+    max-width: 214px;
+    padding: 0;
+
+    &__item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 16px;
+      font-size: 16px;
+      font-weight: 500;
+      width: 100%;
+    }
+  }
+  }
+
+
 .project_management_card {
   overflow: hidden;
   text-align: center;

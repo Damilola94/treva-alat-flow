@@ -2,7 +2,7 @@
 
 import { AnimatedModal, Pill, PlusIcon, RenderIf } from '@/components/shared'
 import { TakeATour } from '@/components/shared/client-management'
-import { InvoiceTable } from '@/components/shared/dashboard/invoice-and-payment'
+import { InvoiceTable } from '@/components/shared/invoice-and-payment'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import projectManagement from '@/lib/assets/project-management'

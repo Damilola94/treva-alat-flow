@@ -1,47 +1,53 @@
 'use client';
 import React, { Fragment, useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { useRouter } from 'next/navigation';
-import routes from '@/lib/routes';
+// import routes from '@/lib/routes';
 import { AnimatedModal, CalendarWithMark, Delete, EditIcon, Money4, PlusIcon, RenderIf } from '@/components/shared';
 import { Modal } from '@/components/shared/decisionModal';
-import { AddDeliverables } from '@/components/shared/project-management.tsx/add-deliverables';
 import { EditDeliverables } from '@/components/shared/project-management.tsx/edit-deliverables';
 import queries from '@/services/queries/projects';
+import { type InitialStep3Values } from '@/app/dashboard/project-management/client-project/create/page'
+import AddPayment from '../../project-management.tsx/add-payment';
+import { useRouter } from 'next/navigation';
+import routes from '@/lib/routes';
 
-interface Deliverable {
-  deliverableId: string
-  deliverableName: string
-  description: string
-  startDate: string
-  dueDate: string
-  amount: string
+interface IProps {
+  handleNext: (formData: InitialStep3Values) => void
+  projectId: string
 }
 
-export function PersonalProjectDeliverables ({ projectId }: { projectId: string }) {
+interface Payment {
+  paymentId: string
+  perRequired: string
+  dueDate: string
+  reminderFrequency: string
+}
+
+export function ProjectPayment (props: IProps) {
+  const { handleNext, projectId } = props
   const router = useRouter();
   const [editForm, setEditForm] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDecisionModalOpen, setIsDecisionModalOpen] = useState(false);
-  const [deliverables, setDeliverables] = useState<Deliverable[]>([]);
-  const [deliverableId, setDeliverableId] = useState<string>('');
+  const [payment, setPayment] = useState<Payment[]>([]);
+  const [paymentId, setPaymentId] = useState<string>('');
 
   const { data, refetch } = queries.readDeliverables({ projectId }, {
     onSuccess: (newData: any) => {
-      setDeliverables(newData);
+      setPayment(newData);
     }
   });
-  const { mutate: deleteDeliverables } = queries.deleteDeliverables({ projectId, deliverableId },
+  const { mutate: deleteDeliverables } = queries.deleteDeliverables({ projectId },
     {
       onSuccess: () => {
-        setDeliverables(data)
+        setPayment(data)
         void refetch()
       }
     })
 
   useEffect(() => {
     if (data) {
-      setDeliverables(data);
+      setPayment(data);
     }
   }, [data])
 
@@ -54,14 +60,17 @@ export function PersonalProjectDeliverables ({ projectId }: { projectId: string 
     setIsModalOpen(false);
   };
 
-  const handleAddDeliverables = (newDeliverable: Deliverable) => {
-    setDeliverables((prev) => [...prev, newDeliverable]);
+  const handleAddDeliverables = (newDeliverable: Payment) => {
+    setPayment((prev) => [...prev, newDeliverable]);
     void refetch();
   };
 
   const handleDelete = () => {
-    setDeliverables(prev => prev.filter(d => d.deliverableId !== deliverableId));
-    deleteDeliverables({ projectId, deliverableId });
+    setPayment(prev => prev.filter(d => d.paymentId !== paymentId));
+    deleteDeliverables({
+      projectId,
+      deliverableId: ''
+    });
     setIsDecisionModalOpen(false);
   };
 
@@ -70,8 +79,19 @@ export function PersonalProjectDeliverables ({ projectId }: { projectId: string 
   };
 
   const handleSkip = () => {
-    console.log('Navigating to:', routes.dashboard.projectManagement.path);
     router.push(routes.dashboard.projectManagement.path);
+  };
+
+  const handleNextStep = () => {
+    // Prepare the data to pass to the next step
+    const step3Data = {
+      payment: payment.map(d => ({
+        perRequired: d.perRequired,
+        dueDate: d.dueDate,
+        reminderFrequency: d.reminderFrequency
+      }))
+    };
+    handleNext(step3Data);
   };
 
   return (
@@ -86,7 +106,8 @@ export function PersonalProjectDeliverables ({ projectId }: { projectId: string 
                 }}
             >
                 {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
-                <AddDeliverables onClose={closeModal} projectId={projectId} onAddDeliverable={handleAddDeliverables} setDeliverableId={setDeliverableId} />
+                {/* <AddDeliverables onClose={closeModal} projectId={projectId} onAddDeliverable={handleAddDeliverables} setDeliverableId={setDeliverableId} /> */}
+                <AddPayment onClose={closeModal} projectId={projectId} onAddPayment={handleAddDeliverables} setPaymentId={setPaymentId}/>
             </AnimatedModal>
 
             <RenderIf condition={!editForm}>
@@ -100,7 +121,7 @@ export function PersonalProjectDeliverables ({ projectId }: { projectId: string 
                                 'absolute bottom-0 right-0 h-[calc(100vh-20px)] w-full sm:w-[350px] bg-white p-0 flex flex-col mb-2 mr-2'
                         }}
                     >
-                        <EditDeliverables onClose={onEdit} projectId={projectId} deliverableId={deliverableId} onAddDeliverable={handleAddDeliverables} />
+                        <EditDeliverables onClose={onEdit} projectId={projectId} deliverableId={paymentId} onAddDeliverable={handleAddDeliverables} />
                     </AnimatedModal>
                 </Fragment>
             </RenderIf>
@@ -136,9 +157,9 @@ export function PersonalProjectDeliverables ({ projectId }: { projectId: string 
                 </Modal>
 
                 <h3 className="app_get_started_professional_details__form__title">
-                    Deliverables <br />
+                    Payments <br />
                     <span className="text-[#6D6D6D]">
-                        Add all deliverables for this project.
+                        Add all payment for this project.
                     </span>
                 </h3>
                 <div className="">
@@ -147,62 +168,67 @@ export function PersonalProjectDeliverables ({ projectId }: { projectId: string 
                         onClick={() => { setIsModalOpen(true); }}
                     >
                         <PlusIcon fill="var(--treva-purple-500)" />
-                        {deliverables.length > 0 ? 'Add another deliverable' : 'Add deliverable'}
+                        {payment.length > 0 ? 'Add another payment' : 'Add payment'}
                     </button>
                 </div>
                 <div>
-                    {deliverables.map((item, index) => (
+                    {payment.map((item, index) => (
                         <>
-                        <div
-                            key={index}
-                            className="border p-4 rounded-md shadow mb-4 flex justify-between items-center bg-[#E7E7E7] "
-                        >
-                            <div>
-                                <div className='flex items-center gap-60'>
-                                    <h4 className="font-semibold mb-3">{item.deliverableName}</h4>
-                                    <div className="flex gap-4">
-                                        <EditIcon
-                                            className="cursor-pointer"
-                                            fill='#888888'
-                                            onClick={onEdit} />
-                                        <button
-                                            onClick={() => {
-                                              setDeliverableId(item.deliverableId);
-                                              setIsDecisionModalOpen(true);
-                                            }}
-                                        >
-                                            <Delete className="cursor-pointer" />
-                                        </button>
+                            <div
+                                key={index}
+                                className="border p-4 rounded-md shadow mb-4 flex justify-between items-center bg-[#E7E7E7] "
+                            >
+                                <div>
+                                    <div className='flex items-center gap-60'>
+                                        <h4 className="font-semibold mb-3">{item.perRequired}</h4>
+                                        <div className="flex gap-4">
+                                            <EditIcon
+                                                className="cursor-pointer"
+                                                fill='#888888'
+                                                onClick={onEdit} />
+                                            <button
+                                                onClick={() => {
+                                                  setPaymentId(item.paymentId);
+                                                  setIsDecisionModalOpen(true);
+                                                }}
+                                            >
+                                                <Delete className="cursor-pointer" />
+                                            </button>
+                                        </div>
                                     </div>
+                                    <p className='flex gap-4 mb-3'>
+                                        <CalendarWithMark fill='#6E50DB' />
+                                        {item.dueDate}
+                                    </p>
+                                    <p className='flex gap-4'>
+                                        <Money4 stroke='#6E50DB' /> {item.reminderFrequency}
+                                    </p>
                                 </div>
-                                <p className='mb-2'>{item.description}</p>
-                                <p className='flex gap-4 mb-3 '>
-                                    <CalendarWithMark fill='#6E50DB' />
-                                    {item.startDate}
-                                </p>
-                                <p className='flex gap-4 mb-3'>
-                                    <CalendarWithMark fill='#6E50DB' />
-                                    {item.dueDate}
-                                </p>
-                                <p className='flex gap-4'>
-                                    <Money4 stroke='#6E50DB' /> {item.amount}
-                                </p>
                             </div>
-                        </div>
                         </>
                     ))}
-                    {deliverables.length > 0 && (
-                            <div className='mt-10 text-[#262626] '>
-                                <p className='flex justify-between mb-2'>Total deliverables: <span>2</span></p>
-                                <p className='flex justify-between mb-2'>Timeline <span>{'{Month day, year} - {Month day, year} {number of days}'}</span></p>
-                                <p className='flex justify-between mb-2'>Sub Total: <span>NGN 200,000.00</span></p>
-                                <p className='flex justify-between'>Total <span className='font-bold'>NGN 200,000.00</span></p>
-                            </div>
+                    {payment.length > 0 && (
+                        <div className='mt-10 text-[#262626] '>
+                            <p className='flex justify-between mb-2'>Total payment: <span>2</span></p>
+                            <p className='flex justify-between mb-2'>Timeline <span>{'{Month day, year} - {Month day, year} {number of days}'}</span></p>
+                            <p className='flex justify-between mb-2'>Sub Total: <span>NGN 200,000.00</span></p>
+                            <p className='flex justify-between'>Total <span className='font-bold'>NGN 200,000.00</span></p>
+                        </div>
 
                     )}
 
                 </div>
-                <div className="pt-4 flex justify-end">
+                <div className="pt-4 flex gap-4">
+                    <Button
+                        type="button"
+                        size="xl"
+                        backgroundColor="primary-blue-500"
+                        className="w-1/2 py-3 px-12"
+                        onClick={handleNextStep}
+                        // onClick={handleSkip}
+                    >
+                        Save and continue
+                    </Button>
                     <Button
                         type="button"
                         size="xl"
@@ -211,7 +237,7 @@ export function PersonalProjectDeliverables ({ projectId }: { projectId: string 
                         onClick={handleSkip}
                     >
                         {/* skip for now */}
-                        {deliverables.length > 0 ? 'Close' : 'Skip for now'}
+                        Close
                     </Button>
                 </div>
 

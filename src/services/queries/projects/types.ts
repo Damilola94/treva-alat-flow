@@ -16,6 +16,10 @@ export interface ProjectManagement {
   taskId: string
   // taskStatus: string
   deliverableName: string
+  deliverableDescription: string
+  deliverableAmount: string
   amount: string
   deliverableId: string
+  fullName: string
+  imageUrl: string
 }

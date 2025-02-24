@@ -10,6 +10,7 @@ import queryKey from './keys';
 import { type AxiosError } from 'axios';
 import config from '@/lib/config';
 import { type ProjectManagement } from './types';
+import { ProjectType } from './enums';
 
 const BASE_URL = config.services;
 
@@ -42,7 +43,7 @@ const useCreate = (options: { onSuccess?: (response: any) => void }) => {
     priority: string
     totalAmount?: string
     clientId?: string
-    projectType: 1 | 2
+    projectType: string
   }
 
   return {
@@ -54,7 +55,7 @@ const useCreate = (options: { onSuccess?: (response: any) => void }) => {
         projectType: body.projectType,
         expectedDeliveryDate: body.expectedDeliveryDate,
         priority: body.priority,
-        ...(body.projectType === 2 && {
+        ...(body.projectType === ProjectType.ClientProject && {
           totalAmount: body.totalAmount,
           clientId: body.clientId
         })
@@ -71,7 +72,7 @@ const useCreate = (options: { onSuccess?: (response: any) => void }) => {
   };
 };
 
-const useRead = ({ pageNumber = 1, pageSize = 50, search = '', userId = '', organizationId = '', forCurrentUser = '' } = {}, options = {}) => {
+const useRead = ({ pageNumber = 1, pageSize = 50, search = '', userId = '', organizationId = '', forCurrentUser = '', projectType = '' } = {}, options = {}) => {
   const response = useQuery(
     [queryKey.read, pageNumber, pageSize],
     async () => {
@@ -79,6 +80,7 @@ const useRead = ({ pageNumber = 1, pageSize = 50, search = '', userId = '', orga
       if (userId) queryParams.append('UserId', String(userId))
       if (organizationId) queryParams.append('OrganizationId', String(organizationId))
       if (forCurrentUser) queryParams.append('ForCurrentUser', String(forCurrentUser))
+      if (projectType) queryParams.append('ProjectType', String(projectType))
       queryParams.append('PageNumber', pageNumber.toString())
       queryParams.append('PageSize', pageSize.toString())
       if (search) queryParams.append('SearchKey', search);
@@ -154,7 +156,7 @@ const useUpdate = (options: { onSuccess?: (response: any) => void }) => {
     priority?: string
     totalAmount?: string
     clientId?: string
-    projectType: 1 | 2
+    projectType: string
   }
 
   return {
@@ -167,7 +169,7 @@ const useUpdate = (options: { onSuccess?: (response: any) => void }) => {
         projectType: body?.projectType,
         expectedDeliveryDate: body?.expectedDeliveryDate,
         priority: body?.priority,
-        ...(body.projectType === 2 && {
+        ...(body.projectType === ProjectType.ClientProject && {
           totalAmount: body?.totalAmount,
           clientId: body?.clientId
         })
@@ -626,6 +628,143 @@ const useDeleteDeliverables = ({ deliverableId = '', projectId = '' } = {}, opti
   };
 };
 
-const queries = { create: useCreate, read: useRead, update: useUpdate, delete: useDelete, readone: useReadOne, createTasks: useCreateTasks, readTasks: useReadTasks, readTasksOne: useReadTasksOne, updateTasks: useUpdateTasks, deleteTasks: useDeleteTasks, createDeliverables: useCreateDeliverables, readDeliverables: useReadDeliverables, readDeliverablesOne: useReadDeliverablesOne, updateDeliverables: useUpdateDeliverables, deleteDeliverables: useDeleteDeliverables };
+const useCreatePayment = (options: { onSuccess?: (response: any) => void }) => {
+  const {
+    onSuccess = () => { }
+  } = options
+
+  const queryClient = useQueryClient()
+  const { mutate, ...response } = useMutation(api.post, {
+    mutationKey: [queryKey.createPayment],
+    ...options,
+    onSuccess: async (data) => {
+      onSuccess(data)
+      await queryClient.invalidateQueries({
+        queryKey: [queryKey.readPayment]
+      })
+
+      successToast('Payment Created')
+    },
+    onError: (err: AxiosError) => {
+      errorToast(handleErrors(err))
+    }
+  })
+
+  interface Body {
+    projectId: string
+    perRequired: string
+    dueDate: string
+    reminderFrequency: string
+
+  }
+
+  return {
+    ...response,
+    mutate: (body: Body) => {
+      const requestBody = {
+        projectId: body.projectId,
+        perRequired: body.perRequired,
+        dueDate: body.dueDate,
+        reminderFrequency: body.reminderFrequency
+      };
+
+      mutate({
+        url: `${BASE_URL.project}/${body.projectId}/payments`,
+        body: requestBody,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+    }
+  };
+};
+
+const useCreateAgreement = (options: { onSuccess?: (response: any) => void }) => {
+  const { onSuccess = () => {} } = options;
+
+  const queryClient = useQueryClient();
+  const { mutate, ...response } = useMutation(api.put, {
+    mutationKey: [queryKey.updateAgreement], // Ensure this key is correct
+    ...options,
+    onSuccess: async (data) => {
+      onSuccess(data);
+      await queryClient.invalidateQueries({
+        queryKey: [queryKey.readAgreement]
+      });
+
+      successToast('Agreement Created');
+    },
+    onError: (err: AxiosError) => {
+      errorToast(handleErrors(err));
+    }
+  });
+
+  interface Body {
+    projectId: string
+    projectAgreementUrl?: File | null
+  }
+
+  return {
+    ...response,
+    mutate: (body: Body) => {
+      const formData = new FormData();
+      if (body.projectAgreementUrl) {
+        formData.append('AgreementFile', body.projectAgreementUrl);
+      }
+      formData.append('ProjectId', body.projectId);
+
+      mutate({
+        body: formData,
+        url: `${BASE_URL.project}/${body.projectId}/agreements`,
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+    }
+  };
+};
+
+const useDeleteAgreement = ({ projectId = '' } = {}, options: { onSuccess: () => void }) => {
+  const { onSuccess = () => {} } = options;
+  const queryClient = useQueryClient();
+
+  const { mutate, ...response } = useMutation(api.delete, {
+    mutationKey: [queryKey.deleteAgreement, projectId],
+    ...options,
+    onSuccess: async () => {
+      onSuccess();
+      await queryClient.invalidateQueries({
+        queryKey: [queryKey.readAgreement]
+      });
+      successToast('Agreement deleted');
+    },
+    onError: (err: AxiosError) => {
+      errorToast(handleErrors(err));
+    }
+  });
+
+  interface Body {
+    projectId: string
+  }
+
+  return {
+    ...response,
+    mutate: (body: Body) => {
+      const requestBody = {
+        projectId: body.projectId
+      };
+
+      mutate({
+        url: `${BASE_URL.project}/${body.projectId}/agreements`,
+        body: requestBody,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+    }
+  };
+};
+
+const queries = { create: useCreate, read: useRead, update: useUpdate, delete: useDelete, readone: useReadOne, createTasks: useCreateTasks, readTasks: useReadTasks, readTasksOne: useReadTasksOne, updateTasks: useUpdateTasks, deleteTasks: useDeleteTasks, createDeliverables: useCreateDeliverables, readDeliverables: useReadDeliverables, readDeliverablesOne: useReadDeliverablesOne, updateDeliverables: useUpdateDeliverables, deleteDeliverables: useDeleteDeliverables, createPayment: useCreatePayment, updateAgreement: useCreateAgreement, deleteAgreement: useDeleteAgreement };
 
 export default queries;

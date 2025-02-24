@@ -10,6 +10,7 @@ import Image from 'next/image';
 import projectManagement from '@/lib/assets/project-management';
 import queries from '@/services/queries/projects';
 import { type InitialStep1Values } from '@/app/dashboard/project-management/personal-project/create/page';
+import { ProjectType } from '@/services/queries/projects/enums';
 
 interface IProps {
   id: string
@@ -23,8 +24,6 @@ interface IProps {
   onAddDeliverable: (values: any) => void
 
 }
-
-type UserType = 1 | 2;
 
 const validationSchema = Yup.object().shape({
   title: Yup.string().optional(),
@@ -62,7 +61,7 @@ export function EditProject (props: IProps) {
     }
   })
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [userType, setUserType] = useState<UserType>(1);
+  const [userType, setUserType] = useState<ProjectType>(ProjectType.PersonalProject);
 
   useEffect(() => {
     if (data) { void refetch() }
@@ -87,7 +86,7 @@ export function EditProject (props: IProps) {
       expectedDeliveryDate: string
       priority: string
       totalAmount: string
-      projectType: UserType
+      projectType: ProjectType
     } = {
       projectId,
       title: _values.title,

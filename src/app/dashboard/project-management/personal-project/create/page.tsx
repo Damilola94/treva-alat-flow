@@ -1,7 +1,7 @@
 'use client'
 import React, { Fragment, Suspense, useState } from 'react'
 import { RenderIf } from '@/components/shared'
-import { UserType } from '@/services/queries/projects/enums'
+import { ProjectType } from '@/services/queries/projects/enums'
 import { PersonalProjectDeliverables, PersonalProjectDetails } from '@/components/shared/project-management'
 import { ProgressStatus } from '@/components/shared/dashboard/get-started/progress-status copy'
 
@@ -16,7 +16,7 @@ const step1Values = {
   description: '',
   expectedDeliveryDate: '',
   priority: AccountType.Low as `${AccountType}`,
-  projectType: UserType.PersonalProject
+  projectType: ProjectType.PersonalProject
 }
 
 const step2Values = {

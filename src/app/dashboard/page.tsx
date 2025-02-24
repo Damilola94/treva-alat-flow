@@ -255,7 +255,7 @@ export default function Page () {
           />
         </div>
 
-        <ProjectsTable />
+        <ProjectsTable category="All Projects" />
       </div>
     </div>
   );

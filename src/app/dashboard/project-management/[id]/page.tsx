@@ -11,7 +11,7 @@ import queries from '@/services/queries/projects';
 import { useParams } from 'next/navigation';
 import { TaskTable } from '@/components/shared/dashboard/project-management/project-table/projects-task-table';
 import { DeliverableTable } from '@/components/shared/dashboard/project-management/project-table/deliverable-table';
-import { AddDeliverables } from '@/components/shared/invoice-and-payment.tsx/add-deliverables';
+import { AddDeliverables } from '@/components/shared/project-management.tsx/add-deliverables';
 import { ButtonGroup } from './button-group';
 import { ProgressBar } from './progress-tag';
 

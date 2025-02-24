@@ -1,11 +1,11 @@
 'use client'
 import { Fragment, useEffect, useState } from 'react'
 import { EditProject } from './edit-project'
-import { EditDeliverables } from '@/components/shared/invoice-and-payment.tsx/edit-deliverables'
+import { EditDeliverables } from '@/components/shared/project-management.tsx/edit-deliverables'
 import queries from '@/services/queries/projects'
 import { RenderIf } from '@/components/shared/render-if'
 import { AnimatedModal } from '@/components/shared/modal'
-import { UserType } from '@/services/queries/projects/enums'
+import { ProjectType } from '@/services/queries/projects/enums'
 
 interface IProps {
   projectId: string
@@ -35,7 +35,7 @@ const step1Values = {
   description: '',
   expectedDeliveryDate: '',
   priority: AccountType.Low as `${AccountType}`,
-  projectType: UserType.PersonalProject
+  projectType: ProjectType.PersonalProject
 }
 
 const step2Values = {

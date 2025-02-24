@@ -4,14 +4,14 @@ import {
   ClientIcon,
   PersonalIcon,
   AnimatedModal,
-  Pill,
+  // Pill,
   PlusIcon,
   RenderIf
 } from '@/components/shared'
 import { ProjectsTable } from '@/components/shared/dashboard'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useCallback, useState } from 'react'
 import {
   CreateProjectCard,
   TakeATour,
@@ -20,6 +20,10 @@ import {
 import projectManagement from '@/lib/assets/project-management'
 import { EditProject } from '@/components/shared/dashboard/project-management/project-table/edit-project'
 import { DeleteProject } from '@/components/shared/dashboard/project-management/project-table/delete-project'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Check, ListFilter } from 'lucide-react'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { type ProjectType } from '@/services/queries/projects/enums'
 
 const createAProject = {
   img: projectManagement.topImageProject,
@@ -57,13 +61,28 @@ const deleteClient = {
   btnText2: 'Delete'
 };
 
-enum Projects {
-  'All Projects' = 'All Projects',
-  'Pending Project' = 'Pending Project',
-  'Completed Project' = 'Completed Project',
-}
-
 export default function Page () {
+  const path = usePathname()
+  const searchParams = useSearchParams()
+  const router = useRouter()
+
+  const popoverItems = [
+    { label: 'All Project', value: '' },
+    { label: 'Personal Project', value: 'PersonalProject' },
+    { label: 'Client Project', value: 'ClientProject' }
+  ]
+
+  const handleCategorySelect = useCallback((category: string) => {
+    const params = new URLSearchParams(searchParams.toString())
+    if (category) {
+      params.set('projectType', category)
+    } else {
+      params.delete('projectType')
+    }
+    router.push(`${path}?${params.toString()}`)
+  }, [path, searchParams, router])
+
+  const selectedCategory = searchParams.get('projectType') as ProjectType || '';
   const [takeATour, setTakeATour] = useState(true)
   const [addProject, setAddProject] = useState(true)
   const [addProjectForm, setAddProjectForm] = useState(true)
@@ -207,15 +226,28 @@ export default function Page () {
       <div className="app_dashboard_home__task app_dashboard_page__px">
         <div className="app_dashboard_home__task__hdr flex-wrap gap-2 mt-4">
           <div className="flex flex-wrap gap-2">
-            {Object.entries(Projects).map(([label]) => (
-              <Pill
-                key={label}
-                size="md"
-                active={Projects['All Projects'] === label}
-              >
-                {label}
-              </Pill>
-            ))}
+            <Popover>
+              <PopoverTrigger>
+                <button type="button" className="app_dashboard_group_header__btn">
+                  Type
+                  <ListFilter size={14} />
+                </button>
+              </PopoverTrigger>
+              <PopoverContent className="app_popover__content">
+                {popoverItems.map((item) => (
+                  <button
+                    className="app_popover__content__item"
+                    key={item.value}
+                    onClick={() => { handleCategorySelect(item.value) }}
+                  >
+                    {item.label}
+                    <RenderIf condition={searchParams.get('category') === item.value}>
+                      <Check />
+                    </RenderIf>
+                  </button>
+                ))}
+              </PopoverContent>
+            </Popover>
           </div>
 
           <div className="flex gap-2">
@@ -234,7 +266,7 @@ export default function Page () {
             </Button>
           </div>
         </div>
-        <ProjectsTable onEdit={handleEditProject} onDelete={onDelete} />
+        <ProjectsTable onEdit={handleEditProject} onDelete={onDelete} category={selectedCategory} />
       </div>
     </div>
   )
