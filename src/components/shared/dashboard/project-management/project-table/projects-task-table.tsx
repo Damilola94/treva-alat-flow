@@ -6,6 +6,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { useParams } from 'next/navigation'
 import queries from '@/services/queries/projects'
 import { ProjectPriorityEnums } from '@/services/queries/projects/enums'
+import { Skeleton } from '@/components/ui/skeleton'
 
 interface TaskTableProps {
   viewType: string
@@ -115,6 +116,10 @@ interface TaskListProps {
 }
 
 function TaskList ({ tasks, updateTaskStatus }: TaskListProps) {
+  const param = useParams()
+  const projectId = Array.isArray(param.id) ? param.id[0] : param.id
+  const { data, isLoading } = queries.readTasks({ projectId })
+
   const formatDate = (dateString: string) => {
     if (!dateString) return ''
     const date = new Date(dateString)
@@ -136,16 +141,14 @@ function TaskList ({ tasks, updateTaskStatus }: TaskListProps) {
           </thead>
 
           <tbody className="app_table__tbody">
-            {tasks.length === 0
-              ? (
-              <tr>
-                <td colSpan={5} className="text-center py-4">
-                  No tasks found
-                </td>
-              </tr>
-                )
-              : (
-                  tasks.map((item: Task) => (
+          {isLoading
+            ? (
+                  <>
+                    {[...Array(3)].map((_, index) => <Skeleton key={index} columns={4} />)}
+                  </>
+              )
+            : (
+                data.map((item: Task) => (
                 <tr key={item.taskId} className="border-t border-gray-100">
                   <td className="app_table__tbody__td font-medium text-[--text-color-500]">
                     <div className="app_table__tbody__td__ctt font-semibold">{item.taskName}</div>
@@ -174,8 +177,8 @@ function TaskList ({ tasks, updateTaskStatus }: TaskListProps) {
                     </div>
                   </td>
                 </tr>
-                  ))
-                )}
+                ))
+              )}
           </tbody>
         </table>
       </div>

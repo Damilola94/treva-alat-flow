@@ -5,36 +5,24 @@ import { Formik } from 'formik'
 import * as Yup from 'yup'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import queries from '@/services/queries/auth'
 import { Select } from '../select'
 import projectManagement from '@/lib/assets/project-management'
 import Image from 'next/image'
+import queries from '@/services/queries/projects'
 
-const validationSchema = Yup.object().shape({
-  deliverableName: Yup.string().required('Please enter a deliverable name'),
-  description: Yup.string().required('Please enter a description'),
-  startDate: Yup.date().required('Please select a start date'),
-  dueDate: Yup.date().required('Please select a due date'),
-  amount: Yup.number()
-    .required('Please enter an amount')
-    .positive('Amount must be positive')
-});
+interface IProps {
+  onClose: () => void
+  projectId: string
+  onAddPayment: (values: any) => void
+  setPaymentId: (id: string) => void
 
-enum AccountType {
-  Low = 'low',
-  Medium = 'medium',
-  High = 'high',
 }
 
-const initialValues = {
-  deliverableName: '',
-  description: '',
-  startDate: '',
-  dueDate: '',
-  amount: '',
-  accountType: AccountType.Low as `${AccountType}`
-
-};
+const validationSchema = Yup.object().shape({
+//   perRequired: Yup.string().required('Please enter a percentage required'),
+//   dueDate: Yup.date().required('Please select a due date'),
+//   reminderFrequency: Yup.string().required('Please enter a reminder frequency')
+});
 
 const options = [
   { value: 'Daily', label: 'Daily' },
@@ -44,8 +32,29 @@ const options = [
   { value: 'Yearly', label: 'Yearly' }
 ];
 
-export function AddPayment () {
-  const { mutate, isLoading } = queries.login()
+export default function AddPayment (props: IProps) {
+  const { onClose, projectId, setPaymentId } = props
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { mutate, isLoading } = queries.createPayment({
+    onSuccess: (response) => {
+      if (response?.data?.id) {
+        const paymentId = response.data.id;
+        setPaymentId(paymentId);
+      } else {
+        console.warn('Project ID not found. Polling...');
+      }
+      onClose();
+    }
+  });
+
+  const initialValues = {
+    projectId,
+    perRequired: '',
+    dueDate: '',
+    reminderFrequency: ''
+
+  };
 
   return (
         <div className="app_auth_login_container relative">
@@ -78,7 +87,7 @@ export function AddPayment () {
                                         type="text"
                                         placeholder="% Required"
                                         size="xl"
-                                        value={values.deliverableName}
+                                        value={values.perRequired}
                                         onChange={handleChange}
                                         onBlur={handleBlur}
                                         errors={errors}
@@ -90,7 +99,7 @@ export function AddPayment () {
                                         type="date"
                                         label="Due date"
                                         size="xl"
-                                        value={values.startDate}
+                                        value={values.dueDate}
                                         onChange={handleChange}
                                         onBlur={handleBlur}
                                         errors={errors}
@@ -115,7 +124,8 @@ export function AddPayment () {
                                         <Button
                                             size="md"
                                             backgroundColor="transparent"
-                                            isLoading={isLoading}
+                                            type='button'
+                                            onClick={onClose}
                                             color="primary-blue-500"
                                             className="w-full hover:bg-transparent ml-10 app_auth_login__btn border border-[text-color-100]"
                                         >

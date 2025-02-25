@@ -1,6 +1,6 @@
-import { Badge, type BadgeProps } from '../../badge'
-import { Pagination } from '../../pagination'
-import { EmptyStatus } from '../../svgs'
+import { Badge, type BadgeProps } from '../badge'
+import { Pagination } from '../pagination'
+import { EmptyStatus } from '../svgs'
 
 const IS_EMPTY = false
 

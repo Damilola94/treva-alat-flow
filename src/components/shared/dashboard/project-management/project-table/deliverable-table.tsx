@@ -68,7 +68,7 @@ export function DeliverableTable () {
                       </td>
                       <td className="app_table__tbody__td text-[--text-color-500]">
                         <div className="app_table__tbody__td__ctt">
-                          {item.description}
+                          {item.deliverableDescription}
                         </div>
                       </td>
                       <td className="app_table__tbody__td text-[--text-color-500]">
@@ -83,7 +83,7 @@ export function DeliverableTable () {
                       </td>
                       <td className="app_table__tbody__td text-[--text-color-500]">
                         <div className="app_table__tbody__td__ctt">
-                          {item.amount}
+                          {item.deliverableAmount}
                         </div>
                       </td>
                     </tr>
