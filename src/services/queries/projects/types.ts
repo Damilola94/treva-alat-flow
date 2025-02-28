@@ -18,8 +18,9 @@ export interface ProjectManagement {
   deliverableName: string
   deliverableDescription: string
   deliverableAmount: string
-  amount: string
   deliverableId: string
   fullName: string
   imageUrl: string
+  totalDeliverables: string
+  timeline: string
 }

@@ -17,7 +17,9 @@ interface IProps {
 const validationSchema = Yup.object().shape({
   title: Yup.string().required('Please enter a project title'),
   description: Yup.string().required('Please enter a project description'),
-  expectedDeliveryDate: Yup.string().required('Please enter a expected delivery date'),
+  expectedDeliveryDate: Yup.date()
+    .min(new Date(), 'Expected delivery date must be in the future')
+    .required('Please enter an expected delivery date'),
   priority: Yup.string().required('Please select a priority')
 })
 
@@ -110,6 +112,8 @@ export function PersonalProjectDetails (props: IProps) {
                       errors={errors}
                       touched={touched}
                     />
+                    <div>
+                      <label htmlFor="">Expected delivery date</label>
                     <Input
                       name="expectedDeliveryDate"
                       type="date"
@@ -122,6 +126,7 @@ export function PersonalProjectDetails (props: IProps) {
                       errors={errors}
                       touched={touched}
                     />
+                    </div>
                   </div>
                   <div className="flex flex-col gap-8 my-5">
                     <p className='text-[#6D6D6D]'>Project Priority</p>

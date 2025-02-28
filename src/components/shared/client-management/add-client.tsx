@@ -23,7 +23,9 @@ const validationSchema = Yup.object().shape({
   phoneNumber: Yup.string()
     .matches(/^[0-9]{11}$/, 'Phone number must be exactly 11 digits')
     .required('Phone number is required'),
-  birthday: Yup.date().required('Please enter your birthday'),
+  birthday: Yup.date()
+    .max(new Date(), 'Date of birth cannot be in the future')
+    .required('Please enter your birthday'),
   image: Yup.mixed().required('Image is required')
 });
 
@@ -105,6 +107,7 @@ export function AddClient ({ onClose }: IProps) {
               initialValues={initialValues}
               validationSchema={validationSchema}
               onSubmit={onSubmit}
+
             >
               {(props) => {
                 const {
@@ -116,7 +119,11 @@ export function AddClient ({ onClose }: IProps) {
                   touched
                 } = props
                 return (
-                  <form onSubmit={handleSubmit} className="flex flex-col gap-8">
+                  // onSubmit={handleSubmit}
+                  <form onSubmit={(e) => {
+                    e.preventDefault(); // Prevents form from refreshing the page
+                    handleSubmit(e);
+                  }} className="flex flex-col gap-8">
                     <div className="flex flex-col gap-8">
                       <div className="">
                         <Input
@@ -159,14 +166,12 @@ export function AddClient ({ onClose }: IProps) {
                         />
                       </div>
                       <div className="flex flex-col gap-2">
-                        <label htmlFor="birthday" className="text-sm font-medium text-gray-700">
-                          Date of Birth
-                        </label>
                         <Input
                           name="birthday"
-                          id="birthday"
                           type="date"
+                          id="birthday"
                           size="xl"
+                          label='Date of Birth'
                           value={values.birthday}
                           onChange={handleChange}
                           onBlur={handleBlur}

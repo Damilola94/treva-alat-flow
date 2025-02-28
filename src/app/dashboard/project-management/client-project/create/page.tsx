@@ -3,11 +3,11 @@ import React, { Fragment, Suspense, useState } from 'react'
 import { RenderIf } from '@/components/shared'
 import { ProjectType } from '@/services/queries/projects/enums'
 import { ProgressStatus } from '@/components/shared/dashboard/get-started/progress-status copy'
-import { ProjectDetails } from '@/components/shared/project-management/client-project/add-details'
-import { ProjectDeliverables } from '@/components/shared/project-management/client-project/add-deliverables'
-import { ProjectPayment } from '@/components/shared/project-management/client-project/add-payment'
-import { ProjectAgreement } from '@/components/shared/project-management/client-project/add-agreement'
-import { ProjectReview } from '@/components/shared/project-management/client-project/review'
+import { ProjectDetails } from '@/components/shared/dashboard/project-management/client-project/add-details'
+import { ProjectDeliverables } from '@/components/shared/dashboard/project-management/client-project/add-deliverables'
+import { ProjectPayment } from '@/components/shared/dashboard/project-management/client-project/add-payment'
+import { ProjectAgreement } from '@/components/shared/dashboard/project-management/client-project/add-agreement'
+import { ProjectReview } from '@/components/shared/dashboard/project-management/client-project/review'
 
 enum AccountType {
   Low = 'low',
@@ -20,7 +20,7 @@ const step1Values = {
   description: '',
   expectedDeliveryDate: '',
   priority: AccountType.Low as `${AccountType}`,
-  projectType: ProjectType.PersonalProject
+  projectType: ProjectType.ClientProject
 }
 
 // const step2Values = {

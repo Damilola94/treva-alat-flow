@@ -14,7 +14,7 @@ import { type ClientManagement } from './types';
 
 const BASE_URL = config.services;
 
-const useCreate = (options: { onSuccess: () => void }) => {
+const useCreate = (options: { onSuccess?: (response: any) => void }) => {
   const {
     onSuccess = () => {}
   } = options
@@ -22,8 +22,8 @@ const useCreate = (options: { onSuccess: () => void }) => {
   const { mutate, ...response } = useMutation(api.post, {
     mutationKey: [queryKey.create],
     ...options,
-    onSuccess: async () => {
-      onSuccess()
+    onSuccess: async (response) => {
+      onSuccess(response)
       await queryClient.invalidateQueries({
         queryKey: [queryKey.read]
       })
@@ -71,12 +71,12 @@ const useCreate = (options: { onSuccess: () => void }) => {
 
 const useRead = ({ pageNumber = 1, pageSize = 50, search = '' } = {}, options = {}) => {
   const response = useQuery(
-    [queryKey.read, pageNumber, pageSize],
+    [queryKey.read, pageNumber, pageSize, search],
     async () => {
       const queryParams = new URLSearchParams()
       queryParams.append('PageNumber', pageNumber.toString())
       queryParams.append('PageSize', pageSize.toString())
-      if (search) queryParams.append('SearchKey', search);
+      queryParams.append('SearchKey', search);
 
       const url = `${BASE_URL.clientManagement}?${queryParams.toString()}`
       return await api.get({ url })

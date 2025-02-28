@@ -71,6 +71,8 @@ export function AddProject ({ onClose }: IProps) {
         src={projectManagement.topGradient}
         alt="take a tour"
         className=""
+        width={100}
+        height={100}
       />
       <div className="app_auth_login_container__upper !-mt-40">
         <div className="app_auth_login">

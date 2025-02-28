@@ -1,8 +1,9 @@
 'use client';
 
 import { AnimatedModal, ClientIcon, EmptyStatus, PersonalIcon, Pill, PlusIcon, RenderIf } from '@/components/shared';
-import { ProjectsTable } from '@/components/shared/dashboard';
+// import { ProjectsTable } from '@/components/shared/dashboard';
 import { EmptyState } from '@/components/shared/dashboard/empty-state';
+import { ProjectsTable } from '@/components/shared/dashboard/project-management/project-table/projects-table';
 import { AddProject, CreateProjectCard } from '@/components/shared/project-management';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -38,8 +39,8 @@ enum Tasks {
 
 enum Projects {
   'All Projects' = 'All Projects',
-  'Pending Project' = 'Pending Project',
   'Completed Project' = 'Completed Project',
+  'Due Project' = 'Pending Project',
 }
 
 function EllIcon () {
@@ -255,7 +256,7 @@ export default function Page () {
           />
         </div>
 
-        <ProjectsTable category="All Projects" />
+        <ProjectsTable category="" search='' />
       </div>
     </div>
   );

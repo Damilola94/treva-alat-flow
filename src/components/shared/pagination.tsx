@@ -18,20 +18,20 @@ export function Pagination (props: IProps) {
 
   return (
     <ReactPaginate
-      breakLabel={<Ellipsis />}
-      previousLabel={<ChevronLeft />}
-      nextLabel={<ChevronRight />}
-      onPageChange={handlePageClick}
-      pageCount={paginate?.pageCount}
-      pageRangeDisplayed={paginate?.pageRangeDisplayed}
-      marginPagesDisplayed={paginate?.marginPagesDisplayed}
-      renderOnZeroPageCount={null}
-      forcePage={paginate?.currentPage}
-      initialPage={paginate?.currentPage}
-      containerClassName="app_pagination flex items-center gap-2"
-      pageClassName="app_pagination__button"
-      activeClassName="app_pagination__numbers__button active"
-      disableInitialCallback
+    breakLabel={<Ellipsis />}
+    previousLabel={<ChevronLeft />}
+    nextLabel={<ChevronRight />}
+    onPageChange={handlePageClick}
+    pageCount={paginate.pageCount}
+    pageRangeDisplayed={paginate.pageRangeDisplayed}
+    marginPagesDisplayed={paginate.marginPagesDisplayed}
+    forcePage={paginate.currentPage}
+    containerClassName="flex items-center gap-2"
+    pageClassName="w-10 h-10 flex items-center justify-center rounded-full border-2 border-gray-400 text-gray-700"
+    activeClassName="bg-black text-white border-black"
+    previousClassName="w-10 h-10 flex items-center justify-center"
+    nextClassName="w-10 h-10 flex items-center justify-center"
+    disabledClassName="opacity-50 cursor-not-allowed"
     />
   )
 }

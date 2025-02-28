@@ -5,19 +5,19 @@ import { BinGray, EditPencilGray, EmptyStatus } from '../../../svgs'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Eye } from 'lucide-react'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { EmptyState } from '../../empty-state'
 import { Skeleton } from '@/components/ui/skeleton'
 import Link from 'next/link'
-import { ProjectType } from '@/services/queries/projects/enums'
-import Image from 'next/image'
+// import { ProjectType } from '@/services/queries/projects/enums'
+// import Image from 'next/image'
 
 interface IProps {
   onClick?: (id: string) => void
   onEdit?: (id: string) => void
   onDelete?: (id: string) => void
   category: string
-
+  search: string
 }
 
 const statusMap: Record<
@@ -32,7 +32,7 @@ number,
 
 const thead = [
   { label: 'Project name' },
-  { label: 'Client' },
+  { label: 'Project Type' },
   { label: 'Due date', isSortable: true },
   { label: 'Priority' },
   { label: 'Status' },
@@ -62,8 +62,16 @@ function ChevronVIcon () {
 export function ProjectsTable (props: IProps) {
   const { category } = props
   const rt = useRouter()
-  const { data, refetch, isLoading } = queries.read({ projectType: category })
-  const filteredProjects = data?.filter(project => {
+  const [currentPage, setCurrentPage] = useState(1)
+  const pageSize = 50
+  const { data, refetch, isLoading } = queries.read({
+    projectType: category,
+    pageNumber: currentPage,
+    pageSize,
+    search: props.search
+  })
+
+  const filteredProjects = data?.data?.filter(project => {
     if (!category) return true;
     return project.projectType === category;
   });
@@ -72,13 +80,17 @@ export function ProjectsTable (props: IProps) {
 
   useEffect(() => {
     void refetch()
-  }, [data, refetch]);
+  }, [data, refetch, currentPage]);
 
   const handleRowSelect = (value: string) => {
     rt.push(`/dashboard/project-management/${value}`)
   }
 
-  if (!isLoading && (!data || data.length === 0)) {
+  const handlePageClick = (selectedItem: { selected: number }) => {
+    setCurrentPage(selectedItem.selected + 1)
+  }
+
+  if (!isLoading && (!data || data?.data?.length === 0)) {
     return (
       <div className="app_dashboard_home__task__ctt app_dashboard_home__task__ctt--empty">
         <EmptyState
@@ -134,17 +146,7 @@ export function ProjectsTable (props: IProps) {
                       </td>
                       <td className="app_table__tbody__td text-[--text-color-500]">
                         <div className="app_table__tbody__td__ctt">
-                          {project.projectType === ProjectType.ClientProject
-                            ? (
-                            <div className="flex items-center gap-2">
-                              <Image src={project.imageUrl} alt={project.fullName} className="w-8 h-8 rounded-full" />
-                              <span>{project.fullName}</span>
-                            </div>
-                              )
-                            : (
-                                project.description
-                              )
-                        }
+                          {project.projectType}
                         </div>
                       </td>
                       <td className="app_table__tbody__td">
@@ -153,7 +155,7 @@ export function ProjectsTable (props: IProps) {
                         </div>
                       </td>
                       <td className="app_table__tbody__td">
-                        <div className={`app_table__priority app_table__priority--${['low', 'medium', 'high'][Number(project.priority)] || 'low'}`}>
+                        <div className={`app_table__priority app_table__priority--${project.priority || 'Low'}`}>
                           <span className="app_table__priority__dot"></span>
                           {(project.priority) || 'Low'}
                         </div>
@@ -173,15 +175,16 @@ export function ProjectsTable (props: IProps) {
                           <Button variant="outline" size="icon" onClick={() => { handleRowSelect(project.id); }}>
                             <Eye className="h-4 w-4" />
                           </Button>
+                          <Button variant="outline" size="icon" onClick={() => onDelete?.(project.id)}>
+                                <BinGray className="h-4 w-4" />
+                              </Button>
                           {project.projectType === 'PersonalProject' && (
                             <>
                               <Link href={`/dashboard/project-management/personal-project/${project.id}/edit`}>
                                 <Button variant="outline" size="icon">
                                   <EditPencilGray className="h-4 w-4" />
                                 </Button>
-                              </Link><Button variant="outline" size="icon" onClick={() => onDelete?.(project.id)}>
-                                <BinGray className="h-4 w-4" />
-                              </Button>
+                              </Link>
                             </>
                           )}
                         </div>
@@ -195,8 +198,19 @@ export function ProjectsTable (props: IProps) {
           </table>
 
           <div className="bg-white app_table__pagination">
-            <Pagination {...{ paginate: { pageCount: 1 } }} />
+            <Pagination
+              paginate={{
+                pageCount: data?.metaData?.totalPages ?? 1,
+                currentPage: currentPage - 1,
+                marginPagesDisplayed: 2,
+                pageRangeDisplayed: 5
+              }}
+              handlePageClick={handlePageClick}
+            />
           </div>
+             {/* <div className="bg-white app_table__pagination">
+            <Pagination {...{ paginate: { pageCount: 2 } }} />
+          </div> */}
         </div>
       </div>
     </div>

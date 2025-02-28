@@ -4,7 +4,7 @@ import * as Yup from 'yup'
 import { Formik } from 'formik'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { Pill } from '../../pill'
+import { Pill } from '../../../pill'
 import queries from '@/services/queries/projects'
 
 interface IProps {

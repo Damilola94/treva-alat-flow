@@ -73,3 +73,12 @@ export function checkWordsInSentence (sentence: string, words: string[]) {
     sentenceWords.includes(word.toLowerCase())
   );
 }
+
+export function formatDate (dateString: string | number | Date) {
+  const date = new Date(dateString)
+  return date.toLocaleDateString('en-US', {
+    month: 'short',
+    day: '2-digit',
+    year: 'numeric'
+  })
+}

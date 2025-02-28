@@ -4,16 +4,16 @@ export enum ProjectType {
 
 }
 
-export enum ProjectPriorityEnums {
+export enum ProjectPriority {
   Low = 'Low',
   Medium = 'Medium',
   High = 'High'
 
 }
 
-export enum ProjectStatusEnums {
-  NotStarted = 1,
-  Ongoing = 2,
-  Completed = 3
+export enum ProjectStatus {
+  NotStarted = 'NotStarted',
+  Ongoing = 'Ongoing',
+  Completed = 'Completed'
 
 }

@@ -3,8 +3,8 @@ import { useState } from 'react'
 import { ProgressStatus } from '@/components/shared/dashboard/get-started/progress-status'
 import { RenderIf } from '@/components/shared'
 import { useParams } from 'next/navigation'
-import { EditProjectDetails } from '@/components/shared/project-management/personal-project/edit-project-details'
-import { EditProjectDeliverables } from '@/components/shared/project-management/personal-project/edit-project-deliverables'
+import { EditProjectDetails } from '@/components/shared/dashboard/project-management/personal-project/edit-project-details'
+import { EditProjectDeliverables } from '@/components/shared/dashboard/project-management/personal-project/edit-project-deliverables'
 
 export default function EditPersonalProject () {
   const [currentStep, setCurrentStep] = useState(1)

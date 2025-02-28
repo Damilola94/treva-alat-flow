@@ -5,8 +5,9 @@ import { useState, useEffect } from 'react'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { useParams } from 'next/navigation'
 import queries from '@/services/queries/projects'
-import { ProjectPriorityEnums } from '@/services/queries/projects/enums'
 import { Skeleton } from '@/components/ui/skeleton'
+import { formatDate } from '@/lib/utils'
+import { TaskGirdView } from '../grid-view/grid-view'
 
 interface TaskTableProps {
   viewType: string
@@ -29,12 +30,6 @@ const thead = [
   { label: 'Priority' },
   { label: 'Status' }
 ]
-
-const priorityMapping: Record<number, ProjectPriorityEnums> = {
-  1: ProjectPriorityEnums.Low,
-  2: ProjectPriorityEnums.Medium,
-  3: ProjectPriorityEnums.High
-};
 
 export function TaskTable ({ viewType }: TaskTableProps) {
   const param = useParams()
@@ -73,6 +68,7 @@ export function TaskTable ({ viewType }: TaskTableProps) {
   return (
     <div className="app_dashboard_home__task__cct">
       <Tabs defaultValue="todo" className="w-full">
+        {viewType === 'table' &&
         <TabsList className="mb-4 gap-3">
           <TabsTrigger
             value="todo"
@@ -95,15 +91,28 @@ export function TaskTable ({ viewType }: TaskTableProps) {
             </span>
           </TabsTrigger>
         </TabsList>
+}
 
         <TabsContent value="todo">
-           {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
-          <TaskList tasks={todoTasks} updateTaskStatus={updateTaskStatus} />
+          {viewType === 'table'
+            ? (
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
+            <TaskList tasks={todoTasks} updateTaskStatus={updateTaskStatus} />
+              )
+            : (
+            <TaskGirdView />
+              )}
         </TabsContent>
 
         <TabsContent value="completed">
-           {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
-          <TaskList tasks={completedTasks} updateTaskStatus={updateTaskStatus} />
+          {viewType === 'table'
+            ? (
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
+            <TaskList tasks={completedTasks} updateTaskStatus={updateTaskStatus} />
+              )
+            : (
+            <TaskGirdView />
+              )}
         </TabsContent>
       </Tabs>
     </div>
@@ -120,14 +129,8 @@ function TaskList ({ tasks, updateTaskStatus }: TaskListProps) {
   const projectId = Array.isArray(param.id) ? param.id[0] : param.id
   const { data, isLoading } = queries.readTasks({ projectId })
 
-  const formatDate = (dateString: string) => {
-    if (!dateString) return ''
-    const date = new Date(dateString)
-    return `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear().toString().slice(-2)}`
-  }
-
   return (
-    <div className="w-full text-left relative rounded-xl overflow-auto">
+    <><div className="w-full text-left relative rounded-xl overflow-auto">
       <div className="shadow-sm overflow-hidden">
         <table className="border-collapse table-auto w-full app_table">
           <thead>
@@ -141,47 +144,47 @@ function TaskList ({ tasks, updateTaskStatus }: TaskListProps) {
           </thead>
 
           <tbody className="app_table__tbody">
-          {isLoading
-            ? (
-                  <>
-                    {[...Array(3)].map((_, index) => <Skeleton key={index} columns={4} />)}
-                  </>
-              )
-            : (
-                data.map((item: Task) => (
-                <tr key={item.taskId} className="border-t border-gray-100">
-                  <td className="app_table__tbody__td font-medium text-[--text-color-500]">
-                    <div className="app_table__tbody__td__ctt font-semibold">{item.taskName}</div>
-                  </td>
-                  <td className="app_table__tbody__td text-[--text-color-500]">
-                    <div className="app_table__tbody__td__ctt">{formatDate(item.startDate)}</div>
-                  </td>
-                  <td className="app_table__tbody__td text-[--text-color-500]">
-                    <div className="app_table__tbody__td__ctt">{formatDate(item.dueDate)}</div>
-                  </td>
-                  <td className="app_table__tbody__td text">
-                    <div className={`app_table__priority app_table__priority--${['low', 'medium', 'high'][Number(item.taskPriority)] || 'low'}`}>
-                      <span className="app_table__priority__dot"></span>
-                      {priorityMapping[Number(item.taskPriority)] || 'Low'}
-                    </div>
-                  </td>
-                  <td className="app_table__tbody__td">
-                    <div className="flex items-center gap-4">
-                      <input
-                        type="checkbox"
-                        checked={item.taskStatus === 2}
-                        onChange={() => { updateTaskStatus(item.taskId, item.taskStatus === 1 ? 2 : 1); }}
-                        className="w-5 h-5 accent-green-500 cursor-pointer"
-                      />
-                      <label>{item.taskStatus === 1 ? 'Mark as Complete' : 'Mark as Incomplete'}</label>
-                    </div>
-                  </td>
-                </tr>
-                ))
-              )}
+            {isLoading
+              ? (
+                <>
+                  {[...Array(3)].map((_, index) => <Skeleton key={index} columns={4} />)}
+                </>
+                )
+              : (
+                  data.map((item: Task) => (
+                  <tr key={item.taskId} className="border-t border-gray-100">
+                    <td className="app_table__tbody__td font-medium text-[--text-color-500]">
+                      <div className="app_table__tbody__td__ctt font-semibold">{item.taskName}</div>
+                    </td>
+                    <td className="app_table__tbody__td text-[--text-color-500]">
+                      <div className="app_table__tbody__td__ctt">{formatDate(item.startDate)}</div>
+                    </td>
+                    <td className="app_table__tbody__td text-[--text-color-500]">
+                      <div className="app_table__tbody__td__ctt">{formatDate(item.dueDate)}</div>
+                    </td>
+                    <td className="app_table__tbody__td text">
+                      <div className={`app_table__priority app_table__priority--${['low', 'medium', 'high'][Number(item.taskPriority)] || 'low'}`}>
+                        <span className="app_table__priority__dot"></span>
+                        {(item.taskPriority) || 'Low'}
+                      </div>
+                    </td>
+                    <td className="app_table__tbody__td">
+                      <div className="flex items-center gap-4">
+                        <input
+                          type="checkbox"
+                          checked={item.taskStatus === 2}
+                          onChange={() => { updateTaskStatus(item.taskId, item.taskStatus === 1 ? 2 : 1) } }
+                          className="w-5 h-5 accent-green-500 cursor-pointer" />
+                        <label>{item.taskStatus === 1 ? 'Mark as Complete' : 'Mark as Incomplete'}</label>
+                      </div>
+                    </td>
+                  </tr>
+                  ))
+                )}
           </tbody>
         </table>
       </div>
     </div>
+    </>
   )
 }
