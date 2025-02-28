@@ -19,8 +19,12 @@ interface IProps {
 const validationSchema = Yup.object().shape({
   deliverableName: Yup.string().required('Please enter a deliverable name'),
   description: Yup.string().required('Please enter a description'),
-  startDate: Yup.date().required('Please select a start date'),
-  dueDate: Yup.date().required('Please select a due date'),
+  startDate: Yup.date()
+    .min(new Date(), 'Start date must be in the future')
+    .required('Please select a start date'),
+  dueDate: Yup.date()
+    .max(new Date(), 'Due date cannot be in the future')
+    .required('Please select a due date'),
   amount: Yup.number()
     .required('Please enter an amount')
     .positive('Amount must be positive')
@@ -34,10 +38,10 @@ enum AccountType {
 
 const initialValues = {
   deliverableName: '',
-  description: '',
+  deliverableDescription: '',
   startDate: '',
   dueDate: '',
-  amount: '',
+  deliverableAmount: '',
   accountType: AccountType.Low as `${AccountType}`
 
 };
@@ -65,10 +69,10 @@ export function EditDeliverables ({ onClose, projectId, deliverableId }: IProps)
       projectId,
       deliverableId,
       deliverableName: values.deliverableName,
-      description: values.description,
+      deliverableDescription: values.deliverableDescription,
       startDate: values.startDate,
       dueDate: values.dueDate,
-      amount: values.amount
+      deliverableAmount: values.deliverableAmount
     };
 
     mutate(formData);
@@ -93,10 +97,11 @@ export function EditDeliverables ({ onClose, projectId, deliverableId }: IProps)
               {
                 ...initialValues,
                 deliverableName: data?.deliverableName ?? '',
-                description: data?.description ?? '',
+                deliverableDescription: data?.deliverableDescription ?? '',
                 startDate: data.startDate ? data?.startDate.split('T')[0] : '',
                 dueDate: data.dueDate ? data?.dueDate.split('T')[0] : '',
-                amount: (data?.amount ?? '')
+                deliverableAmount: (data?.deliverableAmount ??
+                  '')
               }
             }
             validationSchema={validationSchema}
@@ -127,11 +132,11 @@ export function EditDeliverables ({ onClose, projectId, deliverableId }: IProps)
                 />
 
                 <Input
-                  name="description"
+                  name="deliverableDescription"
                   type="text"
                   placeholder="Description"
                   size="xl"
-                  value={values.description}
+                  value={values.deliverableDescription}
                   onChange={handleChange}
                   onBlur={handleBlur}
                   errors={errors}
@@ -163,11 +168,11 @@ export function EditDeliverables ({ onClose, projectId, deliverableId }: IProps)
                 />
 
                 <Input
-                  name="amount"
+                  name="deliverableAmount"
                   placeholder="Amount"
                   type="number"
                   size="xl"
-                  value={values.amount}
+                  value={values.deliverableAmount}
                   onChange={handleChange}
                   onBlur={handleBlur}
                   errors={errors}

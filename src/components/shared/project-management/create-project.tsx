@@ -45,7 +45,7 @@ export function CreateProjectCard (props: IProps) {
       </button>
 
       <div className="project_management_card__bg">
-        <Image src={item?.img} alt="take a tour" className="w-full" />
+        <Image src={item?.img} alt="take a tour" className="w-full" width={100} height={100} />
       </div>
       <div className={'flex flex-col gap-9 justify-between flex-1'}>
         <div className="project_management_card__ctt">

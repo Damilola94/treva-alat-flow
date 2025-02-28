@@ -7,7 +7,7 @@ import { Modal } from '@/components/shared/decisionModal';
 import { EditDeliverables } from '@/components/shared/project-management.tsx/edit-deliverables';
 import queries from '@/services/queries/projects';
 import { type InitialStep3Values } from '@/app/dashboard/project-management/client-project/create/page'
-import AddPayment from '../../project-management.tsx/add-payment';
+import AddPayment from '../../../project-management.tsx/add-payment';
 import { useRouter } from 'next/navigation';
 import routes from '@/lib/routes';
 

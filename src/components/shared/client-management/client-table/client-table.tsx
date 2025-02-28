@@ -1,9 +1,9 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Pagination } from '../../pagination';
 import { BinGray, EditPencilGray, EmptyStatus } from '../../svgs';
 import Image from 'next/image';
 import clientManagement from '@/lib/assets/client-management';
-import { EmptyState } from '../empty-state';
+import { EmptyState } from '../../dashboard/empty-state';
 import queries from '@/services/queries/client-management';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -22,13 +22,23 @@ const thead = [
 ];
 
 export function ClientTable (props: IProps) {
-  const { data: clientData, refetch, isLoading } = queries.read({ search: props.search });
+  const [currentPage, setCurrentPage] = useState(1)
+  const pageSize = 50
+  const { data: clientData, refetch, isLoading } = queries.read({
+    search: props.search,
+    pageNumber: currentPage,
+    pageSize
+  });
 
   const { onEdit, onDelete } = props;
 
   useEffect(() => {
     void refetch()
-  }, [clientData, refetch, props.search]);
+  }, [clientData, refetch, props.search, currentPage]);
+
+  const handlePageClick = (selectedItem: { selected: number }) => {
+    setCurrentPage(selectedItem.selected + 1)
+  }
 
   if (!isLoading && (!clientData?.data || clientData.data.length === 0)) {
     return (
@@ -122,8 +132,19 @@ export function ClientTable (props: IProps) {
             </tbody>
           </table>
 
-          <div className="bg-white app_table__pagination">
+          {/* <div className="bg-white app_table__pagination">
             <Pagination {...{ paginate: { pageCount: 2 } }} />
+          </div> */}
+           <div className="bg-white app_table__pagination">
+            <Pagination
+              paginate={{
+                pageCount: clientData?.metaData?.totalPages ?? 1,
+                currentPage: currentPage - 1,
+                marginPagesDisplayed: 2,
+                pageRangeDisplayed: 5
+              }}
+              handlePageClick={handlePageClick}
+            />
           </div>
         </div>
       </div>

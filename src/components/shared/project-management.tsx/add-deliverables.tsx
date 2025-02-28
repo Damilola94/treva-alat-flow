@@ -20,8 +20,12 @@ interface IProps {
 const validationSchema = Yup.object().shape({
   deliverableName: Yup.string().required('Please enter a deliverable name'),
   description: Yup.string().required('Please enter a description'),
-  startDate: Yup.date().required('Please select a start date'),
-  dueDate: Yup.date().required('Please select a due date'),
+  startDate: Yup.date()
+    .min(new Date(), 'Start date must be in the future')
+    .required('Please select a start date'),
+  dueDate: Yup.date()
+    .min(new Date(), 'Due date must be in the future')
+    .required('Please select a due date'),
   amount: Yup.number()
     .required('Please enter an amount')
     .positive('Amount must be positive')

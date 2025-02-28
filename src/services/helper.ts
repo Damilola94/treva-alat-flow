@@ -1,4 +1,4 @@
-import featureFlags from '@/lib/feature-flags'
+// import featureFlags from '@/lib/feature-flags'
 import { type AxiosError } from 'axios'
 import { type ToastOptions, toast } from 'react-toastify'
 
@@ -36,49 +36,81 @@ export function handleSuccess (data: any, message: string) {
   return data?.description || message
 }
 
-export function handleErrors (error: AxiosError) {
-  const MSG = 'Something went wrong'
+// export function handleErrors (error: AxiosError) {
+//   const MSG = 'Something went wrong'
 
-  let errorMessage = ''
-  console.log(error)
+//   let errorMessage = ''
+
+//   if (error.response) {
+//     // The request was made and the server responded with a status code
+//     // that falls out of the range of 2xx
+//     // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+//     errorMessage = (error.response?.data as any)?.responseMessage
+//     const data = error.response?.data as any
+
+//     if (typeof data === 'string') return data || MSG
+
+//     const errors = data?.responseData
+
+//     if (errors?.length) {
+//       const [err] = errors
+//       return err.errorMessage ?? MSG
+//     }
+
+//     if (typeof errorMessage === 'string') {
+//       return errorMessage
+//     }
+
+//     return MSG
+//   } else if (error.request) {
+//     // The request was made but no response was received
+//     // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+//     // http.ClientRequest in node.js
+//     errorMessage = (error.request)?.message
+//     if (errorMessage) {
+//       return errorMessage
+//     }
+//   }
+
+//   return error.message || MSG
+// }
+
+export function handleErrors (error: AxiosError) {
+  const MSG = 'Something went wrong';
 
   if (error.response) {
-    // The request was made and the server responded with a status code
-    // that falls out of the range of 2xx
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-    errorMessage = (error.response?.data as any)?.responseMessage
-    const data = error.response?.data as any
+    const responseData = error.response?.data as any;
 
-    if (typeof data === 'string') return data || MSG
+    // Get main error message
+    const errorMessage = responseData?.message || responseData?.responseMessage;
 
-    const errors = data?.responseData
+    // Check if `data` exists and is an array
+    const errors = responseData?.data;
 
-    if (errors?.length) {
-      const [err] = errors
-      return err.errorMessage ?? MSG
+    if (typeof errors === 'string') return errors || MSG;
+
+    if (Array.isArray(errors) && errors.length > 0) {
+      const [err] = errors as Array<{ field: string, errorMessage: string }>;
+      return err?.errorMessage ?? errorMessage ?? MSG;
     }
 
-    if (typeof errorMessage === 'string') {
-      return errorMessage
-    }
-
-    return MSG
-  } else if (error.request) {
-    // The request was made but no response was received
-    // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-    // http.ClientRequest in node.js
-    errorMessage = (error.request)?.message
-    if (errorMessage) {
-      return errorMessage
-    }
+    return errorMessage || MSG;
   }
 
-  return error.message || MSG
+  if (error.request) {
+    return error.request?.message || MSG;
+  }
+
+  return error.message || MSG;
 }
 
-export const errorToast = (message = 'Something went wrong', options?: ToastOptions | undefined) => {
-  if (featureFlags.MOCK_DATA_ENABLED) return null
+// export const errorToast = (message = 'Something went wrong', options?: ToastOptions | undefined) => {
+//   if (featureFlags.MOCK_DATA_ENABLED) return null
 
+//   toast.error(message, options)
+// }
+
+export const errorToast = (message = 'Something went wrong', options?: ToastOptions | undefined) => {
   toast.error(message, options)
 }
 

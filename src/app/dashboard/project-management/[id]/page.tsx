@@ -1,6 +1,6 @@
 'use client';
 
-import { Pill, PlusIcon, AnimatedModal } from '@/components/shared';
+import { Pill, PlusIcon, AnimatedModal, Calendar, FlagOutline } from '@/components/shared';
 import { Button } from '@/components/ui/button';
 import React, { useState } from 'react';
 import { Select } from '@/components/shared/select';
@@ -9,11 +9,11 @@ import Image from 'next/image';
 import { CreateTaskCard } from '@/components/shared/project-management';
 import queries from '@/services/queries/projects';
 import { useParams } from 'next/navigation';
-import { TaskTable } from '@/components/shared/dashboard/project-management/project-table/projects-task-table';
+import { TaskTable } from '@/components/shared/dashboard/project-management/project-table/task-table';
 import { DeliverableTable } from '@/components/shared/dashboard/project-management/project-table/deliverable-table';
 import { AddDeliverables } from '@/components/shared/project-management.tsx/add-deliverables';
-import { ButtonGroup } from './button-group';
 import { ProgressBar } from './progress-tag';
+import { formatDate } from '@/lib/utils';
 
 type TabType = 'task' | 'deliverables' | 'payment'
 
@@ -29,8 +29,8 @@ const getAddButtonText = (tab: TabType) => {
 }
 
 const options = [
-  { value: 'Table', label: 'Table' },
-  { value: 'Grid', label: 'Grid' }
+  { value: 'table', label: 'Table' },
+  { value: 'grid', label: 'Grid' }
 ];
 
 interface Deliverable {
@@ -50,7 +50,7 @@ export default function Page () {
   const [activeTab, setActiveTab] = useState<TabType>('task')
 
   // const [addTask, setAddTask] = useState(true)
-  const [viewType, setViewType] = useState('Grid');
+  const [viewType, setViewType] = useState('Table');
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState<TabType | null>(null);
@@ -181,7 +181,21 @@ export default function Page () {
         </div>
 
         <div className="mt-10 flex justify-between w-full">
-          <ButtonGroup />
+          {/* <ButtonGroup /> */}
+          <div className="project_action_group">
+              <Calendar />
+              Expected date of Delivery:
+              <div className="project_action_group__button">{formatDate(data.expectedDeliveryDate)}</div>
+              {/* <CalendarWithMark />
+              End:
+              <div className="project_action_group__button">{data.dueDate}</div> */}
+              <FlagOutline />
+              Priority
+              <div className={`app_table__priority app_table__priority--${(data.priority) || 'Low'} project_action_group__button`}>
+                <span className="app_table__priority__dot" />
+                {data?.priority || 'Low'}
+              </div>
+            </div>
           <ProgressBar />
         </div>
 

@@ -24,6 +24,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Check, ListFilter } from 'lucide-react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { type ProjectType } from '@/services/queries/projects/enums'
+import queries from '@/services/queries/projects'
 
 const createAProject = {
   img: projectManagement.topImageProject,
@@ -72,17 +73,57 @@ export default function Page () {
     { label: 'Client Project', value: 'ClientProject' }
   ]
 
-  const handleCategorySelect = useCallback((category: string) => {
+  const priorityItems = [
+    { label: 'All', value: '' },
+    { label: 'Low', value: 'Low' },
+    { label: 'Medium', value: 'Medium' },
+    { label: 'High', value: 'High' }
+  ]
+
+  const statusItems = [
+    { label: 'All', value: '' },
+    { label: 'Pending', value: 'Pending' },
+    { label: 'Completed', value: 'Completed' },
+    { label: 'Due', value: 'Due' }
+  ]
+
+  const handleCategorySelect = useCallback((projectType: string) => {
     const params = new URLSearchParams(searchParams.toString())
-    if (category) {
-      params.set('projectType', category)
+    if (projectType) {
+      params.set('projectType', projectType)
     } else {
       params.delete('projectType')
     }
     router.push(`${path}?${params.toString()}`)
   }, [path, searchParams, router])
 
+  const handlePriorityItem = useCallback((priority: string) => {
+    const params = new URLSearchParams(searchParams.toString())
+    if (priority) {
+      params.set('priority', priority)
+    } else {
+      params.delete('priority')
+    }
+    router.push(`${path}?${params.toString()}`)
+  }, [path, searchParams, router])
+
+  const handleStatusItem = useCallback((status: string) => {
+    const params = new URLSearchParams(searchParams.toString())
+    if (status) {
+      params.set('status', status)
+    } else {
+      params.delete('status')
+    }
+    router.push(`${path}?${params.toString()}`)
+  }, [path, searchParams, router])
+
   const selectedCategory = searchParams.get('projectType') as ProjectType || '';
+  // const selectedPriority = searchParams.get('priority') as ProjectPriority || '';
+  // const selectedStatus = searchParams.get('status') as ProjectStatus || '';
+
+  const [search, setSearch] = useState('');
+  const { refetch } = queries.read({ search });
+
   const [takeATour, setTakeATour] = useState(true)
   const [addProject, setAddProject] = useState(true)
   const [addProjectForm, setAddProjectForm] = useState(true)
@@ -132,6 +173,16 @@ export default function Page () {
   const handleDeleteProject = () => {
     setDeleteForm(!deleteForm)
   }
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value);
+    void refetch();
+  };
+
+  // const clearSearch = () => {
+  //   setSearch('');
+  //   void refetch();
+  // };
 
   return (
     <div className="app_dashboard_page app_dashboard_home">
@@ -225,37 +276,92 @@ export default function Page () {
 
       <div className="app_dashboard_home__task app_dashboard_page__px">
         <div className="app_dashboard_home__task__hdr flex-wrap gap-2 mt-4">
-          <div className="flex flex-wrap gap-2">
-            <Popover>
-              <PopoverTrigger>
-                <button type="button" className="app_dashboard_group_header__btn">
-                  Type
-                  <ListFilter size={14} />
-                </button>
-              </PopoverTrigger>
-              <PopoverContent className="app_popover__content">
-                {popoverItems.map((item) => (
-                  <button
-                    className="app_popover__content__item"
-                    key={item.value}
-                    onClick={() => { handleCategorySelect(item.value) }}
-                  >
-                    {item.label}
-                    <RenderIf condition={searchParams.get('category') === item.value}>
-                      <Check />
-                    </RenderIf>
+          <div className='flex gap-2'>
+            <div className="flex flex-wrap gap-2">
+              <Popover>
+                <PopoverTrigger>
+                  <button type="button" className="app_dashboard_group_header__btn">
+                    Project Type
+                    <ListFilter size={14} />
                   </button>
-                ))}
-              </PopoverContent>
-            </Popover>
+                </PopoverTrigger>
+                <PopoverContent className="app_popover__content">
+                  {popoverItems.map((item) => (
+                    <button
+                      className="app_popover__content__item"
+                      key={item.value}
+                      onClick={() => { handleCategorySelect(item.value) }}
+                    >
+                      {item.label}
+                      <RenderIf condition={searchParams.get('projectType') === item.value}>
+                        <Check />
+                      </RenderIf>
+                    </button>
+                  ))}
+                </PopoverContent>
+              </Popover>
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              <Popover>
+                <PopoverTrigger>
+                  <button type="button" className="app_dashboard_group_header__btn">
+                    Priority
+                    <ListFilter size={14} />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent className="app_popover__content">
+                  {priorityItems.map((item) => (
+                    <button
+                      className="app_popover__content__item"
+                      key={item.value}
+                      onClick={() => { handlePriorityItem(item.value) }}
+                    >
+                      {item.label}
+                      <RenderIf condition={searchParams.get('priority') === item.value}>
+                        <Check />
+                      </RenderIf>
+                    </button>
+                  ))}
+                </PopoverContent>
+              </Popover>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <Popover>
+                <PopoverTrigger>
+                  <button type="button" className="app_dashboard_group_header__btn">
+                    Status
+                    <ListFilter size={14} />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent className="app_popover__content">
+                  {statusItems.map((item) => (
+                    <button
+                      className="app_popover__content__item"
+                      key={item.value}
+                      onClick={() => { handleStatusItem(item.value) }}
+                    >
+                      {item.label}
+                      <RenderIf condition={searchParams.get('status') === item.value}>
+                        <Check />
+                      </RenderIf>
+                    </button>
+                  ))}
+                </PopoverContent>
+              </Popover>
+            </div>
+
           </div>
 
           <div className="flex gap-2">
             <Input
               placeholder="Search for project"
               className="app_navbar__right__searchbar"
+              onChange={handleSearchChange}
+              value={search}
             />
             <Button
+              type='button'
               size="md"
               onClick={handleAddProjectClick}
               backgroundColor="primary-blue-500"
@@ -266,7 +372,7 @@ export default function Page () {
             </Button>
           </div>
         </div>
-        <ProjectsTable onEdit={handleEditProject} onDelete={onDelete} category={selectedCategory} />
+        <ProjectsTable onEdit={handleEditProject} onDelete={onDelete} category={selectedCategory} search={search} />
       </div>
     </div>
   )

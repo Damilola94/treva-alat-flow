@@ -1,33 +1,25 @@
 'use client';
 import React, { Fragment, useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
-// import routes from '@/lib/routes';
+import routes from '@/lib/routes';
 import { AnimatedModal, CalendarWithMark, Delete, EditIcon, Money4, PlusIcon, RenderIf } from '@/components/shared';
 import { Modal } from '@/components/shared/decisionModal';
 import { AddDeliverables } from '@/components/shared/project-management.tsx/add-deliverables';
 import { EditDeliverables } from '@/components/shared/project-management.tsx/edit-deliverables';
 import queries from '@/services/queries/projects';
-import { type InitialStep2Values } from '@/app/dashboard/project-management/client-project/create/page'
-import { useRouter } from 'next/navigation';
-import routes from '@/lib/routes';
-
-interface IProps {
-  handleNext: (formData: InitialStep2Values) => void
-  projectId: string
-}
+import { formatDate } from '@/lib/utils';
 
 interface Deliverable {
   deliverableId: string
   deliverableName: string
-  description: string
+  deliverableDescription: string
   startDate: string
   dueDate: string
-  amount: string
+  deliverableAmount: string
 }
 
-export function ProjectDeliverables (props: IProps) {
-  const { handleNext, projectId } = props
-  const router = useRouter();
+export function PersonalProjectDeliverables ({ projectId }: { projectId: string }) {
+//   const router = useRouter();
   const [editForm, setEditForm] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDecisionModalOpen, setIsDecisionModalOpen] = useState(false);
@@ -77,22 +69,14 @@ export function ProjectDeliverables (props: IProps) {
     setEditForm(!editForm);
   };
 
-  const handleSkip = () => {
-    router.push(routes.dashboard.projectManagement.path);
-  };
+  //   const handleSkip = () => {
+  //     console.log('Navigating to:', routes.dashboard.projectManagement.path);
+  //     router.push(routes.dashboard.projectManagement.path);
+  //   };
 
-  const handleNextStep = () => {
-    // Prepare the data to pass to the next step
-    const step2Data = {
-      deliverables: deliverables.map(d => ({
-        deliverableName: d.deliverableName,
-        description: d.description,
-        startDate: d.startDate,
-        dueDate: d.dueDate,
-        amount: d.amount
-      }))
-    };
-    handleNext(step2Data);
+  const handleSkip = () => {
+    console.log('Navigating to:', routes.dashboard.projectManagement.path);
+    window.location.href = routes.dashboard.projectManagement.path; // Force refresh
   };
 
   return (
@@ -196,52 +180,59 @@ export function ProjectDeliverables (props: IProps) {
                                             </button>
                                         </div>
                                     </div>
-                                    <p className='mb-2'>{item.description}</p>
+                                    <p className='mb-2'>{item.deliverableDescription}</p>
                                     <p className='flex gap-4 mb-3 '>
                                         <CalendarWithMark fill='#6E50DB' />
                                         {item.startDate}
                                     </p>
                                     <p className='flex gap-4 mb-3'>
                                         <CalendarWithMark fill='#6E50DB' />
-                                        {item.dueDate}
+                                        {formatDate(item.dueDate)}
                                     </p>
                                     <p className='flex gap-4'>
-                                        <Money4 stroke='#6E50DB' /> {item.amount}
+                                        <Money4 stroke='#6E50DB' /> {item.deliverableAmount}
                                     </p>
                                 </div>
                             </div>
                         </>
                     ))}
-                    {deliverables.length > 0 && (
-                        <div className='mt-10 text-[#262626] '>
-                            <p className='flex justify-between mb-2'>Total deliverables: <span>2</span></p>
-                            <p className='flex justify-between mb-2'>Timeline <span>{'{Month day, year} - {Month day, year} {number of days}'}</span></p>
-                            <p className='flex justify-between mb-2'>Sub Total: <span>NGN 200,000.00</span></p>
-                            <p className='flex justify-between'>Total <span className='font-bold'>NGN 200,000.00</span></p>
-                        </div>
 
-                    )}
+                    {deliverables.length > 0 && (() => {
+                      // Extract all start and due dates
+                      const startDates = deliverables.map(d => new Date(d.startDate));
+                      const dueDates = deliverables.map(d => new Date(d.dueDate));
+
+                      // Find the earliest start date and latest due date
+                      const minStartDate = new Date(Math.min(...startDates.map(d => d.getTime())));
+                      const maxDueDate = new Date(Math.max(...dueDates.map(d => d.getTime())));
+
+                      // Calculate the total days between the start and end date
+                      const totalDays = Math.ceil((maxDueDate.getTime() - minStartDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+
+                      // Calculate total deliverable amount
+                      const totalAmount = deliverables.reduce((sum, d) => sum + Number(d.deliverableAmount), 0);
+
+                      return (
+                            <div className='mt-10 text-[#262626]'>
+                                <p className='flex justify-between mb-2'>Total deliverables: <span>{deliverables.length}</span></p>
+                                <p className='flex justify-between mb-2'>Timeline <span>{`${formatDate(minStartDate)} - ${formatDate(maxDueDate)} (${totalDays} days)`}</span></p>
+                                <p className='flex justify-between mb-2'>Sub Total: <span>NGN {totalAmount.toLocaleString()}</span></p>
+                                <p className='flex justify-between'>Total <span className='font-bold'>NGN {totalAmount.toLocaleString()}</span></p>
+                            </div>
+                      );
+                    })()}
 
                 </div>
-                <div className="pt-4 flex gap-5">
+                <div className="pt-4 flex justify-end">
                     <Button
                         type="button"
                         size="xl"
                         backgroundColor="primary-blue-500"
-                        className="w-full py-3 px-12"
-                        onClick={handleNextStep}
-                        // onClick={handleSkip}
-                    >
-                        Save and continue
-                    </Button>
-                    <Button
-                        type="button"
-                        size="xl"
-                        backgroundColor="primary-blue-500"
-                        className="w-full py-3 px-12"
+                        className="w-1/2 py-3 px-12"
                         onClick={handleSkip}
                     >
-                        Close
+                        {/* skip for now */}
+                       {deliverables.length === 0 ? 'Skip for now' : 'Close'}
                     </Button>
                 </div>
 

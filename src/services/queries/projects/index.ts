@@ -11,6 +11,7 @@ import { type AxiosError } from 'axios';
 import config from '@/lib/config';
 import { type ProjectManagement } from './types';
 import { ProjectType } from './enums';
+import { type ApiResponse } from '@/lib/models';
 
 const BASE_URL = config.services;
 
@@ -23,8 +24,8 @@ const useCreate = (options: { onSuccess?: (response: any) => void }) => {
   const { mutate, ...response } = useMutation(api.post, {
     mutationKey: [queryKey.create],
     ...options,
-    onSuccess: async (data) => { // data is the actual API response
-      onSuccess(data); // Pass API response to onSuccess
+    onSuccess: async (data) => {
+      onSuccess(data);
       await queryClient.invalidateQueries({
         queryKey: [queryKey.read]
       });
@@ -49,6 +50,7 @@ const useCreate = (options: { onSuccess?: (response: any) => void }) => {
   return {
     ...response,
     mutate: (body: Body) => {
+      console.log('Mutation triggered with body:', body)
       const requestBody = {
         title: body.title,
         description: body.description,
@@ -61,6 +63,8 @@ const useCreate = (options: { onSuccess?: (response: any) => void }) => {
         })
       };
 
+      console.log('Request body:', requestBody)
+
       mutate({
         url: `${BASE_URL.project}`,
         body: requestBody,
@@ -72,18 +76,20 @@ const useCreate = (options: { onSuccess?: (response: any) => void }) => {
   };
 };
 
-const useRead = ({ pageNumber = 1, pageSize = 50, search = '', userId = '', organizationId = '', forCurrentUser = '', projectType = '' } = {}, options = {}) => {
+const useRead = ({ pageNumber = 1, pageSize = 50, search = '', userId = '', organizationId = '', forCurrentUser = '', projectType = '', priority = '', status = '' } = {}, options = {}) => {
   const response = useQuery(
-    [queryKey.read, pageNumber, pageSize],
+    [queryKey.read, pageNumber, pageSize, search],
     async () => {
       const queryParams = new URLSearchParams()
       if (userId) queryParams.append('UserId', String(userId))
       if (organizationId) queryParams.append('OrganizationId', String(organizationId))
       if (forCurrentUser) queryParams.append('ForCurrentUser', String(forCurrentUser))
       if (projectType) queryParams.append('ProjectType', String(projectType))
+      if (priority) queryParams.append('Priority', priority);
+      if (status) queryParams.append('Status', status);
       queryParams.append('PageNumber', pageNumber.toString())
       queryParams.append('PageSize', pageSize.toString())
-      if (search) queryParams.append('SearchKey', search);
+      queryParams.append('SearchKey', search);
 
       const url = `${BASE_URL.project}?${queryParams.toString()}`
       return await api.get({ url })
@@ -99,7 +105,7 @@ const useRead = ({ pageNumber = 1, pageSize = 50, search = '', userId = '', orga
 
   return {
     ...response,
-    data: (response.data?.data || []) as ProjectManagement[],
+    data: (response.data || undefined) as ApiResponse<ProjectManagement[]> | undefined,
     metaData: response.data?.metaData
   }
 }
@@ -554,10 +560,10 @@ const useUpdateDeliverables = ({ deliverableId = '', projectId = '' } = {}, opti
     projectId: string
     deliverableId: string
     deliverableName: string
-    description: string
+    deliverableDescription: string
     startDate: string
     dueDate: string
-    amount: string
+    deliverableAmount: string
 
   }
 
@@ -568,10 +574,10 @@ const useUpdateDeliverables = ({ deliverableId = '', projectId = '' } = {}, opti
         projectId: body.projectId,
         deliverableId: body.deliverableId,
         deliverableName: body.deliverableName,
-        description: body.description,
+        description: body.deliverableDescription,
         startDate: body.startDate,
         dueDate: body.dueDate,
-        amount: body.amount
+        amount: body.deliverableAmount
       };
 
       mutate({

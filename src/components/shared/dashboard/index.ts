@@ -6,4 +6,4 @@ export { ProjectsTable } from './project-management/project-table/projects-table
 // export { EditProjectsTable } from './project-management/project-table/projects-task-table'
 export { TaskGirdView } from './project-management/grid-view/grid-view'
 export { Sidebar } from './sidebar'
-export { ClientTable } from './client-table/client-table'
+export { ClientTable } from '../client-management/client-table/client-table'

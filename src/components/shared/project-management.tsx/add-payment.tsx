@@ -20,7 +20,9 @@ interface IProps {
 
 const validationSchema = Yup.object().shape({
 //   perRequired: Yup.string().required('Please enter a percentage required'),
-//   dueDate: Yup.date().required('Please select a due date'),
+//   dueDate: Yup.date()
+//    .min(new Date(), 'Due date must be in the future')
+// .required('Please select a due date'),
 //   reminderFrequency: Yup.string().required('Please enter a reminder frequency')
 });
 

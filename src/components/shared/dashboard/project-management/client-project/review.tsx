@@ -1,59 +1,60 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { PlusIcon } from '@/components/shared'
 import { Modal } from '@/components/shared/decisionModal'
 import Image from 'next/image'
 import projectManagement from '@/lib/assets/project-management'
-import queries from '@/services/queries/projects'
 
-interface ProjectData {
-  projectName: string
-  clientName: string
-  clientEmail: string
-  clientPhone: string
-  startDate: string
-  endDate: string
-  deliverables: Array<{
-    deliverableName: string
-    unitPrice: number
-    unit: number
-    amount: number
-  }>
-}
+// interface Deliverable {
+//   deliverableName: string
+//   unitPrice: number
+//   unit: number
+//   deliverableAmount: number
+// }
+
+// interface ProjectData {
+//   projectName: string
+//   clientName: string
+//   clientEmail: string
+//   clientPhone: string
+//   startDate: string
+//   endDate: string
+//   deliverables: Deliverable[]
+// }
 
 export function ProjectReview ({ projectId }: { projectId: string }) {
   const [isDecisionModalOpen, setIsDecisionModalOpen] = useState(false)
-  const [isChecked, setIsChecked] = useState(false)
-  const [projectData, setProjectData] = useState<ProjectData | null>(null)
+  // const [isChecked, setIsChecked] = useState(false)
+  // const [projectData, setProjectData] = useState<ProjectData | null >(null)
 
-  const { data, isLoading, error } = queries.readDeliverables({ projectId })
+  // const { data, isLoading, error } = queries.readDeliverables({ projectId })
 
-  useEffect(() => {
-    if (data) {
-      setProjectData(data)
-    }
-  }, [data])
+  // useEffect(() => {
+  //   if (data) {
+  //     setProjectData(data)
+  //   }
+  // }, [data])
 
   const handleCloseModal = () => {
     setIsDecisionModalOpen(false)
   }
 
-  const calculateSubtotal = () => {
-    return projectData?.deliverables.reduce((total, item) => total + item.amount, 0) ?? 0
-  }
+  // const calculateSubtotal = () => {
+  //   return projectData?.deliverables.reduce((total, item) => total + item.deliverableAmount, 0) ?? 0
+  // }
 
-  const calculatePlatformFee = () => {
-    return calculateSubtotal() * 0.05
-  }
+  // const calculatePlatformFee = () => {
+  //   return calculateSubtotal() * 0.05
+  // }
 
-  const calculateTotal = () => {
-    return calculateSubtotal() + calculatePlatformFee()
-  }
+  // const calculateTotal = () => {
+  //   return calculateSubtotal() + calculatePlatformFee()
+  // }
 
-  if (isLoading) return <div>Loading...</div>
-  if (error) return <div>Error loading project data</div>
-  if (!projectData) return <div>No project data available</div>
+  // if (isLoading) return <div>Loading...</div>
+  // if (error) return <div>Error loading project data</div>
+  // if (!projectData) return <div>No project data available</div>
 
   return (
     <div className="app_get_started_professional_details py-6 px-4 flex flex-col gap-14">
@@ -87,22 +88,22 @@ export function ProjectReview ({ projectId }: { projectId: string }) {
         <div className="mb-6">
           <div className="grid grid-cols-2 gap-4">
             <p>
-              <span className="font-semibold">Project name:</span> {projectData.projectName}
+              <span className="font-semibold">Project name:</span> Project name
             </p>
             <p>
-              <span className="font-semibold">Client name:</span> {projectData.clientName}
+              <span className="font-semibold">Client name:</span> Client name:
             </p>
             <p>
-              <span className="font-semibold">Client email:</span> {projectData.clientEmail}
+              <span className="font-semibold">Client email:</span> Client email
             </p>
             <p>
-              <span className="font-semibold">Client phone number:</span> {projectData.clientPhone}
+              <span className="font-semibold">Client phone number:</span> Client phone number
             </p>
             <p>
-              <span className="font-semibold">Start date:</span> {projectData.startDate}
-            </p>
+              <span className="font-semibold">Start date:</span> Start date
+              </p>
             <p>
-              <span className="font-semibold">End date:</span> {projectData.endDate}
+              <span className="font-semibold">End date:</span> End date
             </p>
           </div>
         </div>
@@ -119,15 +120,16 @@ export function ProjectReview ({ projectId }: { projectId: string }) {
               </tr>
             </thead>
             <tbody>
-              {projectData.deliverables.map((item, index) => (
-                <tr key={index}>
-                  <td className="px-4 py-2">{index + 1}</td>
-                  <td className="px-4 py-2">{item.deliverableName}</td>
-                  <td className="px-4 py-2">NGN {item.unitPrice.toFixed(2)}</td>
-                  <td className="px-4 py-2">{item.unit}</td>
-                  <td className="px-4 py-2">NGN {item.amount.toFixed(2)}</td>
+              {/* {projectData.deliverables.map((item, index) => ( */}
+                <tr>
+                  {/* <td className="px-4 py-2">{index + 1}</td> */}
+                  <td className="px-4 py-2">deliverableName</td>
+                  <td className="px-4 py-2">NGN unitPrice</td>
+                  {/* {item.unitPrice.toFixed(2)} */}
+                  <td className="px-4 py-2">unit</td>
+                  <td className="px-4 py-2">NGN deliverableAmount</td>
                 </tr>
-              ))}
+              {/* ))} */}
             </tbody>
           </table>
         </div>
@@ -135,15 +137,17 @@ export function ProjectReview ({ projectId }: { projectId: string }) {
         <div className="mt-6">
           <div className="flex justify-between">
             <span className="font-semibold">SUBTOTAL:</span>
-            <span>NGN {calculateSubtotal().toFixed(2)}</span>
+            <span>NGN subtotal</span>
+            {/* <span>NGN {calculateSubtotal().toFixed(2)}</span> */}
+
           </div>
           <div className="flex justify-between">
             <span className="font-semibold">Platform fee (5%):</span>
-            <span>NGN {calculatePlatformFee().toFixed(2)}</span>
+            <span>NGN platform fee</span>
           </div>
           <div className="flex justify-between font-bold text-lg">
             <span>TOTAL:</span>
-            <span>NGN {calculateTotal().toFixed(2)}</span>
+            <span>NGN total</span>
           </div>
         </div>
 
@@ -151,9 +155,9 @@ export function ProjectReview ({ projectId }: { projectId: string }) {
           <input
             type="checkbox"
             className="w-5 h-5"
-            onChange={(e) => {
-              setIsChecked(e.target.checked)
-            }}
+            // onChange={(e) => {
+            //   setIsChecked(e.target.checked)
+            // }}
           />
           <label htmlFor="terms">
             <p className="text-sm text-[#888888] mt-6">
@@ -170,7 +174,7 @@ export function ProjectReview ({ projectId }: { projectId: string }) {
             onClick={() => {
               setIsDecisionModalOpen(true)
             }}
-            disabled={!isChecked}
+            // disabled={!isChecked}
           >
             Send
           </Button>
