@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import dashboard from '@/lib/assets/dashboard';
 import projectManagement from '@/lib/assets/project-management';
 import { numberFormat } from '@/lib/numbers';
+import routes from '@/lib/routes';
 import Image from 'next/image';
 import React, { Fragment, useState } from 'react';
 // import { createAProject } from './project-management/page';
@@ -169,7 +170,7 @@ export default function Page () {
             backgroundColor="text-color-100"
             color="shark-950"
             className="app_auth_login__btn"
-            onClick={handleAddProjectClick}
+            onClick={() => { window.location.href = routes.dashboard.projectManagement.path; }}
 
           >
             <PlusIcon fill="var(--shark-950)" />
