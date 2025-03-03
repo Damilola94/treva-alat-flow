@@ -18,6 +18,7 @@ interface IProps {
   onDelete?: (id: string) => void
   category: string
   search: string
+  // limit?: number
 }
 
 const statusMap: Record<
@@ -60,7 +61,8 @@ function ChevronVIcon () {
 }
 
 export function ProjectsTable (props: IProps) {
-  const { category } = props
+  const { category, onDelete } = props
+  // const { onEdit, onDelete } = props;
   const rt = useRouter()
   const [currentPage, setCurrentPage] = useState(1)
   const pageSize = 50
@@ -70,13 +72,16 @@ export function ProjectsTable (props: IProps) {
     pageSize,
     search: props.search
   })
+  // const [projects, setProjects] = useState<any[]>([])
 
   const filteredProjects = data?.data?.filter(project => {
     if (!category) return true;
     return project.projectType === category;
   });
+  // const displayedProjects = filteredProjects.slice(0, 10);
+  // const displayedProjects = filteredProjects ? filteredProjects.slice(0, 10) : [];
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { onEdit, onDelete } = props;
 
   useEffect(() => {
     void refetch()
