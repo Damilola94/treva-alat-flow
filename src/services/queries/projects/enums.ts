@@ -12,8 +12,9 @@ export enum ProjectPriority {
 }
 
 export enum ProjectStatus {
-  NotStarted = 'NotStarted',
+  Pending = 'Pending',
   Ongoing = 'Ongoing',
-  Completed = 'Completed'
+  Completed = 'Completed',
+  ToDo = 'ToDo'
 
 }

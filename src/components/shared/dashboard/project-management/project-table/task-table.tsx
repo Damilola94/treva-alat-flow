@@ -5,22 +5,25 @@ import { useState, useEffect } from 'react'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { useParams } from 'next/navigation'
 import queries from '@/services/queries/projects'
-import { Skeleton } from '@/components/ui/skeleton'
 import { formatDate } from '@/lib/utils'
 import { TaskGirdView } from '../grid-view/grid-view'
+import { ProjectStatus } from '@/services/queries/projects/enums'
 
 interface TaskTableProps {
   viewType: string
+  projectId?: string
+  taskId?: string
 }
 
 interface Task {
-  taskId: string
+  id: string
+  projectId: string
   taskName: string
   dueDate: string
   startDate: string
   taskPriority: string
   priorityColor: string
-  taskStatus: number
+  taskStatus: string
 }
 
 const thead = [
@@ -31,13 +34,34 @@ const thead = [
   { label: 'Status' }
 ]
 
-export function TaskTable ({ viewType }: TaskTableProps) {
+export function TaskTable ({ viewType, taskId }: TaskTableProps) {
   const param = useParams()
   const projectId = Array.isArray(param.id) ? param.id[0] : param.id
   const { data } = queries.readTasks({ projectId })
+  const { mutate } = queries.updateTasks({ taskId, projectId },
+    {
+      onSuccess: () => {
+      }
+    }
+  )
+
   const [tasks, setTasks] = useState<Task[]>([])
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [activeTab, setActiveTab] = useState<'todo' | 'completed'>('todo')
+
+  const updateTaskStatus = (taskId: string, newStatus: string) => {
+    const task = tasks.find((task) => task.id === taskId);
+    if (task) {
+      mutate({
+        taskId,
+        projectId,
+        taskName: task.taskName,
+        startDate: task.startDate,
+        dueDate: task.dueDate,
+        taskPriority: task.taskPriority,
+        taskStatus: newStatus
+      });
+    }
+  };
 
   useEffect(() => {
     if (data) {
@@ -45,10 +69,13 @@ export function TaskTable ({ viewType }: TaskTableProps) {
     }
   }, [data])
 
-  const updateTaskStatus = async (taskId: string, newStatus: number) => {
-    const updatedTasks = tasks.map((task) => (task.taskId === taskId ? { ...task, taskStatus: newStatus } : task))
-    setTasks(updatedTasks)
-  }
+  useEffect(() => {
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task.taskStatus === ProjectStatus.Completed ? { ...task, taskStatus: ProjectStatus.Completed } : task
+      )
+    );
+  }, [tasks]);
 
   if (tasks.length === 0) {
     return (
@@ -62,56 +89,54 @@ export function TaskTable ({ viewType }: TaskTableProps) {
     )
   }
 
-  const todoTasks = tasks.filter((task: Task) => task.taskStatus === 1)
-  const completedTasks = tasks.filter((task: Task) => task.taskStatus === 2)
+  const todoTasks = tasks.filter((task: Task) => task.taskStatus === ProjectStatus.ToDo)
+  const completedTasks = tasks.filter((task: Task) => task.taskStatus === ProjectStatus.Completed)
 
   return (
     <div className="app_dashboard_home__task__cct">
-      <Tabs defaultValue="todo" className="w-full">
-        {viewType === 'table' &&
-        <TabsList className="mb-4 gap-3">
-          <TabsTrigger
-            value="todo"
-            onClick={() => { setActiveTab('todo'); }}
-            className="flex gap-2 rounded-full border-none bg-white"
-          >
-            To do
-            <span className="inline-flex items-center justify-center w-6 h-6 bg-gray-100 rounded-full text-sm">
-              {todoTasks.length}
-            </span>
-          </TabsTrigger>
-          <TabsTrigger
-            value="completed"
-            onClick={() => { setActiveTab('completed'); }}
-            className="flex gap-2 rounded-full bg-[#26A17B] text-white"
-          >
-            Completed
-            <span className="inline-flex items-center justify-center w-6 h-6 bg-gray-100 rounded-full text-sm text-black">
-              {completedTasks.length}
-            </span>
-          </TabsTrigger>
-        </TabsList>
-}
+      <Tabs value={activeTab} onValueChange={(value) => { setActiveTab(value as 'todo' | 'completed'); }} className="w-full">
+        {viewType === 'table' && (
+          <TabsList className="mb-4 gap-3">
+            <TabsTrigger
+              value="todo"
+              className='flex gap-2 rounded-full border-none'
+              style={{
+                backgroundColor: activeTab === 'todo' ? '#26A17B' : 'white',
+                color: activeTab === 'todo' ? 'white' : 'black'
+              }}
+            >
+              To do
+              <span className="inline-flex items-center justify-center w-6 h-6 bg-gray-100 rounded-full text-sm text-black">
+                {todoTasks.length}
+              </span>
+            </TabsTrigger>
+            <TabsTrigger
+              value="completed"
+              className='flex gap-2 rounded-full border-none'
+              style={{
+                backgroundColor: activeTab === 'completed' ? '#26A17B' : 'white',
+                color: activeTab === 'completed' ? 'white' : 'black'
+              }}
+            >
+              Completed
+              <span className="inline-flex items-center justify-center w-6 h-6 bg-gray-100 rounded-full text-sm text-black">
+                {completedTasks.length}
+              </span>
+            </TabsTrigger>
+          </TabsList>
+        )}
 
         <TabsContent value="todo">
-          {viewType === 'table'
-            ? (
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
-            <TaskList tasks={todoTasks} updateTaskStatus={updateTaskStatus} />
-              )
-            : (
-            <TaskGirdView />
-              )}
+          {viewType === 'table' ? <TaskList tasks={todoTasks} updateTaskStatus={updateTaskStatus} /> : <TaskGirdView />}
         </TabsContent>
 
         <TabsContent value="completed">
           {viewType === 'table'
             ? (
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
-            <TaskList tasks={completedTasks} updateTaskStatus={updateTaskStatus} />
+              <TaskList tasks={completedTasks} updateTaskStatus={updateTaskStatus} />
               )
             : (
-            <TaskGirdView />
+              <TaskGirdView />
               )}
         </TabsContent>
       </Tabs>
@@ -121,16 +146,12 @@ export function TaskTable ({ viewType }: TaskTableProps) {
 
 interface TaskListProps {
   tasks: Task[]
-  updateTaskStatus: (taskId: string, newStatus: number) => void
+  updateTaskStatus: (taskId: string, newStatus: string) => void
 }
 
 function TaskList ({ tasks, updateTaskStatus }: TaskListProps) {
-  const param = useParams()
-  const projectId = Array.isArray(param.id) ? param.id[0] : param.id
-  const { data, isLoading } = queries.readTasks({ projectId })
-
   return (
-    <><div className="w-full text-left relative rounded-xl overflow-auto">
+    <div className="w-full text-left relative rounded-xl overflow-auto">
       <div className="shadow-sm overflow-hidden">
         <table className="border-collapse table-auto w-full app_table">
           <thead>
@@ -144,15 +165,17 @@ function TaskList ({ tasks, updateTaskStatus }: TaskListProps) {
           </thead>
 
           <tbody className="app_table__tbody">
-            {isLoading
+            {tasks.length === 0
               ? (
-                <>
-                  {[...Array(3)].map((_, index) => <Skeleton key={index} columns={4} />)}
-                </>
+                <tr>
+                  <td colSpan={5} className="app_table__tbody__td text-center py-8">
+                    No tasks in this category
+                  </td>
+                </tr>
                 )
               : (
-                  data.map((item: Task) => (
-                  <tr key={item.taskId} className="border-t border-gray-100">
+                  tasks.map((item: Task) => (
+                  <tr key={item.id} className="border-t border-gray-100">
                     <td className="app_table__tbody__td font-medium text-[--text-color-500]">
                       <div className="app_table__tbody__td__ctt font-semibold">{item.taskName}</div>
                     </td>
@@ -163,19 +186,26 @@ function TaskList ({ tasks, updateTaskStatus }: TaskListProps) {
                       <div className="app_table__tbody__td__ctt">{formatDate(item.dueDate)}</div>
                     </td>
                     <td className="app_table__tbody__td text">
-                      <div className={`app_table__priority app_table__priority--${['low', 'medium', 'high'][Number(item.taskPriority)] || 'low'}`}>
+                      <div className={`app_table__priority app_table__priority--${item.taskPriority || 'Low'}`}>
                         <span className="app_table__priority__dot"></span>
-                        {(item.taskPriority) || 'Low'}
+                        {item.taskPriority || 'Low'}
                       </div>
                     </td>
                     <td className="app_table__tbody__td">
                       <div className="flex items-center gap-4">
                         <input
                           type="checkbox"
-                          checked={item.taskStatus === 2}
-                          onChange={() => { updateTaskStatus(item.taskId, item.taskStatus === 1 ? 2 : 1) } }
-                          className="w-5 h-5 accent-green-500 cursor-pointer" />
-                        <label>{item.taskStatus === 1 ? 'Mark as Complete' : 'Mark as Incomplete'}</label>
+                          checked={item.taskStatus === ProjectStatus.Completed}
+                          onChange={() => {
+                            updateTaskStatus(
+                              item.id,
+                              item.taskStatus === ProjectStatus.ToDo ? ProjectStatus.Completed : ProjectStatus.ToDo
+                            )
+                          }}
+
+                          className="w-5 h-5 accent-green-500 cursor-pointer"
+                        />
+                        <label>Mark as {item.taskStatus === ProjectStatus.Completed ? 'incomplete' : 'complete'}</label>
                       </div>
                     </td>
                   </tr>
@@ -185,6 +215,5 @@ function TaskList ({ tasks, updateTaskStatus }: TaskListProps) {
         </table>
       </div>
     </div>
-    </>
   )
 }

@@ -8,7 +8,7 @@ import { AddDeliverables } from '@/components/shared/project-management.tsx/add-
 import { EditDeliverables } from '@/components/shared/project-management.tsx/edit-deliverables';
 import queries from '@/services/queries/projects';
 import { type InitialStep2Values } from '@/app/dashboard/project-management/client-project/create/page'
-import { useRouter } from 'next/navigation';
+// import { useRouter } from 'next/navigation';
 import routes from '@/lib/routes';
 import { formatDate } from '@/lib/utils';
 
@@ -28,7 +28,7 @@ interface Deliverable {
 
 export function ProjectDeliverables (props: IProps) {
   const { handleNext, projectId } = props
-  const router = useRouter();
+  // const router = useRouter();
   const [editForm, setEditForm] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDecisionModalOpen, setIsDecisionModalOpen] = useState(false);
@@ -79,7 +79,7 @@ export function ProjectDeliverables (props: IProps) {
   };
 
   const handleSkip = () => {
-    router.push(routes.dashboard.projectManagement.path);
+    window.location.href = routes.dashboard.projectManagement.path;
   };
 
   const handleNextStep = () => {

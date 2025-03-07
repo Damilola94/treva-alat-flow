@@ -23,7 +23,7 @@ import { DeleteProject } from '@/components/shared/dashboard/project-management/
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Check, ListFilter } from 'lucide-react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { type ProjectType } from '@/services/queries/projects/enums'
+import { type ProjectPriority, type ProjectStatus, type ProjectType } from '@/services/queries/projects/enums'
 import queries from '@/services/queries/projects'
 
 const createAProject = {
@@ -100,9 +100,9 @@ export default function Page () {
   const handlePriorityItem = useCallback((priority: string) => {
     const params = new URLSearchParams(searchParams.toString())
     if (priority) {
-      params.set('priority', priority)
+      params.set('projectPriority', priority)
     } else {
-      params.delete('priority')
+      params.delete('projectPriority')
     }
     router.push(`${path}?${params.toString()}`)
   }, [path, searchParams, router])
@@ -110,16 +110,16 @@ export default function Page () {
   const handleStatusItem = useCallback((status: string) => {
     const params = new URLSearchParams(searchParams.toString())
     if (status) {
-      params.set('status', status)
+      params.set('projectStatus', status)
     } else {
-      params.delete('status')
+      params.delete('projectStatus')
     }
     router.push(`${path}?${params.toString()}`)
   }, [path, searchParams, router])
 
   const selectedCategory = searchParams.get('projectType') as ProjectType || '';
-  // const selectedPriority = searchParams.get('priority') as ProjectPriority || '';
-  // const selectedStatus = searchParams.get('status') as ProjectStatus || '';
+  const selectedPriority = searchParams.get('projectPriority') as ProjectPriority || '';
+  const selectedStatus = searchParams.get('projectStatus') as ProjectStatus || '';
 
   const [search, setSearch] = useState('');
   const { refetch } = queries.read({ search });
@@ -311,7 +311,7 @@ export default function Page () {
                   </button>
                 </PopoverTrigger>
                 <PopoverContent className="app_popover__content">
-                  {priorityItems.map((item) => (
+                  {priorityItems.map((item: any) => (
                     <button
                       className="app_popover__content__item"
                       key={item.value}
@@ -372,7 +372,7 @@ export default function Page () {
             </Button>
           </div>
         </div>
-        <ProjectsTable onEdit={handleEditProject} onDelete={onDelete} category={selectedCategory} search={search} />
+        <ProjectsTable onEdit={handleEditProject} onDelete={onDelete} category={selectedCategory} projectPriority={selectedPriority} projectStatus={selectedStatus} search={search} />
       </div>
     </div>
   )

@@ -50,7 +50,7 @@ export default function Page () {
   const [activeTab, setActiveTab] = useState<TabType>('task')
 
   // const [addTask, setAddTask] = useState(true)
-  const [viewType, setViewType] = useState('Table');
+  const [viewType, setViewType] = useState('table');
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState<TabType | null>(null);
