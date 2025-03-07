@@ -85,8 +85,8 @@ const useRead = ({ pageNumber = 1, pageSize = 50, search = '', userId = '', orga
       if (organizationId) queryParams.append('OrganizationId', String(organizationId))
       if (forCurrentUser) queryParams.append('ForCurrentUser', String(forCurrentUser))
       if (projectType) queryParams.append('ProjectType', String(projectType))
-      if (priority) queryParams.append('Priority', priority);
-      if (status) queryParams.append('Status', status);
+      if (priority) queryParams.append('ProjectPriority', priority);
+      if (status) queryParams.append('ProjectStatus', status);
       queryParams.append('PageNumber', pageNumber.toString())
       queryParams.append('PageSize', pageSize.toString())
       queryParams.append('SearchKey', search);
@@ -336,7 +336,7 @@ const useReadTasksOne = ({ projectId = '', taskId = '', pageNumber = 1, pageSize
   }
 }
 
-const useUpdateTasks = (taskId: any, options: { onSuccess: () => void }) => {
+const useUpdateTasks = ({ taskId = '', projectId = '' } = {}, options: { onSuccess: () => void }) => {
   const {
     onSuccess = () => { }
   } = options;
@@ -347,7 +347,7 @@ const useUpdateTasks = (taskId: any, options: { onSuccess: () => void }) => {
     onSuccess: async () => {
       onSuccess();
       await queryClient.invalidateQueries({
-        queryKey: [queryKey.readTasks, taskId]
+        queryKey: [queryKey.readTasks, taskId, projectId]
       });
       successToast('Project updated');
     },
@@ -357,7 +357,7 @@ const useUpdateTasks = (taskId: any, options: { onSuccess: () => void }) => {
   });
 
   interface Body {
-    id: string
+    projectId: string
     taskId: string
     taskName: string
     startDate: string
@@ -370,7 +370,7 @@ const useUpdateTasks = (taskId: any, options: { onSuccess: () => void }) => {
     ...response,
     mutate: (body: Body) => {
       const formData = new FormData();
-      formData.append('ProjectId', body.id);
+      formData.append('ProjectId', body.projectId);
       formData.append('TaskId', body.taskId);
       formData.append('TaskName', body.taskName);
       formData.append('StartDate', body.startDate);
@@ -379,7 +379,7 @@ const useUpdateTasks = (taskId: any, options: { onSuccess: () => void }) => {
       formData.append('TaskStatus', body.taskStatus);
 
       mutate({
-        url: `${BASE_URL.project}/${body.id}/tasks/${taskId}`,
+        url: `${BASE_URL.project}/${body.projectId}/tasks/${body.taskId}`,
         body: formData,
         headers: {
           'Content-Type': 'application/json'
@@ -497,10 +497,10 @@ const useReadDeliverables = ({ projectId = '' } = {}, options = {}) => {
     },
     {
       ...options,
-      onSuccess: () => { },
-      onError: (err: AxiosError) => {
-        errorToast(handleErrors(err))
-      }
+      onSuccess: () => { }
+      // onError: (err: AxiosError) => {
+      //   errorToast(handleErrors(err))
+      // }
     }
   )
 

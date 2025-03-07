@@ -257,7 +257,7 @@ export default function Page () {
           />
         </div>
 
-        <ProjectsTable category="" search='' />
+        <ProjectsTable category="" search='' projectPriority={''} projectStatus={''} />
       </div>
     </div>
   );

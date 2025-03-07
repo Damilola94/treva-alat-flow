@@ -4,7 +4,7 @@ import { EmptyStatus } from '../svgs'
 
 const IS_EMPTY = false
 
-const statusMap: Record<number, { title: string, status: BadgeProps['status'] }> = {
+const statusMap: Record<number, { title: string, status: BadgeProps['style'] }> = {
   0: { status: 'success', title: 'Completed' },
   1: { status: 'pending', title: 'Pending' },
   2: { status: 'danger', title: 'Due' },
@@ -80,7 +80,7 @@ export function InvoiceTable () {
                   </td>
                   <td className="app_table__tbody__td">
                     <div className="app_table__tbody__td__ctt">
-                      <Badge {...statusMap[index]} />
+                      <Badge style={'success'} {...statusMap[index]} />
                     </div>
                   </td>
                 </tr>

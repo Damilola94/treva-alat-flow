@@ -9,8 +9,6 @@ import { useEffect, useState } from 'react'
 import { EmptyState } from '../../empty-state'
 import { Skeleton } from '@/components/ui/skeleton'
 import Link from 'next/link'
-// import { ProjectType } from '@/services/queries/projects/enums'
-// import Image from 'next/image'
 
 interface IProps {
   onClick?: (id: string) => void
@@ -18,18 +16,16 @@ interface IProps {
   onDelete?: (id: string) => void
   category: string
   search: string
+  projectPriority: string
+  projectStatus: string
   // limit?: number
 }
 
-const statusMap: Record<
-number,
-{ title: string, status: BadgeProps['status'] }
-> = {
-  0: { status: 'success', title: 'Completed' },
-  1: { status: 'pending', title: 'Pending' },
-  2: { status: 'danger', title: 'Due' },
-  3: { status: 'success', title: 'Completed' }
-}
+const statusMap: Record<string, { style: BadgeProps['style'] }> = {
+  Completed: { style: 'success' },
+  Ongoing: { style: 'pending' },
+  Pending: { style: 'danger' }
+};
 
 const thead = [
   { label: 'Project name' },
@@ -61,13 +57,15 @@ function ChevronVIcon () {
 }
 
 export function ProjectsTable (props: IProps) {
-  const { category, onDelete } = props
+  const { category, onDelete, projectPriority, projectStatus } = props
   // const { onEdit, onDelete } = props;
   const rt = useRouter()
   const [currentPage, setCurrentPage] = useState(1)
   const pageSize = 50
   const { data, refetch, isLoading } = queries.read({
     projectType: category,
+    priority: projectPriority,
+    status: projectStatus,
     pageNumber: currentPage,
     pageSize,
     search: props.search
@@ -84,8 +82,8 @@ export function ProjectsTable (props: IProps) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
   useEffect(() => {
-    void refetch()
-  }, [data, refetch, currentPage]);
+    void refetch();
+  }, [projectPriority, projectStatus, category, currentPage, refetch]);
 
   const handleRowSelect = (value: string) => {
     rt.push(`/dashboard/project-management/${value}`)
@@ -167,14 +165,9 @@ export function ProjectsTable (props: IProps) {
                       </td>
                       <td className="app_table__tbody__td">
                         <div className="app_table__tbody__td__ctt">
-                          <Badge {...statusMap[Number(1)]} />
+                          <Badge title={project.status} style={statusMap[project.status]?.style ?? 'Pending'} />
                         </div>
                       </td>
-                      {/* <td className="app_table__tbody__td">
-                        <div className="app_table__tbody__td__ctt">
-
-                        </div>
-                      </td> */}
                       <td className="app_table__tbody__td">
                         <div className="app_table__tbody__td__ctt flex gap-2">
                           <Button variant="outline" size="icon" onClick={() => { handleRowSelect(project.id); }}>

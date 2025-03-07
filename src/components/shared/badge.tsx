@@ -3,15 +3,15 @@ import React from 'react'
 export interface BadgeProps {
   className?: string
   title: string
-  status: 'success' | 'pending' | 'danger'
+  style: 'success' | 'pending' | 'danger'
 }
 
 export function Badge (props: BadgeProps) {
-  const { title, className, status } = props
+  const { title, className, style } = props
 
   const cName = [
     'app_badge',
-    `app_badge--${status}`,
+    `app_badge--${style}`,
     className
   ].join(' ')
 

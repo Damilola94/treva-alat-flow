@@ -75,7 +75,6 @@ export function PersonalProjectDeliverables ({ projectId }: { projectId: string 
   //   };
 
   const handleSkip = () => {
-    console.log('Navigating to:', routes.dashboard.projectManagement.path);
     window.location.href = routes.dashboard.projectManagement.path; // Force refresh
   };
 
