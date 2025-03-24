@@ -1,44 +1,54 @@
-'use client'
+'use client';
 
-import { Suspense, useEffect, useState } from 'react'
-import { usePathname } from 'next/navigation'
+import { Suspense, useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import {
   Header,
   Sidebar,
   SubscribeToPlan,
   SubscribeToPlanLeft
-} from '@/components/shared/dashboard'
-import { Inter } from 'next/font/google'
+} from '@/components/shared/dashboard';
+import { Inter } from 'next/font/google';
 
 const inter = Inter({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700']
-})
+});
 
 function Main ({ children }: { children: React.ReactNode }) {
-  const [mounted, setMounted] = useState(false)
-  const pathname = usePathname()
+  const [mounted, setMounted] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
-    setMounted(true)
-  }, [])
+    setMounted(true);
+  }, []);
 
-  if (!mounted) return null
+  if (!mounted) return null;
 
   return (
     <main className="app_dash_main flex-col">
-      {pathname === '/dashboard/get-started' ? <SubscribeToPlan /> : <SubscribeToPlanLeft/>}
-      <div className="app_dash_main flex-1">
-        <Sidebar />
+      <div className="app_dash_main flex-1 relative">
+      <div
+          className="z-50 md:relative fixed top-0"
+        >
+          <Sidebar />
+        </div>
         <div className="app_dash_main__ctt">
+          {pathname === '/dashboard/get-started'
+            ? (
+            <SubscribeToPlan />
+              )
+            : (
+            <SubscribeToPlanLeft />
+              )}
           <Header />
-          <div className="app_dash_main__ctt__mn">
+          <div className="app_dash_main__ctt__mn w-full">
             <div className="app_dashboard_page">{children}</div>
           </div>
         </div>
       </div>
     </main>
-  )
+  );
 }
 
 export default function RootLayout ({
@@ -58,5 +68,5 @@ export default function RootLayout ({
         </Suspense>
       </body>
     </html>
-  )
+  );
 }
