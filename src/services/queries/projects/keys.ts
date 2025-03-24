@@ -21,7 +21,10 @@ const keys = {
   deletePayment: `${namespace}/deletePayment`,
   updateAgreement: `${namespace}/updateAgreement`,
   readAgreement: `${namespace}/readAgreement`,
-  deleteAgreement: `${namespace}/deleteAgreement`
+  deleteAgreement: `${namespace}/deleteAgreement`,
+  readReview: `${namespace}/readReview`,
+  createInvoice: `${namespace}/createInvoice`
+
 }
 
 export default keys

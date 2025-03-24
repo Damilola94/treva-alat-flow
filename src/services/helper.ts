@@ -81,10 +81,8 @@ export function handleErrors (error: AxiosError) {
   if (error.response) {
     const responseData = error.response?.data as any;
 
-    // Get main error message
     const errorMessage = responseData?.message || responseData?.responseMessage;
 
-    // Check if `data` exists and is an array
     const errors = responseData?.data;
 
     if (typeof errors === 'string') return errors || MSG;

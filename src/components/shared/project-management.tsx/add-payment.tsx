@@ -5,7 +5,6 @@ import { Formik } from 'formik'
 import * as Yup from 'yup'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { Select } from '../select'
 import projectManagement from '@/lib/assets/project-management'
 import Image from 'next/image'
 import queries from '@/services/queries/projects'
@@ -19,25 +18,22 @@ interface IProps {
 }
 
 const validationSchema = Yup.object().shape({
-//   perRequired: Yup.string().required('Please enter a percentage required'),
-//   dueDate: Yup.date()
-//    .min(new Date(), 'Due date must be in the future')
-// .required('Please select a due date'),
-//   reminderFrequency: Yup.string().required('Please enter a reminder frequency')
+  amountPercentage: Yup.string().required('Please enter a percentage required'),
+  dueDate: Yup.date()
+    .min(new Date(), 'Due date must be in the future')
+    .required('Please select a due date'),
+  reminderFrequency: Yup.string().required('Please enter a reminder frequency')
 });
 
 const options = [
   { value: 'Daily', label: 'Daily' },
   { value: 'Weekly', label: 'Weekly' },
-  { value: 'Monthly', label: 'Monthly' },
-  { value: 'Quartely', label: 'Quartely' },
-  { value: 'Yearly', label: 'Yearly' }
+  { value: 'Monthly', label: 'Monthly' }
 ];
 
 export default function AddPayment (props: IProps) {
   const { onClose, projectId, setPaymentId } = props
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { mutate, isLoading } = queries.createPayment({
     onSuccess: (response) => {
       if (response?.data?.id) {
@@ -52,15 +48,21 @@ export default function AddPayment (props: IProps) {
 
   const initialValues = {
     projectId,
-    perRequired: '',
+    amountPercentage: '',
     dueDate: '',
     reminderFrequency: ''
 
   };
 
+  type InitialValues = ReturnType<() => typeof initialValues>
+
+  const onSubmit = (_values: InitialValues) => {
+    mutate({ ..._values })
+  }
+
   return (
         <div className="app_auth_login_container relative">
-                  <Image src={projectManagement.topGradient} alt="top gradient" className="w-full" />
+            <Image src={projectManagement.topGradient} alt="top gradient" className="w-full" />
             <div className="app_auth_login_container__upper !-mt-80">
                 <div className="app_auth_login">
                     <div>
@@ -70,13 +72,14 @@ export default function AddPayment (props: IProps) {
                         <Formik
                             initialValues={initialValues}
                             validationSchema={validationSchema}
-                            onSubmit={mutate}
+                            onSubmit={onSubmit}
                         >
                             {({
                               values,
                               handleChange,
                               handleBlur,
                               handleSubmit,
+                              setFieldValue,
                               errors,
                               touched
                             }) => (
@@ -85,11 +88,11 @@ export default function AddPayment (props: IProps) {
                                     className="flex flex-col gap-4 mt-14"
                                 >
                                     <Input
-                                        name="%Required"
-                                        type="text"
+                                        name="amountPercentage"
+                                        type="number"
                                         placeholder="% Required"
                                         size="xl"
-                                        value={values.perRequired}
+                                        value={values.amountPercentage}
                                         onChange={handleChange}
                                         onBlur={handleBlur}
                                         errors={errors}
@@ -109,17 +112,22 @@ export default function AddPayment (props: IProps) {
                                     />
 
                                     <div className="w-full mt-5">
-                                        <Select
-                                            options={options}
-                                            placeholder="Reminder frequency"
-                                        // onChange={handleViewChange}
-                                        />
-                                    </div>
+                                        <select
+                                            name="reminderFrequency"
+                                            value={values.reminderFrequency}
+                                            onChange={async (e) => await setFieldValue('reminderFrequency', e.target.value)}
+                                            className="w-full border-b-[#d1d5db] p-2 focus:ring-1 focus:ring-[#7B37F0] bg-white text-left"
+                                        >
+                                            <option value="" disabled>
+                                                Select Reminder Frequency
+                                            </option>
+                                            {options.map((option) => (
+                                                <option key={option.value} value={option.value}>
+                                                    {option.label}
+                                                </option>
+                                            ))}
+                                        </select>
 
-                                    <div className='mt-10 text-[#262626] '>
-                                        <p className='flex justify-between mb-2'>% percentage <span>% 50</span></p>
-                                        <p className='flex justify-between mb-2'>Sub Total: <span>NGN 100,000.00</span></p>
-                                        <p className='flex justify-between'>Total <span className='font-bold'>NGN 100,000.00</span></p>
                                     </div>
 
                                     <div className="flex justify-between space-x-10 absolute bottom-0 w-full -left-5 mb-5">
@@ -138,6 +146,7 @@ export default function AddPayment (props: IProps) {
                                             size="md"
                                             backgroundColor="primary-blue-500"
                                             className="w-full app_auth_login__btn"
+                                            isLoading={isLoading}
                                         >
                                             Add
                                         </Button>

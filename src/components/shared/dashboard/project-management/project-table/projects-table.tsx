@@ -4,7 +4,6 @@ import { Pagination } from '../../../pagination'
 import { BinGray, EditPencilGray, EmptyStatus } from '../../../svgs'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
-import { Eye } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { EmptyState } from '../../empty-state'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -70,14 +69,11 @@ export function ProjectsTable (props: IProps) {
     pageSize,
     search: props.search
   })
-  // const [projects, setProjects] = useState<any[]>([])
 
   const filteredProjects = data?.data?.filter(project => {
     if (!category) return true;
     return project.projectType === category;
   });
-  // const displayedProjects = filteredProjects.slice(0, 10);
-  // const displayedProjects = filteredProjects ? filteredProjects.slice(0, 10) : [];
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
@@ -138,7 +134,7 @@ export function ProjectsTable (props: IProps) {
                 : (
                     filteredProjects?.map((project, index) => (
                     <tr
-                      // onClick={() => { handleRowSelect(project.id); }}
+                      onClick={() => { handleRowSelect(project.id); }}
                       className="cursor-pointer hover:bg-gray-100"
                       key={index}
                     >
@@ -170,15 +166,12 @@ export function ProjectsTable (props: IProps) {
                       </td>
                       <td className="app_table__tbody__td">
                         <div className="app_table__tbody__td__ctt flex gap-2">
-                          <Button variant="outline" size="icon" onClick={() => { handleRowSelect(project.id); }}>
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                          <Button variant="outline" size="icon" onClick={() => onDelete?.(project.id)}>
+                          <Button variant="outline" size="icon" onClick={(e) => { e.stopPropagation(); onDelete?.(project.id) }}>
                                 <BinGray className="h-4 w-4" />
                               </Button>
                           {project.projectType === 'PersonalProject' && (
                             <>
-                              <Link href={`/dashboard/project-management/personal-project/${project.id}/edit`}>
+                              <Link href={`/dashboard/project-management/personal-project/${project.id}/edit`} onClick={(e) => { e.stopPropagation(); }}>
                                 <Button variant="outline" size="icon">
                                   <EditPencilGray className="h-4 w-4" />
                                 </Button>

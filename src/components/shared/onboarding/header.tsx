@@ -8,7 +8,7 @@ export function Header () {
       <div className="flex items-center gap-3">
         <Logo />
       </div>
-      <div className="flex items-center gap-2">
+      <div className="z-40 flex items-center gap-2">
         <p className="app_auth_login_container__header__account">
           Already have an account?
         </p>

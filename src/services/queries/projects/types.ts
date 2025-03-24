@@ -8,13 +8,11 @@ export interface ProjectManagement {
   status: string
   totalAmount: string
   clientId: string
-  //   projectAgreementUrl: string
   taskName: string
   startDate: string
   dueDate: string
   taskPriority: string
   taskId: string
-  // taskStatus: string
   deliverableName: string
   deliverableDescription: string
   deliverableAmount: string
@@ -23,4 +21,6 @@ export interface ProjectManagement {
   imageUrl: string
   totalDeliverables: string
   timeline: string
+  unitDeliverableAmount: string
+
 }

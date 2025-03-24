@@ -7,8 +7,6 @@ import Image from 'next/image';
 import { type InitialStep4Values } from '@/app/dashboard/project-management/client-project/create/page';
 import queries from '@/services/queries/projects';
 import { toast } from 'react-toastify';
-import routes from '@/lib/routes';
-import { useRouter } from 'next/navigation';
 
 interface IProps {
   handleNext: (formData: InitialStep4Values) => void
@@ -21,7 +19,6 @@ interface Agreement {
 }
 
 export function ProjectAgreement (props: IProps) {
-  const router = useRouter();
   const { handleNext, projectId } = props;
 
   const [isDecisionModalOpen, setIsDecisionModalOpen] = useState(false);
@@ -50,18 +47,13 @@ export function ProjectAgreement (props: IProps) {
   const { mutate: deleteAgreement } = queries.deleteAgreement({ projectId },
     {
       onSuccess: () => {
-        // setAgreement(data);
-        // void refetch();
         setAgreement(prev => prev.filter(d => d.projectId !== projectId));
 
-        // Reset file input
         setSelectedFile(null);
         setImagePreview('');
 
-        // Refetch data to update UI
         void refetch();
 
-        // Close modal
         setIsDecisionModalOpen(false);
       }
     });
@@ -84,9 +76,8 @@ export function ProjectAgreement (props: IProps) {
         setFieldValue('projectAgreementUrl', file);
 
         if (file.type === 'application/pdf') {
-          setImagePreview(''); // No preview for PDFs
+          setImagePreview('');
         } else {
-          // Create an image preview
           const reader = new FileReader();
           reader.onload = () => {
             setImagePreview(reader.result as string);
@@ -149,10 +140,6 @@ export function ProjectAgreement (props: IProps) {
 
         onSubmit({ projectId, projectAgreementUrl: selectedFile });
         handleNext(step4Values);
-      };
-
-      const handleSkip = () => {
-        router.push(routes.dashboard.projectManagement.path);
       };
 
       return (
@@ -238,7 +225,7 @@ export function ProjectAgreement (props: IProps) {
                 >
                     Save & Continue
                 </Button>
-                <Button
+                {/* <Button
                     type="button"
                     size="xl"
                     backgroundColor="primary-blue-500"
@@ -247,7 +234,7 @@ export function ProjectAgreement (props: IProps) {
 
                 >
                     Close
-                </Button>
+                </Button> */}
                 </div>
 
             </div>

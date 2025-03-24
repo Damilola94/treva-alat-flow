@@ -8,8 +8,9 @@ import { useRouter } from 'next/navigation';
 import routes from '@/lib/routes';
 import { AnimatedModal, CalendarWithMark, Clock, Delete, EditIcon, Money4, PlusIcon, RenderIf } from '@/components/shared';
 import { Modal } from '@/components/shared/decisionModal';
-import { EditPayment } from '@/components/shared/project-management.tsx/edit-payment';
+// import { EditPayment } from '@/components/shared/project-management.tsx/edit-payment';
 import AddPayment from '@/components/shared/project-management.tsx/add-payment';
+// import { EditPayment } from '@/components/shared/project-management.tsx/edit-payment';
 
 const validationSchema = Yup.object().shape({
   deliverableName: Yup.string().required('Please enter a deliverable name'),
@@ -106,7 +107,7 @@ export default function Page () {
 
             <RenderIf condition={!editForm}>
         <Fragment>
-          <AnimatedModal
+          {/* <AnimatedModal
             {...{
               isOpen: true,
               from: 'right',
@@ -116,7 +117,7 @@ export default function Page () {
             }}
           >
             <EditPayment />
-          </AnimatedModal>
+          </AnimatedModal> */}
         </Fragment>
       </RenderIf>
             <div className="flex justify-center items-center gap-4">

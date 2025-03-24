@@ -454,7 +454,9 @@ const useCreateDeliverables = (options: { onSuccess?: (response: any) => void })
     description: string
     startDate: string
     dueDate: string
-    amount: string
+    unitDeliverableAmount: string
+    units: string
+    // amount: string
 
   }
 
@@ -467,7 +469,9 @@ const useCreateDeliverables = (options: { onSuccess?: (response: any) => void })
         description: body.description,
         startDate: body.startDate,
         dueDate: body.dueDate,
-        amount: body.amount
+        unitDeliverableAmount: body.unitDeliverableAmount,
+        units: body.units
+        // amount: body.amount
       };
 
       mutate({
@@ -563,7 +567,9 @@ const useUpdateDeliverables = ({ deliverableId = '', projectId = '' } = {}, opti
     deliverableDescription: string
     startDate: string
     dueDate: string
-    deliverableAmount: string
+    unitDeliverableAmount: string
+    units: string
+    // deliverableAmount: string
 
   }
 
@@ -577,7 +583,9 @@ const useUpdateDeliverables = ({ deliverableId = '', projectId = '' } = {}, opti
         description: body.deliverableDescription,
         startDate: body.startDate,
         dueDate: body.dueDate,
-        amount: body.deliverableAmount
+        unitDeliverableAmount: body.unitDeliverableAmount,
+        units: body.units
+        // amount: body.deliverableAmount
       };
 
       mutate({
@@ -658,7 +666,7 @@ const useCreatePayment = (options: { onSuccess?: (response: any) => void }) => {
 
   interface Body {
     projectId: string
-    perRequired: string
+    amountPercentage: string
     dueDate: string
     reminderFrequency: string
 
@@ -669,7 +677,7 @@ const useCreatePayment = (options: { onSuccess?: (response: any) => void }) => {
     mutate: (body: Body) => {
       const requestBody = {
         projectId: body.projectId,
-        perRequired: body.perRequired,
+        amountPercentage: body.amountPercentage,
         dueDate: body.dueDate,
         reminderFrequency: body.reminderFrequency
       };
@@ -685,12 +693,156 @@ const useCreatePayment = (options: { onSuccess?: (response: any) => void }) => {
   };
 };
 
+const useReadPayment = ({ projectId = '' } = {}, options = {}) => {
+  const response = useQuery(
+    [queryKey.readPayment, projectId],
+    async () => {
+      const queryParams = new URLSearchParams()
+      queryParams.append('ProjectId', projectId)
+
+      const url = `${BASE_URL.project}/${projectId}/payments?${queryParams.toString()}`
+      return await api.get({ url })
+    },
+
+    {
+      enabled: !!projectId,
+      ...options,
+      onSuccess: () => { }
+      // onError: (err: AxiosError) => {
+      //   errorToast(handleErrors(err))
+      // }
+    }
+  )
+
+  return {
+    ...response,
+    data: response.data?.data || [],
+    metaData: response.data?.metaData
+  }
+}
+
+const useReadPaymentOne = ({ projectId = '', paymentId = '', pageNumber = 1, pageSize = 50 } = {}, options = {}) => {
+  const url = `${BASE_URL.project}/${projectId}/payments/${paymentId}`;
+
+  const response = useQuery(
+    [queryKey.readPaymentOne, projectId, paymentId, pageNumber, pageSize],
+    async () => await api.get({ url }),
+    {
+      ...options,
+      enabled: !!(projectId && paymentId),
+      onError: (err: AxiosError) => {
+        errorToast(handleErrors(err));
+      }
+    }
+  );
+
+  return {
+    ...response,
+    data: response.data?.data || [],
+    metaData: response.data?.metaData
+  };
+};
+
+const useUpdatePayment = ({ paymentId = '', projectId = '' } = {}, options: { onSuccess: () => void }) => {
+  const {
+    onSuccess = () => { }
+  } = options;
+  const queryClient = useQueryClient();
+  const { mutate, ...response } = useMutation(api.put, {
+    mutationKey: [queryKey.updatePayment],
+    ...options,
+    onSuccess: async () => {
+      onSuccess();
+      await queryClient.invalidateQueries({
+        queryKey: [queryKey.readPayment, paymentId, projectId]
+      });
+      successToast('Payment updated');
+    },
+    onError: (err: AxiosError) => {
+      errorToast(handleErrors(err));
+    }
+  });
+
+  interface Body {
+    projectId: string
+    paymentId: string
+    amountPercentage: string
+    dueDate: string
+    reminderFrequency: string
+
+  }
+
+  return {
+    ...response,
+    mutate: (body: Body) => {
+      const requestBody = {
+        projectId: body.projectId,
+        paymentId: body.paymentId,
+        amountPercentage: body.amountPercentage,
+        dueDate: body.dueDate,
+        reminderFrequency: body.reminderFrequency
+      };
+
+      mutate({
+        url: `${BASE_URL.project}/${body.projectId}/payments/${body.paymentId}`,
+        body: requestBody,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+    }
+  };
+};
+
+const useDeletePayment = ({ paymentId = '', projectId = '' } = {}, options: { onSuccess: () => void }) => {
+  const { onSuccess = () => {} } = options;
+  const queryClient = useQueryClient();
+
+  const { mutate, ...response } = useMutation(api.delete, {
+    mutationKey: [queryKey.deletePayment, paymentId, projectId],
+    ...options,
+    onSuccess: async () => {
+      onSuccess();
+      await queryClient.invalidateQueries({
+        queryKey: [queryKey.readPayment]
+      });
+      successToast('Payment deleted');
+    },
+    onError: (err: AxiosError) => {
+      errorToast(handleErrors(err));
+    }
+  });
+
+  interface Body {
+    projectId: string
+    paymentId: string
+  }
+
+  return {
+    ...response,
+    mutate: (body: Body) => {
+      const requestBody = {
+        projectId: body.projectId,
+        paymentId: body.paymentId
+      };
+
+      mutate({
+        url: `${BASE_URL.project}/${body.projectId}/payments/${body.paymentId}`,
+        body: requestBody,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+    }
+  };
+};
+
 const useCreateAgreement = (options: { onSuccess?: (response: any) => void }) => {
   const { onSuccess = () => {} } = options;
 
   const queryClient = useQueryClient();
   const { mutate, ...response } = useMutation(api.put, {
-    mutationKey: [queryKey.updateAgreement], // Ensure this key is correct
+    mutationKey: [queryKey.updateAgreement],
     ...options,
     onSuccess: async (data) => {
       onSuccess(data);
@@ -771,6 +923,73 @@ const useDeleteAgreement = ({ projectId = '' } = {}, options: { onSuccess: () =>
   };
 };
 
-const queries = { create: useCreate, read: useRead, update: useUpdate, delete: useDelete, readone: useReadOne, createTasks: useCreateTasks, readTasks: useReadTasks, readTasksOne: useReadTasksOne, updateTasks: useUpdateTasks, deleteTasks: useDeleteTasks, createDeliverables: useCreateDeliverables, readDeliverables: useReadDeliverables, readDeliverablesOne: useReadDeliverablesOne, updateDeliverables: useUpdateDeliverables, deleteDeliverables: useDeleteDeliverables, createPayment: useCreatePayment, updateAgreement: useCreateAgreement, deleteAgreement: useDeleteAgreement };
+const useReadReview = ({ projectId = '' } = {}, options = {}) => {
+  const response = useQuery(
+    [queryKey.readReview, projectId],
+    async () => {
+      const queryParams = new URLSearchParams()
+      queryParams.append('ProjectId', projectId)
+
+      const url = `${BASE_URL.project}/${projectId}/review?${queryParams.toString()}`
+      return await api.get({ url })
+    },
+    {
+      ...options,
+      onSuccess: () => { }
+      // onError: (err: AxiosError) => {
+      //   errorToast(handleErrors(err))
+      // }
+    }
+  )
+
+  return {
+    ...response,
+    data: response.data?.data || [],
+    metaData: response.data?.metaData
+  }
+}
+
+const useCreateInvoice = ({ projectId = '' } = {}, options: { onSuccess: () => void }) => {
+  const { onSuccess = () => {} } = options;
+  const queryClient = useQueryClient();
+
+  const { mutate, ...response } = useMutation(api.post, {
+    mutationKey: [queryKey.createInvoice, projectId],
+    ...options,
+    onSuccess: async () => {
+      onSuccess();
+      await queryClient.invalidateQueries({
+        queryKey: [queryKey.readReview]
+      });
+      successToast('Invoice sent');
+    },
+    onError: (err: AxiosError) => {
+      errorToast(handleErrors(err));
+    }
+  });
+
+  interface Body {
+    projectId: string
+  }
+
+  return {
+    ...response,
+    mutate: (body: Body) => {
+      const requestBody = {
+        projectId: body.projectId
+      };
+
+      mutate({
+        url: `${BASE_URL.project}/${body.projectId}/invoices`,
+        body: requestBody,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+    }
+  };
+};
+
+const queries = { create: useCreate, read: useRead, update: useUpdate, delete: useDelete, readone: useReadOne, createTasks: useCreateTasks, readTasks: useReadTasks, readTasksOne: useReadTasksOne, updateTasks: useUpdateTasks, deleteTasks: useDeleteTasks, createDeliverables: useCreateDeliverables, readDeliverables: useReadDeliverables, readDeliverablesOne: useReadDeliverablesOne, updateDeliverables: useUpdateDeliverables, deleteDeliverables: useDeleteDeliverables, createPayment: useCreatePayment, updateAgreement: useCreateAgreement, deleteAgreement: useDeleteAgreement, readPayment: useReadPayment, deletePayment: useDeletePayment, readPaymentOne: useReadPaymentOne, updatePayment: useUpdatePayment, readReview: useReadReview, createInvoice: useCreateInvoice };
 
 export default queries;
