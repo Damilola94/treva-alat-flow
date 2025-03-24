@@ -122,7 +122,7 @@ export function ProjectEditor ({ projectId, setProjectId }: IProps) {
                         projectId={projectId}
                         deliverableId={deliverableId}
                         onClose={onEdit}
-                        onAddDeliverable={handleEditDeliverable}
+                        onEditDeliverable={handleEditDeliverable}
                     />
                 </AnimatedModal>
             </RenderIf>

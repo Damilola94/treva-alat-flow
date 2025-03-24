@@ -30,7 +30,7 @@ export default function ResetPassword () {
           <Logo />
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="z-40 flex items-center gap-2">
           <p className="app_auth_login_container__header__account">
             Don’t have an account?
           </p>

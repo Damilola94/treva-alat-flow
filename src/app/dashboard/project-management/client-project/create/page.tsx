@@ -1,5 +1,5 @@
 'use client'
-import React, { Fragment, Suspense, useState } from 'react'
+import React, { Fragment, Suspense, useEffect, useState } from 'react'
 import { RenderIf } from '@/components/shared'
 import { ProjectType } from '@/services/queries/projects/enums'
 import { ProgressStatus } from '@/components/shared/dashboard/get-started/progress-status copy'
@@ -8,6 +8,7 @@ import { ProjectDeliverables } from '@/components/shared/dashboard/project-manag
 import { ProjectPayment } from '@/components/shared/dashboard/project-management/client-project/add-payment'
 import { ProjectAgreement } from '@/components/shared/dashboard/project-management/client-project/add-agreement'
 import { ProjectReview } from '@/components/shared/dashboard/project-management/client-project/review'
+import { useSearchParams } from 'next/navigation'
 
 enum AccountType {
   Low = 'low',
@@ -23,14 +24,6 @@ const step1Values = {
   projectType: ProjectType.ClientProject
 }
 
-// const step2Values = {
-//   deliverableName: '',
-//   description: '',
-//   startDate: '',
-//   dueDate: '',
-//   amount: ''
-// }
-
 const step2Values = {
   deliverables: [
     {
@@ -43,25 +36,15 @@ const step2Values = {
   ]
 };
 
-// const step3Values = {
-//   perRequired: '',
-//   dueDate: '',
-//   reminderFrequency: ''
-// }
-
 const step3Values = {
   payment: [
     {
-      perRequired: '',
+      amountPercentage: '',
       dueDate: '',
       reminderFrequency: ''
     }
   ]
 }
-
-// const step4Values = {
-//   agreement: ''
-// }
 
 const step4Values = {
   agreement: [{
@@ -99,7 +82,7 @@ export interface InitialStep2Values {
 }
 export interface InitialStep3Values {
   payment: Array<{
-    perRequired: string
+    amountPercentage: string
     dueDate: string
     reminderFrequency: string
   }>
@@ -111,26 +94,38 @@ export interface InitialStep4Values {
     projectAgreementUrl: string
   }>
 }
-// export type InitialStep2Values = ReturnType<() => typeof step2Values>
-// export type InitialStep3Values = ReturnType<() => typeof step3Values>
-// export type InitialStep4Values = ReturnType<() => typeof step4Values>
+
+export interface InitialStep5Values {
+  review: Array<{
+    projectId: string
+    termsAndConditions: false
+
+  }>
+}
 
 function ClientProject () {
-  const [currentStep, setCurrentStep] = useState(1)
-  // const [formData, setFormData] = useState(defaultValues)
-  const [formData, setFormData] = useState<FormDataType>(defaultValues);
+  const searchParams = useSearchParams();
+  const paramsProjectId = searchParams.get('projectId');
 
+  const [currentStep, setCurrentStep] = useState(1);
   const [projectId, setProjectId] = useState<string>('');
 
-  // const handleNext = (step: number, data: any) => {
-  //   setFormData((prevData) => ({
-  //     ...prevData,
-  //     [`step${step}Values`]: { ...prevData[`step${step}Values`], ...data }
-  //   }));
-  //   setCurrentStep(step + 1);
-  // };
+  const [formData, setFormData] = useState<FormDataType>(defaultValues);
 
-  const handleNext = (step: 1 | 2 | 3 | 4, data: Partial<FormDataType[keyof FormDataType]>) => {
+  // useEffect(() => {
+  //   if (paramsProjectId) {
+  //     setCurrentStep(3)
+  //   }
+  // }, [paramsProjectId])
+
+  useEffect(() => {
+    if (paramsProjectId) {
+      setProjectId(paramsProjectId);
+      setCurrentStep(3);
+    }
+  }, [paramsProjectId]);
+
+  const handleNext = (step: 1 | 2 | 3 | 4 | 5, data: Partial<FormDataType[keyof FormDataType]>) => {
     setFormData((prevData) => ({
       ...prevData,
       [`step${step}Values`]: {

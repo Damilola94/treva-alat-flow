@@ -2,6 +2,7 @@ import queries from '@/services/queries/projects';
 import { EmptyStatus } from '../../../svgs';
 import { useParams } from 'next/navigation';
 import { Skeleton } from '@/components/ui/skeleton';
+import { formatDate } from '@/lib/utils';
 
 const thead = [
   { label: 'Deliverable name' },
@@ -15,12 +16,6 @@ export function DeliverableTable () {
   const param = useParams();
   const projectId = Array.isArray(param.id) ? param.id[0] : param.id;
   const { data, isLoading } = queries.readDeliverables({ projectId });
-
-  const formatDate = (dateString: string) => {
-    if (!dateString) return '';
-    const date = new Date(dateString);
-    return `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear().toString().slice(-2)}`;
-  };
 
   if (data.length === 0) {
     return (

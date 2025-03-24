@@ -8,8 +8,6 @@ import { AddDeliverables } from '@/components/shared/project-management.tsx/add-
 import { EditDeliverables } from '@/components/shared/project-management.tsx/edit-deliverables';
 import queries from '@/services/queries/projects';
 import { type InitialStep2Values } from '@/app/dashboard/project-management/client-project/create/page'
-// import { useRouter } from 'next/navigation';
-import routes from '@/lib/routes';
 import { formatDate } from '@/lib/utils';
 
 interface IProps {
@@ -24,37 +22,53 @@ interface Deliverable {
   startDate: string
   dueDate: string
   deliverableAmount: string
+  timeline?: string
+  totalAmount?: string
 }
 
 export function ProjectDeliverables (props: IProps) {
   const { handleNext, projectId } = props
-  // const router = useRouter();
   const [editForm, setEditForm] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDecisionModalOpen, setIsDecisionModalOpen] = useState(false);
   const [deliverables, setDeliverables] = useState<Deliverable[]>([]);
   const [deliverableId, setDeliverableId] = useState<string>('');
+  const [selectedDeliverable, setSelectedDeliverable] = useState<Deliverable | null>(null)
 
   const { data, refetch } = queries.readDeliverables({ projectId }, {
     onSuccess: (newData: any) => {
-      setDeliverables(newData);
+      if (Array.isArray(newData)) {
+        const validDeliverables = newData.map((item) => {
+          return {
+            ...item,
+            deliverableId: item.deliverableId || item.id || ''
+          }
+        })
+        setDeliverables(validDeliverables)
+      } else {
+        setDeliverables([])
+      }
     }
   });
-  const { mutate: deleteDeliverables } = queries.deleteDeliverables({ projectId, deliverableId },
+
+  const { mutate: deleteDeliverables } = queries.deleteDeliverables({},
     {
       onSuccess: () => {
-        setDeliverables(data)
         void refetch()
       }
     })
 
   useEffect(() => {
     if (data) {
-      setDeliverables(data);
+      if (Array.isArray(data)) {
+        const validDeliverables = data.map((item) => ({
+          ...item,
+          deliverableId: item.deliverableId || item.id || ''
+        }))
+        setDeliverables(validDeliverables)
+      }
     }
   }, [data])
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
   const handleCloseModal = () => {
     setIsDecisionModalOpen(false)
@@ -64,26 +78,36 @@ export function ProjectDeliverables (props: IProps) {
   };
 
   const handleAddDeliverables = (newDeliverable: Deliverable) => {
-    setDeliverables((prev) => [...prev, newDeliverable]);
-    void refetch();
-  };
+    const deliverableWithId = {
+      ...newDeliverable,
+      deliverableId: newDeliverable.deliverableId || ''
+    }
+    setDeliverables((prev) => [...prev, deliverableWithId])
+    void refetch()
+  }
 
   const handleDelete = () => {
-    setDeliverables(prev => prev.filter(d => d.deliverableId !== deliverableId));
-    deleteDeliverables({ projectId, deliverableId });
-    setIsDecisionModalOpen(false);
-  };
+    if (!deliverableId) {
+      console.error('Deliverable ID is undefined. Cannot delete.')
+      return
+    }
+    setDeliverables((prev) => prev.filter((d) => d.deliverableId !== deliverableId))
+    deleteDeliverables({ projectId, deliverableId })
+    setIsDecisionModalOpen(false)
+  }
 
-  const onEdit = () => {
-    setEditForm(!editForm);
-  };
-
-  const handleSkip = () => {
-    window.location.href = routes.dashboard.projectManagement.path;
-  };
+  const onEdit = (id: string) => {
+    const deliverableToEdit = deliverables.find((d) => d.deliverableId === id)
+    if (!deliverableToEdit) {
+      console.error('Cannot find deliverable with ID:', id)
+      return
+    }
+    setDeliverableId(id)
+    setSelectedDeliverable(deliverableToEdit)
+    setEditForm(false)
+  }
 
   const handleNextStep = () => {
-    // Prepare the data to pass to the next step
     const step2Data = {
       deliverables: deliverables.map(d => ({
         deliverableName: d.deliverableName,
@@ -122,7 +146,19 @@ export function ProjectDeliverables (props: IProps) {
                                 'absolute bottom-0 right-0 h-[calc(100vh-20px)] w-full sm:w-[350px] bg-white p-0 flex flex-col mb-2 mr-2'
                         }}
                     >
-                        <EditDeliverables onClose={onEdit} projectId={projectId} deliverableId={deliverableId} onAddDeliverable={handleAddDeliverables} />
+                        <EditDeliverables onClose={() => {
+                          setEditForm(true)
+                          setSelectedDeliverable(null)
+                        }}
+              projectId={projectId}
+              deliverableId={deliverableId}
+              deliverable={selectedDeliverable}
+              onEditDeliverable={(updatedDeliverable) => {
+                setDeliverables((prev) =>
+                  prev.map((d) => (d.deliverableId === updatedDeliverable.deliverableId ? updatedDeliverable : d))
+                )
+                void refetch()
+              }} />
                     </AnimatedModal>
                 </Fragment>
             </RenderIf>
@@ -150,7 +186,8 @@ export function ProjectDeliverables (props: IProps) {
                             size="xl"
                             className="w-full"
                             // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-                            onClick={() => { handleDelete(); }}
+                            // onClick={() => { handleDelete(); }}
+                            onClick={handleDelete}
                         >
                             Delete
                         </Button>
@@ -186,12 +223,19 @@ export function ProjectDeliverables (props: IProps) {
                                             <EditIcon
                                                 className="cursor-pointer"
                                                 fill='#888888'
-                                                onClick={onEdit} />
+                                                onClick={() => {
+                                                  if (item.deliverableId) {
+                                                    onEdit(item.deliverableId)
+                                                  }
+                                                }} />
                                             <button
                                                 onClick={() => {
-                                                  setDeliverableId(item.deliverableId);
-                                                  setIsDecisionModalOpen(true);
+                                                  if (item.deliverableId) {
+                                                    setDeliverableId(item.deliverableId)
+                                                    setIsDecisionModalOpen(true)
+                                                  }
                                                 }}
+
                                             >
                                                 <Delete className="cursor-pointer" />
                                             </button>
@@ -200,11 +244,11 @@ export function ProjectDeliverables (props: IProps) {
                                     <p className='mb-2'>{item.deliverableDescription}</p>
                                     <p className='flex gap-4 mb-3 '>
                                         <CalendarWithMark fill='#6E50DB' />
-                                        {item.startDate}
+                                        {formatDate(item.startDate)}
                                     </p>
                                     <p className='flex gap-4 mb-3'>
                                         <CalendarWithMark fill='#6E50DB' />
-                                        {item.dueDate}
+                                        {formatDate(item.dueDate)}
                                     </p>
                                     <p className='flex gap-4'>
                                         <Money4 stroke='#6E50DB' /> {item.deliverableAmount}
@@ -213,50 +257,34 @@ export function ProjectDeliverables (props: IProps) {
                             </div>
                         </>
                     ))}
-                     {deliverables.length > 0 && (() => {
-                       // Extract all start and due dates
-                       const startDates = deliverables.map(d => new Date(d.startDate));
-                       const dueDates = deliverables.map(d => new Date(d.dueDate));
-
-                       // Find the earliest start date and latest due date
-                       const minStartDate = new Date(Math.min(...startDates.map(d => d.getTime())));
-                       const maxDueDate = new Date(Math.max(...dueDates.map(d => d.getTime())));
-
-                       // Calculate the total days between the start and end date
-                       const totalDays = Math.ceil((maxDueDate.getTime() - minStartDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-
-                       // Calculate total deliverable amount
-                       const totalAmount = deliverables.reduce((sum, d) => sum + Number(d.deliverableAmount), 0);
-
-                       return (
-                                               <div className='mt-10 text-[#262626]'>
-                                                   <p className='flex justify-between mb-2'>Total deliverables: <span>{deliverables.length}</span></p>
-                                                   <p className='flex justify-between mb-2'>Timeline <span>{`${formatDate(minStartDate)} - ${formatDate(maxDueDate)} (${totalDays} days)`}</span></p>
-                                                   <p className='flex justify-between mb-2'>Sub Total: <span>NGN {totalAmount.toLocaleString()}</span></p>
-                                                   <p className='flex justify-between'>Total <span className='font-bold'>NGN {totalAmount.toLocaleString()}</span></p>
-                                               </div>
-                       );
-                     })()}
+                   {deliverables.length > 0 && (
+                <div className="mt-10 text-[#262626]">
+                  <p className="flex justify-between mb-2">
+                    Total deliverables: <span>{deliverables.length}</span>
+                  </p>
+                  <p className="flex justify-between mb-2">
+                    Timeline{' '}
+                    <span>{deliverables[0].timeline}</span>
+                  </p>
+                  <p className="flex justify-between mb-2">
+                    Sub Total: <span>NGN {deliverables[0].totalAmount}</span>
+                  </p>
+                  <p className="flex justify-between">
+                    Total <span className="font-bold">NGN {deliverables[0].totalAmount}</span>
+                  </p>
                 </div>
-                <div className="pt-4 flex gap-5">
+                   )}
+                </div>
+                <div className="pt-4 flex gap-5 text-right">
                     <Button
                         type="button"
                         size="xl"
                         backgroundColor="primary-blue-500"
-                        className="w-full py-3 px-12"
+                        className="w-full py-3 px-12 "
                         onClick={handleNextStep}
                         // onClick={handleSkip}
                     >
                         Save and continue
-                    </Button>
-                    <Button
-                        type="button"
-                        size="xl"
-                        backgroundColor="primary-blue-500"
-                        className="w-full py-3 px-12"
-                        onClick={handleSkip}
-                    >
-                        Close
                     </Button>
                 </div>
 

@@ -160,13 +160,13 @@ export function PersonalProjectDetails (props: IProps) {
                       </Pill>
                     </div>
                   </div>
-                  <div className="">
+                  <div className="text-right">
                     <Button
                       type='submit'
                       size="md"
                       isLoading={isLoading}
                       backgroundColor="primary-blue-500"
-                      className="w-1/2 app_auth_login__btn flex items-center justify-center gap-2"
+                      className="w-1/2 app_auth_login__btn gap-2"
                     >
                       Save and Continue
                     </Button>

@@ -107,7 +107,7 @@ export function EditProjectDeliverables ({ projectId }: Props) {
             onClose={onEdit}
             projectId={projectId}
             deliverableId={deliverableId}
-            onAddDeliverable={handleAddDeliverables}
+            onEditDeliverable={handleAddDeliverables}
           />
         </AnimatedModal>
       </RenderIf>

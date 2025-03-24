@@ -30,7 +30,7 @@
     justify-content: space-between;
     gap: 80px;
 
-    @include screen('lg') {
+    @include screen('md') {
       display: none;
     }
 

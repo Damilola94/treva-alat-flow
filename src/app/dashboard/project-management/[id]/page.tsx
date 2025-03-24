@@ -11,84 +11,36 @@ import queries from '@/services/queries/projects';
 import { useParams } from 'next/navigation';
 import { TaskTable } from '@/components/shared/dashboard/project-management/project-table/task-table';
 import { DeliverableTable } from '@/components/shared/dashboard/project-management/project-table/deliverable-table';
-import { AddDeliverables } from '@/components/shared/project-management.tsx/add-deliverables';
 import { ProgressBar } from './progress-tag';
 import { formatDate } from '@/lib/utils';
+import { PaymentTable } from '@/components/shared/dashboard/project-management/project-table/payment-table';
 
 type TabType = 'task' | 'deliverables' | 'payment'
-
-const getAddButtonText = (tab: TabType) => {
-  switch (tab) {
-    case 'task':
-      return 'Add new task'
-    case 'deliverables':
-      return 'Add new deliverable'
-    case 'payment':
-      return 'Add new payment'
-  }
-}
 
 const options = [
   { value: 'table', label: 'Table' },
   { value: 'grid', label: 'Grid' }
 ];
 
-interface Deliverable {
-  deliverableId: string
-  deliverableName: string
-  description: string
-  startDate: string
-  dueDate: string
-  amount: string
-}
-
 export default function Page () {
   const params = useParams()
   const projectId = Array.isArray(params.id) ? params.id[0] : params.id
   const { data } = queries.readone({ projectId })
 
-  const [activeTab, setActiveTab] = useState<TabType>('task')
+  const [activeTab, setActiveTab] = useState<TabType>('deliverables')
 
-  // const [addTask, setAddTask] = useState(true)
   const [viewType, setViewType] = useState('table');
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalType, setModalType] = useState<TabType | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [deliverableId, setDeliverableId] = useState<string>('');
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [deliverables, setDeliverables] = useState<Deliverable[]>([]);
-  // const [taskId, setTaskId] = useState<string>('');
-  // const [task, setTask] = useState<Task[]>([]);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { data: deliverableData, refetch } = queries.readDeliverables({ projectId }, {
-    onSuccess: (newData: any) => {
-      setDeliverables(newData);
-    }
-  });
-
-  const handleAddClick = (tab: TabType) => {
-    setModalType(tab);
+  const handleAddClick = () => {
     setIsModalOpen(true);
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
-    setModalType(null);
-  };
-
-  // const closeModal = () => {
-  //   setIsModalOpen(false);
-  // };
-
-  // const handleAddTask = () => {
-  //   setAddTask(!addTask)
-  // }
-
-  const handleAddDeliverables = (newDeliverable: Deliverable) => {
-    setDeliverables((prev) => [...prev, newDeliverable]);
-    void refetch();
   };
 
   const handleViewChange = (selectedOption: {
@@ -97,6 +49,11 @@ export default function Page () {
   }) => {
     setViewType(selectedOption.value);
   };
+
+  const tabs: TabType[] = ['deliverables', 'task'];
+  if (data?.projectType === 'ClientProject') {
+    tabs.push('payment');
+  }
 
   return (
     <div className="app_dashboard_page app_dashboard_home">
@@ -124,18 +81,9 @@ export default function Page () {
         onClose={closeModal}
         className="absolute bottom-0 right-0 h-[calc(100vh-20px)] w-full sm:w-[350px] bg-white p-0 flex flex-col mb-2 mr-2"
       >
-        {modalType === 'task' && (
-          <CreateTaskCard onClose={closeModal} projectId={projectId} setDeliverableId={setDeliverableId} />
-        )}
 
-        {modalType === 'deliverables' && (
-          <AddDeliverables
-            onClose={closeModal}
-            projectId={projectId}
-            onAddDeliverable={handleAddDeliverables}
-            setDeliverableId={setDeliverableId}
-          />
-        )}
+          <CreateTaskCard onClose={closeModal} projectId={projectId} setDeliverableId={setDeliverableId} />
+
       </AnimatedModal>
 
       <div className="app_dashboard_home__task app_dashboard_page__px">
@@ -147,9 +95,6 @@ export default function Page () {
                 <p className='text-[#888888] font-medium mt-5'>{data?.description}</p>
 
               </div>
-              {/* <button className="text-primary-blue-500 hover:underline">
-                <EditIcon />
-              </button> */}
             </div>
             <div className="flex items-center ml-10 gap-4 mt-1">
               <div className="flex -space-x-2">
@@ -170,12 +115,12 @@ export default function Page () {
           <div className="flex-shrink-0">
             <Button
               size="md"
-              onClick={() => { handleAddClick(activeTab); }}
+              onClick={() => { handleAddClick(); }}
               backgroundColor="primary-blue-500"
               className="app_auth_login__btn flex items-center gap-2"
             >
               <PlusIcon />
-              {getAddButtonText(activeTab)}
+              Add new Task
             </Button>
           </div>
         </div>
@@ -186,9 +131,6 @@ export default function Page () {
               <Calendar />
               Expected date of Delivery:
               <div className="project_action_group__button">{formatDate(data.expectedDeliveryDate)}</div>
-              {/* <CalendarWithMark />
-              End:
-              <div className="project_action_group__button">{data.dueDate}</div> */}
               <FlagOutline />
               Priority
               <div className={`app_table__priority app_table__priority--${(data.priority) || 'Low'} project_action_group__button`}>
@@ -201,7 +143,7 @@ export default function Page () {
 
         <div className="app_dashboard_home__task__hdr flex-wrap gap-2 mt-4">
           <div className="flex flex-wrap gap-2">
-            {['task', 'deliverables', 'payment'].map((tab) => (
+            {tabs.map((tab) => (
               <Pill
                 key={tab}
                 size="md"
@@ -223,7 +165,7 @@ export default function Page () {
         </div>
         {activeTab === 'task' && <TaskTable viewType={viewType} />}
         {activeTab === 'deliverables' && <DeliverableTable />}
-        {/* {activeTab === "payment" && <PaymentTable />} */}
+        {activeTab === 'payment' && <PaymentTable />}
 
       </div>
     </div>
