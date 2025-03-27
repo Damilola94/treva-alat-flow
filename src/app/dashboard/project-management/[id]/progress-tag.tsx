@@ -1,5 +1,5 @@
 export const ProgressBar = () => (
-  <div className="w-1/4">
+  <div className="md:w-1/4">
     <div className="app_progress-bar__label">
       Progress 0% <span className="app_progress-bar__label__days-left">{'{Days left}'}</span>
     </div>

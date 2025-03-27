@@ -90,7 +90,7 @@ export function ProjectDetails (props: IProps) {
   return (
     <div className="app_get_started_professional_details py-6 px-4 flex flex-col gap-14">
       <div className="app_get_started_professional_details__form flex flex-col gap-10 !overflow-y-auto">
-        <h3 className="app_get_started_professional_details__form__title">Project details</h3>
+        <h3 className="app_get_started_professional_details__form__title !font-bold !lg:text-2xl text-lg">Project details</h3>
         <div>
           <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
             {({ values, handleChange, setFieldValue, handleBlur, errors, touched }) => (

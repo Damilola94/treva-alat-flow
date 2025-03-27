@@ -11,7 +11,7 @@
     position: relative;
 
     @include screen('md') {
-      margin-bottom: unset;
+      // margin-bottom: unset;
       min-height: unset;
       padding-top: 20px;
       padding-bottom: 20px;
@@ -22,6 +22,13 @@
       flex-wrap: wrap;
       justify-content: space-between;
       gap: 8px;
+    }
+
+    @include screen('md') {
+      &__profile_con {
+        display: flex;
+        flex-wrap: nowrap;
+      }
     }
 
     &__profile {
@@ -38,6 +45,13 @@
         letter-spacing: -0.02em;
         text-align: left;
       }
+      @include screen('md') {
+        &__h4 {
+          font-size: 16px;
+          line-height: 24px;
+          
+        }
+      }
     }
   }
 
@@ -49,7 +63,10 @@
     width: 100%;
 
     @include screen('md') {
-      display: none;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      position: relative;
+      
     }
 
     &__item {
@@ -96,6 +113,12 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+    }
+
+    @include screen('md') {
+      // display: grid;
+      // grid-template-columns: 1fr 1fr;
+      // gap: 16px;
     }
 
     &__ctt {

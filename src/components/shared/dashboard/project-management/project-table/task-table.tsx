@@ -152,7 +152,7 @@ interface TaskListProps {
 function TaskList ({ tasks, updateTaskStatus }: TaskListProps) {
   return (
     <div className="w-full text-left relative rounded-xl overflow-auto">
-      <div className="shadow-sm overflow-hidden">
+      <div className="shadow-sm overflow">
         <table className="border-collapse table-auto w-full app_table">
           <thead>
             <tr className="app_table__tr">

@@ -57,24 +57,6 @@ export default function Page () {
 
   return (
     <div className="app_dashboard_page app_dashboard_home">
-      {/* <RenderIf condition={addTask}>
-        <Fragment>
-          <AnimatedModal
-            {...{
-              isOpen: true,
-              from: 'middle',
-              onClose: handleAddTask,
-              className: 'sm:max-w-[450px] h-[380px] p-0 w-1/2'
-            }}
-          >
-            <CreateTaskCard
-              item={createTask}
-              handleClick={handleAddTask}
-            />
-          </AnimatedModal>
-        </Fragment>
-      </RenderIf> */}
-
       <AnimatedModal
         isOpen={isModalOpen}
         from="right"
@@ -96,6 +78,7 @@ export default function Page () {
 
               </div>
             </div>
+            {false &&
             <div className="flex items-center ml-10 gap-4 mt-1">
               <div className="flex -space-x-2">
                 <Image
@@ -110,6 +93,7 @@ export default function Page () {
                 />
               </div>
             </div>
+            }
           </div>
 
           <div className="flex-shrink-0">
@@ -125,18 +109,24 @@ export default function Page () {
           </div>
         </div>
 
-        <div className="mt-10 flex justify-between w-full">
+        <div className="mt-10 block md:flex md:justify-between w-full">
           {/* <ButtonGroup /> */}
           <div className="project_action_group">
+            <div className='flex items-center gap-1 mb-3 md:mb-0 md:gap-2'>
               <Calendar />
               Expected date of Delivery:
               <div className="project_action_group__button">{formatDate(data.expectedDeliveryDate)}</div>
+
+            </div>
+            <div className='flex items-center gap-1 mb-3 md:mb-0 md:gap-2'>
               <FlagOutline />
-              Priority
+              Priority:
               <div className={`app_table__priority app_table__priority--${(data.priority) || 'Low'} project_action_group__button`}>
                 <span className="app_table__priority__dot" />
                 {data?.priority || 'Low'}
               </div>
+
+            </div>
             </div>
           <ProgressBar />
         </div>
@@ -156,11 +146,14 @@ export default function Page () {
           </div>
 
           <div className="flex gap-2">
+            {activeTab === 'task' &&
             <Select
               options={options}
               placeholder="View"
               onChange={handleViewChange}
+              className="w-full sm:w-auto"
             />
+            }
           </div>
         </div>
         {activeTab === 'task' && <TaskTable viewType={viewType} />}

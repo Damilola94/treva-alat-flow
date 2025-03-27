@@ -103,20 +103,19 @@ export function ProjectsTable (props: IProps) {
 
   return (
     <div className="app_dashboard_home__task__ctt">
-      <div className="w-full text-left relative rounded-xl overflow-auto">
-        <div className="shadow-sm overflow-hidden">
+    <div className="w-full text-left relative rounded-xl overflow-auto">
+      <div className="shadow-sm overflow-hidden">
+        <div className="overflow-x-auto whitespace-nowrap">
           <table className="border-collapse table-auto w-full app_table">
             <thead>
               <tr className="app_table__tr">
                 {thead.map(({ label, isSortable }) => (
                   <th
                     key={label}
-                    className={`app_table__tr__th ${isSortable ? 'cursor-pointer' : ''
-                      }`}
+                    className={`app_table__tr__th ${isSortable ? 'cursor-pointer' : ''}`}
                   >
                     <div className="app_table__tr__th__ctt">
                       {label}
-
                       {isSortable && <ChevronVIcon />}
                     </div>
                   </th>
@@ -127,83 +126,91 @@ export function ProjectsTable (props: IProps) {
             <tbody className="bg-white app_table__tbody">
               {isLoading
                 ? (
-                  <>
-                    {[...Array(3)].map((_, index) => <Skeleton key={index} columns={4} />)}
-                  </>
+                <>
+                  {[...Array(3)].map((_, index) => (
+                    <Skeleton key={index} columns={4} />
+                  ))}
+                </>
                   )
                 : (
                     filteredProjects?.map((project, index) => (
-                    <tr
-                      onClick={() => { handleRowSelect(project.id); }}
-                      className="cursor-pointer hover:bg-gray-100"
-                      key={index}
-                    >
-                      <td className="app_table__tbody__td font-medium text-[--text-color-500]">
-                        <div className="app_table__tbody__td__ctt">
-                          {project.title}
-                        </div>
-                      </td>
-                      <td className="app_table__tbody__td text-[--text-color-500]">
-                        <div className="app_table__tbody__td__ctt">
-                          {project.projectType}
-                        </div>
-                      </td>
-                      <td className="app_table__tbody__td">
-                        <div className="app_table__tbody__td__ctt">
-                          {new Date(project.expectedDeliveryDate).toLocaleDateString()}
-                        </div>
-                      </td>
-                      <td className="app_table__tbody__td">
-                        <div className={`app_table__priority app_table__priority--${project.priority || 'Low'}`}>
-                          <span className="app_table__priority__dot"></span>
-                          {(project.priority) || 'Low'}
-                        </div>
-                      </td>
-                      <td className="app_table__tbody__td">
-                        <div className="app_table__tbody__td__ctt">
-                          <Badge title={project.status} style={statusMap[project.status]?.style ?? 'Pending'} />
-                        </div>
-                      </td>
-                      <td className="app_table__tbody__td">
-                        <div className="app_table__tbody__td__ctt flex gap-2">
-                          <Button variant="outline" size="icon" onClick={(e) => { e.stopPropagation(); onDelete?.(project.id) }}>
-                                <BinGray className="h-4 w-4" />
-                              </Button>
-                          {project.projectType === 'PersonalProject' && (
-                            <>
-                              <Link href={`/dashboard/project-management/personal-project/${project.id}/edit`} onClick={(e) => { e.stopPropagation(); }}>
-                                <Button variant="outline" size="icon">
-                                  <EditPencilGray className="h-4 w-4" />
-                                </Button>
-                              </Link>
-                            </>
-                          )}
-                        </div>
-                      </td>
-
-                    </tr>
+                  <tr
+                    onClick={() => {
+                      handleRowSelect(project.id);
+                    }}
+                    className="cursor-pointer hover:bg-gray-100"
+                    key={index}
+                  >
+                    <td className="app_table__tbody__td font-medium text-[--text-color-500]">
+                      <div className="app_table__tbody__td__ctt">{project.title}</div>
+                    </td>
+                    <td className="app_table__tbody__td text-[--text-color-500]">
+                      <div className="app_table__tbody__td__ctt">{project.projectType}</div>
+                    </td>
+                    <td className="app_table__tbody__td">
+                      <div className="app_table__tbody__td__ctt">
+                        {new Date(project.expectedDeliveryDate).toLocaleDateString()}
+                      </div>
+                    </td>
+                    <td className="app_table__tbody__td">
+                      <div className={`app_table__priority app_table__priority--${project.priority || 'Low'}`}>
+                        <span className="app_table__priority__dot"></span>
+                        {project.priority || 'Low'}
+                      </div>
+                    </td>
+                    <td className="app_table__tbody__td">
+                      <div className="app_table__tbody__td__ctt">
+                        <Badge title={project.status} style={statusMap[project.status]?.style ?? 'Pending'} />
+                      </div>
+                    </td>
+                    <td className="app_table__tbody__td">
+                      <div className="app_table__tbody__td__ctt flex gap-2">
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onDelete?.(project.id);
+                          }}
+                        >
+                          <BinGray className="h-4 w-4" />
+                        </Button>
+                        {project.projectType === 'PersonalProject' && (
+                          <Link
+                            href={`/dashboard/project-management/personal-project/${project.id}/edit`}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                            }}
+                          >
+                            <Button variant="outline" size="icon">
+                              <EditPencilGray className="h-4 w-4" />
+                            </Button>
+                          </Link>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
                     ))
                   )}
             </tbody>
-
           </table>
+        </div>
 
-          <div className="bg-white app_table__pagination">
-            <Pagination
-              paginate={{
-                pageCount: data?.metaData?.totalPages ?? 1,
-                currentPage: currentPage - 1,
-                marginPagesDisplayed: 2,
-                pageRangeDisplayed: 5
-              }}
-              handlePageClick={handlePageClick}
-            />
-          </div>
-             {/* <div className="bg-white app_table__pagination">
-            <Pagination {...{ paginate: { pageCount: 2 } }} />
-          </div> */}
+        {/* Pagination */}
+        <div className="bg-white app_table__pagination">
+          <Pagination
+            paginate={{
+              pageCount: data?.metaData?.totalPages ?? 1,
+              currentPage: currentPage - 1,
+              marginPagesDisplayed: 2,
+              pageRangeDisplayed: 5
+            }}
+            handlePageClick={handlePageClick}
+          />
         </div>
       </div>
     </div>
+  </div>
+
   )
 }

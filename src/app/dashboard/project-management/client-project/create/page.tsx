@@ -9,6 +9,7 @@ import { ProjectPayment } from '@/components/shared/dashboard/project-management
 import { ProjectAgreement } from '@/components/shared/dashboard/project-management/client-project/add-agreement'
 import { ProjectReview } from '@/components/shared/dashboard/project-management/client-project/review'
 import { useSearchParams } from 'next/navigation'
+import { ArrowLeft } from 'lucide-react'
 
 enum AccountType {
   Low = 'low',
@@ -138,9 +139,22 @@ function ClientProject () {
 
   return (
     <Fragment>
+      {/* Mobile Step Indicator */}
+      <div className="lg:hidden flex items-center justify-between my-4 mx-4">
+        {currentStep > 1 && (
+          <button onClick={() => { setCurrentStep((prev) => prev - 1); }} className="p-2 text-black">
+            <ArrowLeft/>
+          </button>
+        )}
+
+        <p className="text-sm font-medium bg-[#7B37F00D] text-[#7B37F0] rounded px-3 py-1 w-fit">
+          {currentStep} of 5
+        </p>
+      </div>
+
       <RenderIf condition={true}>
         <div className="mt-7">
-          <div className="flex justify-center items-center gap-4">
+          <div className="lg:flex lg:justify-center lg:items-center lg:gap-4 hidden">
             <ProgressStatus label="Project details" checked={currentStep >= 1} />
             <ProgressStatus label="Deliverables" checked={currentStep >= 2} />
             <ProgressStatus label="Payment" checked={currentStep >= 3} />

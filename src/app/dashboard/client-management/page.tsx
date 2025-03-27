@@ -32,10 +32,6 @@ const deleteClient = {
   btnText2: 'Delete'
 };
 
-// enum Clients {
-//   'All Client' = 'All Client',
-// }
-
 export default function Page () {
   const [takeATour, setTakeATour] = useState(true);
   const [addClientForm, setAddClientForm] = useState(true);
@@ -92,7 +88,7 @@ export default function Page () {
               from: 'right',
               onClose: handleAddProjectClick,
               className:
-                'absolute bottom-0 right-0 h-[calc(100vh-20px)] w-full sm:w-[350px] bg-white p-0 flex flex-col mb-2 mr-2'
+                'lg:absolute lg:bottom-0 lg:right-0 h-[calc(100vh-20px)] w-full sm:w-[350px] bg-white p-0 flex flex-col lg:mb-2 lg:mr-2 mx-7  '
             }}
           >
             <AddClient onClose={handleAddProjectClick} />
@@ -108,7 +104,7 @@ export default function Page () {
               from: 'right',
               onClose: onEdit,
               className:
-                'absolute bottom-0 right-0 h-[calc(100vh-20px)] w-full sm:w-[350px] bg-white p-0 flex flex-col mb-2 mr-2'
+                'lg:absolute lg:bottom-0 lg:right-0 h-[calc(100vh-20px)] w-full sm:w-[350px] bg-white p-0 flex flex-col lg:mb-2 lg:mr-2 mx-7'
             }}
           >
             {editClientId && <EditClient id={editClientId} item={editClientId} handleClick={() => { setEditForm(false); }} onClose={handleEditClient} />}
@@ -123,7 +119,7 @@ export default function Page () {
               isOpen: true,
               from: 'middle',
               onClose: handleTakeTourClick,
-              className: 'sm:max-w-[300px] h-[420px] p-0'
+              className: 'sm:max-w-[300px] h-[420px] p-0 mx-7 lg:mx-0 '
             }}
           >
             <TakeATour item={viewTakeATour} handleClick={handleTakeTourClick} />
@@ -138,7 +134,7 @@ export default function Page () {
               isOpen: true,
               from: 'middle',
               onClose: onDelete,
-              className: 'sm:max-w-[450px] h-[300px] p-0'
+              className: 'sm:max-w-[450px] h-[300px] p-0 mx-7 lg:mx-0'
             }}
           >
               {deleteClientId && <DeleteClient clientId={deleteClientId} item={deleteClient} handleClick={() => { setDeleteForm(false); }} onClose={handleDeleteClient} />}
@@ -147,7 +143,7 @@ export default function Page () {
       </RenderIf>
 
       <div className="app_dashboard_home__task app_dashboard_page__px">
-        <div className="app_dashboard_home__task__hdr flex-wrap gap-2 mt-4">
+        <div className="app_dashboard_home__task__hdr md:flex-wrap gap-4 mt-4">
           <div className="flex flex-wrap gap-2">
             {/* {Object.entries(Clients).map(([label]) => (
               <Pill
@@ -158,14 +154,14 @@ export default function Page () {
                 {label}
               </Pill>
             ))} */}
-            <Pill size="md" active={search === ''} onClick={clearSearch}>
+            <Pill size="md" active={search === ''} onClick={clearSearch} className="whitespace-nowrap">
               All Clients
             </Pill>
           </div>
 
           <div className="flex gap-2">
             <Input
-              placeholder="Search for project"
+              placeholder="Search for client"
               className="app_navbar__right__searchbar"
               value={search}
               onChange={handleSearchChange}
