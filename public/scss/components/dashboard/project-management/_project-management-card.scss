@@ -173,6 +173,11 @@
   align-items: center;
   gap: 5px;
 
+  @include screen('sm') {
+    display: block;
+    
+  }
+
   &__app_priority_tag {
     display: flex;
     align-items: center;
@@ -303,6 +308,7 @@
       padding: 2px 8px;
       border: 1px solid var(--danger-color, red);
       border-radius: 26px;
+      background-color: #E24D4D33;
       color: var(--text-color-500, red);
     }
   }

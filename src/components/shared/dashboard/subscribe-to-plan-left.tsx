@@ -13,7 +13,7 @@ export function SubscribeToPlanLeft () {
           Subscribe to a plan
         </Button>
       </div>
-      <div className='flex space-x-2 items-center'>
+      <div className='hidden md:flex space-x-2 items-center'>
       <SetupFlower />
         <p className="app_dash_main__stp_left__title">Complete Setup</p>
       </div>

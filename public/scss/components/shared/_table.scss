@@ -93,6 +93,12 @@
     font-weight: 00;
     line-height: 21px;
 
+    @include screen('sm'){
+      &__tbody{
+        font-size: 12px;
+      }
+    }
+
     &__td {
       &:first-child {
         .app_table__tbody__td__ctt {

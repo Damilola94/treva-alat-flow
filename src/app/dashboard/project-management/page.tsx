@@ -193,7 +193,7 @@ export default function Page () {
               isOpen: !addProject,
               from: 'middle',
               onClose: handleAddProjectClick,
-              className: 'sm:max-w-[450px] h-[420px] p-0'
+              className: 'sm:max-w-[450px] h-[420px] p-0 mx-7 lg:mx-0'
             }}
           >
             <CreateProjectCard
@@ -214,7 +214,7 @@ export default function Page () {
               from: 'right',
               onClose: handleProjectFormClose,
               className:
-                'absolute bottom-0 right-0 h-[calc(100vh-20px)] w-full sm:w-[350px] bg-white p-0 flex flex-col mb-2 mr-2'
+                'lg:absolute lg:bottom-0 lg:right-0 h-[calc(100vh-20px)] w-full sm:w-[350px] bg-white p-0 flex flex-col lg:mb-2 lg:mr-2 mx-7'
             }}
           >
             <AddProject onClose={handleProjectFormClose} />
@@ -227,7 +227,7 @@ export default function Page () {
           isOpen={editForm}
           from="right"
           onClose={handleCloseEditForm}
-          className="absolute bottom-0 right-0 h-[calc(100vh-20px)] w-full sm:w-[350px] bg-white p-0 flex flex-col mb-2 mr-2"
+          className="lg:absolute lg:bottom-0 lg:right-0 h-[calc(100vh-20px)] w-full sm:w-[350px] bg-white p-0 flex flex-col lg:mb-2 lg:mr-2 mx-7"
         >
           {editProjectId && (
             <EditProject
@@ -251,7 +251,7 @@ export default function Page () {
               isOpen: takeATour,
               from: 'middle',
               onClose: handleTakeTourClick,
-              className: 'sm:max-w-[300px] h-[420px] p-0'
+              className: 'sm:max-w-[300px] h-[420px] p-0 mx-7 lg:mx-0'
             }}
           >
             <TakeATour item={viewTakeATour} handleClick={handleTakeTourClick} />
@@ -266,7 +266,7 @@ export default function Page () {
               isOpen: true,
               from: 'middle',
               onClose: onDelete,
-              className: 'sm:max-w-[450px] h-[300px] p-0'
+              className: 'sm:max-w-[450px] h-[300px] p-0 mx-7 lg:mx-0'
             }}
           >
             {deleteProjectId && <DeleteProject projectId={deleteProjectId} item={deleteClient} handleClick={() => { setDeleteForm(false); }} onClose={handleDeleteProject} />}

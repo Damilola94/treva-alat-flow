@@ -211,14 +211,14 @@ export default function Page () {
             ))}
           </div>
 
-          <Button
+          {/* <Button
             size="md"
             backgroundColor="shark-950"
             className="app_auth_login__btn"
           >
             <PlusIcon />
             Add new task
-          </Button>
+          </Button> */}
         </div>
 
         <div className="app_dashboard_home__task__ctt app_dashboard_home__task__ctt--empty">
@@ -239,7 +239,7 @@ export default function Page () {
 
       <div className="app_dashboard_home__task app_dashboard_page__px">
         <div className="app_dashboard_home__task__hdr flex-wrap gap-2">
-          <div className="flex flex-wrap gap-2">
+          <div className="flex md:flex-wrap gap-2">
             {Object.entries(Projects).map(([label]) => (
               <Pill
                 key={label}

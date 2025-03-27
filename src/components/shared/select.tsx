@@ -9,9 +9,10 @@ interface SelectProps {
   options: Option[]
   placeholder?: string
   onChange?: (option: Option) => void
+  className?: string
 }
 
-export function Select ({ options, placeholder = 'Select an option', onChange }: SelectProps) {
+export function Select ({ options, placeholder = 'Select an option', onChange, className }: SelectProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState<Option | null>(null);
   const selectRef = useRef<HTMLDivElement>(null);
@@ -36,7 +37,7 @@ export function Select ({ options, placeholder = 'Select an option', onChange }:
   }, []);
 
   return (
-    <div className="app_select" ref={selectRef}>
+    <div className={`app_select ${className}`} ref={selectRef}>
       <div
         className={`app_select-trigger ${isOpen ? 'app_select-trigger--active' : ''}`}
         onClick={toggleDropdown}

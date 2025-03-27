@@ -128,7 +128,7 @@ export function ProjectDeliverables (props: IProps) {
                   from: 'right',
                   onClose: closeModal,
                   className:
-                        'absolute bottom-0 right-0 h-[calc(100vh-20px)] w-full sm:w-[350px] bg-white p-0 flex flex-col mb-2 mr-2'
+                        'lg:absolute lg:bottom-0 lg:right-0 h-[calc(100vh-20px)] w-full sm:w-[350px] bg-white p-0 flex flex-col lg:mb-2 lg:mr-2 mx-7'
                 }}
             >
                 {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
@@ -143,7 +143,7 @@ export function ProjectDeliverables (props: IProps) {
                           from: 'right',
                           onClose: onEdit,
                           className:
-                                'absolute bottom-0 right-0 h-[calc(100vh-20px)] w-full sm:w-[350px] bg-white p-0 flex flex-col mb-2 mr-2'
+                                'lg:absolute lg:bottom-0 lg:right-0 h-[calc(100vh-20px)] w-full sm:w-[350px] bg-white p-0 flex flex-col lg:mb-2 lg:mr-2 mx-7'
                         }}
                     >
                         <EditDeliverables onClose={() => {
@@ -217,7 +217,7 @@ export function ProjectDeliverables (props: IProps) {
                                 className="border p-4 rounded-md shadow mb-4 flex justify-between items-center bg-[#E7E7E7] "
                             >
                                 <div>
-                                    <div className='flex items-center gap-60'>
+                                    <div className='flex items-center gap-24 lg:gap-60'>
                                         <h4 className="font-semibold mb-3">{item.deliverableName}</h4>
                                         <div className="flex gap-4">
                                             <EditIcon

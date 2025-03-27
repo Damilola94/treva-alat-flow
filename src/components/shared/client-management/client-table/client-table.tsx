@@ -56,6 +56,7 @@ export function ClientTable (props: IProps) {
     <div className="app_dashboard_home__task__ctt">
       <div className="w-full text-left relative rounded-xl overflow-auto">
         <div className="shadow-sm overflow-hidden">
+          <div className="overflow-x-auto whitespace-nowrap">
           <table className="border-collapse table-auto w-full app_table">
             <thead>
               <tr className="app_table__tr">
@@ -131,6 +132,7 @@ export function ClientTable (props: IProps) {
                   )}
             </tbody>
           </table>
+          </div>
 
           {/* <div className="bg-white app_table__pagination">
             <Pagination {...{ paginate: { pageCount: 2 } }} />

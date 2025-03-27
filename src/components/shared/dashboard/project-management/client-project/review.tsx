@@ -102,7 +102,7 @@ export function ProjectReview (props: IProps) {
 
         <div className='border border-[#E5E5E5] rounded-xl p-4'>
         <div className="mb-6">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {data && (
               <>
               <p>
@@ -129,7 +129,7 @@ export function ProjectReview (props: IProps) {
         </div>
 
         <div className="w-full text-left relative rounded-xl overflow-auto ">
-          <div className='shadow-sm overflow-hidden '>
+          <div className='shadow-sm md:overflow-hidden '>
             <table className="border-collapse table-auto w-full app_table">
               <thead>
                 <tr className="app_table__tr">
