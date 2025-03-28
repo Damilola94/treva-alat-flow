@@ -318,7 +318,7 @@ export default function Page () {
                       onClick={() => { handlePriorityItem(item.value) }}
                     >
                       {item.label}
-                      <RenderIf condition={searchParams.get('priority') === item.value}>
+                      <RenderIf condition={searchParams.get('projectPriority') === item.value}>
                         <Check />
                       </RenderIf>
                     </button>
@@ -342,7 +342,7 @@ export default function Page () {
                       onClick={() => { handleStatusItem(item.value) }}
                     >
                       {item.label}
-                      <RenderIf condition={searchParams.get('status') === item.value}>
+                      <RenderIf condition={searchParams.get('projectStatus') === item.value}>
                         <Check />
                       </RenderIf>
                     </button>

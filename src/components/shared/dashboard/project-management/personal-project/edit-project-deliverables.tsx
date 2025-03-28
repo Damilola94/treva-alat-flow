@@ -12,45 +12,62 @@ import queries from '@/services/queries/projects'
 interface Deliverable {
   deliverableId: string
   deliverableName: string
-  description: string
+  deliverableDescription: string
   startDate: string
   dueDate: string
-  amount: string
+  deliverableAmount: string
 }
 
-interface Props {
+interface IProps {
+  onClose?: () => void
   projectId: string
+  deliverableId?: string
+  // deliverable: Deliverable | null
+  onEditDeliverable?: (values: any) => void
 }
 
-export function EditProjectDeliverables ({ projectId }: Props) {
+export function EditProjectDeliverables (props: IProps) {
+  const { projectId } = props
   const router = useRouter()
   const [editForm, setEditForm] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isDecisionModalOpen, setIsDecisionModalOpen] = useState(false)
   const [deliverables, setDeliverables] = useState<Deliverable[]>([])
   const [deliverableId, setDeliverableId] = useState<string>('')
+  const [selectedDeliverable, setSelectedDeliverable] = useState<Deliverable | null>(null)
 
-  const { data, refetch } = queries.readDeliverables(
-    { projectId },
-    {
-      onSuccess: (newData: any) => {
-        setDeliverables(newData)
+  const { data, refetch } = queries.readDeliverables({ projectId }, {
+    onSuccess: (newData: any) => {
+      if (Array.isArray(newData)) {
+        const validDeliverables = newData.map((item) => {
+          return {
+            ...item,
+            deliverableId: item.deliverableId || item.id || ''
+          }
+        })
+        setDeliverables(validDeliverables)
+      } else {
+        setDeliverables([])
       }
     }
-  )
-  const { mutate: deleteDeliverables } = queries.deleteDeliverables(
-    { projectId, deliverableId },
+  });
+
+  const { mutate: deleteDeliverables } = queries.deleteDeliverables({},
     {
       onSuccess: () => {
-        setDeliverables(data)
         void refetch()
       }
-    }
-  )
+    })
 
   useEffect(() => {
     if (data) {
-      setDeliverables(data)
+      if (Array.isArray(data)) {
+        const validDeliverables = data.map((item) => ({
+          ...item,
+          deliverableId: item.deliverableId || item.id || ''
+        }))
+        setDeliverables(validDeliverables)
+      }
     }
   }, [data])
 
@@ -62,18 +79,33 @@ export function EditProjectDeliverables ({ projectId }: Props) {
   }
 
   const handleAddDeliverables = (newDeliverable: Deliverable) => {
-    setDeliverables((prev) => [...prev, newDeliverable])
+    const deliverableWithId = {
+      ...newDeliverable,
+      deliverableId: newDeliverable.deliverableId || ''
+    }
+    setDeliverables((prev) => [...prev, deliverableWithId])
     void refetch()
   }
 
   const handleDelete = () => {
+    if (!deliverableId || !projectId) {
+      console.error('Deliverable ID is undefined. Cannot delete.')
+      return
+    }
     setDeliverables((prev) => prev.filter((d) => d.deliverableId !== deliverableId))
     deleteDeliverables({ projectId, deliverableId })
     setIsDecisionModalOpen(false)
   }
 
-  const onEdit = () => {
-    setEditForm(!editForm)
+  const onEdit = (id: string) => {
+    const deliverableToEdit = deliverables.find((d) => d.deliverableId === id)
+    if (!deliverableToEdit) {
+      console.error('Cannot find deliverable with ID:', id)
+      return
+    }
+    setDeliverableId(id)
+    setSelectedDeliverable(deliverableToEdit)
+    setEditForm(false)
   }
 
   const handleFinish = () => {
@@ -104,9 +136,13 @@ export function EditProjectDeliverables ({ projectId }: Props) {
           className="absolute bottom-0 right-0 h-[calc(100vh-20px)] w-full sm:w-[350px] bg-white p-0 flex flex-col mb-2 mr-2"
         >
           <EditDeliverables
-            onClose={onEdit}
+           onClose={() => {
+             setEditForm(true)
+             setSelectedDeliverable(null)
+           }}
             projectId={projectId}
             deliverableId={deliverableId}
+            deliverable={selectedDeliverable}
             onEditDeliverable={handleAddDeliverables}
           />
         </AnimatedModal>
@@ -164,21 +200,24 @@ export function EditProjectDeliverables ({ projectId }: Props) {
                       className="cursor-pointer"
                       fill="#888888"
                       onClick={() => {
-                        setDeliverableId(item.deliverableId)
-                        onEdit()
+                        if (item.deliverableId) {
+                          onEdit(item.deliverableId)
+                        }
                       }}
                     />
                     <button
                       onClick={() => {
-                        setDeliverableId(item.deliverableId)
-                        setIsDecisionModalOpen(true)
+                        if (item.deliverableId) {
+                          setDeliverableId(item.deliverableId)
+                          setIsDecisionModalOpen(true)
+                        }
                       }}
                     >
                       <Delete className="cursor-pointer" />
                     </button>
                   </div>
                 </div>
-                <p className="mb-2">{item.description}</p>
+                <p className="mb-2">{item.deliverableDescription}</p>
                 <p className="flex gap-4 mb-3 ">
                   <CalendarWithMark fill="#6E50DB" />
                   {item.startDate}
@@ -188,7 +227,7 @@ export function EditProjectDeliverables ({ projectId }: Props) {
                   {item.dueDate}
                 </p>
                 <p className="flex gap-4">
-                  <Money4 stroke="#6E50DB" /> {item.amount}
+                  <Money4 stroke="#6E50DB" /> {item.deliverableAmount}
                 </p>
               </div>
             </div>
@@ -207,13 +246,13 @@ export function EditProjectDeliverables ({ projectId }: Props) {
               <p className="flex justify-between mb-2">
                 Sub Total:{' '}
                 <span>
-                  NGN {deliverables.reduce((sum, item) => sum + Number.parseFloat(item.amount), 0).toFixed(2)}
+                  NGN {deliverables.reduce((sum, item) => sum + Number.parseFloat(item.deliverableAmount), 0).toFixed(2)}
                 </span>
               </p>
               <p className="flex justify-between">
                 Total{' '}
                 <span className="font-bold">
-                  NGN {deliverables.reduce((sum, item) => sum + Number.parseFloat(item.amount), 0).toFixed(2)}
+                  NGN {deliverables.reduce((sum, item) => sum + Number.parseFloat(item.deliverableDescription), 0).toFixed(2)}
                 </span>
               </p>
             </div>

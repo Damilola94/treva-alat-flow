@@ -70,11 +70,11 @@ export function PaymentTable () {
                   </>
                   )
                 : (
-                    data?.map((item: any) => (
+                    data?.map((item: any, index: number) => (
                     <tr key={item.id} className="">
                       <td className="app_table__tbody__td font-medium text-[--text-color-500]">
                         <div className="app_table__tbody__td__ctt font-semibold">
-                          {item.paymentSchedule ?? 'Payment 1'}
+                          Payment {index + 1}
                         </div>
                       </td>
                       <td className="app_table__tbody__td text-[--text-color-500]">

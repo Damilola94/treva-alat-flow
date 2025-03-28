@@ -11,6 +11,7 @@ import dashboard from '@/lib/assets/dashboard';
 import projectManagement from '@/lib/assets/project-management';
 import { numberFormat } from '@/lib/numbers';
 import routes from '@/lib/routes';
+import queries from '@/services/queries/profile';
 import Image from 'next/image';
 import React, { Fragment, useState } from 'react';
 // import { createAProject } from './project-management/page';
@@ -105,6 +106,7 @@ const kpis = [
 export default function Page () {
   const [addProject, setAddProject] = useState(true)
   const [addProjectForm, setAddProjectForm] = useState(true)
+  const { data } = queries.read()
 
   const handleAddProjectClick = () => {
     setAddProject(!addProject)
@@ -162,7 +164,7 @@ export default function Page () {
               <Image src={dashboard.avi} alt="avi" className="w-full" />
             </div>
             <h4 className="app_dashboard_home__header__profile__h4">
-              Welcome, Moyinoluwa
+              Welcome, {data?.firstName}
             </h4>
           </div>
           <Button

@@ -14,7 +14,6 @@ import {
   Grid,
   Like,
   Logo,
-  Receipt,
   Reminder,
   Users
 } from '..';
@@ -45,12 +44,12 @@ const menuItems = [
     icon: <Column />,
     href: dr.projectManagement.path
   },
-  {
-    id: 5,
-    label: 'Invoice & Payment',
-    icon: <Receipt />,
-    href: dr.invoiceAndPayment.path
-  },
+  // {
+  //   id: 5,
+  //   label: 'Invoice & Payment',
+  //   icon: <Receipt />,
+  //   href: dr.invoiceAndPayment.path
+  // },
   {
     id: 6,
     label: 'Contracts',

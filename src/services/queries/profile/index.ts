@@ -7,6 +7,7 @@ import config from '@/lib/config'
 import { type UserProfile } from './types'
 
 const BASE_URL = '/v1/users'
+const USER_BASE_URL = config.services;
 
 const useReadOne = (options = {}) => {
   const response = useQuery([queryKey.readOne], async () => await api.get({ url: `${BASE_URL}/profile` }), {
@@ -27,6 +28,24 @@ const useReadOne = (options = {}) => {
   }
 }
 
-const queries = { readOne: useReadOne }
+const useRead = (options = {}) => {
+  const response = useQuery(
+    [queryKey.read],
+    async () => await api.get({ url: `${USER_BASE_URL.usermanagement}/profile` }),
+    {
+      ...options,
+      onSuccess: () => {},
+      onError: () => {}
+    }
+  );
+
+  return {
+    ...response,
+    data: response.data?.data || [],
+    metaData: response.data?.metaData
+  }
+};
+
+const queries = { readOne: useReadOne, read: useRead }
 
 export default queries

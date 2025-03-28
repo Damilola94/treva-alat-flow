@@ -122,10 +122,10 @@ export function ProjectAgreement (props: IProps) {
       };
 
       const handleNextStep = () => {
-        if (!selectedFile) {
-          toast.error('Please upload an agreement file before continuing.');
-          return;
-        }
+        // if (!selectedFile) {
+        //   toast.error('Please upload an agreement file before continuing.');
+        //   return;
+        // }
         const step4Values = {
           agreement: agreement.map(d => ({
             projectId: d.projectId,

@@ -25,7 +25,8 @@ export function PersonalProjectDeliverables ({ projectId }: { projectId: string 
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isDecisionModalOpen, setIsDecisionModalOpen] = useState(false)
   const [deliverables, setDeliverables] = useState<Deliverable[]>([])
-  const [selectedDeliverableId, setSelectedDeliverableId] = useState<string>('')
+  // const [selectedDeliverableId, setSelectedDeliverableId] = useState<string>('')
+  const [deliverableId, setDeliverableId] = useState<string>('');
   const [selectedDeliverable, setSelectedDeliverable] = useState<Deliverable | null>(null)
 
   const { data, refetch } = queries.readDeliverables(
@@ -86,12 +87,12 @@ export function PersonalProjectDeliverables ({ projectId }: { projectId: string 
   }
 
   const handleDelete = () => {
-    if (!selectedDeliverableId) {
+    if (!deliverableId) {
       console.error('Deliverable ID is undefined. Cannot delete.')
       return
     }
-    setDeliverables((prev) => prev.filter((d) => d.deliverableId !== selectedDeliverableId))
-    deleteDeliverables({ projectId, deliverableId: selectedDeliverableId })
+    setDeliverables((prev) => prev.filter((d) => d.deliverableId !== deliverableId))
+    deleteDeliverables({ projectId, deliverableId })
     setIsDecisionModalOpen(false)
   }
 
@@ -101,7 +102,7 @@ export function PersonalProjectDeliverables ({ projectId }: { projectId: string 
       console.error('Cannot find deliverable with ID:', id)
       return
     }
-    setSelectedDeliverableId(id)
+    setDeliverableId(id)
     setSelectedDeliverable(deliverableToEdit)
     setEditForm(false)
   }
@@ -125,7 +126,7 @@ export function PersonalProjectDeliverables ({ projectId }: { projectId: string 
           onClose={closeModal}
           projectId={projectId}
           onAddDeliverable={handleAddDeliverables}
-          setDeliverableId={setSelectedDeliverableId}
+          setDeliverableId={setDeliverableId}
         />
       </AnimatedModal>
 
@@ -146,7 +147,7 @@ export function PersonalProjectDeliverables ({ projectId }: { projectId: string 
                 setSelectedDeliverable(null)
               }}
               projectId={projectId}
-              deliverableId={selectedDeliverableId}
+              deliverableId={deliverableId}
               deliverable={selectedDeliverable}
               onEditDeliverable={(updatedDeliverable) => {
                 setDeliverables((prev) =>
@@ -205,7 +206,7 @@ export function PersonalProjectDeliverables ({ projectId }: { projectId: string 
                 className="border p-4 rounded-md shadow mb-4 flex justify-between items-center bg-[#E7E7E7] "
               >
                 <div>
-                  <div className="flex items-center gap-60">
+                  <div className="flex items-center gap-24 lg:gap-60">
                     <h4 className="font-semibold mb-3">{item.deliverableName}</h4>
                     <div className="flex gap-4">
                       <EditIcon
@@ -220,7 +221,7 @@ export function PersonalProjectDeliverables ({ projectId }: { projectId: string 
                       <button
                         onClick={() => {
                           if (item.deliverableId) {
-                            setSelectedDeliverableId(item.deliverableId)
+                            setDeliverableId(item.deliverableId)
                             setIsDecisionModalOpen(true)
                           }
                         }}
@@ -247,21 +248,21 @@ export function PersonalProjectDeliverables ({ projectId }: { projectId: string 
           })}
 
           {deliverables.length > 0 && (
-                <div className="mt-10 text-[#262626]">
-                  <p className="flex justify-between mb-2">
-                    Total deliverables: <span>{deliverables.length}</span>
-                  </p>
-                  <p className="flex justify-between mb-2">
-                    Timeline{' '}
-                    <span>{deliverables[0].timeline}</span>
-                  </p>
-                  <p className="flex justify-between mb-2">
-                    Sub Total: <span>NGN {deliverables[0].totalAmount}</span>
-                  </p>
-                  <p className="flex justify-between">
-                    Total <span className="font-bold">NGN {deliverables[0].totalAmount}</span>
-                  </p>
-                </div>
+            <div className="mt-10 text-[#262626]">
+              <p className="flex justify-between mb-2">
+                Total deliverables: <span>{deliverables.length}</span>
+              </p>
+              <p className="flex justify-between mb-2">
+                Timeline{' '}
+                <span>{deliverables[0].timeline}</span>
+              </p>
+              <p className="flex justify-between mb-2">
+                Sub Total: <span>NGN {deliverables[0].totalAmount}</span>
+              </p>
+              <p className="flex justify-between">
+                Total <span className="font-bold">NGN {deliverables[0].totalAmount}</span>
+              </p>
+            </div>
           )}
         </div>
         <div className="pt-4 flex justify-end">

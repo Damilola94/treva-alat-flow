@@ -63,8 +63,6 @@ const useCreate = (options: { onSuccess?: (response: any) => void }) => {
         })
       };
 
-      console.log('Request body:', requestBody)
-
       mutate({
         url: `${BASE_URL.project}`,
         body: requestBody,
@@ -492,10 +490,6 @@ const useReadDeliverables = ({ projectId = '' } = {}, options = {}) => {
       const queryParams = new URLSearchParams()
       queryParams.append('ProjectId', projectId)
 
-      // queryParams.append('PageNumber', pageNumber.toString())
-      // queryParams.append('PageSize', pageSize.toString())
-      // if (search) queryParams.append('SearchKey', search);
-
       const url = `${BASE_URL.project}/${projectId}/deliverables?${queryParams.toString()}`
       return await api.get({ url })
     },
@@ -510,8 +504,6 @@ const useReadDeliverables = ({ projectId = '' } = {}, options = {}) => {
 
   return {
     ...response,
-    // data: (response.data || undefined) as ApiResponse<ProjectManagement[]> | undefined,
-    // data: (response.data?.data || []) as ProjectManagement[],
     data: response.data?.data || [],
     metaData: response.data?.metaData
   }

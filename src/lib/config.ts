@@ -1,6 +1,7 @@
 const baseUrl = process.env.NEXT_PUBLIC_API_URL ?? ''
 
 const services = {
+  usermanagement: '/usermanagement',
   accountManagement: '/account-management/api',
   customerManagement: '/customer-management/api',
   onboarding: '/onboarding',
