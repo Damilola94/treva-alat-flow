@@ -2,6 +2,7 @@
 import React, { useState } from 'react'
 import { GetStartedCard } from '@/components/shared/dashboard/get-started'
 import dashboard from '@/lib/assets/dashboard'
+import queries from '@/services/queries/profile'
 
 const cards = [
   {
@@ -28,6 +29,8 @@ const cards = [
 ]
 
 export default function Page () {
+  const { data } = queries.read()
+
   const [showSteps, setShowSteps] = useState(false)
 
   return (
@@ -35,7 +38,7 @@ export default function Page () {
       <div className="app_get_started__bg">
         <div className="app_get_started__bg__ctt">
           <h3 className="app_get_started__bg__ctt__text">
-            Welcome, <span>Moyinoluwa</span>
+            Welcome, <span>{data?.firstName}</span>
           </h3>
         </div>
       </div>

@@ -80,7 +80,7 @@ export function ClientTable (props: IProps) {
                       <td className="app_table__tbody__td font-medium text-[--text-color-500]">
                         <div className="app_table__tbody__td__ctt flex justify-center items-center -ml-5">
                           <Image
-                            src={clientManagement?.femaleClient}
+                            src={client.imageUrl || clientManagement?.femaleClient}
                             alt="client"
                             width={100}
                             height={100}

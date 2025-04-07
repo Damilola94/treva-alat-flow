@@ -36,6 +36,7 @@ export default function Page () {
   return (
     <div className="app_dashboard_page app_dashboard_home">
 
+{false &&
       <RenderIf condition={takeATour}>
         <Fragment>
           <AnimatedModal
@@ -50,6 +51,7 @@ export default function Page () {
           </AnimatedModal>
         </Fragment>
       </RenderIf>
+}
 
       <div className="app_dashboard_home__task app_dashboard_page__px">
         <div className="app_dashboard_home__task__hdr flex-wrap gap-2 mt-4">

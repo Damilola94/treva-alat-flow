@@ -21,6 +21,9 @@ import dashboard from '@/lib/assets/dashboard';
 import { useIsActive } from '@/hooks/use-active-route';
 import useClickOutsideBox from '@/hooks/use-click-outside-box';
 import type { JSX } from 'react/jsx-runtime';
+import queries from '@/services/queries/profile';
+import { Avatar } from '../avatar';
+import { getAvatar, getFullName } from '@/lib/utils';
 
 const dr = routes.dashboard;
 
@@ -105,6 +108,8 @@ const SidebarItem = (props: ISidebarItem) => {
 
 export function Sidebar () {
   const wrapperRef = useRef(null);
+  const { data } = queries.read()
+
   const [showMenu, setShowMenu] = useState(false);
 
   useClickOutsideBox(wrapperRef, () => { setShowMenu(false); });
@@ -128,9 +133,8 @@ export function Sidebar () {
   return (
     <div ref={wrapperRef} className="sidebar-wrapper">
       <div
-        className={`${
-          showMenu ? 'hidden' : ''
-        } fixed cursor-pointer top-2 left-6 z-50 lg:hidden`}
+        className={`${showMenu ? 'hidden' : ''
+          } fixed cursor-pointer top-2 left-6 z-50 lg:hidden`}
       >
         <FiMenu
           onClick={toggleMenu}
@@ -139,9 +143,8 @@ export function Sidebar () {
       </div>
 
       <aside
-        className={`app_dash_main__aside fixed z-30 h-screen overflow-auto hide-scroll ${
-          showMenu ? 'show-mobile-menu' : 'hide-mobile-menu'
-        } lg:relative lg:show-mobile-menu`}
+        className={`app_dash_main__aside fixed z-30 h-screen overflow-auto hide-scroll ${showMenu ? 'show-mobile-menu' : 'hide-mobile-menu'
+          } lg:relative lg:show-mobile-menu`}
         style={{ backgroundImage: `url('${dashboard.dashBg.src}')` }}
       >
         <div className="fixed cursor-pointer top-5 right-5 lg:hidden">
@@ -168,18 +171,21 @@ export function Sidebar () {
         </div>
 
         <div className="app_dash_main__aside__btm">
-          <div className="app_dash_main__aside__btm__avi">
-            <Image
-              src={dashboard.avi || '/placeholder.svg'}
-              alt="avi"
-              className="w-full"
-            />
-          </div>
+          {false &&
+            <div className="app_dash_main__aside__btm__avi">
+              <Image
+                src={dashboard.avi || '/placeholder.svg'}
+                alt="avi"
+                className="w-full"
+              />
+            </div>
+          }
+          <Avatar src={getAvatar({ name: getFullName(data), length: 2 })} />
 
           <div className="flex-1">
-            <p className="app_dash_main__aside__btm__name">Moyinoluwa</p>
+            <p className="app_dash_main__aside__btm__name">{data?.firstName}</p>
             <p className="app_dash_main__aside__btm__email">
-              moyinoluwa@gmail.com
+              {data?.email}
             </p>
           </div>
         </div>

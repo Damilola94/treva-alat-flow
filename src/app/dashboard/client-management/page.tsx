@@ -111,7 +111,7 @@ export default function Page () {
           </AnimatedModal>
         </Fragment>
       </RenderIf>
-
+            {false &&
       <RenderIf condition={takeATour}>
         <Fragment>
           <AnimatedModal
@@ -126,6 +126,7 @@ export default function Page () {
           </AnimatedModal>
         </Fragment>
       </RenderIf>
+}
 
       <RenderIf condition={deleteForm}>
         <Fragment>

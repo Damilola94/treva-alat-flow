@@ -1,6 +1,7 @@
 'use client';
 
 import { AnimatedModal, ClientIcon, EmptyStatus, PersonalIcon, Pill, PlusIcon, RenderIf } from '@/components/shared';
+import { Avatar } from '@/components/shared/avatar';
 // import { ProjectsTable } from '@/components/shared/dashboard';
 import { EmptyState } from '@/components/shared/dashboard/empty-state';
 import { ProjectsTable } from '@/components/shared/dashboard/project-management/project-table/projects-table';
@@ -11,6 +12,7 @@ import dashboard from '@/lib/assets/dashboard';
 import projectManagement from '@/lib/assets/project-management';
 import { numberFormat } from '@/lib/numbers';
 import routes from '@/lib/routes';
+import { getAvatar, getFullName } from '@/lib/utils';
 import queries from '@/services/queries/profile';
 import Image from 'next/image';
 import React, { Fragment, useState } from 'react';
@@ -160,9 +162,12 @@ export default function Page () {
       <div className="app_dashboard_home__header">
         <div className="app_dashboard_home__header__profile_con app_dashboard_page__px">
           <div className="app_dashboard_home__header__profile">
-            <div className="app_dash_main__aside__btm__avi">
-              <Image src={dashboard.avi} alt="avi" className="w-full" />
-            </div>
+            {false &&
+              <div className="app_dash_main__aside__btm__avi">
+                <Image src={dashboard.avi} alt="avi" className="w-full" />
+              </div>
+            }
+            <Avatar src={getAvatar({ name: getFullName(data), length: 2 })} />
             <h4 className="app_dashboard_home__header__profile__h4">
               Welcome, {data?.firstName}
             </h4>
