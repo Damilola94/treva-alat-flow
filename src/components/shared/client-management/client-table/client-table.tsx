@@ -78,7 +78,7 @@ export function ClientTable (props: IProps) {
                     clientData?.data?.map((client: any) => (
                     <tr className="cursor-pointer hover:bg-gray-100" key={client.id}>
                       <td className="app_table__tbody__td font-medium text-[--text-color-500]">
-                        <div className="app_table__tbody__td__ctt flex justify-center items-center -ml-5">
+                        <div className="app_table__tbody__td__ctt flex justify-center items-center">
                           <Image
                             src={client.imageUrl || clientManagement?.femaleClient}
                             alt="client"
@@ -102,7 +102,7 @@ export function ClientTable (props: IProps) {
                       </td>
                       <td className="app_table__tbody__td">
                         <div className="app_table__tbody__td__ctt">
-                          {new Date(client.birthday).toLocaleDateString()}
+                          {client.birthdayDayMonth}
                         </div>
                       </td>
                       <td className="app_table__tbody__td">

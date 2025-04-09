@@ -5,4 +5,5 @@ export interface ClientManagement {
   phoneNumber: string
   birthday: string
   image: string
+  birthdayDayMonth: string
 }
