@@ -11,7 +11,6 @@ import queries from '@/services/queries/projects';
 import { useParams } from 'next/navigation';
 import { TaskTable } from '@/components/shared/dashboard/project-management/project-table/task-table';
 import { DeliverableTable } from '@/components/shared/dashboard/project-management/project-table/deliverable-table';
-import { ProgressBar } from './progress-tag';
 import { formatDate } from '@/lib/utils';
 import { PaymentTable } from '@/components/shared/dashboard/project-management/project-table/payment-table';
 
@@ -64,7 +63,7 @@ export default function Page () {
         className="absolute bottom-0 right-0 h-[calc(100vh-20px)] w-full sm:w-[350px] bg-white p-0 flex flex-col mb-2 mr-2"
       >
 
-          <CreateTaskCard onClose={closeModal} projectId={projectId} setDeliverableId={setDeliverableId} />
+        <CreateTaskCard onClose={closeModal} projectId={projectId} setDeliverableId={setDeliverableId} />
 
       </AnimatedModal>
 
@@ -79,20 +78,20 @@ export default function Page () {
               </div>
             </div>
             {false &&
-            <div className="flex items-center ml-10 gap-4 mt-1">
-              <div className="flex -space-x-2">
-                <Image
-                  src={projectManagement?.male}
-                  alt="male"
-                  className="w-10 h-10 rounded-full border-2 border-white object-cover"
-                />
-                <Image
-                  src={projectManagement?.female}
-                  alt="female"
-                  className="w-10 h-10 rounded-full border-2 border-white object-cover"
-                />
+              <div className="flex items-center ml-10 gap-4 mt-1">
+                <div className="flex -space-x-2">
+                  <Image
+                    src={projectManagement?.male}
+                    alt="male"
+                    className="w-10 h-10 rounded-full border-2 border-white object-cover"
+                  />
+                  <Image
+                    src={projectManagement?.female}
+                    alt="female"
+                    className="w-10 h-10 rounded-full border-2 border-white object-cover"
+                  />
+                </div>
               </div>
-            </div>
             }
           </div>
 
@@ -127,8 +126,15 @@ export default function Page () {
               </div>
 
             </div>
+          </div>
+          <div className="md:w-1/4">
+            <div className="app_progress-bar__label">
+              Progress 0% <span className="app_progress-bar__label__days-left">{data?.remainingDays}</span>
             </div>
-          <ProgressBar />
+            <div className="app_progress-bar-track">
+              <div className="app_progress-bar-track-fill" style={{ width: '10%' }} />
+            </div>
+          </div>
         </div>
 
         <div className="app_dashboard_home__task__hdr flex-wrap gap-2 mt-4">
@@ -147,12 +153,12 @@ export default function Page () {
 
           <div className="flex gap-2">
             {activeTab === 'task' &&
-            <Select
-              options={options}
-              placeholder="View"
-              onChange={handleViewChange}
-              className="w-full sm:w-auto"
-            />
+              <Select
+                options={options}
+                placeholder="View"
+                onChange={handleViewChange}
+                className="w-full sm:w-auto"
+              />
             }
           </div>
         </div>

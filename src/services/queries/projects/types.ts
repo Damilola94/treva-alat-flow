@@ -22,5 +22,6 @@ export interface ProjectManagement {
   totalDeliverables: string
   timeline: string
   unitDeliverableAmount: string
+  remainingDays: string
 
 }
