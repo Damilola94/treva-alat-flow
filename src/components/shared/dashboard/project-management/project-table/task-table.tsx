@@ -10,7 +10,7 @@ import { TaskGirdView } from '../grid-view/grid-view'
 import { ProjectStatus } from '@/services/queries/projects/enums'
 
 interface TaskTableProps {
-  viewType: string
+  viewType?: string
   projectId?: string
   taskId?: string
 }
@@ -65,7 +65,7 @@ export function TaskTable ({ viewType, taskId }: TaskTableProps) {
 
   useEffect(() => {
     if (data) {
-      setTasks(data)
+      setTasks(data.data || [])
     }
   }, [data])
 

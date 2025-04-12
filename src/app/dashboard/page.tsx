@@ -14,6 +14,7 @@ import { numberFormat } from '@/lib/numbers';
 import routes from '@/lib/routes';
 import { getAvatar, getFullName } from '@/lib/utils';
 import queries from '@/services/queries/profile';
+import { ProjectStatus } from '@/services/queries/projects/enums';
 import Image from 'next/image';
 import React, { Fragment, useState } from 'react';
 // import { createAProject } from './project-management/page';
@@ -41,11 +42,11 @@ enum Tasks {
   'Ongoing Task' = 'Ongoing Task',
 }
 
-enum Projects {
-  'All Projects' = 'All Projects',
-  'Completed Project' = 'Completed Project',
-  'Due Project' = 'Pending Project',
-}
+// enum Projects {
+//   // 'All Projects' = 'All Projects',
+//   'Completed Project' = 'Completed Project',
+//   'Due Project' = 'Pending Project',
+// }
 
 function EllIcon () {
   return (
@@ -108,6 +109,8 @@ const kpis = [
 export default function Page () {
   const [addProject, setAddProject] = useState(true)
   const [addProjectForm, setAddProjectForm] = useState(true)
+  const [selectedCategory, setSelectedCategory] = useState<ProjectStatus | null>(null)
+  const [search, setSearch] = useState('')
   const { data } = queries.read()
 
   const handleAddProjectClick = () => {
@@ -232,7 +235,7 @@ export default function Page () {
           <EmptyState
             icon={<EmptyStatus />}
             title="No task yet"
-            description="Click “add new request” button to get started"
+            description="Click “create project” button to get started"
           />
 
           {/* <div className="flex flex-col gap-1">
@@ -247,24 +250,35 @@ export default function Page () {
       <div className="app_dashboard_home__task app_dashboard_page__px">
         <div className="app_dashboard_home__task__hdr flex-wrap gap-2">
           <div className="flex md:flex-wrap gap-2">
-            {Object.entries(Projects).map(([label]) => (
+          <Pill
+              key="all-projects"
+              size="md"
+              active={selectedCategory === null}
+              onClick={() => { setSelectedCategory(null); }}
+            >
+              All Projects
+            </Pill>
+            {Object.values(ProjectStatus).map((status) => (
               <Pill
-                key={label}
+                key={status}
                 size="md"
-                active={Projects['All Projects'] === label}
+                active={selectedCategory === status}
+                onClick={() => { setSelectedCategory(status); }}
               >
-                {label}
+                {status}
               </Pill>
             ))}
           </div>
 
           <Input
             placeholder="Search for project"
+            value={search}
+            onChange={(e) => { setSearch(e.target.value); }}
             className="app_navbar__right__searchbar"
           />
         </div>
 
-        <ProjectsTable category="" search='' projectPriority={''} projectStatus={''} />
+        <ProjectsTable category='' search={search} projectPriority={''} projectStatus={selectedCategory ?? ''}/>
       </div>
     </div>
   );

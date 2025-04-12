@@ -13,8 +13,9 @@ export enum ProjectPriority {
 
 export enum ProjectStatus {
   Pending = 'Pending',
-  Ongoing = 'Ongoing',
+  // Ongoing = 'Ongoing',
   Completed = 'Completed',
+  Due = 'Due',
   ToDo = 'ToDo'
 
 }
