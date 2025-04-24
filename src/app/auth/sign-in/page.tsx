@@ -34,7 +34,7 @@ export default function Login () {
           <p className="app_auth_login_container__header__account">
             Don’t have an account?
           </p>
-          <Link href={routes.onboarding.path}>
+          <Link href={routes.onboarding.types.path}>
             <p className="app_auth_login_container__header__signin">Sign up</p>
           </Link>
         </div>

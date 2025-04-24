@@ -109,7 +109,7 @@ export function EditProjectDeliverables (props: IProps) {
   }
 
   const handleFinish = () => {
-    router.push(routes.dashboard.projectManagement.path)
+    router.push(routes.creatives.dashboard.projectManagement.path)
   }
 
   return (
