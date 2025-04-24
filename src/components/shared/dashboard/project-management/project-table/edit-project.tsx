@@ -9,7 +9,7 @@ import { ArrowRight, Pill } from '@/components/shared';
 import Image from 'next/image';
 import projectManagement from '@/lib/assets/project-management';
 import queries from '@/services/queries/projects';
-import { type InitialStep1Values } from '@/app/dashboard/project-management/personal-project/create/page';
+import { type InitialStep1Values } from '@/app/creatives/dashboard/project-management/personal-project/create/page';
 import { ProjectType } from '@/services/queries/projects/enums';
 
 interface IProps {
@@ -22,15 +22,14 @@ interface IProps {
   setDeliverableId: (id: string) => void
   handleNext: (formData: InitialStep1Values) => void
   onAddDeliverable: (values: any) => void
-
 }
 
 const validationSchema = Yup.object().shape({
   title: Yup.string().optional(),
   description: Yup.string().optional(),
   expectedDeliveryDate: Yup.string().optional(),
-  priority: Yup.string().required('Please select a priority')
-})
+  priority: Yup.string().required('Please select a priority'),
+});
 
 enum AccountType {
   Low = 'low',
@@ -41,7 +40,7 @@ enum AccountType {
 const priorityMapping: Record<number, AccountType> = {
   1: AccountType.Low,
   2: AccountType.Medium,
-  3: AccountType.High
+  3: AccountType.High,
 };
 
 export function EditProject (props: IProps) {
@@ -58,14 +57,18 @@ export function EditProject (props: IProps) {
       } else {
         console.warn('Project ID not found. Polling...');
       }
-    }
-  })
+    },
+  });
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [userType, setUserType] = useState<ProjectType>(ProjectType.PersonalProject);
+  const [userType, setUserType] = useState<ProjectType>(
+    ProjectType.PersonalProject,
+  );
 
   useEffect(() => {
-    if (data) { void refetch() }
-  }, [data, projectId, refetch])
+    if (data) {
+      void refetch();
+    }
+  }, [data, projectId, refetch]);
 
   const initialValues = {
     title: '',
@@ -73,10 +76,10 @@ export function EditProject (props: IProps) {
     expectedDeliveryDate: '',
     priority: AccountType.Low as `${AccountType}`,
     totalAmount: '',
-    projectType: userType
+    projectType: userType,
   };
 
-  type InitialValues = ReturnType<() => typeof initialValues>
+  type InitialValues = ReturnType<() => typeof initialValues>;
 
   const onSubmit = (_values: InitialValues) => {
     const payload: {
@@ -94,12 +97,12 @@ export function EditProject (props: IProps) {
       expectedDeliveryDate: _values.expectedDeliveryDate,
       priority: _values.priority,
       totalAmount: _values.totalAmount,
-      projectType: _values.projectType
+      projectType: _values.projectType,
     };
 
     mutate(payload);
-    handleNext(_values)
-  }
+    handleNext(_values);
+  };
 
   if (!data) {
     return <div>Loading...</div>;
@@ -124,10 +127,12 @@ export function EditProject (props: IProps) {
                 ...initialValues,
                 title: data?.title ?? '',
                 description: data?.description ?? '',
-                expectedDeliveryDate: data.expectedDeliveryDate ? data.expectedDeliveryDate.split('T')[0] : '',
+                expectedDeliveryDate: data.expectedDeliveryDate
+                  ? data.expectedDeliveryDate.split('T')[0]
+                  : '',
                 priority: priorityMapping[data?.priority] ?? AccountType.Low,
                 totalAmount: data?.totalAmount ?? '',
-                projectType: data?.projectType ?? userType
+                projectType: data?.projectType ?? userType,
               }}
               validationSchema={validationSchema}
               onSubmit={onSubmit}
@@ -140,7 +145,7 @@ export function EditProject (props: IProps) {
                   handleBlur,
                   handleSubmit,
                   errors,
-                  touched
+                  touched,
                 } = props;
 
                 return (
@@ -185,14 +190,15 @@ export function EditProject (props: IProps) {
                         errors={errors}
                         touched={touched}
                       />
-
                     </div>
                     <div className="flex flex-col gap-8 my-5">
-                      <p className='text-[#6D6D6D]'>Project Priority</p>
+                      <p className="text-[#6D6D6D]">Project Priority</p>
                       <div className="flex gap-2">
                         <Pill
                           size="md"
-                          onClick={async () => await setFieldValue('priority', AccountType.Low)}
+                          onClick={async () =>
+                            await setFieldValue('priority', AccountType.Low)
+                          }
                           active={values.priority === AccountType.Low}
                           className="w-full"
                         >
@@ -201,7 +207,9 @@ export function EditProject (props: IProps) {
 
                         <Pill
                           size="md"
-                          onClick={async () => await setFieldValue('priority', AccountType.Medium)}
+                          onClick={async () =>
+                            await setFieldValue('priority', AccountType.Medium)
+                          }
                           active={values.priority === AccountType.Medium}
                           className="w-full"
                         >
@@ -210,14 +218,15 @@ export function EditProject (props: IProps) {
 
                         <Pill
                           size="md"
-                          onClick={async () => await setFieldValue('priority', AccountType.High)}
+                          onClick={async () =>
+                            await setFieldValue('priority', AccountType.High)
+                          }
                           active={values.priority === AccountType.High}
                           className="w-full"
                         >
                           High
                         </Pill>
                       </div>
-
                     </div>
                     <div className="flex gap-4 w-full">
                       <Button
@@ -240,7 +249,6 @@ export function EditProject (props: IProps) {
                         Proceed to deliverables <ArrowRight />
                       </Button>
                     </div>
-
                   </form>
                 );
               }}

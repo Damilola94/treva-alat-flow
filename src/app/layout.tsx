@@ -1,15 +1,16 @@
-'use client'
+'use client';
 
 // import type { Metadata } from 'next'
 
-import generateColorsCss from '@/lib/colors'
-import { ToastContainer } from 'react-toastify'
+import generateColorsCss from '@/lib/colors';
+import { ToastContainer } from 'react-toastify';
 
-import 'aos/dist/aos.css'
-import 'react-responsive-carousel/lib/styles/carousel.min.css'
-import 'react-toastify/dist/ReactToastify.css'
-import '../../public/scss/main.scss'
-import { QueryClient, QueryClientProvider } from 'react-query'
+import 'aos/dist/aos.css';
+import 'react-responsive-carousel/lib/styles/carousel.min.css';
+import 'react-toastify/dist/ReactToastify.css';
+import '../../public/scss/main.scss';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { CombinedProviders } from '@/store';
 
 // export const metadata: Metadata = {
 //   title: 'IRM Web App',
@@ -25,7 +26,7 @@ const queryClient = new QueryClient({
       retry: false
     }
   }
-})
+});
 
 export default function RootLayout ({
   children
@@ -39,9 +40,9 @@ export default function RootLayout ({
         <ToastContainer />
 
         <QueryClientProvider client={queryClient}>
-          {children}
+          <CombinedProviders>{children}</CombinedProviders>
         </QueryClientProvider>
       </body>
     </html>
-  )
+  );
 }

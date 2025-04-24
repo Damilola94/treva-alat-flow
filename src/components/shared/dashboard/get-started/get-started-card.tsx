@@ -11,7 +11,7 @@ const steps = [
     label: 'Professional details',
     details:
       "You're almost there! Complete your onboarding to unlock the full potential of",
-    href: routes.dashboard.getStarted.professionalDetails.path
+    href: routes.creatives.dashboard.getStarted.professionalDetails.path
   },
 
   {
@@ -19,7 +19,7 @@ const steps = [
     label: 'Social media details',
     details:
       "You're almost there! Complete your onboarding to unlock the full potential of ",
-    href: routes.dashboard.getStarted.socialMediaDetails.path
+    href: routes.creatives.dashboard.getStarted.socialMediaDetails.path
   },
 
   {
@@ -27,7 +27,7 @@ const steps = [
     label: 'Bio',
     details:
       "You're almost there! Complete your onboarding to unlock the full potential of",
-    href: routes.dashboard.getStarted.bio.path
+    href: routes.creatives.dashboard.getStarted.bio.path
   },
 
   {
@@ -35,7 +35,7 @@ const steps = [
     label: 'Select plan',
     details:
       "You're almost there! Complete your onboarding to unlock the full potential of",
-    href: routes.dashboard.getStarted.selectPlan.path
+    href: routes.creatives.dashboard.getStarted.selectPlan.path
   }
 ]
 
@@ -101,7 +101,7 @@ export function GetStartedCard (props: IProps) {
             <div className="flex items-center justify-between">
               <RenderIf condition={showSteps}>
                 <Link
-                  href={routes.dashboard.getStarted.professionalDetails.path}
+                  href={routes.creatives.dashboard.getStarted.professionalDetails.path}
                 >
                   <button
                     className="app_get_started_card__action__btn"

@@ -34,7 +34,7 @@ export default function ResetPassword () {
           <p className="app_auth_login_container__header__account">
             Don’t have an account?
           </p>
-          <Link href={routes.onboarding.path}>
+          <Link href={routes.creatives.onboarding.inputEmail.path}>
             <p className="app_auth_login_container__header__signin">Sign up</p>
           </Link>
         </div>

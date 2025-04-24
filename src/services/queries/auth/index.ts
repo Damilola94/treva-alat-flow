@@ -65,7 +65,7 @@ const useLogin = (options = {}) => {
           setLocalStorage(config.tokenKey, data?.data);
           successToast('Sign in successful');
           setTimeout(() => {
-            router.push(routes.dashboard.entry.path);
+            router.push(routes.creatives.dashboard.entry.path);
           }, 1000);
         }
       },

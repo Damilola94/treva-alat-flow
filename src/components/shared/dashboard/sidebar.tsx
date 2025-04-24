@@ -25,7 +25,7 @@ import queries from '@/services/queries/profile';
 import { Avatar } from '../avatar';
 import { getAvatar, getFullName } from '@/lib/utils';
 
-const dr = routes.dashboard;
+const dr = routes.creatives.dashboard;
 
 const menuItems = [
   { id: 1, label: 'Get started', href: dr.getStarted.path, icon: <GlobeAlt /> },
@@ -156,7 +156,7 @@ export function Sidebar () {
 
         <div className="app_dash_main__aside__top">
           <div className="w-full px-6 py-5 h-20">
-            <Link href={routes.dashboard.entry.path}>
+            <Link href={routes.creatives.dashboard.entry.path}>
               <div className="flex items-center gap-3">
                 <Logo />
               </div>

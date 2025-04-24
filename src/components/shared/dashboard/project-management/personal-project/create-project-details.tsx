@@ -1,13 +1,13 @@
-'use client'
-import React, { useState } from 'react'
-import { Formik } from 'formik'
-import * as Yup from 'yup'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { Pill } from '@/components/shared'
-import queries from '@/services/queries/projects'
-import { type InitialStep1Values } from '@/app/dashboard/project-management/personal-project/create/page'
-import { ProjectType } from '@/services/queries/projects/enums'
+'use client';
+import React, { useState } from 'react';
+import { Formik } from 'formik';
+import * as Yup from 'yup';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Pill } from '@/components/shared';
+import queries from '@/services/queries/projects';
+import { type InitialStep1Values } from '@/app/creatives/dashboard/project-management/personal-project/create/page';
+import { ProjectType } from '@/services/queries/projects/enums';
 
 interface IProps {
   handleNext: (formData: InitialStep1Values) => void
@@ -20,8 +20,8 @@ const validationSchema = Yup.object().shape({
   expectedDeliveryDate: Yup.date()
     .min(new Date(), 'Expected delivery date must be in the future')
     .required('Please enter an expected delivery date'),
-  priority: Yup.string().required('Please select a priority')
-})
+  priority: Yup.string().required('Please select a priority'),
+});
 
 enum AccountType {
   Low = 'low',
@@ -30,7 +30,7 @@ enum AccountType {
 }
 
 export function PersonalProjectDetails (props: IProps) {
-  const { handleNext, setProjectId } = props
+  const { handleNext, setProjectId } = props;
 
   const [userType] = useState<ProjectType>(ProjectType.PersonalProject);
 
@@ -42,7 +42,7 @@ export function PersonalProjectDetails (props: IProps) {
       } else {
         console.warn('Project ID not found. Polling...');
       }
-    }
+    },
   });
 
   const initialValues = {
@@ -50,14 +50,14 @@ export function PersonalProjectDetails (props: IProps) {
     description: '',
     expectedDeliveryDate: '',
     priority: AccountType.Low as `${AccountType}`,
-    projectType: userType
+    projectType: userType,
   };
 
-  type InitialValues = ReturnType<() => typeof initialValues>
+  type InitialValues = ReturnType<() => typeof initialValues>;
 
   const onSubmit = (_values: InitialValues) => {
     mutate({ ..._values });
-    handleNext(_values)
+    handleNext(_values);
   };
 
   return (
@@ -80,7 +80,7 @@ export function PersonalProjectDetails (props: IProps) {
                 handleBlur,
                 handleSubmit,
                 errors,
-                touched
+                touched,
               } = props;
 
               return (
@@ -114,27 +114,29 @@ export function PersonalProjectDetails (props: IProps) {
                     />
                     <div>
                       <label htmlFor="">Expected delivery date</label>
-                    <Input
-                      name="expectedDeliveryDate"
-                      type="date"
-                      id="expectedDeliveryDate"
-                      placeholder="Expected delivery date"
-                      size="xl"
-                      value={values.expectedDeliveryDate}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      errors={errors}
-                      touched={touched}
-                    />
+                      <Input
+                        name="expectedDeliveryDate"
+                        type="date"
+                        id="expectedDeliveryDate"
+                        placeholder="Expected delivery date"
+                        size="xl"
+                        value={values.expectedDeliveryDate}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        errors={errors}
+                        touched={touched}
+                      />
                     </div>
                   </div>
                   <div className="flex flex-col gap-8 my-5">
-                    <p className='text-[#6D6D6D]'>Project Priority</p>
+                    <p className="text-[#6D6D6D]">Project Priority</p>
                     <div className="flex gap-2">
                       <Pill
                         size="md"
                         // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                        onClick={async () => await setFieldValue('priority', AccountType.Low)}
+                        onClick={async () =>
+                          await setFieldValue('priority', AccountType.Low)
+                        }
                         active={values.priority === AccountType.Low}
                         className="w-full"
                       >
@@ -143,7 +145,9 @@ export function PersonalProjectDetails (props: IProps) {
                       <Pill
                         size="md"
                         // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                        onClick={async () => await setFieldValue('priority', AccountType.Medium)}
+                        onClick={async () =>
+                          await setFieldValue('priority', AccountType.Medium)
+                        }
                         active={values.priority === AccountType.Medium}
                         className="w-full"
                       >
@@ -152,7 +156,9 @@ export function PersonalProjectDetails (props: IProps) {
                       <Pill
                         size="md"
                         // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                        onClick={async () => await setFieldValue('priority', AccountType.High)}
+                        onClick={async () =>
+                          await setFieldValue('priority', AccountType.High)
+                        }
                         active={values.priority === AccountType.High}
                         className="w-full"
                       >
@@ -162,7 +168,7 @@ export function PersonalProjectDetails (props: IProps) {
                   </div>
                   <div className="text-right">
                     <Button
-                      type='submit'
+                      type="submit"
                       size="md"
                       isLoading={isLoading}
                       backgroundColor="primary-blue-500"
