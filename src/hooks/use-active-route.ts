@@ -2,7 +2,7 @@ import routes from '@/lib/routes'
 import { usePathname } from 'next/navigation'
 import { useCallback } from 'react'
 
-const dr = routes.dashboard
+const dr = routes.creatives.dashboard
 
 export function useIsActive () {
   const pathname = usePathname()

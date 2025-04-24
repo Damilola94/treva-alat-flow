@@ -59,7 +59,7 @@ export function Header () {
     <header className="app_dash_main__hdr">
       <Link
         className="app_dash_main__hdr__img_link"
-        href={routes.dashboard.entry.path}
+        href={routes.creatives.dashboard.entry.path}
       >
         <div className="hidden lg:flex lg:items-center lg:gap-3">
           <Logo />

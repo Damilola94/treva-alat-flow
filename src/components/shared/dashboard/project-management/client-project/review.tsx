@@ -50,7 +50,7 @@ export function ProjectReview (props: IProps) {
   }
 
   const handleDone = () => {
-    window.location.href = routes.dashboard.projectManagement.path;
+    window.location.href = routes.creatives.dashboard.projectManagement.path;
   }
 
   return (

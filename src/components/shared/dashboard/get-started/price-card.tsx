@@ -84,7 +84,7 @@ const PlanCard: React.FC<PlanCardProps> = ({
   const router = useRouter()
 
   const onSubmit = () => {
-    router.push(routes.dashboard.getStarted.done.path)
+    router.push(routes.creatives.dashboard.getStarted.done.path)
   }
 
   return (

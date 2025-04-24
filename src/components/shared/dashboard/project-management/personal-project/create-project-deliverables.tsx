@@ -108,7 +108,7 @@ export function PersonalProjectDeliverables ({ projectId }: { projectId: string 
   }
 
   const handleSkip = () => {
-    window.location.href = routes.dashboard.projectManagement.path
+    window.location.href = routes.creatives.dashboard.projectManagement.path
   }
 
   return (

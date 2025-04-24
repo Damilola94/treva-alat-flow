@@ -1,15 +1,15 @@
-'use client'
-import { Fragment, useEffect, useState } from 'react'
-import { Formik, Form } from 'formik'
-import * as Yup from 'yup'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { AnimatedModal, Pill, RenderIf } from '@/components/shared'
-import queries from '@/services/queries/projects'
-import type { InitialStep1Values } from '@/app/dashboard/project-management/client-project/create/page'
-import { ProjectType } from '@/services/queries/projects/enums'
-import clientQueries from '@/services/queries/client-management'
-import { AddClient } from '../../../client-management'
+'use client';
+import { Fragment, useEffect, useState } from 'react';
+import { Formik, Form } from 'formik';
+import * as Yup from 'yup';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { AnimatedModal, Pill, RenderIf } from '@/components/shared';
+import queries from '@/services/queries/projects';
+import type { InitialStep1Values } from '@/app/creatives/dashboard/project-management/client-project/create/page';
+import { ProjectType } from '@/services/queries/projects/enums';
+import clientQueries from '@/services/queries/client-management';
+import { AddClient } from '../../../client-management';
 
 interface IProps {
   handleNext: (formData: InitialStep1Values) => void
@@ -23,8 +23,8 @@ const validationSchema = Yup.object().shape({
     .min(new Date(), 'Expected delivery date must be in the future')
     .required('Please enter an expected delivery date'),
   priority: Yup.string().required('Please select a priority'),
-  clientId: Yup.string().required('Please select a client')
-})
+  clientId: Yup.string().required('Please select a client'),
+});
 
 enum AccountType {
   Low = 'low',
@@ -33,25 +33,25 @@ enum AccountType {
 }
 
 export function ProjectDetails (props: IProps) {
-  const { handleNext, setProjectId } = props
+  const { handleNext, setProjectId } = props;
 
-  const [userType] = useState<ProjectType>(ProjectType.ClientProject)
-  const [isAddClientModalOpen, setIsAddClientModalOpen] = useState(false)
+  const [userType] = useState<ProjectType>(ProjectType.ClientProject);
+  const [isAddClientModalOpen, setIsAddClientModalOpen] = useState(false);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [selected, setSelected] = useState<string | null>(null)
-  const { data, refetch } = clientQueries.read()
+  const [selected, setSelected] = useState<string | null>(null);
+  const { data, refetch } = clientQueries.read();
 
   const { mutate, isLoading } = queries.create({
     onSuccess: (response) => {
       if (response?.data?.id) {
-        const projectId = response.data.id
-        setProjectId(projectId)
+        const projectId = response.data.id;
+        setProjectId(projectId);
       } else {
-        console.warn('Project ID not found. Polling...')
+        console.warn('Project ID not found. Polling...');
       }
-    }
-  })
+    },
+  });
 
   const initialValues = {
     title: '',
@@ -59,41 +59,54 @@ export function ProjectDetails (props: IProps) {
     expectedDeliveryDate: '',
     priority: AccountType.Low as `${AccountType}`,
     projectType: userType,
-    clientId: ''
-  }
+    clientId: '',
+  };
 
-  type InitialValues = ReturnType<() => typeof initialValues>
+  type InitialValues = ReturnType<() => typeof initialValues>;
 
   const onSubmit = (values: InitialValues) => {
     if (!values.clientId) {
-      return
+      return;
     }
-    mutate(values)
-    handleNext(values)
-  }
+    mutate(values);
+    handleNext(values);
+  };
 
   useEffect(() => {
     if (data && userType === ProjectType.ClientProject) {
-      void refetch()
+      void refetch();
     }
-  }, [userType, refetch, data])
+  }, [userType, refetch, data]);
 
   const handleAddClientClick = () => {
-    setIsAddClientModalOpen(true)
-  }
+    setIsAddClientModalOpen(true);
+  };
 
   const handleCloseAddClientModal = () => {
-    setIsAddClientModalOpen(false)
-    void refetch()
-  }
+    setIsAddClientModalOpen(false);
+    void refetch();
+  };
 
   return (
     <div className="app_get_started_professional_details py-6 px-4 flex flex-col gap-14">
       <div className="app_get_started_professional_details__form flex flex-col gap-10 !overflow-y-auto">
-        <h3 className="app_get_started_professional_details__form__title !font-bold !lg:text-2xl text-lg">Project details</h3>
+        <h3 className="app_get_started_professional_details__form__title !font-bold !lg:text-2xl text-lg">
+          Project details
+        </h3>
         <div>
-          <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
-            {({ values, handleChange, setFieldValue, handleBlur, errors, touched }) => (
+          <Formik
+            initialValues={initialValues}
+            validationSchema={validationSchema}
+            onSubmit={onSubmit}
+          >
+            {({
+              values,
+              handleChange,
+              setFieldValue,
+              handleBlur,
+              errors,
+              touched,
+            }) => (
               <Form className="flex flex-col gap-8">
                 <div className="flex flex-col gap-8">
                   <div className="">
@@ -143,8 +156,10 @@ export function ProjectDetails (props: IProps) {
                   <div className="flex gap-2">
                     <Pill
                       size="md"
-                      // eslint-disable-next-line no-void
-                      onClick={() => void setFieldValue('priority', AccountType.Low)}
+                      onClick={() =>
+                        // eslint-disable-next-line no-void
+                        void setFieldValue('priority', AccountType.Low)
+                      }
                       active={values.priority === AccountType.Low}
                       className="w-full"
                     >
@@ -152,8 +167,10 @@ export function ProjectDetails (props: IProps) {
                     </Pill>
                     <Pill
                       size="md"
-                      // eslint-disable-next-line no-void
-                      onClick={() => void setFieldValue('priority', AccountType.Medium)}
+                      onClick={() =>
+                        // eslint-disable-next-line no-void
+                        void setFieldValue('priority', AccountType.Medium)
+                      }
                       active={values.priority === AccountType.Medium}
                       className="w-full"
                     >
@@ -161,8 +178,10 @@ export function ProjectDetails (props: IProps) {
                     </Pill>
                     <Pill
                       size="md"
-                      // eslint-disable-next-line no-void
-                      onClick={() => void setFieldValue('priority', AccountType.High)}
+                      onClick={() =>
+                        // eslint-disable-next-line no-void
+                        void setFieldValue('priority', AccountType.High)
+                      }
                       active={values.priority === AccountType.High}
                       className="w-full"
                     >
@@ -175,12 +194,12 @@ export function ProjectDetails (props: IProps) {
                     name="clientId"
                     value={values.clientId ?? ''}
                     onChange={(e) => {
-                      const { value } = e.target
+                      const { value } = e.target;
                       if (value === 'new-client') {
-                        handleAddClientClick()
+                        handleAddClientClick();
                       } else {
-                        setSelected(value)
-                        void setFieldValue('clientId', value)
+                        setSelected(value);
+                        void setFieldValue('clientId', value);
                       }
                     }}
                     className="w-full border-b-[#d1d5db] p-2 focus:ring-1 focus:ring-[#7B37F0] bg-white text-left"
@@ -201,7 +220,9 @@ export function ProjectDetails (props: IProps) {
                 </div>
                 <RenderIf condition={!!errors.clientId}>
                   <div>
-                    <p className="app_input_con__spt--error">{errors.clientId}</p>
+                    <p className="app_input_con__spt--error">
+                      {errors.clientId}
+                    </p>
                   </div>
                 </RenderIf>
                 <div className="">
@@ -228,7 +249,7 @@ export function ProjectDetails (props: IProps) {
               from: 'right',
               onClose: handleCloseAddClientModal,
               className:
-                'absolute bottom-0 right-0 h-[calc(100vh-20px)] w-full sm:w-[350px] bg-white p-0 flex flex-col mb-2 mr-2'
+                'absolute bottom-0 right-0 h-[calc(100vh-20px)] w-full sm:w-[350px] bg-white p-0 flex flex-col mb-2 mr-2',
             }}
           >
             <AddClient onClose={handleCloseAddClientModal} />
@@ -236,5 +257,5 @@ export function ProjectDetails (props: IProps) {
         </Fragment>
       </RenderIf>
     </div>
-  )
+  );
 }
