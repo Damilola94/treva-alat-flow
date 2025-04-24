@@ -1,4 +1,9 @@
-import axios, { type AxiosError, type AxiosRequestConfig, type AxiosResponse, type InternalAxiosRequestConfig } from 'axios'
+import axios, {
+  type AxiosError,
+  type AxiosRequestConfig,
+  type AxiosResponse,
+  type InternalAxiosRequestConfig
+} from 'axios'
 import { getLocalStorage, setLocalStorage } from './helper'
 // import routes from '@/lib/routes'
 import config from '@/lib/config'
@@ -17,26 +22,26 @@ export const refreshToken = async (originalRequest: AxiosRequestConfig) => {
   try {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     const token = getLocalStorage(config.tokenKey)
-    const url = `${baseURL}/Account/refresh-token?token=${token?.refreshToken}`
 
-    const { data, ...response } = await axios.post(url)
+    const url = `${baseURL}/auth/refresh-token`
+
+    const response = await axios.post(url, {
+      expiredToken: token?.accessToken,
+      refreshToken: token?.refreshToken
+    })
+
+    const { data } = response
 
     if (data.status === 200) {
-      // old request and save new token
       setLocalStorage(config.tokenKey, data.data)
 
       if (originalRequest && originalRequest.headers) {
-        originalRequest.headers.Authorization = `Bearer ${data.data?.jwToken}`
+        originalRequest.headers.Authorization = `Bearer ${data.data?.jwToken || data.data?.accessToken}`
       }
 
-      // console.log('testtt', axios(originalRequest));
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      axios(originalRequest)
-
-      return { data, ...response }
+      return await axios(originalRequest)
     }
 
-    // window.location.href = `${routes.auth.logout.path}?next=${window.location.pathname}`;
     return await Promise.reject(response)
   } catch (error) {
     return await Promise.reject(error)
@@ -76,12 +81,12 @@ const onResponseError = async (error: AxiosError) => {
   const originalRequest = error.config
   const statusCode = error.response?.status
 
-  if (statusCode === 401) {
-    // window.location.href = routes.auth.login.path
-    return originalRequest
-
-    // const response = await refreshToken(originalRequest);
-    // return response;
+  if (statusCode === 401 && originalRequest) {
+    try {
+      return await refreshToken(originalRequest)
+    } catch (refreshError) {
+      return await Promise.reject(refreshError)
+    }
   }
 
   return await Promise.reject(error)
