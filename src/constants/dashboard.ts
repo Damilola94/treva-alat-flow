@@ -22,7 +22,7 @@ export const dashboardCards = [
     btnText: 'Continue',
     bottomInfo: '1/3 steps',
     bg: 'linear-gradient(135deg, rgba(199, 255, 107, 0) 0%, #c7ff6b 100%)',
-  }
+  },
 ];
 
 export const clientOnboardingSteps = [
@@ -48,5 +48,11 @@ export const clientOnboardingSteps = [
     details:
       "You're almost there! Complete your onboarding to unlock the full potential of",
     href: routes.creatives.dashboard.getStarted.bio.path,
-  }
+  },
+];
+
+export const clientDashboardTasks = [
+  { label: 'All Project', value: 'All' },
+  { label: 'Pending Project', value: 'Pending' },
+  { label: 'Completed Project', value: 'Completed' },
 ];

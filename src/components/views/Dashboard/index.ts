@@ -1,2 +1,2 @@
-export { default as Dashboard } from './Dashboard';
+export { default as ClientDashboard } from './ClientDashboard';
 export * from './GetStarted';

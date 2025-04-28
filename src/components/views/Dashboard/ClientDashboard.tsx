@@ -1,21 +1,23 @@
 'use client';
 
-import { AnimatedModal, ClientIcon, EmptyStatus, PersonalIcon, Pill, PlusIcon, RenderIf } from '@/components/shared';
+import { AnimatedModal, ClientIcon, /* EmptyStatus */ PersonalIcon, Pill, /* PlusIcon, */ RenderIf } from '@/components/shared';
 import { Avatar } from '@/components/shared/avatar';
 // import { ProjectsTable } from '@/components/shared/dashboard';
-import { EmptyState } from '@/components/shared/dashboard/empty-state';
+// import { EmptyState } from '@/components/shared/dashboard/empty-state';
 import { ProjectsTable } from '@/components/shared/dashboard/project-management/project-table/projects-table';
 import { AddProject, CreateProjectCard } from '@/components/shared/project-management';
-import { Button } from '@/components/ui/button';
+// import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { clientDashboardTasks } from '@/constants';
 import dashboard from '@/lib/assets/dashboard';
 import projectManagement from '@/lib/assets/project-management';
 import { numberFormat } from '@/lib/numbers';
-import routes from '@/lib/routes';
+// import routes from '@/lib/routes';
 import { getAvatar, getFullName } from '@/lib/utils';
 import queries from '@/services/queries/profile';
-import { ProjectStatus } from '@/services/queries/projects/enums';
+// import { ProjectStatus } from '@/services/queries/projects/enums';
 import Image from 'next/image';
+// import { usePathname } from 'next/navigation';
 import React, { Fragment, useState } from 'react';
 // import { createAProject } from './project-management/page';
 
@@ -37,10 +39,10 @@ const createAProject = {
   btnText1: 'Proceed'
 }
 
-enum Tasks {
-  'Due Task' = 'Due Task',
-  'Ongoing Task' = 'Ongoing Task'
-}
+// enum Tasks {
+//   'Due Task' = 'Due Task',
+//   'Ongoing Task' = 'Ongoing Task'
+// }
 
 // enum Projects {
 //   // 'All Projects' = 'All Projects',
@@ -109,9 +111,10 @@ const kpis = [
 export default function Dashboard () {
   const [addProject, setAddProject] = useState(true)
   const [addProjectForm, setAddProjectForm] = useState(true)
-  const [selectedCategory, setSelectedCategory] = useState<ProjectStatus | null>(null)
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [search, setSearch] = useState('')
   const { data } = queries.read()
+  // const pathname = usePathname();
 
   const handleAddProjectClick = () => {
     setAddProject(!addProject)
@@ -134,7 +137,7 @@ export default function Dashboard () {
               isOpen: true,
               from: 'middle',
               onClose: handleAddProjectClick,
-              className: 'sm:max-w-[450px] h-[420px] p-0'
+              className: 'sm:max-w-[450px] h-[420px] p-0',
             }}
           >
             <CreateProjectCard
@@ -155,7 +158,7 @@ export default function Dashboard () {
               from: 'right',
               onClose: handleProjectFormClose,
               className:
-                'absolute bottom-0 right-0 h-[calc(100vh-20px)] w-full sm:w-[350px] bg-white p-0 flex flex-col mb-2 mr-2'
+                'absolute bottom-0 right-0 h-[calc(100vh-20px)] w-full sm:w-[350px] bg-white p-0 flex flex-col mb-2 mr-2',
             }}
           >
             <AddProject onClose={handleProjectFormClose} />
@@ -165,27 +168,16 @@ export default function Dashboard () {
       <div className="app_dashboard_home__header">
         <div className="app_dashboard_home__header__profile_con app_dashboard_page__px">
           <div className="app_dashboard_home__header__profile">
-            {false &&
+            {false && (
               <div className="app_dash_main__aside__btm__avi">
                 <Image src={dashboard.avi} alt="avi" className="w-full" />
               </div>
-            }
+            )}
             <Avatar src={getAvatar({ name: getFullName(data), length: 2 })} />
             <h4 className="app_dashboard_home__header__profile__h4">
               Welcome, {data?.firstName}
             </h4>
           </div>
-          <Button
-            size="md"
-            backgroundColor="text-color-100"
-            color="shark-950"
-            className="app_auth_login__btn"
-            onClick={() => { window.location.href = routes.creatives.dashboard.projectManagement.path; }}
-
-          >
-            <PlusIcon fill="var(--shark-950)" />
-            Create Project
-          </Button>
         </div>
 
         <div className="app_dashboard_home__kpis grid grid-cols-4 app_dashboard_page__px">
@@ -194,8 +186,9 @@ export default function Dashboard () {
 
             return (
               <div
-                className={`app_dashboard_home__kpis__item ${IS_WALLET ? 'app_dashboard_home__kpis__item--wallet' : ''
-                  }`}
+                className={`app_dashboard_home__kpis__item ${
+                  IS_WALLET ? 'app_dashboard_home__kpis__item--wallet' : ''
+                }`}
                 key={index}
               >
                 <h6 className="app_dashboard_home__kpis__item__h6">
@@ -211,61 +204,19 @@ export default function Dashboard () {
         </div>
       </div>
 
-      <div className="app_dashboard_home__task app_dashboard_page__px pt-4">
-        <div className="app_dashboard_home__task__hdr flex-wrap gap-2">
-          <div className="flex flex-wrap gap-2">
-            {Object.entries(Tasks).map(([label]) => (
-              <Pill key={label} size="md" active={Tasks['Due Task'] === label}>
-                {label}
-              </Pill>
-            ))}
-          </div>
-
-          {/* <Button
-            size="md"
-            backgroundColor="shark-950"
-            className="app_auth_login__btn"
-          >
-            <PlusIcon />
-            Add new task
-          </Button> */}
-        </div>
-
-        <div className="app_dashboard_home__task__ctt app_dashboard_home__task__ctt--empty">
-          <EmptyState
-            icon={<EmptyStatus />}
-            title="No task yet"
-            description="Click “create project” button to get started"
-          />
-
-          {/* <div className="flex flex-col gap-1">
-            <p className="app_dashboard_home__task__ctt__title">No task yet</p>
-            <p className="app_dashboard_home__task__ctt__desc">
-              Click “add new request” button to get started
-            </p>
-          </div> */}
-        </div>
-      </div>
-
       <div className="app_dashboard_home__task app_dashboard_page__px">
         <div className="app_dashboard_home__task__hdr flex-wrap gap-2">
           <div className="flex md:flex-wrap gap-2">
-          <Pill
-              key="all-projects"
-              size="md"
-              active={selectedCategory === null}
-              onClick={() => { setSelectedCategory(null); }}
-            >
-              All Projects
-            </Pill>
-            {Object.values(ProjectStatus).map((status) => (
+            {clientDashboardTasks.map((item) => (
               <Pill
-                key={status}
+                key={item.value}
                 size="md"
-                active={selectedCategory === status}
-                onClick={() => { setSelectedCategory(status); }}
+                active={selectedCategory === item.value}
+                onClick={() => {
+                  setSelectedCategory(item.value);
+                }}
               >
-                {status}
+                {item.label}
               </Pill>
             ))}
           </div>
@@ -273,12 +224,19 @@ export default function Dashboard () {
           <Input
             placeholder="Search for project"
             value={search}
-            onChange={(e) => { setSearch(e.target.value); }}
-            className="app_navbar__right__searchbar"
+            onChange={(e) => {
+              setSearch(e.target.value);
+            }}
+            className="app_navbar__right__searchbar text-sm"
           />
         </div>
 
-        <ProjectsTable category='' search={search} projectPriority={''} projectStatus={selectedCategory ?? ''}/>
+        <ProjectsTable
+          category=""
+          search={search}
+          projectPriority={''}
+          projectStatus={selectedCategory ?? ''}
+        />
       </div>
     </div>
   );

@@ -75,6 +75,10 @@ const routes = {
 
         bio: {
           path: '/client/dashboard/get-started/bio',
+        },
+
+        done: {
+          path: '/client/dashboard/get-started/done',
         }
       }
     }

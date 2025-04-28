@@ -21,7 +21,7 @@ export default function Bio () {
   const router = useRouter()
 
   const onSubmit = () => {
-    router.push(routes.creatives.dashboard.getStarted.selectPlan.path)
+    router.push(routes.client.dashboard.getStarted.done.path)
   }
 
   return (
