@@ -56,6 +56,14 @@ const routes = {
         path: '/client/onboarding/email-verification',
       },
     },
+    dashboard: {
+      entry: {
+        path: '/client/dashboard',
+      },
+      hiringManagement: {
+        path: '/client/dashboard/hiring-management'
+      },
+    },
   },
 
   creatives: {

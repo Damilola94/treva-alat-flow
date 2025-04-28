@@ -1,17 +1,14 @@
 'use client';
 
 import { Suspense, useEffect, useState } from 'react';
-import { usePathname } from 'next/navigation';
 import {
   Header,
   Sidebar,
-  SubscribeToPlan,
-  SubscribeToPlanLeft
 } from '@/components/shared/dashboard';
 import { Inter } from 'next/font/google';
+import { Users } from '@/components/shared';
 import routes from '@/lib/routes';
 import queries from '@/services/queries/profile';
-import { Column, File, GlobeAlt, Grid, Like, Reminder, Users } from '@/components/shared';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -20,18 +17,11 @@ const inter = Inter({
 
 function Main ({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false);
-  const pathname = usePathname();
   const { data } = queries.read();
 
-  const creativeMenuItems = [
-    { label: 'Get started', href: routes.creatives.dashboard.getStarted.path, icon: <GlobeAlt /> },
-    { label: 'Dashboard', href: routes.creatives.dashboard.entry.path, icon: <Grid /> },
-    { label: 'Client Management', href: routes.creatives.dashboard.clientManagement.path, icon: <Users /> },
-    { label: 'Project Management', href: routes.creatives.dashboard.projectManagement.path, icon: <Column /> },
-    { label: 'Contracts', href: '#', icon: <File /> },
-    { label: 'Reminders and Notification', href: '#', icon: <Reminder /> },
-    { label: 'Reviews and Feedback', href: '#', icon: <Like /> },
-  ].filter(item => item.href !== '#');
+  const clientMenuItems = [
+    { label: 'Hiring Management', href: routes.client.dashboard.hiringManagement.path, icon: <Users /> }
+  ];
 
   useEffect(() => {
     setMounted(true);
@@ -45,16 +35,9 @@ function Main ({ children }: { children: React.ReactNode }) {
       <div
           className="z-50 md:relative fixed top-0"
         >
-         <Sidebar menuItems={creativeMenuItems} logoHref={routes.creatives.dashboard.entry.path} userData={data} />
+   <Sidebar menuItems={clientMenuItems} logoHref={routes.client.dashboard.entry.path} userData={data} />;
         </div>
         <div className="app_dash_main__ctt">
-          {pathname === '/dashboard/get-started'
-            ? (
-            <SubscribeToPlan />
-              )
-            : (
-            <SubscribeToPlanLeft />
-              )}
           <Header />
           <div className="app_dash_main__ctt__mn w-full">
             <div className="app_dashboard_page">{children}</div>
