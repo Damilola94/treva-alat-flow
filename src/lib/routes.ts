@@ -56,6 +56,28 @@ const routes = {
         path: '/client/onboarding/email-verification',
       },
     },
+
+    dashboard: {
+      entry: {
+        path: '/client/dashboard',
+      },
+
+      getStarted: {
+        path: '/client/dashboard/get-started',
+
+        personalDetails: {
+          path: '/client/dashboard/get-started/personal-details',
+        },
+
+        socialMediaDetails: {
+          path: '/client/dashboard/get-started/social-media-details',
+        },
+
+        bio: {
+          path: '/client/dashboard/get-started/bio',
+        }
+      }
+    }
   },
 
   creatives: {

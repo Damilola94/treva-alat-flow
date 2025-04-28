@@ -32,7 +32,7 @@ const useBreadcrumb = () => {
       title = 'Invoice & Payment'
     }
     if (title === 'Get Started') {
-      title = 'Get started guide'
+      title = 'Complete Onboarding'
     }
 
     return <span>{title}</span>
