@@ -6,13 +6,20 @@ interface Option {
 }
 
 interface SelectProps {
+  label?: string
   options: Option[]
   placeholder?: string
   onChange?: (option: Option) => void
   className?: string
 }
 
-export function Select ({ options, placeholder = 'Select an option', onChange, className }: SelectProps) {
+export function Select ({
+  label,
+  options,
+  placeholder = 'Select an option',
+  onChange,
+  className
+}: SelectProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState<Option | null>(null);
   const selectRef = useRef<HTMLDivElement>(null);
@@ -23,27 +30,41 @@ export function Select ({ options, placeholder = 'Select an option', onChange, c
     if (onChange) onChange(option);
   };
 
-  const toggleDropdown = () => { setIsOpen((prev) => !prev); };
+  const toggleDropdown = () => {
+    setIsOpen((prev) => !prev);
+  };
 
   const handleClickOutside = (event: MouseEvent) => {
-    if (selectRef.current && !selectRef.current.contains(event.target as Node)) {
+    if (
+      selectRef.current &&
+      !selectRef.current.contains(event.target as Node)
+    ) {
       setIsOpen(false);
     }
   };
 
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
-    return () => { document.removeEventListener('mousedown', handleClickOutside); };
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
   }, []);
 
   return (
     <div className={`app_select ${className}`} ref={selectRef}>
+      <label className='app_input_con__lbl'>{label}</label>
       <div
-        className={`app_select-trigger ${isOpen ? 'app_select-trigger--active' : ''}`}
+        className={`mt-2 app_select-trigger ${
+          isOpen ? 'app_select-trigger--active' : ''
+        }`}
         onClick={toggleDropdown}
       >
         {selectedOption ? selectedOption.label : placeholder}
-        <span className={`app_select-arrow ${isOpen ? 'app_select-arrow--open' : ''}`} />
+        <span
+          className={`app_select-arrow ${
+            isOpen ? 'app_select-arrow--open' : ''
+          }`}
+        />
       </div>
 
       {isOpen && (
@@ -52,9 +73,13 @@ export function Select ({ options, placeholder = 'Select an option', onChange, c
             <div
               key={option.value}
               className={`app_select-option ${
-                selectedOption?.value === option.value ? 'app_select-option--selected' : ''
+                selectedOption?.value === option.value
+                  ? 'app_select-option--selected'
+                  : ''
               }`}
-              onClick={() => { handleOptionClick(option); }}
+              onClick={() => {
+                handleOptionClick(option);
+              }}
             >
               {option.label}
             </div>

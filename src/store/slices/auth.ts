@@ -1,15 +1,18 @@
 import config from '@/lib/config';
 import { getLocalStorage } from '@/services';
+import type { IRoles } from '@/types';
 import { createSlice } from '@reduxjs/toolkit';
 
 interface IAuth {
   loggedIn: boolean
+  role: IRoles | null
 }
 
 const userDetails = getLocalStorage(config.tokenKey);
 
 const initialState: IAuth = {
   loggedIn: !!userDetails?.accessToken || false,
+  role: null
 };
 
 export const authSlice = createSlice({
@@ -21,7 +24,7 @@ export const authSlice = createSlice({
       return {
         ...state,
         loggedIn: true,
-        user: payload,
+        user: payload
       };
     },
 
