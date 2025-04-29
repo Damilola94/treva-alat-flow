@@ -56,12 +56,10 @@ const routes = {
         path: '/client/onboarding/email-verification',
       },
     },
-
     dashboard: {
       entry: {
         path: '/client/dashboard',
       },
-
       getStarted: {
         path: '/client/dashboard/get-started',
 
@@ -80,8 +78,11 @@ const routes = {
         done: {
           path: '/client/dashboard/get-started/done',
         }
-      }
-    }
+      },
+      hiringManagement: {
+        path: '/client/dashboard/hiring-management'
+      },
+    },
   },
 
   creatives: {

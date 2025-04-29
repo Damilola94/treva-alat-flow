@@ -14,7 +14,7 @@ export function useIsActive () {
 
       if (route === dr.entry.path && pathname !== route) return false
 
-      return pathname.includes(route)
+      return pathname === (route)
     },
     [pathname]
   )

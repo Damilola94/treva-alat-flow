@@ -3,13 +3,14 @@ import Image, { type StaticImageData } from 'next/image'
 export interface IProps {
   className?: string
   src: StaticImageData | string
-  size?: number | 'sm' | 'md' | 'lg'
+  size?: number | 'sm' | 'md' | 'lg' | 'xl'
 }
 
 const sizeMap = {
   sm: { value: 32 },
   md: { value: 48 },
-  lg: { value: 64 }
+  lg: { value: 64 },
+  xl: { value: 80 }
 }
 
 export function Avatar (props: IProps) {

@@ -1,14 +1,14 @@
 'use client';
 
 import { Suspense, useEffect, useState } from 'react';
-// import { usePathname } from 'next/navigation';
 import {
   Header,
-  Sidebar
-  // SubscribeToPlan,
-  // SubscribeToPlanLeft
+  Sidebar,
 } from '@/components/shared/dashboard';
 import { Inter } from 'next/font/google';
+import { GlobeAlt, Grid, Users } from '@/components/shared';
+import routes from '@/lib/routes';
+import queries from '@/services/queries/profile';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -17,7 +17,13 @@ const inter = Inter({
 
 function Main ({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false);
-  // const pathname = usePathname();
+  const { data } = queries.read();
+
+  const clientMenuItems = [
+    { label: 'Get Started', href: routes.client.dashboard.getStarted.path, icon: <GlobeAlt /> },
+    { label: 'Dashboard', href: routes.client.dashboard.entry.path, icon: <Grid /> },
+    { label: 'Hiring Management', href: routes.client.dashboard.hiringManagement.path, icon: <Users /> }
+  ];
 
   useEffect(() => {
     setMounted(true);
@@ -31,16 +37,9 @@ function Main ({ children }: { children: React.ReactNode }) {
       <div
           className="z-50 md:relative fixed top-0"
         >
-          <Sidebar />
+   <Sidebar menuItems={clientMenuItems} logoHref={routes.client.dashboard.entry.path} userData={data} />;
         </div>
         <div className="app_dash_main__ctt">
-          {/* {pathname === '/creatives/dashboard/get-started'
-            ? (
-            <SubscribeToPlan />
-              )
-            : (
-            <SubscribeToPlanLeft />
-              )} */}
           <Header />
           <div className="app_dash_main__ctt__mn w-full">
             <div className="app_dashboard_page">{children}</div>

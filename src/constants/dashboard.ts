@@ -31,7 +31,7 @@ export const clientOnboardingSteps = [
     label: 'Personal details',
     details:
       "You're almost there! Complete your onboarding to unlock the full potential of",
-    href: routes.creatives.dashboard.getStarted.professionalDetails.path,
+    href: routes.client.dashboard.getStarted.personalDetails.path,
   },
 
   {
@@ -39,7 +39,7 @@ export const clientOnboardingSteps = [
     label: 'Social media details',
     details:
       "You're almost there! Complete your onboarding to unlock the full potential of ",
-    href: routes.creatives.dashboard.getStarted.socialMediaDetails.path,
+    href: routes.client.dashboard.getStarted.socialMediaDetails.path,
   },
 
   {
@@ -47,7 +47,7 @@ export const clientOnboardingSteps = [
     label: 'Bio',
     details:
       "You're almost there! Complete your onboarding to unlock the full potential of",
-    href: routes.creatives.dashboard.getStarted.bio.path,
+    href: routes.client.dashboard.getStarted.bio.path,
   },
 ];
 
