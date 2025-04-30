@@ -6,7 +6,7 @@ import {
   Sidebar,
 } from '@/components/shared/dashboard';
 import { Inter } from 'next/font/google';
-import { Users } from '@/components/shared';
+import { Column, Users } from '@/components/shared';
 import routes from '@/lib/routes';
 import queries from '@/services/queries/profile';
 
@@ -20,7 +20,9 @@ function Main ({ children }: { children: React.ReactNode }) {
   const { data } = queries.read();
 
   const clientMenuItems = [
-    { label: 'Hiring Management', href: routes.client.dashboard.hiringManagement.path, icon: <Users /> }
+    { label: 'Hiring Management', href: routes.client.dashboard.hiringManagement.path, icon: <Users /> },
+    { label: 'Project Management', href: routes.client.dashboard.projectManagement.path, icon: <Column /> },
+
   ];
 
   useEffect(() => {
