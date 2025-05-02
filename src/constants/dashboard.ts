@@ -56,3 +56,54 @@ export const clientDashboardTasks = [
   { label: 'Pending Project', value: 'Pending' },
   { label: 'Completed Project', value: 'Completed' },
 ];
+
+export const mockProjects = [
+  {
+    id: '1',
+    name: 'E-commerce Website Redesign',
+    creative: 'Alex Johnson',
+    dueDate: 'June 15, 2023',
+    priority: 'High',
+    status: 'Completed'
+  },
+  {
+    id: '2',
+    name: 'Summer Marketing Campaign',
+    creative: 'Sarah Miller',
+    dueDate: 'July 1, 2023',
+    priority: 'Medium',
+    status: 'Pending'
+  },
+  {
+    id: '3',
+    name: 'Product Packaging Design',
+    creative: 'Jamie Chen',
+    dueDate: 'May 30, 2023',
+    priority: 'Low',
+    status: 'Due'
+  },
+  {
+    id: '4',
+    name: 'Brand Identity Refresh',
+    creative: 'Taylor Williams',
+    dueDate: 'April 10, 2023',
+    priority: 'Low',
+    status: 'Completed'
+  },
+  {
+    id: '5',
+    name: 'Mobile App UI/UX',
+    creative: 'Jordan Smith',
+    dueDate: 'August 5, 2023',
+    priority: 'High',
+    status: 'Pending'
+  },
+  {
+    id: '6',
+    name: 'Social Media Graphics',
+    creative: 'Morgan Taylor',
+    dueDate: 'June 28, 2023',
+    priority: 'Medium',
+    status: 'Due'
+  }
+];
