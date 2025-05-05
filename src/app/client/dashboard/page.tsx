@@ -1,5 +1,5 @@
-import { Dashboard } from '@/components/views';
+import { ClientDashboard } from '@/components/views';
 
-export default function DashboardPage () {
-  return <Dashboard />;
+export default function ClientPage () {
+  return <ClientDashboard />;
 }

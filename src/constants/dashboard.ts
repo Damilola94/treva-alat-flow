@@ -22,7 +22,7 @@ export const dashboardCards = [
     btnText: 'Continue',
     bottomInfo: '1/3 steps',
     bg: 'linear-gradient(135deg, rgba(199, 255, 107, 0) 0%, #c7ff6b 100%)',
-  }
+  },
 ];
 
 export const clientOnboardingSteps = [
@@ -31,7 +31,7 @@ export const clientOnboardingSteps = [
     label: 'Personal details',
     details:
       "You're almost there! Complete your onboarding to unlock the full potential of",
-    href: routes.creatives.dashboard.getStarted.professionalDetails.path,
+    href: routes.client.dashboard.getStarted.personalDetails.path,
   },
 
   {
@@ -39,7 +39,7 @@ export const clientOnboardingSteps = [
     label: 'Social media details',
     details:
       "You're almost there! Complete your onboarding to unlock the full potential of ",
-    href: routes.creatives.dashboard.getStarted.socialMediaDetails.path,
+    href: routes.client.dashboard.getStarted.socialMediaDetails.path,
   },
 
   {
@@ -47,6 +47,63 @@ export const clientOnboardingSteps = [
     label: 'Bio',
     details:
       "You're almost there! Complete your onboarding to unlock the full potential of",
-    href: routes.creatives.dashboard.getStarted.bio.path,
+    href: routes.client.dashboard.getStarted.bio.path,
+  },
+];
+
+export const clientDashboardTasks = [
+  { label: 'All Project', value: 'All' },
+  { label: 'Pending Project', value: 'Pending' },
+  { label: 'Completed Project', value: 'Completed' },
+];
+
+export const mockProjects = [
+  {
+    id: '1',
+    name: 'E-commerce Website Redesign',
+    creative: 'Alex Johnson',
+    dueDate: 'June 15, 2023',
+    priority: 'High',
+    status: 'Completed'
+  },
+  {
+    id: '2',
+    name: 'Summer Marketing Campaign',
+    creative: 'Sarah Miller',
+    dueDate: 'July 1, 2023',
+    priority: 'Medium',
+    status: 'Pending'
+  },
+  {
+    id: '3',
+    name: 'Product Packaging Design',
+    creative: 'Jamie Chen',
+    dueDate: 'May 30, 2023',
+    priority: 'Low',
+    status: 'Due'
+  },
+  {
+    id: '4',
+    name: 'Brand Identity Refresh',
+    creative: 'Taylor Williams',
+    dueDate: 'April 10, 2023',
+    priority: 'Low',
+    status: 'Completed'
+  },
+  {
+    id: '5',
+    name: 'Mobile App UI/UX',
+    creative: 'Jordan Smith',
+    dueDate: 'August 5, 2023',
+    priority: 'High',
+    status: 'Pending'
+  },
+  {
+    id: '6',
+    name: 'Social Media Graphics',
+    creative: 'Morgan Taylor',
+    dueDate: 'June 28, 2023',
+    priority: 'Medium',
+    status: 'Due'
   }
 ];

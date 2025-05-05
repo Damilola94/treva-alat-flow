@@ -1,0 +1,95 @@
+/** @format */
+
+.container {
+  max-width: 100% !important;
+  width: 100%;
+  /* max-height: 100px; */
+  position: relative;
+  overflow: hidden;
+}
+
+.container * {
+  letter-spacing: 0.5px;
+}
+
+.container .table-container {
+  width: 100%;
+  /* height: calc(676px - 65px); */
+  overflow-x: auto;
+  overflow-y: auto;
+}
+
+.container table {
+  width: 100%;
+  font-weight: 700;
+  font-size: 14px;
+  /* height: 100%; */
+  /* overflow-x: auto;
+	overflow-y: auto; */
+  /* border-collapse: inherit;
+	border-spacing: 10px 0; */
+}
+
+.container table thead {
+  font-weight: 700;
+  font-size: 14px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #ebeff2;
+}
+
+.container table thead th {
+  white-space: nowrap;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 26px;
+  padding-right: 26px;
+  text-align: left;
+}
+
+.container table thead tr {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-right: 26px;
+  text-align: left;
+}
+
+.container table tbody {
+  font-weight: 400;
+}
+
+.container table tbody tr {
+  border: 1px solid #e0e0e0;
+}
+
+.container table tbody td {
+  padding-left: 26px;
+  padding-right: 26px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  min-height: 50px;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.no-spin::-webkit-inner-spin-button,
+.no-spin::-webkit-outer-spin-button {
+  display: none;
+  appearance: none;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.no-spin {
+  appearance: none;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+}

@@ -21,6 +21,7 @@
     "@radix-ui/react-switch": "^1.0.3",
     "@reactour/tour": "^3.6.1",
     "@reduxjs/toolkit": "^2.7.0",
+    "@tanstack/react-table": "^8.21.3",
     "@types/aos": "^3.0.7",
     "@visx/text": "^3.3.0",
     "aos": "^2.3.4",
@@ -52,6 +53,7 @@
     "yup": "^1.4.0"
   },
   "devDependencies": {
+    "@svgr/webpack": "^8.1.0",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

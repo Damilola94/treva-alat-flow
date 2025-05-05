@@ -6,7 +6,7 @@ import {
   Sidebar,
 } from '@/components/shared/dashboard';
 import { Inter } from 'next/font/google';
-import { Users } from '@/components/shared';
+import { Column, Users, GlobeAlt, Grid } from '@/components/shared';
 import routes from '@/lib/routes';
 import queries from '@/services/queries/profile';
 
@@ -20,7 +20,11 @@ function Main ({ children }: { children: React.ReactNode }) {
   const { data } = queries.read();
 
   const clientMenuItems = [
-    { label: 'Hiring Management', href: routes.client.dashboard.hiringManagement.path, icon: <Users /> }
+    { label: 'Get Started', href: routes.client.dashboard.getStarted.path, icon: <GlobeAlt /> },
+    { label: 'Dashboard', href: routes.client.dashboard.entry.path, icon: <Grid /> },
+    { label: 'Hiring Management', href: routes.client.dashboard.hiringManagement.path, icon: <Users /> },
+    { label: 'Project Management', href: routes.client.dashboard.projectManagement.path, icon: <Column /> },
+
   ];
 
   useEffect(() => {

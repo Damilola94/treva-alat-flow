@@ -17,5 +17,4 @@ export enum ProjectStatus {
   Completed = 'Completed',
   Due = 'Due',
   ToDo = 'ToDo'
-
 }
