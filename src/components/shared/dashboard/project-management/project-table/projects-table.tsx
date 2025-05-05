@@ -82,7 +82,7 @@ export function ProjectsTable (props: IProps) {
   }, [projectPriority, projectStatus, category, currentPage, refetch]);
 
   const handleRowSelect = (value: string) => {
-    rt.push(`/dashboard/project-management/${value}`)
+    rt.push(`/creatives/dashboard/project-management/${value}`)
   }
 
   const handlePageClick = (selectedItem: { selected: number }) => {

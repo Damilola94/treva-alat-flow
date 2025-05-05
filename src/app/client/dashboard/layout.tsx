@@ -2,6 +2,7 @@
 
 import { Suspense, useEffect, useState } from 'react';
 import {
+  Footer,
   Header,
   Sidebar,
 } from '@/components/shared/dashboard';
@@ -34,7 +35,7 @@ function Main ({ children }: { children: React.ReactNode }) {
   if (!mounted) return null;
 
   return (
-    <main className="app_dash_main flex-col">
+    <main className="app_dash_main flex-col min-h-screen">
       <div className="app_dash_main flex-1 relative">
       <div
           className="z-50 md:relative fixed top-0"
@@ -45,6 +46,7 @@ function Main ({ children }: { children: React.ReactNode }) {
           <Header />
           <div className="app_dash_main__ctt__mn w-full">
             <div className="app_dashboard_page">{children}</div>
+        <Footer/>
           </div>
         </div>
       </div>

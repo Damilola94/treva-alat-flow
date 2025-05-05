@@ -1,4 +1,5 @@
 export { Header } from './header'
+export { Footer } from './footer'
 export { SubscribeToPlan } from './subscribe-to-plan'
 export { SubscribeToPlanLeft } from './subscribe-to-plan-left'
 export { Profile } from './profile'
