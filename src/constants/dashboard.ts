@@ -62,6 +62,8 @@ export const mockProjects = [
     id: '1',
     name: 'E-commerce Website Redesign',
     creative: 'Alex Johnson',
+    budget: '10000',
+    startDate: 'June 15, 2020',
     dueDate: 'June 15, 2023',
     priority: 'High',
     status: 'Completed'
@@ -70,6 +72,8 @@ export const mockProjects = [
     id: '2',
     name: 'Summer Marketing Campaign',
     creative: 'Sarah Miller',
+    budget: '10000',
+    startDate: 'June 15, 2020',
     dueDate: 'July 1, 2023',
     priority: 'Medium',
     status: 'Pending'
@@ -78,6 +82,8 @@ export const mockProjects = [
     id: '3',
     name: 'Product Packaging Design',
     creative: 'Jamie Chen',
+    budget: '10000',
+    startDate: 'June 15, 2020',
     dueDate: 'May 30, 2023',
     priority: 'Low',
     status: 'Due'
@@ -86,6 +92,8 @@ export const mockProjects = [
     id: '4',
     name: 'Brand Identity Refresh',
     creative: 'Taylor Williams',
+    budget: '10000',
+    startDate: 'June 15, 2020',
     dueDate: 'April 10, 2023',
     priority: 'Low',
     status: 'Completed'
@@ -94,6 +102,8 @@ export const mockProjects = [
     id: '5',
     name: 'Mobile App UI/UX',
     creative: 'Jordan Smith',
+    budget: '10000',
+    startDate: 'June 15, 2020',
     dueDate: 'August 5, 2023',
     priority: 'High',
     status: 'Pending'
@@ -102,6 +112,8 @@ export const mockProjects = [
     id: '6',
     name: 'Social Media Graphics',
     creative: 'Morgan Taylor',
+    budget: '10000',
+    startDate: 'June 15, 2020',
     dueDate: 'June 28, 2023',
     priority: 'Medium',
     status: 'Due'

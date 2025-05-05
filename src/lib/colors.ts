@@ -30,6 +30,7 @@ export const rootColors = {
 
   'iris-60': '#A5A6F6',
 
+  'treva-purple': '#7B37F0',
   'treva-purple-50': '#EFF1FE',
   'treva-purple-100': '#E2E4FD',
   'treva-purple-500': '#7D6CE8',

@@ -36,6 +36,7 @@ interface TableProps<T> {
   setPagination: React.Dispatch<
   React.SetStateAction<{ pageIndex: number, pageSize: number }>
   >
+  onRowClick?: (id: string) => void
 }
 
 const Table = <T,>({
@@ -54,6 +55,7 @@ const Table = <T,>({
   viewAllLink = '',
   title,
   setPagination,
+  onRowClick,
 }: TableProps<T>) => {
   const [rowSelection, setRowSelection] = React.useState({});
 
@@ -186,7 +188,10 @@ const Table = <T,>({
                       key={row.id}
                       style={{
                         borderBottom: rowDivider ? '1px solid #EBEFF2' : 'none',
+                        cursor: onRowClick ? 'pointer' : 'default',
                       }}
+                      // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
+                      onClick={() => onRowClick && onRowClick(row.id)}
                     >
                       <td>
                         {pagination.pageIndex * pagination.pageSize +

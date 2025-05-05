@@ -9,6 +9,8 @@ interface ModalProps {
   title?: string
   children: React.ReactNode
   footerChildren?: React.ReactNode
+  actionText?: string
+  onAction?: () => void
 }
 
 const CenterModal: React.FC<ModalProps> = ({
@@ -22,42 +24,51 @@ const CenterModal: React.FC<ModalProps> = ({
 }) => {
   if (!isOpen) return null;
 
-  const topBgImg = headerImageType === 1 ? 'url(/media/images/projectmanagement/top-image-create-project.png)' : headerImageType === 2 && 'url(/media/images/projectmanagement/top-image-project.png)';
+  const topBgImg =
+    headerImageType === 1
+      ? 'url(/media/images/projectmanagement/top-image-create-project.png)'
+      : headerImageType === 2
+      ? 'url(/media/images/projectmanagement/top-image-project.png)'
+      : '';
 
   return (
-    <div className="fixed font-spaceGrotesk inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4 font-spaceGrotesk">
+      {/* Overlay that closes modal when clicked outside content */}
       <div className="absolute inset-0" onClick={onClose} />
 
-      <div className="bg-[#fff] rounded-lg w-full max-w-lg overflow-hidden">
+      {/* Modal Content */}
+      <div
+        className="relative z-10 flex w-full max-w-lg flex-col overflow-hidden rounded-lg bg-white"
+        onClick={(e) => { e.stopPropagation(); }}
+      >
         {/* Modal Header */}
         <div
           style={{
-            backgroundImage: `${topBgImg}`,
+            backgroundImage: topBgImg,
             backgroundSize: headerImageType === 1 ? '110%' : '83%',
             backgroundPosition: 'center',
             backgroundColor: '#fff',
-            width: '100%',
           }}
           className="w-full p-4"
         >
           <div className="flex justify-end">
             <button
               onClick={onClose}
-              className="text-[#262626] hover:text-gray-700 p-2"
+              className="p-2 text-[#262626] hover:text-gray-700"
               aria-label="Close modal"
             >
               <X size={25} />
             </button>
           </div>
-          <h2 className="text-2xl font-bold">{title}</h2>
+          {title && <h2 className="text-2xl font-bold">{title}</h2>}
         </div>
 
-        {/* Modal Content - Accepts children */}
-        <div className="p-6">{children}</div>
+        {/* Modal Body */}
+        <div className="flex-1 overflow-y-auto p-6">{children}</div>
 
         {/* Modal Footer */}
         {showFooter && (
-          <div className="border-t border-[#E7E7E7] p-4 min-h-16 flex justify-end">
+          <div className="flex min-h-16 justify-end border-t border-[#E7E7E7] p-4">
             {footerChildren}
           </div>
         )}
