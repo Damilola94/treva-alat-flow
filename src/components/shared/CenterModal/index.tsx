@@ -2,27 +2,27 @@ import React from 'react';
 import { X } from 'lucide-react';
 
 interface ModalProps {
+  headerImageType?: number
   isOpen: boolean
   showFooter?: boolean
   onClose: () => void
   title?: string
-  actionText?: string
-  onAction?: () => void
   children: React.ReactNode
   footerChildren?: React.ReactNode
 }
 
 const CenterModal: React.FC<ModalProps> = ({
+  headerImageType = 1,
   isOpen,
   onClose,
   showFooter,
   title,
-  actionText = 'Proceed',
-  onAction,
   children,
-  footerChildren
+  footerChildren,
 }) => {
   if (!isOpen) return null;
+
+  const topBgImg = headerImageType === 1 ? 'url(/media/images/projectmanagement/top-image-create-project.png)' : headerImageType === 2 && 'url(/media/images/projectmanagement/top-image-project.png)';
 
   return (
     <div className="fixed font-spaceGrotesk inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
@@ -32,8 +32,8 @@ const CenterModal: React.FC<ModalProps> = ({
         {/* Modal Header */}
         <div
           style={{
-            backgroundImage: 'url(/media/images/projectmanagement/top-image-create-project.png)',
-            backgroundSize: '110%',
+            backgroundImage: `${topBgImg}`,
+            backgroundSize: headerImageType === 1 ? '110%' : '83%',
             backgroundPosition: 'center',
             backgroundColor: '#fff',
             width: '100%',

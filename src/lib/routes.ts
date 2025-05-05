@@ -82,6 +82,9 @@ const routes = {
       hiringManagement: {
         path: '/client/dashboard/hiring-management'
       },
+      projectManagement: {
+        path: '/client/dashboard/project-management'
+      },
     },
   },
 

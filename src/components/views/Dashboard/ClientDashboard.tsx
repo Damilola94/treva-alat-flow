@@ -102,7 +102,7 @@ export default function Dashboard () {
   // to handle pagination
   const [pagination, setPagination] = useState({
     pageIndex: 0,
-    pageSize: 4,
+    pageSize: 2,
   });
 
   const headers = [
@@ -217,6 +217,7 @@ export default function Dashboard () {
         />
 
         <CenterModal
+          headerImageType={1}
           title="Add Funds"
           isOpen={addFunds}
           onClose={() => {

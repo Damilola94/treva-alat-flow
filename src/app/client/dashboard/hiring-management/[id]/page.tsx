@@ -111,7 +111,6 @@ export default function CreativeProfile () {
           </div>
         </div>
 
-        {/* Tabs */}
         <div className="flex border-t border-gray-200 p-4 gap-2">
           {['About', 'Portfolio', 'Reviews'].map((tab) => (
             <button
