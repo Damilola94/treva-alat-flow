@@ -42,12 +42,6 @@ enum Tasks {
   'Ongoing Task' = 'Ongoing Task',
 }
 
-// enum Projects {
-//   // 'All Projects' = 'All Projects',
-//   'Completed Project' = 'Completed Project',
-//   'Due Project' = 'Pending Project',
-// }
-
 function EllIcon () {
   return (
     <svg
@@ -162,6 +156,7 @@ export default function Page () {
           </AnimatedModal>
         </Fragment>
       </RenderIf>
+
       <div className="app_dashboard_home__header">
         <div className="app_dashboard_home__header__profile_con app_dashboard_page__px">
           <div className="app_dashboard_home__header__profile">
@@ -220,15 +215,6 @@ export default function Page () {
               </Pill>
             ))}
           </div>
-
-          {/* <Button
-            size="md"
-            backgroundColor="shark-950"
-            className="app_auth_login__btn"
-          >
-            <PlusIcon />
-            Add new task
-          </Button> */}
         </div>
 
         <div className="app_dashboard_home__task__ctt app_dashboard_home__task__ctt--empty">
@@ -238,12 +224,6 @@ export default function Page () {
             description="Click “create project” button to get started"
           />
 
-          {/* <div className="flex flex-col gap-1">
-            <p className="app_dashboard_home__task__ctt__title">No task yet</p>
-            <p className="app_dashboard_home__task__ctt__desc">
-              Click “add new request” button to get started
-            </p>
-          </div> */}
         </div>
       </div>
 

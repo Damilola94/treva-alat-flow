@@ -11,7 +11,7 @@ import {
 import { Inter } from 'next/font/google';
 import routes from '@/lib/routes';
 import queries from '@/services/queries/profile';
-import { Column, File, GlobeAlt, Grid, Like, Reminder, Users } from '@/components/shared';
+import { Column, File, GlobeAlt, Grid, Like, Payment, Reminder, Users } from '@/components/shared';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -28,6 +28,7 @@ function Main ({ children }: { children: React.ReactNode }) {
     { label: 'Dashboard', href: routes.creatives.dashboard.entry.path, icon: <Grid /> },
     { label: 'Client Management', href: routes.creatives.dashboard.clientManagement.path, icon: <Users /> },
     { label: 'Project Management', href: routes.creatives.dashboard.projectManagement.path, icon: <Column /> },
+    { label: 'Payment', href: routes.creatives.dashboard.payment.path, icon: <Payment /> },
     { label: 'Contracts', href: '#', icon: <File /> },
     { label: 'Reminders and Notification', href: '#', icon: <Reminder /> },
     { label: 'Reviews and Feedback', href: '#', icon: <Like /> },
@@ -55,7 +56,8 @@ function Main ({ children }: { children: React.ReactNode }) {
             : (
             <SubscribeToPlanLeft />
               )}
-          <Header />
+                   <Header showBackArrow={pathname.startsWith('/creatives/dashboard/project-management/')} />
+
           <div className="app_dash_main__ctt__mn w-full">
             <div className="app_dashboard_page">{children}</div>
           </div>

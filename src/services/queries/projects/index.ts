@@ -660,7 +660,6 @@ const useCreatePayment = (options: { onSuccess?: (response: any) => void }) => {
     projectId: string
     amountPercentage: string
     dueDate: string
-    reminderFrequency: string
 
   }
 
@@ -671,7 +670,6 @@ const useCreatePayment = (options: { onSuccess?: (response: any) => void }) => {
         projectId: body.projectId,
         amountPercentage: body.amountPercentage,
         dueDate: body.dueDate,
-        reminderFrequency: body.reminderFrequency
       };
 
       mutate({
@@ -760,7 +758,6 @@ const useUpdatePayment = ({ paymentId = '', projectId = '' } = {}, options: { on
     paymentId: string
     amountPercentage: string
     dueDate: string
-    reminderFrequency: string
 
   }
 
@@ -771,8 +768,7 @@ const useUpdatePayment = ({ paymentId = '', projectId = '' } = {}, options: { on
         projectId: body.projectId,
         paymentId: body.paymentId,
         amountPercentage: body.amountPercentage,
-        dueDate: body.dueDate,
-        reminderFrequency: body.reminderFrequency
+        dueDate: body.dueDate
       };
 
       mutate({

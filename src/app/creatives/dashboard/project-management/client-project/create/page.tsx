@@ -42,7 +42,6 @@ const step3Values = {
     {
       amountPercentage: '',
       dueDate: '',
-      reminderFrequency: ''
     }
   ]
 }
@@ -85,7 +84,6 @@ export interface InitialStep3Values {
   payment: Array<{
     amountPercentage: string
     dueDate: string
-    reminderFrequency: string
   }>
 }
 

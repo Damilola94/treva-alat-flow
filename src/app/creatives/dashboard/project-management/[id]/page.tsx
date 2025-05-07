@@ -67,7 +67,7 @@ export default function Page () {
 
       </AnimatedModal>
 
-      <div className="app_dashboard_home__task app_dashboard_page__px">
+      <div className="app_dashboard_home__task app_dashboard_page__px !bg-white border border-[#E7E7E7]">
         <div className="app_dashboard_home__task__hdr flex items-center justify-between flex-wrap gap-2 mt-4">
           <div className="flex justify-center items-center">
             <div className="flex items-center gap-4">
@@ -108,12 +108,18 @@ export default function Page () {
           </div>
         </div>
 
-        <div className="mt-10 block md:flex md:justify-between w-full">
+        <div className="my-4 block md:flex md:justify-between w-full">
           {/* <ButtonGroup /> */}
           <div className="project_action_group">
+          <div className='flex items-center gap-1 mb-3 md:mb-0 md:gap-2'>
+              <Calendar />
+              Start:
+              <div className="project_action_group__button">{formatDate(data.expectedDeliveryDate)}</div>
+
+            </div>
             <div className='flex items-center gap-1 mb-3 md:mb-0 md:gap-2'>
               <Calendar />
-              Expected date of Delivery:
+              End:
               <div className="project_action_group__button">{formatDate(data.expectedDeliveryDate)}</div>
 
             </div>
@@ -137,7 +143,9 @@ export default function Page () {
           </div>
         </div>
 
-        <div className="app_dashboard_home__task__hdr flex-wrap gap-2 mt-4">
+    </div>
+    <div className='app_dashboard_home__task app_dashboard_page__px !bg-white border border-[#E7E7E7]'>
+        <div className="app_dashboard_home__task__hdr flex-wrap gap-2 mt-">
           <div className="flex flex-wrap gap-2">
             {tabs.map((tab) => (
               <Pill
@@ -162,11 +170,15 @@ export default function Page () {
             }
           </div>
         </div>
+
+    </div>
+    <div className='app_dashboard_page__px mt-10'>
         {activeTab === 'task' && <TaskTable viewType={viewType} />}
         {activeTab === 'deliverables' && <DeliverableTable />}
         {activeTab === 'payment' && <PaymentTable />}
 
-      </div>
     </div>
+
+      </div>
   );
 }

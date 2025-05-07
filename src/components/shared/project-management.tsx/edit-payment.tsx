@@ -13,7 +13,6 @@ interface Payment {
   paymentId: string
   amountPercentage: string
   dueDate: string
-  reminderFrequency: string
 }
 
 interface IProps {
@@ -30,19 +29,11 @@ const validationSchema = Yup.object().shape({
   dueDate: Yup.date()
     .min(new Date(), 'Due date must be in the future')
     .optional(),
-  reminderFrequency: Yup.string().optional()
 });
-
-const options = [
-  { value: 'Daily', label: 'Daily' },
-  { value: 'Weekly', label: 'Weekly' },
-  { value: 'Monthly', label: 'Monthly' }
-];
 
 const initialValues = {
   amountPercentage: '',
   dueDate: '',
-  reminderFrequency: ''
 };
 
 type InitialValues = ReturnType<() => typeof initialValues>
@@ -78,9 +69,8 @@ export default function EditPayment (props: IProps) {
       projectId,
       paymentId,
       amountPercentage: values.amountPercentage,
-      dueDate: values.dueDate,
-      reminderFrequency: values.reminderFrequency
-    };
+      dueDate: values.dueDate
+        };
 
     mutate(formData);
   };
@@ -147,25 +137,6 @@ export default function EditPayment (props: IProps) {
                                         errors={errors}
                                         touched={touched}
                                     />
-
-                                    <div className="w-full mt-5">
-                                        <select
-                                            name="reminderFrequency"
-                                            value={values.reminderFrequency}
-                                            onChange={async (e) => await setFieldValue('reminderFrequency', e.target.value)}
-                                            className="w-full border-b-[#d1d5db] p-2 focus:ring-1 focus:ring-[#7B37F0] bg-white text-left"
-                                        >
-                                            <option value="" disabled>
-                                                Select Reminder Frequency
-                                            </option>
-                                            {options.map((option) => (
-                                                <option key={option.value} value={option.value}>
-                                                    {option.label}
-                                                </option>
-                                            ))}
-                                        </select>
-
-                                    </div>
 
                                     <div className="flex justify-between space-x-10 absolute bottom-0 w-full -left-5 mb-5">
                                         <Button

@@ -4,6 +4,7 @@ import clientManagement from '@/lib/assets/client-management';
 import { ArrowRight, Search, Star } from 'lucide-react';
 import { Avatar } from '@/components/shared/avatar';
 import { useRouter } from 'next/navigation';
+import { Pagination } from '@/components/shared';
 
 const kpis = [
   { label: 'Onboarded Creatives', value: '35' },
@@ -120,6 +121,17 @@ export default function Page () {
           </div>
         ))}
       </div>
+       <div className="bg-white app_table__pagination">
+                <Pagination
+                  paginate={{
+                    pageCount: 2,
+                    currentPage: 1,
+                    marginPagesDisplayed: 2,
+                    pageRangeDisplayed: 5
+                  }}
+                  // handlePageClick={handlePageClick}
+                />
+              </div>
     </div>
   )
 }

@@ -3,10 +3,11 @@ import React from 'react';
 
 type PriorityLevel = 'High' | 'Medium' | 'Low'
 type StatusType = 'Pending' | 'Due' | 'Completed'
-type LabelType = PriorityLevel | StatusType
+type TransactionType = 'Credit' | 'Debit'
+type LabelType = PriorityLevel | StatusType | TransactionType
 
 interface LabelProps {
-  type: 'priority' | 'status'
+  type: 'priority' | 'status' | 'type'
   value: LabelType
   className?: string
   showIcon?: boolean
@@ -53,10 +54,23 @@ const Label: React.FC<LabelProps> = ({
     },
   };
 
+  const transactionConfig = {
+    Credit: {
+      style: 'text-[#06B340]',
+    },
+    Debit: {
+      style: 'text-[#E7211B]'
+    },
+  }
+
   const isPriority = type === 'priority';
+  const isStatus = type === 'status';
+
   const config = isPriority
     ? priorityConfig[value as PriorityLevel]
-    : statusConfig[value as StatusType];
+    : isStatus
+      ? statusConfig[value as StatusType]
+      : transactionConfig[value as TransactionType];
 
   const style = config?.style ?? 'bg-gray-100 text-gray-800';
   const icon = isPriority ? priorityConfig[value as PriorityLevel]?.icon : null;
