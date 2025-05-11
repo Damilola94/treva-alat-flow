@@ -57,6 +57,33 @@ export const clientDashboardTasks = [
   { label: 'Completed Project', value: 'Completed' },
 ];
 
+export const invoiceTabs = [
+  { label: 'All Invoice', value: 'All Invoice' },
+  { label: 'Pending Invoice', value: 'Pending Invoice' },
+  { label: 'Closed Invoice', value: 'Closed Invoice' },
+  { label: 'Drafts', value: 'Drafts' },
+];
+
+export const popoverItems = [
+  { label: 'All Project', value: '' },
+  { label: 'Personal Project', value: 'PersonalProject' },
+  { label: 'Client Project', value: 'ClientProject' },
+]
+
+export const priorityItems = [
+  { label: 'All', value: '' },
+  { label: 'Low', value: 'Low' },
+  { label: 'Medium', value: 'Medium' },
+  { label: 'High', value: 'High' },
+]
+
+ export const statusItems = [
+    { label: 'All', value: '' },
+    { label: 'Pending', value: 'Pending' },
+    { label: 'Completed', value: 'Completed' },
+    { label: 'Due', value: 'Due' },
+  ]
+
 export const mockProjects = [
   {
     id: '1',
@@ -119,3 +146,121 @@ export const mockProjects = [
     status: 'Due'
   }
 ];
+
+export const mockTransactions = [
+  {
+    id: '1',
+    description: 'Project funding inflow',
+    amount: 100000,
+    recipient: 'Wema Bank',
+    date: new Date('2023-04-14'),
+    type: 'Credit',
+  },
+  {
+    id: '2',
+    description: 'Project funding inflow',
+    amount: 100000,
+    recipient: 'Wema Bank',
+    date: new Date('2023-04-14'),
+    type: 'Debit',
+  },
+  {
+    id: '3',
+    description: 'Project funding inflow',
+    amount: 100000,
+    recipient: 'Wema Bank',
+    date: new Date('2023-04-14'),
+    type: 'Debit',
+  },
+  {
+    id: '4',
+    description: 'Project funding inflow',
+    amount: 100000,
+    recipient: 'Wema Bank',
+    date: new Date('2023-04-14'),
+    type: 'Credit',
+  },
+  {
+    id: '5',
+    description: 'Salary payment',
+    amount: 250000,
+    recipient: 'GTBank',
+    date: new Date('2023-04-10'),
+    type: 'Debit',
+  },
+  {
+    id: '6',
+    description: 'Client payment',
+    amount: 350000,
+    recipient: 'First Bank',
+    date: new Date('2023-04-05'),
+    type: 'Credit',
+  },
+  {
+    id: '7',
+    description: 'Office supplies',
+    amount: 45000,
+    recipient: 'Office Depot',
+    date: new Date('2023-04-02'),
+    type: 'Debit',
+  },
+  {
+    id: '8',
+    description: 'Consulting fee',
+    amount: 200000,
+    recipient: 'Access Bank',
+    date: new Date('2023-03-28'),
+    type: 'Credit',
+  },
+  {
+    id: '9',
+    description: 'Equipment purchase',
+    amount: 180000,
+    recipient: 'Tech Store',
+    date: new Date('2023-03-25'),
+    type: 'Debit',
+  },
+  {
+    id: '10',
+    description: 'Marketing campaign',
+    amount: 120000,
+    recipient: 'Ad Agency',
+    date: new Date('2023-03-20'),
+    type: 'Debit',
+  },
+]
+
+export const mockInvoices = [
+  {
+    id: 1,
+    projectName: 'Website Redesign',
+    client: 'Acme Corporation',
+    amount: '₦ 250,000',
+    dueDate: 'May 15, 2025',
+    status: 'Completed',
+  },
+  {
+    id: 2,
+    projectName: 'Mobile App Development',
+    client: 'TechStart Inc.',
+    amount: '₦ 450,000',
+    dueDate: 'June 10, 2025',
+    status: 'Pending',
+  },
+  {
+    id: 3,
+    projectName: 'Brand Identity Design',
+    client: 'Green Ventures',
+    amount: '₦ 180,000',
+    dueDate: 'May 5, 2025',
+    status: 'Due',
+  },
+  {
+    id: 4,
+    projectName: 'SEO Optimization',
+    client: 'Global Solutions',
+    amount: '₦ 120,000',
+    dueDate: 'July 20, 2025',
+    status: 'Completed',
+  },
+]

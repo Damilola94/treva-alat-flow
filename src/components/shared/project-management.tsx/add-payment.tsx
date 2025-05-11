@@ -22,14 +22,7 @@ const validationSchema = Yup.object().shape({
   dueDate: Yup.date()
     .min(new Date(), 'Due date must be in the future')
     .required('Please select a due date'),
-  reminderFrequency: Yup.string().required('Please enter a reminder frequency')
 });
-
-const options = [
-  { value: 'Daily', label: 'Daily' },
-  { value: 'Weekly', label: 'Weekly' },
-  { value: 'Monthly', label: 'Monthly' }
-];
 
 export default function AddPayment (props: IProps) {
   const { onClose, projectId, setPaymentId } = props
@@ -49,9 +42,7 @@ export default function AddPayment (props: IProps) {
   const initialValues = {
     projectId,
     amountPercentage: '',
-    dueDate: '',
-    reminderFrequency: ''
-
+    dueDate: ''
   };
 
   type InitialValues = ReturnType<() => typeof initialValues>
@@ -79,7 +70,6 @@ export default function AddPayment (props: IProps) {
                               handleChange,
                               handleBlur,
                               handleSubmit,
-                              setFieldValue,
                               errors,
                               touched
                             }) => (
@@ -110,25 +100,6 @@ export default function AddPayment (props: IProps) {
                                         errors={errors}
                                         touched={touched}
                                     />
-
-                                    <div className="w-full mt-5">
-                                        <select
-                                            name="reminderFrequency"
-                                            value={values.reminderFrequency}
-                                            onChange={async (e) => await setFieldValue('reminderFrequency', e.target.value)}
-                                            className="w-full border-b-[#d1d5db] p-2 focus:ring-1 focus:ring-[#7B37F0] bg-white text-left"
-                                        >
-                                            <option value="" disabled>
-                                                Select Reminder Frequency
-                                            </option>
-                                            {options.map((option) => (
-                                                <option key={option.value} value={option.value}>
-                                                    {option.label}
-                                                </option>
-                                            ))}
-                                        </select>
-
-                                    </div>
 
                                     <div className="flex justify-between space-x-10 absolute bottom-0 w-full -left-5 mb-5">
                                         <Button

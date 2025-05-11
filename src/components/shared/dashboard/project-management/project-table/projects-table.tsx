@@ -60,7 +60,7 @@ export function ProjectsTable (props: IProps) {
   // const { onEdit, onDelete } = props;
   const rt = useRouter()
   const [currentPage, setCurrentPage] = useState(1)
-  const pageSize = 50
+  const pageSize = 10
   const { data, refetch, isLoading } = queries.read({
     projectType: category,
     priority: projectPriority,
@@ -197,7 +197,7 @@ export function ProjectsTable (props: IProps) {
         </div>
 
         {/* Pagination */}
-        <div className="bg-white app_table__pagination">
+        <div className="bg-white app_table__pagination !mb-20">
           <Pagination
             paginate={{
               pageCount: data?.metaData?.totalPages ?? 1,

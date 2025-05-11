@@ -85,6 +85,9 @@ const routes = {
       projectManagement: {
         path: '/client/dashboard/project-management'
       },
+      payment: {
+        path: '/client/dashboard/payment'
+      }
     },
   },
 
@@ -93,7 +96,6 @@ const routes = {
       inputEmail: {
         path: '/creatives/onboarding/input-email',
       },
-
       accountType: {
         path: '/creatives/onboarding/account-type',
       },
@@ -204,6 +206,9 @@ const routes = {
       clientManagement: {
         path: '/creatives/dashboard/client-management',
       },
+      payment: {
+        path: '/creatives/dashboard/payment'
+      }
     },
   },
 };

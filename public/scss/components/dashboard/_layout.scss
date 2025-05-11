@@ -24,6 +24,7 @@
 
   &__aside {
     background-color: #fff;
+    border-right: #E7E7E7 solid 1px;
     height: 100%;
     padding: 24px 0;
     min-height: 100vh;
@@ -228,11 +229,13 @@
   &__hdr {
     display: flex;
     justify-content: space-between;
+    background-color: #fff;
+    border: #E7E7E7 solid 1px;
     align-items: center;
     padding: 1rem 2rem;
     min-height: var(--header-h);
 
-    box-shadow: 0px 4px 10px 0px #0000001a;
+    // box-shadow: 0px 4px 10px 0px #0000001a;
 
     &__img_link {
       display: none;

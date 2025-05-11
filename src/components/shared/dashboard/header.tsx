@@ -12,6 +12,10 @@ import { ArrowLeft, ArrowRightToBracket, Bell, Logo } from '../svgs'
 import Link from 'next/link'
 import routes from '@/lib/routes'
 
+interface HeaderProps {
+  showBackArrow?: boolean
+}
+
 function capitalizeFirstLetter (text: string) {
   return text.replace(/\b\w/g, function (char) {
     return char.toUpperCase()
@@ -28,7 +32,7 @@ const useBreadcrumb = () => {
 
     title = capitalizeFirstLetter(sgt).replace('-', ' ')
 
-    if (title === 'Invoice And-Payment') {
+    if (title === 'Payment') {
       title = 'Invoice & Payment'
     }
     if (title === 'Get Started') {
@@ -41,7 +45,7 @@ const useBreadcrumb = () => {
   return <span>{title}</span>
 }
 
-export function Header () {
+export function Header ({ showBackArrow = false }: HeaderProps) {
   const bread = useBreadcrumb()
   const pt = usePathname()
   const rt = useRouter()
@@ -49,7 +53,7 @@ export function Header () {
   const [, setOpen] = useState(false)
 
   // Show back arrow only for the specific route pattern
-  const showBackArrow = pt.startsWith('/dashboard/project-management/')
+  // const showBackArrow = pt.startsWith('/client/dashboard/project-management/')
 
   useEffect(() => {
     setOpen(false)

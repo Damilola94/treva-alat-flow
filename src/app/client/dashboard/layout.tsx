@@ -7,16 +7,26 @@ import {
   Sidebar,
 } from '@/components/shared/dashboard';
 import { Inter } from 'next/font/google';
-import { Column, Users, GlobeAlt, Grid } from '@/components/shared';
+import { Column, Users, GlobeAlt, Grid, Payment } from '@/components/shared';
 import routes from '@/lib/routes';
 import queries from '@/services/queries/profile';
+import { usePathname } from 'next/navigation';
 
 const inter = Inter({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700']
 });
 
+const showBackArrowRoutes = [
+  '/client/dashboard/project-management/',
+  '/client/dashboard/hiring-management/',
+];
+
 function Main ({ children }: { children: React.ReactNode }) {
+  const pt = usePathname()
+  const shouldShowBackArrow = showBackArrowRoutes.some(prefix =>
+    pt.startsWith(prefix)
+  );
   const [mounted, setMounted] = useState(false);
   const { data } = queries.read();
 
@@ -25,6 +35,7 @@ function Main ({ children }: { children: React.ReactNode }) {
     { label: 'Dashboard', href: routes.client.dashboard.entry.path, icon: <Grid /> },
     { label: 'Hiring Management', href: routes.client.dashboard.hiringManagement.path, icon: <Users /> },
     { label: 'Project Management', href: routes.client.dashboard.projectManagement.path, icon: <Column /> },
+    { label: 'Payment', href: routes.client.dashboard.payment.path, icon: <Payment /> }
 
   ];
 
@@ -35,7 +46,7 @@ function Main ({ children }: { children: React.ReactNode }) {
   if (!mounted) return null;
 
   return (
-    <main className="app_dash_main flex-col min-h-screen">
+    <main className="app_dash_main flex-col">
       <div className="app_dash_main flex-1 relative">
       <div
           className="z-50 md:relative fixed top-0"
@@ -43,10 +54,12 @@ function Main ({ children }: { children: React.ReactNode }) {
    <Sidebar menuItems={clientMenuItems} logoHref={routes.client.dashboard.entry.path} userData={data} />;
         </div>
         <div className="app_dash_main__ctt">
-          <Header />
+          <Header showBackArrow={shouldShowBackArrow} />
           <div className="app_dash_main__ctt__mn w-full">
             <div className="app_dashboard_page">{children}</div>
+            {false &&
         <Footer/>
+            }
           </div>
         </div>
       </div>

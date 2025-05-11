@@ -28,7 +28,6 @@ interface Payment {
   paymentId: string
   amountPercentage: string
   dueDate: string
-  reminderFrequency: string
   totalDueDate?: string
   installments?: string
   totalPaymentAmount?: string
@@ -130,7 +129,6 @@ export function ProjectPayment (props: IProps) {
       payment: payment.map((d) => ({
         amountPercentage: d.amountPercentage,
         dueDate: d.dueDate,
-        reminderFrequency: d.reminderFrequency,
       })),
     };
     handleNext(step3Data);
@@ -282,9 +280,6 @@ export function ProjectPayment (props: IProps) {
                   </p>
                   <p className="flex gap-4">
                     <Money4 stroke="#6E50DB" /> {item.amount}
-                  </p>
-                  <p className="flex gap-4">
-                    <Money4 stroke="#6E50DB" /> {item.reminderFrequency}
                   </p>
                 </div>
               </div>
