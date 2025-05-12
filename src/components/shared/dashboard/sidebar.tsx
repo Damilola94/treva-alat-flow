@@ -30,7 +30,7 @@ interface SidebarProps {
 
 const SidebarItem = ({ item, toggleMenu }: { item: ISidebarItem, toggleMenu?: () => void }) => {
   const { isActive } = useIsActive();
-  const activeCN = isActive(item?.href) ? 'active' : '';
+  const activeCN = isActive(item?.href, item.label === 'Dashboard') ? 'active' : '';
 
   return (
     <div className={`app_dash_main__aside__links__item ${activeCN}`}>

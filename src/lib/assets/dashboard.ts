@@ -7,6 +7,7 @@ import newOffering2 from '../../../public/media/images/dashboard/new-offering2.p
 import avi from '../../../public/media/images/dashboard/avi.png'
 import getStartedCard from '../../../public/media/images/dashboard/get-started-card.png'
 import getStartedCard2 from '../../../public/media/images/dashboard/get-started-card2.png'
+import getStartedBg from '../../../public/media/images/dashboard/get-started-bg.png'
 
 const dashboard = {
   dashBg,
@@ -17,7 +18,8 @@ const dashboard = {
   newOffering2,
   avi,
   getStartedCard,
-  getStartedCard2
+  getStartedCard2,
+  getStartedBg
 }
 
 export default dashboard
