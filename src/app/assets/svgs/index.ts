@@ -10,6 +10,8 @@ import Ellicon from './ellicon.svg';
 import EditIcon from './edit.svg';
 import SmallHome from './smallhome.svg';
 import SmallAvatar from './smallavatar.svg';
+import Notifications from './notifications.svg'
+import NPayment from './notification-payment.svg'
 
 export {
   SearchIcon,
@@ -23,5 +25,7 @@ export {
   Ellicon,
   EditIcon,
   SmallHome,
-  SmallAvatar
+  SmallAvatar,
+  Notifications,
+  NPayment
 };

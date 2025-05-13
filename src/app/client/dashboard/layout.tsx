@@ -11,6 +11,7 @@ import { Column, Users, GlobeAlt, Grid, Payment } from '@/components/shared';
 import routes from '@/lib/routes';
 import queries from '@/services/queries/profile';
 import { usePathname } from 'next/navigation';
+import { Notifications } from '@/app/assets/svgs';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -35,7 +36,8 @@ function Main ({ children }: { children: React.ReactNode }) {
     { label: 'Dashboard', href: routes.client.dashboard.entry.path, icon: <Grid /> },
     { label: 'Hiring Management', href: routes.client.dashboard.hiringManagement.path, icon: <Users /> },
     { label: 'Project Management', href: routes.client.dashboard.projectManagement.path, icon: <Column /> },
-    { label: 'Payment', href: routes.client.dashboard.payment.path, icon: <Payment /> }
+    { label: 'Payment', href: routes.client.dashboard.payment.path, icon: <Payment /> },
+    { label: 'Reminders and Notification', href: routes.client.dashboard.notifications.path, icon: <Notifications /> }
 
   ];
 

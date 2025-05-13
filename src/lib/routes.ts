@@ -87,6 +87,9 @@ const routes = {
       },
       payment: {
         path: '/client/dashboard/payment'
+      },
+      notifications: {
+        path: '/client/dashboard/notifications'
       }
     },
   },
