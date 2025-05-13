@@ -18,7 +18,7 @@ interface IProps {
 }
 
 const validationSchema = Yup.object().shape({
-  amountPercentage: Yup.string().required('Please enter a percentage required'),
+  amount: Yup.string().required('Please enter an amount'),
   dueDate: Yup.date()
     .min(new Date(), 'Due date must be in the future')
     .required('Please select a due date'),
@@ -41,7 +41,7 @@ export default function AddPayment (props: IProps) {
 
   const initialValues = {
     projectId,
-    amountPercentage: '',
+    amount: '',
     dueDate: ''
   };
 
@@ -78,11 +78,11 @@ export default function AddPayment (props: IProps) {
                                     className="flex flex-col gap-4 mt-14"
                                 >
                                     <Input
-                                        name="amountPercentage"
+                                        name="amount"
                                         type="number"
-                                        placeholder="% Required"
+                                        placeholder="Amount"
                                         size="xl"
-                                        value={values.amountPercentage}
+                                        value={values.amount}
                                         onChange={handleChange}
                                         onBlur={handleBlur}
                                         errors={errors}

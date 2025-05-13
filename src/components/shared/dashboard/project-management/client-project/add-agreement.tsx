@@ -1,15 +1,14 @@
-'use client';
-import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Delete, Upload } from '@/components/shared';
-import { Modal } from '@/components/shared/decisionModal';
-import Image from 'next/image';
-import { type InitialStep4Values } from '@/app/creatives/dashboard/project-management/client-project/create/page';
-import queries from '@/services/queries/projects';
-import { toast } from 'react-toastify';
+'use client'
+import React, { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { CenterModal, Delete, Upload } from '@/components/shared'
+import Image from 'next/image'
+import { type InitialStep5Values } from '@/app/creatives/dashboard/project-management/client-project/create/page'
+import queries from '@/services/queries/projects'
+import { toast } from 'react-toastify'
 
 interface IProps {
-  handleNext: (formData: InitialStep4Values) => void
+  handleNext: (formData: InitialStep5Values) => void
   projectId: string
 }
 
@@ -19,59 +18,59 @@ interface Agreement {
 }
 
 export function ProjectAgreement (props: IProps) {
-  const { handleNext, projectId } = props;
+  const { handleNext, projectId } = props
 
-  const [isDecisionModalOpen, setIsDecisionModalOpen] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string>('');
-  const [agreement, setAgreement] = useState<Agreement[]>([]);
-  const [, setAgreementId] = useState<string>('');
+  const [isDecisionModalOpen, setIsDecisionModalOpen] = useState(false)
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [imagePreview, setImagePreview] = useState<string>('')
+  const [agreement, setAgreement] = useState<Agreement[]>([])
+  const [, setAgreementId] = useState<string>('')
 
   const { mutate: createAgreement } = queries.updateAgreement({
     onSuccess: (response) => {
       if (response?.data?.id) {
-        setAgreementId(response.data.id);
+        setAgreementId(response.data.id)
       } else {
-        console.warn('Project ID not found. Polling...');
+        console.warn('Project ID not found. Polling...')
       }
     },
-  });
+  })
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { data, refetch } = queries.readDeliverables(
     { projectId },
     {
       onSuccess: (newData: any) => {
-        setAgreement(newData);
+        setAgreement(newData)
       },
     },
-  );
+  )
 
   const { mutate: deleteAgreement } = queries.deleteAgreement(
     { projectId },
     {
       onSuccess: () => {
-        setAgreement((prev) => prev.filter((d) => d.projectId !== projectId));
+        setAgreement((prev) => prev.filter((d) => d.projectId !== projectId))
 
-        setSelectedFile(null);
-        setImagePreview('');
+        setSelectedFile(null)
+        setImagePreview('')
 
-        void refetch();
+        void refetch()
 
-        setIsDecisionModalOpen(false);
+        setIsDecisionModalOpen(false)
       },
     },
-  );
+  )
 
   const handleCloseModal = () => {
-    setIsDecisionModalOpen(false);
-  };
+    setIsDecisionModalOpen(false)
+  }
 
   const handleFileChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     setFieldValue: (field: string, value: any) => void,
   ) => {
-    const file = e.target.files?.[0];
+    const file = e.target.files?.[0]
 
     if (file) {
       const allowedTypes = [
@@ -79,87 +78,87 @@ export function ProjectAgreement (props: IProps) {
         'image/png',
         'image/jpg',
         'application/pdf',
-      ];
+      ]
 
       if (allowedTypes.includes(file.type)) {
-        setSelectedFile(file);
-        setFieldValue('projectAgreementUrl', file);
+        setSelectedFile(file)
+        setFieldValue('projectAgreementUrl', file)
 
         if (file.type === 'application/pdf') {
-          setImagePreview('');
+          setImagePreview('')
         } else {
-          const reader = new FileReader();
+          const reader = new FileReader()
           reader.onload = () => {
-            setImagePreview(reader.result as string);
-          };
-          reader.readAsDataURL(file);
+            setImagePreview(reader.result as string)
+          }
+          reader.readAsDataURL(file)
         }
       } else {
         toast.error(
           'Unsupported file type. Please upload a PDF, JPEG, PNG, or JPG file.',
-        );
-        setSelectedFile(null);
-        setFieldValue('projectAgreementUrl', null);
+        )
+        setSelectedFile(null)
+        setFieldValue('projectAgreementUrl', null)
 
         if (e.target) {
-          e.target.value = '';
+          e.target.value = ''
         }
       }
     } else {
-      setSelectedFile(null);
-      setFieldValue('projectAgreementUrl', null);
+      setSelectedFile(null)
+      setFieldValue('projectAgreementUrl', null)
     }
-  };
+  }
 
   const handleRemoveFile = () => {
-    setSelectedFile(null);
-    setImagePreview('');
-  };
+    setSelectedFile(null)
+    setImagePreview('')
+  }
 
   const handleDelete = () => {
-    setAgreement((prev) => prev.filter((d) => d.projectId !== projectId));
-    deleteAgreement({ projectId });
-    setIsDecisionModalOpen(false);
-  };
+    setAgreement((prev) => prev.filter((d) => d.projectId !== projectId))
+    deleteAgreement({ projectId })
+    setIsDecisionModalOpen(false)
+  }
 
   const initialValues = {
     projectId,
     projectAgreementUrl: null as File | null,
-  };
+  }
 
-  type InitialValues = ReturnType<() => typeof initialValues>;
+  type InitialValues = ReturnType<() => typeof initialValues>
   const onSubmit = (_values: InitialValues) => {
     createAgreement({
       ..._values,
       projectAgreementUrl: _values.projectAgreementUrl,
-    });
-  };
+    })
+  }
 
   const handleNextStep = () => {
     // if (!selectedFile) {
-    //   toast.error('Please upload an agreement file before continuing.');
-    //   return;
+    //   toast.error('Please upload an agreement file before continuing.')
+    //   return
     // }
-    const step4Values = {
+    const step5Values = {
       agreement: agreement.map((d) => ({
         projectId: d.projectId,
         projectAgreementUrl: d.projectAgreementUrl,
       })),
-    };
-    // const formData = new FormData();
-    // formData.append('ProjectId', projectId);
-    // formData.append('AgreementFile', selectedFile);
+    }
+    // const formData = new FormData()
+    // formData.append('ProjectId', projectId)
+    // formData.append('AgreementFile', selectedFile)
 
-    // console.log(formData, 'formData');
+    // console.log(formData, 'formData')
 
-    onSubmit({ projectId, projectAgreementUrl: selectedFile });
-    handleNext(step4Values);
-  };
+    onSubmit({ projectId, projectAgreementUrl: selectedFile })
+    handleNext(step5Values)
+  }
 
   return (
     <div className="app_get_started_professional_details py-6 px-4 flex flex-col gap-14">
       <div className="app_get_started_professional_details__form flex flex-col gap-10 !overflow-y-auto">
-        <Modal
+        {/* <Modal
           {...{ open: isDecisionModalOpen, handleClose: handleCloseModal }}
         >
           <div className="app_modal__ctt__mid">
@@ -187,13 +186,39 @@ export function ProjectAgreement (props: IProps) {
               size="xl"
               className="w-full"
               onClick={() => {
-                handleDelete();
+                handleDelete()
               }}
             >
               Delete
             </Button>
           </div>
-        </Modal>
+        </Modal> */}
+
+        <CenterModal
+        headerImageType={3}
+        isOpen={isDecisionModalOpen}
+        onClose={() => {
+          setIsDecisionModalOpen(false)
+        }}
+        showFooter
+        footerChildren={
+          <div className="w-full flex items-center gap-5">
+            <button className="border p-3 rounded-full w-full border-[#F1F1F1] text-[#7B37F0]" onClick={handleCloseModal}>
+              Cancel
+            </button>
+            <button className="border p-3 bg-[#F9403A] rounded-full w-full border-[#F1F1F1] text-[#fff]" onClick={() => {
+                handleDelete()
+              }}>
+              Delete
+            </button>
+          </div>
+        }
+      >
+        <div className="flex flex-col items-center justify-center gap-4">
+          <p className='font-semibold'>Are you sure you want to delete payment?</p>
+          <p>Payment will be deleted Permanently</p>
+        </div>
+      </CenterModal>
 
         <h3 className="font-bold">Agreement</h3>
         <p className="text-gray-500 -mt-9">Please upload your agreement.</p>
@@ -222,7 +247,7 @@ export function ProjectAgreement (props: IProps) {
               </div>
               <button
                 onClick={() => {
-                  setIsDecisionModalOpen(true);
+                  setIsDecisionModalOpen(true)
                 }}
               >
                 <Delete className="cursor-pointer" onClick={handleRemoveFile} />
@@ -235,7 +260,7 @@ export function ProjectAgreement (props: IProps) {
                 accept=".pdf,.png,.jpg,.jpeg"
                 className="hidden"
                 onChange={(e) => {
-                  handleFileChange(e, () => {});
+                  handleFileChange(e, () => {})
                 }}
               />
               <div className="flex flex-col items-center">
@@ -271,5 +296,5 @@ export function ProjectAgreement (props: IProps) {
         </div>
       </div>
     </div>
-  );
+  )
 }

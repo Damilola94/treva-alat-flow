@@ -31,8 +31,8 @@ export function CreateProjectCard (props: IProps) {
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
 
   const projectPaths: Record<string, string> = {
-    Personal: '/dashboard/project-management/personal-project/create',
-    Client: '/dashboard/project-management/client-project/create'
+    Personal: '/creatives/dashboard/project-management/personal-project/create',
+    Client: '/creatives/dashboard/project-management/client-project/create'
   };
 
   return (
