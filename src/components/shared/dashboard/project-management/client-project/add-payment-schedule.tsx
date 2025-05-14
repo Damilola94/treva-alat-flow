@@ -13,35 +13,35 @@ import {
 } from '@/components/shared';
 import { Modal } from '@/components/shared/decisionModal';
 import queries from '@/services/queries/projects';
-import { type InitialStep3Values } from '@/app/creatives/dashboard/project-management/client-project/create/page';
+import { type InitialStep4Values } from '@/app/creatives/dashboard/project-management/client-project/create/page';
 import AddPayment from '../../../project-management.tsx/add-payment';
 import routes from '@/lib/routes';
 import EditPayment from '@/components/shared/project-management.tsx/edit-payment';
 import { formatDate } from '@/lib/utils';
 
 interface IProps {
-  handleNext: (formData: InitialStep3Values) => void;
-  projectId: string;
+  handleNext: (formData: InitialStep4Values) => void
+  projectId: string
 }
 
-interface Payment {
-  paymentId: string;
-  amountPercentage: string;
-  dueDate: string;
-  totalDueDate?: string;
-  installments?: string;
-  totalPaymentAmount?: string;
-  amount?: string;
+interface PaymentSchedule {
+  paymentId: string
+  amountPercentage: string
+  dueDate: string
+  totalDueDate?: string
+  installments?: string
+  totalPaymentAmount?: string
+  amount: string
 }
 
-export function ProjectPayment(props: IProps) {
+export function ProjectPaymentSchedule (props: IProps) {
   const { handleNext, projectId } = props;
   const [editForm, setEditForm] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDecisionModalOpen, setIsDecisionModalOpen] = useState(false);
-  const [payment, setPayment] = useState<Payment[]>([]);
+  const [payment, setPayment] = useState<PaymentSchedule[]>([]);
   const [paymentId, setPaymentId] = useState<string>('');
-  const [selectedPayment, setSelectedPayment] = useState<Payment | null>(null);
+  const [selectedPayment, setSelectedPayment] = useState<PaymentSchedule | null>(null);
 
   const { data, refetch } = queries.readPayment(
     { projectId },
@@ -91,7 +91,7 @@ export function ProjectPayment(props: IProps) {
     setIsModalOpen(false);
   };
 
-  const handleAddPayment = (newPayment: Payment) => {
+  const handleAddPayment = (newPayment: PaymentSchedule) => {
     const paymentWithId = {
       ...newPayment,
       paymentId: newPayment.paymentId || '',
@@ -126,13 +126,13 @@ export function ProjectPayment(props: IProps) {
   };
 
   const handleNextStep = () => {
-    const step3Data = {
-      payment: payment.map((d) => ({
-        amountPercentage: d.amountPercentage,
+    const step4Data = {
+      paymentSchedule: payment.map((d) => ({
+        amount: d.amount,
         dueDate: d.dueDate,
       })),
     };
-    handleNext(step3Data);
+    handleNext(step4Data);
   };
 
   return (

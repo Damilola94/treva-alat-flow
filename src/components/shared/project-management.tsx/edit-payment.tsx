@@ -10,9 +10,9 @@ import Image from 'next/image';
 import queries from '@/services/queries/projects';
 
 interface Payment {
-  paymentId: string;
-  amountPercentage: string;
-  dueDate: string;
+  paymentId: string
+  amount: string
+  dueDate: string
 }
 
 interface IProps {
@@ -32,7 +32,7 @@ const validationSchema = Yup.object().shape({
 });
 
 const initialValues = {
-  amountPercentage: '',
+  amount: '',
   dueDate: '',
 };
 
@@ -72,9 +72,9 @@ export default function EditPayment(props: IProps) {
     const formData = {
       projectId,
       paymentId,
-      amountPercentage: values.amountPercentage,
-      dueDate: values.dueDate,
-    };
+      amount: values.amount,
+      dueDate: values.dueDate
+        };
 
     mutate(formData);
   };
@@ -84,50 +84,51 @@ export default function EditPayment(props: IProps) {
   }
 
   return (
-    <div className="app_auth_login_container relative">
-      <Image
-        src={projectManagement.topGradient}
-        alt="top gradient"
-        className="w-full"
-      />
-      <div className="app_auth_login_container__upper !-mt-80">
-        <div className="app_auth_login">
-          <div>
-            <h3 className="app_auth_login__title mb-5">Edit payment date</h3>
-            <Formik
-              enableReinitialize
-              initialValues={{
-                ...initialValues,
-                amountPercentage: data?.amountPercentage ?? '',
-                dueDate: data.dueDate ? data?.dueDate.split('T')[0] : '',
-                reminderFrequency: data?.reminderFrequency ?? '',
-              }}
-              validationSchema={validationSchema}
-              onSubmit={onSubmit}
-            >
-              {({
-                values,
-                handleChange,
-                handleBlur,
-                handleSubmit,
-                errors,
-                touched,
-              }) => (
-                <form
-                  onSubmit={handleSubmit}
-                  className="flex flex-col gap-4 mt-14"
-                >
-                  <Input
-                    name="amountPercentage"
-                    type="number"
-                    placeholder="% Required"
-                    size="xl"
-                    value={values.amountPercentage}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    errors={errors}
-                    touched={touched}
-                  />
+        <div className="app_auth_login_container relative">
+            <Image src={projectManagement.topGradient} alt="top gradient" className="w-full" />
+            <div className="app_auth_login_container__upper !-mt-80">
+                <div className="app_auth_login">
+                    <div>
+                        <h3 className="app_auth_login__title mb-5">
+                            Edit payment date
+                        </h3>
+                        <Formik
+                        enableReinitialize
+                        initialValues={
+                                {
+                                  ...initialValues,
+                                  amountPercentage: data?.amountPercentage ?? '',
+                                  dueDate: data.dueDate ? data?.dueDate.split('T')[0] : '',
+                                  reminderFrequency: data?.reminderFrequency ?? ''
+                                }
+                        }
+                            validationSchema={validationSchema}
+                            onSubmit={onSubmit}
+                        >
+                            {({
+                              values,
+                              handleChange,
+                              handleBlur,
+                              handleSubmit,
+                              // setFieldValue,
+                              errors,
+                              touched
+                            }) => (
+                                <form
+                                    onSubmit={handleSubmit}
+                                    className="flex flex-col gap-4 mt-14"
+                                >
+                                    <Input
+                                        name="amount"
+                                        type="number"
+                                        placeholder="Amount"
+                                        size="xl"
+                                        value={values.amount}
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                        errors={errors}
+                                        touched={touched}
+                                    />
 
                   <Input
                     name="dueDate"

@@ -1,12 +1,9 @@
-'use client';
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { PlusIcon } from '@/components/shared';
-import { Modal } from '@/components/shared/decisionModal';
-import Image from 'next/image';
-import projectManagement from '@/lib/assets/project-management';
-import queries from '@/services/queries/projects';
-import routes from '@/lib/routes';
+'use client'
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { CenterModal, PlusIcon } from '@/components/shared'
+import queries from '@/services/queries/projects'
+import routes from '@/lib/routes'
 
 interface IProps {
   // handleNext: (formData: InitialStep5Values) => void
@@ -63,78 +60,55 @@ export function ProjectReview(props: IProps) {
   return (
     <div className="app_get_started_professional_details py-6 px-4 flex flex-col gap-14">
       <div className="app_get_started_professional_details__form flex flex-col gap-10 !max-w-[700px] !mx-auto">
-        <Modal
-          {...{ open: isDecisionModalOpen, handleClose: handleCloseModal }}
-        >
-          <div className="app_modal__ctt__mid">
-            <Image
-              src={projectManagement.successLogo || '/placeholder.svg'}
-              alt="successLogo"
-              className="w-16"
-            />
-            <h2 className="app_modal__ctt__mid__h2">
-              Are you sure you want to send this invoice
-            </h2>
-            <p className="text-[#888888]">
-              Invoice will be sent to client for payment
-            </p>
-          </div>
-
-          <div className="app_modal__ctt__btm flex gap-4">
-            <Button
-              size="lg"
-              className="w-full border border-[#F1F1F1] text-[#262626]"
-              onClick={handleCloseModal}
-            >
+        <CenterModal
+        headerImageType={4}
+        isOpen={isDecisionModalOpen}
+        onClose={() => {
+          setIsDecisionModalOpen(false);
+        }}
+        showFooter
+        footerChildren={
+          <div className="w-full flex items-center gap-5">
+            <button className="border border-[#F1F1F1] text-[#262626] p-3 rounded-full w-full" onClick={handleCloseModal}>
               Cancel
-            </Button>
-            <Button
-              size="lg"
-              style={{ backgroundColor: '#262626', color: '#FFFFFF' }}
-              className="w-full"
-              onClick={handleSendInvoice}
-            >
+            </button>
+            <button className="border p-3 bg-[#262626] rounded-full w-full text-[#fff]" onClick={handleSendInvoice}>
               Send Invoice
-            </Button>
+            </button>
           </div>
-        </Modal>
+        }
+      >
+        <div className="flex flex-col items-center justify-center gap-4">
+          <p className='font-semibold'>Are you sure you want to send
+            this invoice</p>
+          <p className="text-[#888888]">Invoice will be sent to client for payment</p>
+        </div>
+      </CenterModal>
 
-        <Modal {...{ open: isDeleteModal, handleClose: handleCloseModal }}>
-          <div className="app_modal__ctt__mid">
-            <Image
-              src={projectManagement.successLogo || '/placeholder.svg'}
-              alt="successLogo"
-              className="w-16"
-            />
-            <h2 className="app_modal__ctt__mid__h2">
-              Invoice has been sent to client successfully
-            </h2>
-            <p className="text-[#888888]">
-              Invoice has been sent to make payment.
-            </p>
-          </div>
-
-          <div className="app_modal__ctt__btm flex gap-4">
-            <Button
-              variant="outline"
-              size="lg"
-              className="w-full flex items-center justify-center text-[#7B37F0]"
-              onClick={handleCloseModal}
-            >
-              <PlusIcon fill="#7B37F0" />
+         <CenterModal
+        headerImageType={4}
+        isOpen={isDeleteModal}
+        onClose={() => {
+          setIsDeleteModal(false);
+        }}
+        showFooter
+        footerChildren={
+          <div className="w-full flex items-center gap-5">
+            <button className="w-full flex items-center justify-center text-[#7B37F0]" onClick={handleCloseModal}>
+              <PlusIcon fill='#7B37F0'/>
               New invoice
-            </Button>
-            <Button
-              style={{ backgroundColor: '#7B37F0', color: '#FFFFFF' }}
-              size="lg"
-              className="w-full"
-              onClick={handleDone}
-            >
+            </button>
+            <button className="border p-3 bg-[#7B37F0] rounded-full w-full text-[#fff]" onClick={handleDone}>
               Done
-            </Button>
+            </button>
           </div>
-        </Modal>
-
+        }
+      >
+        <div className="flex flex-col items-center justify-center gap-4">
+          <p className='font-semibold'>Invoice has been sent to client successfully</p>
+          <p className="text-[#888888]">Invoice has been sent to make payment.</p>
+        </div>
+      </CenterModal>
         <h1 className="text-xl font-bold">Review</h1>
         <p className="text-[#888888] -mt-8">
           Check and confirm that all the information you&apos;ve added.

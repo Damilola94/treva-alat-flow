@@ -18,7 +18,7 @@ interface IProps {
 }
 
 const validationSchema = Yup.object().shape({
-  amountPercentage: Yup.string().required('Please enter a percentage required'),
+  amount: Yup.string().required('Please enter an amount'),
   dueDate: Yup.date()
     .min(new Date(), 'Due date must be in the future')
     .required('Please select a due date'),
@@ -41,8 +41,8 @@ export default function AddPayment(props: IProps) {
 
   const initialValues = {
     projectId,
-    amountPercentage: '',
-    dueDate: '',
+    amount: '',
+    dueDate: ''
   };
 
   type InitialValues = ReturnType<() => typeof initialValues>;
@@ -52,44 +52,42 @@ export default function AddPayment(props: IProps) {
   };
 
   return (
-    <div className="app_auth_login_container relative">
-      <Image
-        src={projectManagement.topGradient}
-        alt="top gradient"
-        className="w-full"
-      />
-      <div className="app_auth_login_container__upper !-mt-80">
-        <div className="app_auth_login">
-          <div>
-            <h3 className="app_auth_login__title mb-5">Add payment date</h3>
-            <Formik
-              initialValues={initialValues}
-              validationSchema={validationSchema}
-              onSubmit={onSubmit}
-            >
-              {({
-                values,
-                handleChange,
-                handleBlur,
-                handleSubmit,
-                errors,
-                touched,
-              }) => (
-                <form
-                  onSubmit={handleSubmit}
-                  className="flex flex-col gap-4 mt-14"
-                >
-                  <Input
-                    name="amountPercentage"
-                    type="number"
-                    placeholder="% Required"
-                    size="xl"
-                    value={values.amountPercentage}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    errors={errors}
-                    touched={touched}
-                  />
+        <div className="app_auth_login_container relative">
+            <Image src={projectManagement.topGradient} alt="top gradient" className="w-full" />
+            <div className="app_auth_login_container__upper !-mt-80">
+                <div className="app_auth_login">
+                    <div>
+                        <h3 className="app_auth_login__title mb-5">
+                            Add payment date
+                        </h3>
+                        <Formik
+                            initialValues={initialValues}
+                            validationSchema={validationSchema}
+                            onSubmit={onSubmit}
+                        >
+                            {({
+                              values,
+                              handleChange,
+                              handleBlur,
+                              handleSubmit,
+                              errors,
+                              touched
+                            }) => (
+                                <form
+                                    onSubmit={handleSubmit}
+                                    className="flex flex-col gap-4 mt-14"
+                                >
+                                    <Input
+                                        name="amount"
+                                        type="number"
+                                        placeholder="Amount"
+                                        size="xl"
+                                        value={values.amount}
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                        errors={errors}
+                                        touched={touched}
+                                    />
 
                   <Input
                     name="dueDate"

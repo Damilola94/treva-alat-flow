@@ -687,9 +687,10 @@ const useCreatePayment = (options: { onSuccess?: (response: any) => void }) => {
   });
 
   interface Body {
-    projectId: string;
-    amountPercentage: string;
-    dueDate: string;
+    projectId: string
+    amount: string
+    dueDate: string
+
   }
 
   return {
@@ -697,7 +698,7 @@ const useCreatePayment = (options: { onSuccess?: (response: any) => void }) => {
     mutate: (body: Body) => {
       const requestBody = {
         projectId: body.projectId,
-        amountPercentage: body.amountPercentage,
+        amount: body.amount,
         dueDate: body.dueDate,
       };
 
@@ -789,10 +790,11 @@ const useUpdatePayment = (
   });
 
   interface Body {
-    projectId: string;
-    paymentId: string;
-    amountPercentage: string;
-    dueDate: string;
+    projectId: string
+    paymentId: string
+    amount: string
+    dueDate: string
+
   }
 
   return {
@@ -801,8 +803,8 @@ const useUpdatePayment = (
       const requestBody = {
         projectId: body.projectId,
         paymentId: body.paymentId,
-        amountPercentage: body.amountPercentage,
-        dueDate: body.dueDate,
+        amount: body.amount,
+        dueDate: body.dueDate
       };
 
       mutate({
