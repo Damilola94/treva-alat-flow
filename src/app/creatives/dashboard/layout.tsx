@@ -11,7 +11,8 @@ import {
 import { Inter } from 'next/font/google';
 import routes from '@/lib/routes';
 import queries from '@/services/queries/profile';
-import { Column, File, GlobeAlt, Grid, Like, Payment, Reminder, Users } from '@/components/shared';
+import { Column, File, GlobeAlt, Grid, Like, Payment, Users } from '@/components/shared';
+import { Notifications } from '@/app/assets/svgs';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -30,7 +31,7 @@ function Main ({ children }: { children: React.ReactNode }) {
     { label: 'Project Management', href: routes.creatives.dashboard.projectManagement.path, icon: <Column /> },
     { label: 'Payment', href: routes.creatives.dashboard.payment.path, icon: <Payment /> },
     { label: 'Contracts', href: '#', icon: <File /> },
-    { label: 'Reminders and Notification', href: '#', icon: <Reminder /> },
+    { label: 'Reminders and Notification', href: routes.creatives.dashboard.notifications.path, icon: <Notifications /> },
     { label: 'Reviews and Feedback', href: '#', icon: <Like /> },
   ].filter(item => item.href !== '#');
 

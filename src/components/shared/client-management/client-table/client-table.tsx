@@ -8,9 +8,9 @@ import queries from '@/services/queries/client-management';
 import { Skeleton } from '@/components/ui/skeleton';
 
 interface IProps {
-  onEdit?: (id: string) => void
-  onDelete?: (id: string) => void
-  search: string
+  onEdit?: (id: string) => void;
+  onDelete?: (id: string) => void;
+  search: string;
 }
 
 const thead = [
@@ -18,27 +18,31 @@ const thead = [
   { label: 'Email address' },
   { label: 'Phone number' },
   { label: 'Birthday' },
-  { label: '' }
+  { label: '' },
 ];
 
-export function ClientTable (props: IProps) {
-  const [currentPage, setCurrentPage] = useState(1)
-  const pageSize = 50
-  const { data: clientData, refetch, isLoading } = queries.read({
+export function ClientTable(props: IProps) {
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 50;
+  const {
+    data: clientData,
+    refetch,
+    isLoading,
+  } = queries.read({
     search: props.search,
     pageNumber: currentPage,
-    pageSize
+    pageSize,
   });
 
   const { onEdit, onDelete } = props;
 
   useEffect(() => {
-    void refetch()
+    void refetch();
   }, [clientData, refetch, props.search, currentPage]);
 
   const handlePageClick = (selectedItem: { selected: number }) => {
-    setCurrentPage(selectedItem.selected + 1)
-  }
+    setCurrentPage(selectedItem.selected + 1);
+  };
 
   if (!isLoading && (!clientData?.data || clientData.data.length === 0)) {
     return (
@@ -57,30 +61,36 @@ export function ClientTable (props: IProps) {
       <div className="w-full text-left relative rounded-xl overflow-auto">
         <div className="shadow-sm overflow-hidden">
           <div className="overflow-x-auto whitespace-nowrap">
-          <table className="border-collapse table-auto w-full app_table">
-            <thead>
-              <tr className="app_table__tr">
-                {thead.map(({ label }) => (
-                  <th key={label} className={'app_table__tr__th '}>
-                    <div className="app_table__tr__th__ctt">{label}</div>
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="bg-white app_table__tbody">
-              {isLoading
-                ? (
+            <table className="border-collapse table-auto w-full app_table">
+              <thead>
+                <tr className="app_table__tr">
+                  {thead.map(({ label }) => (
+                    <th key={label} className={'app_table__tr__th '}>
+                      <div className="app_table__tr__th__ctt">{label}</div>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="bg-white app_table__tbody">
+                {isLoading ? (
                   <>
-                    {[...Array(3)].map((_, index) => <Skeleton key={index} columns={4} />)}
+                    {[...Array(3)].map((_, index) => (
+                      <Skeleton key={index} columns={4} />
+                    ))}
                   </>
-                  )
-                : (
-                    clientData?.data?.map((client: any) => (
-                    <tr className="cursor-pointer hover:bg-gray-100" key={client.id}>
+                ) : (
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  clientData?.data?.map((client: any) => (
+                    <tr
+                      className="cursor-pointer hover:bg-gray-100"
+                      key={client.id}
+                    >
                       <td className="app_table__tbody__td font-medium text-[--text-color-500]">
                         <div className="app_table__tbody__td__ctt flex justify-center items-center">
                           <Image
-                            src={client.imageUrl || clientManagement?.femaleClient}
+                            src={
+                              client.imageUrl || clientManagement?.femaleClient
+                            }
                             alt="client"
                             width={100}
                             height={100}
@@ -128,22 +138,22 @@ export function ClientTable (props: IProps) {
                         </div>
                       </td>
                     </tr>
-                    ))
-                  )}
-            </tbody>
-          </table>
+                  ))
+                )}
+              </tbody>
+            </table>
           </div>
 
           {/* <div className="bg-white app_table__pagination">
             <Pagination {...{ paginate: { pageCount: 2 } }} />
           </div> */}
-           <div className="bg-white app_table__pagination">
+          <div className="bg-white app_table__pagination">
             <Pagination
               paginate={{
                 pageCount: clientData?.metaData?.totalPages ?? 1,
                 currentPage: currentPage - 1,
                 marginPagesDisplayed: 2,
-                pageRangeDisplayed: 5
+                pageRangeDisplayed: 5,
               }}
               handlePageClick={handlePageClick}
             />

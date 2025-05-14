@@ -21,8 +21,8 @@ type TransactionTab = 'All' | 'Credit' | 'Debit';
 type ViewTab = 'Transaction History' | 'Invoice';
 type InvoiceTab = 'All' | 'Pending Invoice' | 'Closed Invoice' | 'Drafts';
 
-export default function Page () {
-  const router = useRouter()
+export default function Page() {
+  const router = useRouter();
   const [withdraw, toggleWithdraw] = useState(false);
   const [addFunds, toggleAddFunds] = useState(false);
   const [editAccount, toggleEditAccount] = useState(false);
@@ -65,6 +65,7 @@ export default function Page () {
     {
       header: 'Transaction Type',
       accessorKey: 'type',
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       cell: ({ row }: any) => {
         const value = row.original.type;
         return (
@@ -84,6 +85,7 @@ export default function Page () {
     {
       header: 'Client',
       accessorKey: 'client',
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       cell: ({ row }: any) => {
         const value = row.original.client;
         return (
@@ -105,6 +107,7 @@ export default function Page () {
     {
       header: 'Status',
       accessorKey: 'status',
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       cell: ({ row }: any) => {
         const value = row.original.status;
         return (
@@ -337,64 +340,64 @@ export default function Page () {
         </div>
       </SideModal>
 
-       {/* withdraw funds side modal */}
-        <SideModal
-          isOpen={withdraw}
-          onClose={() => {
-            toggleWithdraw(false)
-          }}
-          title="Withdraw Funds"
-          showFooter
-          footerChildren={
-            <div className="w-full gap-5">
-              <button className="border p-5 bg-[#7B37F0] rounded-full w-full border-[#F1F1F1] text-[#fff]">
-                Withdraw
-              </button>
-            </div>
-          }
-        >
-          <div className="space-y-10">
+      {/* withdraw funds side modal */}
+      <SideModal
+        isOpen={withdraw}
+        onClose={() => {
+          toggleWithdraw(false);
+        }}
+        title="Withdraw Funds"
+        showFooter
+        footerChildren={
+          <div className="w-full gap-5">
+            <button className="border p-5 bg-[#7B37F0] rounded-full w-full border-[#F1F1F1] text-[#fff]">
+              Withdraw
+            </button>
+          </div>
+        }
+      >
+        <div className="space-y-10">
+          <div>
+            <Input placeholder="Withdrawal Amount" />
             <div>
-              <Input placeholder="Withdrawal Amount" />
-              <div>
-                <p className="font-semibold mt-3">#256,00</p>
-              </div>
+              <p className="font-semibold mt-3">#256,00</p>
             </div>
-            <div className="space-y-5">
-              <div>
-                <p className="font-semibold ">Select Bank Account</p>
+          </div>
+          <div className="space-y-5">
+            <div>
+              <p className="font-semibold ">Select Bank Account</p>
+            </div>
+            <div className="border p-4 rounded-lg border-[#888888]">
+              <div className="flex items-center justify-between">
+                <p className="font-semibold text-xl text-[#333333]">
+                  0012345321
+                </p>
+                <div
+                  onClick={() => {
+                    toggleWithdraw(false);
+                    toggleEditAccount(true);
+                  }}
+                  className="cursor-pointer"
+                >
+                  <EditIcon />
+                </div>
               </div>
-              <div className="border p-4 rounded-lg border-[#888888]">
-                <div className="flex items-center justify-between">
-                  <p className="font-semibold text-xl text-[#333333]">
-                    0012345321
-                  </p>
-                  <div
-                    onClick={() => {
-                      toggleWithdraw(false);
-                      toggleEditAccount(true);
-                    }}
-                    className="cursor-pointer"
-                  >
-                    <EditIcon />
-                  </div>
-                </div>
-                <div className="text-[#262626] space-y-3 mt-5">
-                  <p className="flex items-center gap-3">
-                    <span>
-                      <SmallHome />
-                    </span>
-                    Wema Bank Plc
-                  </p>
-                  <p className="flex items-center gap-3">
-                    <SmallAvatar />
-                    Treva - IDEAx Labs
-                  </p>
-                </div>
+              <div className="text-[#262626] space-y-3 mt-5">
+                <p className="flex items-center gap-3">
+                  <span>
+                    <SmallHome />
+                  </span>
+                  Wema Bank Plc
+                </p>
+                <p className="flex items-center gap-3">
+                  <SmallAvatar />
+                  Treva - IDEAx Labs
+                </p>
               </div>
             </div>
           </div>
-        </SideModal>
+        </div>
+      </SideModal>
     </div>
   );
 }

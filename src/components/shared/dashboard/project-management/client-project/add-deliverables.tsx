@@ -19,22 +19,22 @@ import { type InitialStep2Values } from '@/app/creatives/dashboard/project-manag
 import { formatDate } from '@/lib/utils';
 
 interface IProps {
-  handleNext: (formData: InitialStep2Values) => void
-  projectId: string
+  handleNext: (formData: InitialStep2Values) => void;
+  projectId: string;
 }
 
 interface Deliverable {
-  deliverableId: string
-  deliverableName: string
-  deliverableDescription: string
-  startDate: string
-  dueDate: string
-  deliverableAmount: string
-  timeline?: string
-  totalAmount?: string
+  deliverableId: string;
+  deliverableName: string;
+  deliverableDescription: string;
+  startDate: string;
+  dueDate: string;
+  deliverableAmount: string;
+  timeline?: string;
+  totalAmount?: string;
 }
 
-export function ProjectDeliverables (props: IProps) {
+export function ProjectDeliverables(props: IProps) {
   const { handleNext, projectId } = props;
   const [editForm, setEditForm] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -47,6 +47,7 @@ export function ProjectDeliverables (props: IProps) {
   const { data, refetch } = queries.readDeliverables(
     { projectId },
     {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       onSuccess: (newData: any) => {
         if (Array.isArray(newData)) {
           const validDeliverables = newData.map((item) => {

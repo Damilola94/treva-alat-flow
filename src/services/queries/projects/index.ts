@@ -1,11 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 
 import api from '../../api';
-import {
-  errorToast,
-  handleErrors,
-  successToast
-} from '../../helper';
+import { errorToast, handleErrors, successToast } from '../../helper';
 import queryKey from './keys';
 import { type AxiosError } from 'axios';
 import config from '@/lib/config';
@@ -15,10 +11,9 @@ import { type ApiResponse } from '@/lib/models';
 
 const BASE_URL = config.services;
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const useCreate = (options: { onSuccess?: (response: any) => void }) => {
-  const {
-    onSuccess = () => { }
-  } = options;
+  const { onSuccess = () => {} } = options;
 
   const queryClient = useQueryClient();
   const { mutate, ...response } = useMutation(api.post, {
@@ -27,30 +22,30 @@ const useCreate = (options: { onSuccess?: (response: any) => void }) => {
     onSuccess: async (data) => {
       onSuccess(data);
       await queryClient.invalidateQueries({
-        queryKey: [queryKey.read]
+        queryKey: [queryKey.read],
       });
 
       successToast('Project added');
     },
     onError: (err: AxiosError) => {
       errorToast(handleErrors(err));
-    }
+    },
   });
 
   interface Body {
-    title: string
-    description: string
-    expectedDeliveryDate: string
-    priority: string
-    totalAmount?: string
-    clientId?: string
-    projectType: string
+    title: string;
+    description: string;
+    expectedDeliveryDate: string;
+    priority: string;
+    totalAmount?: string;
+    clientId?: string;
+    projectType: string;
   }
 
   return {
     ...response,
     mutate: (body: Body) => {
-      console.log('Mutation triggered with body:', body)
+      console.log('Mutation triggered with body:', body);
       const requestBody = {
         title: body.title,
         description: body.description,
@@ -59,83 +54,103 @@ const useCreate = (options: { onSuccess?: (response: any) => void }) => {
         priority: body.priority,
         ...(body.projectType === ProjectType.ClientProject && {
           totalAmount: body.totalAmount,
-          clientId: body.clientId
-        })
+          clientId: body.clientId,
+        }),
       };
 
       mutate({
         url: `${BASE_URL.project}`,
         body: requestBody,
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       });
-    }
+    },
   };
 };
 
-const useRead = ({ pageNumber = 1, pageSize = 50, search = '', userId = '', organizationId = '', forCurrentUser = '', projectType = '', priority = '', status = '' } = {}, options = {}) => {
+const useRead = (
+  {
+    pageNumber = 1,
+    pageSize = 50,
+    search = '',
+    userId = '',
+    organizationId = '',
+    forCurrentUser = '',
+    projectType = '',
+    priority = '',
+    status = '',
+  } = {},
+  options = {},
+) => {
   const response = useQuery(
     [queryKey.read, pageNumber, pageSize, search],
     async () => {
-      const queryParams = new URLSearchParams()
-      if (userId) queryParams.append('UserId', String(userId))
-      if (organizationId) queryParams.append('OrganizationId', String(organizationId))
-      if (forCurrentUser) queryParams.append('ForCurrentUser', String(forCurrentUser))
-      if (projectType) queryParams.append('ProjectType', String(projectType))
+      const queryParams = new URLSearchParams();
+      if (userId) queryParams.append('UserId', String(userId));
+      if (organizationId)
+        queryParams.append('OrganizationId', String(organizationId));
+      if (forCurrentUser)
+        queryParams.append('ForCurrentUser', String(forCurrentUser));
+      if (projectType) queryParams.append('ProjectType', String(projectType));
       if (priority) queryParams.append('ProjectPriority', priority);
       if (status) queryParams.append('ProjectStatus', status);
-      queryParams.append('PageNumber', pageNumber.toString())
-      queryParams.append('PageSize', pageSize.toString())
+      queryParams.append('PageNumber', pageNumber.toString());
+      queryParams.append('PageSize', pageSize.toString());
       queryParams.append('SearchKey', search);
 
-      const url = `${BASE_URL.project}?${queryParams.toString()}`
-      return await api.get({ url })
+      const url = `${BASE_URL.project}?${queryParams.toString()}`;
+      return await api.get({ url });
     },
     {
       ...options,
-      onSuccess: () => { },
+      onSuccess: () => {},
       onError: (err: AxiosError) => {
-        errorToast(handleErrors(err))
-      }
-    }
-  )
+        errorToast(handleErrors(err));
+      },
+    },
+  );
 
   return {
     ...response,
-    data: (response.data || undefined) as ApiResponse<ProjectManagement[]> | undefined,
-    metaData: response.data?.metaData
-  }
-}
+    data: (response.data || undefined) as
+      | ApiResponse<ProjectManagement[]>
+      | undefined,
+    metaData: response.data?.metaData,
+  };
+};
 
-const useReadOne = ({ projectId = '', pageNumber = 1, pageSize = 50 } = {}, options = {}) => {
-  const url = `${BASE_URL.project}/${projectId}`
+const useReadOne = (
+  { projectId = '', pageNumber = 1, pageSize = 50 } = {},
+  options = {},
+) => {
+  const url = `${BASE_URL.project}/${projectId}`;
 
   const response = useQuery(
-    [queryKey.readOne, projectId, pageNumber, pageSize], async () => await api.get({ url }),
+    [queryKey.readOne, projectId, pageNumber, pageSize],
+    async () => await api.get({ url }),
     {
       ...options,
       enabled: !!projectId,
-      onSuccess: () => { },
+      onSuccess: () => {},
       onError: (err: AxiosError) => {
-        errorToast(handleErrors(err))
-      }
-    }
-  )
+        errorToast(handleErrors(err));
+      },
+    },
+  );
 
   return {
     ...response,
     // data: response.data?.data as ProjectManagement | undefined,
     data: response.data?.data || [],
 
-    metaData: response.data?.metaData
-  }
-}
+    metaData: response.data?.metaData,
+  };
+};
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const useUpdate = (options: { onSuccess?: (response: any) => void }) => {
-  const {
-    onSuccess = () => { }
-  } = options;
+  const { onSuccess = () => {} } = options;
   const queryClient = useQueryClient();
   const { mutate, ...response } = useMutation(api.put, {
     mutationKey: [queryKey.update],
@@ -143,24 +158,24 @@ const useUpdate = (options: { onSuccess?: (response: any) => void }) => {
     onSuccess: async (data) => {
       onSuccess(data);
       await queryClient.invalidateQueries({
-        queryKey: [queryKey.read]
+        queryKey: [queryKey.read],
       });
       successToast('Project updated');
     },
     onError: (err: AxiosError) => {
       errorToast(handleErrors(err));
-    }
+    },
   });
 
   interface Body {
-    projectId: string
-    title?: string
-    description?: string
-    expectedDeliveryDate?: string
-    priority?: string
-    totalAmount?: string
-    clientId?: string
-    projectType: string
+    projectId: string;
+    title?: string;
+    description?: string;
+    expectedDeliveryDate?: string;
+    priority?: string;
+    totalAmount?: string;
+    clientId?: string;
+    projectType: string;
   }
 
   return {
@@ -175,44 +190,42 @@ const useUpdate = (options: { onSuccess?: (response: any) => void }) => {
         priority: body?.priority,
         ...(body.projectType === ProjectType.ClientProject && {
           totalAmount: body?.totalAmount,
-          clientId: body?.clientId
-        })
+          clientId: body?.clientId,
+        }),
       };
 
       mutate({
         url: `${BASE_URL.project}/${body.projectId}`,
         body: requestBody,
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       });
-    }
+    },
   };
 };
 
 const useDelete = (options: { onSuccess: () => void }) => {
-  const {
-    onSuccess = () => { }
-  } = options
-  const queryClient = useQueryClient()
+  const { onSuccess = () => {} } = options;
+  const queryClient = useQueryClient();
 
   const { mutate, ...response } = useMutation(api.delete, {
     mutationKey: [queryKey.delete],
     ...options,
     onSuccess: async () => {
-      onSuccess()
+      onSuccess();
       await queryClient.invalidateQueries({
-        queryKey: [queryKey.read]
-      })
-      successToast('Project deleted')
+        queryKey: [queryKey.read],
+      });
+      successToast('Project deleted');
     },
     onError: (err: AxiosError) => {
-      errorToast(handleErrors(err))
-    }
-  })
+      errorToast(handleErrors(err));
+    },
+  });
 
   interface Body {
-    projectId: string
+    projectId: string;
   }
   return {
     ...response,
@@ -221,42 +234,40 @@ const useDelete = (options: { onSuccess: () => void }) => {
         url: `${BASE_URL.project}/${body.projectId}`,
         body,
         headers: {
-          'Content-Type': 'application/json'
-        }
-      })
-    }
-  }
-}
+          'Content-Type': 'application/json',
+        },
+      });
+    },
+  };
+};
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const useCreateTasks = (options: { onSuccess?: (response: any) => void }) => {
-  const {
-    onSuccess = () => { }
-  } = options
+  const { onSuccess = () => {} } = options;
 
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   const { mutate, ...response } = useMutation(api.post, {
     mutationKey: [queryKey.createTasks],
     ...options,
     onSuccess: async (data) => {
-      onSuccess(data)
+      onSuccess(data);
       await queryClient.invalidateQueries({
-        queryKey: [queryKey.readTasks]
-      })
+        queryKey: [queryKey.readTasks],
+      });
 
-      successToast('Task Created')
+      successToast('Task Created');
     },
     onError: (err: AxiosError) => {
-      errorToast(handleErrors(err))
-    }
-  })
+      errorToast(handleErrors(err));
+    },
+  });
 
   interface Body {
-    projectId: string
-    taskName: string
-    startDate: string
-    dueDate: string
-    taskPriority: string
-
+    projectId: string;
+    taskName: string;
+    startDate: string;
+    dueDate: string;
+    taskPriority: string;
   }
 
   return {
@@ -267,17 +278,17 @@ const useCreateTasks = (options: { onSuccess?: (response: any) => void }) => {
         taskName: body.taskName,
         startDate: body.startDate,
         dueDate: body.dueDate,
-        taskPriority: body.taskPriority
+        taskPriority: body.taskPriority,
       };
 
       mutate({
         url: `${BASE_URL.project}/${body.projectId}/tasks`,
         body: requestBody,
         headers: {
-          'Content-Type': 'application/json'
-        }
-      })
-    }
+          'Content-Type': 'application/json',
+        },
+      });
+    },
   };
 };
 
@@ -285,59 +296,66 @@ const useReadTasks = ({ projectId = '' } = {}, options = {}) => {
   const response = useQuery(
     [queryKey.readTasks, projectId],
     async () => {
-      const queryParams = new URLSearchParams()
-      queryParams.append('ProjectId', projectId)
+      const queryParams = new URLSearchParams();
+      queryParams.append('ProjectId', projectId);
       // queryParams.append('PageNumber', pageNumber.toString())
       // queryParams.append('PageSize', pageSize.toString())
       // if (search) queryParams.append('SearchKey', search);
 
-      const url = `${BASE_URL.project}/${projectId}/tasks?${queryParams.toString()}`
-      console.log('API URL:', url)
-      return await api.get({ url })
+      const url = `${
+        BASE_URL.project
+      }/${projectId}/tasks?${queryParams.toString()}`;
+      console.log('API URL:', url);
+      return await api.get({ url });
     },
     {
       ...options,
-      onSuccess: () => { },
+      onSuccess: () => {},
       onError: (err: AxiosError) => {
-        errorToast(handleErrors(err))
-      }
-    }
-  )
+        errorToast(handleErrors(err));
+      },
+    },
+  );
 
   return {
     ...response,
     // data: (response.data || undefined) as ApiResponse<ProjectManagement[]> | undefined,
     data: response.data?.data || [],
-    metaData: response.data?.metaData
-  }
-}
+    metaData: response.data?.metaData,
+  };
+};
 
-const useReadTasksOne = ({ projectId = '', taskId = '', pageNumber = 1, pageSize = 50 } = {}, options = {}) => {
-  const url = `${BASE_URL.project}/${projectId}/tasks/${taskId}`
+const useReadTasksOne = (
+  { projectId = '', taskId = '', pageNumber = 1, pageSize = 50 } = {},
+  options = {},
+) => {
+  const url = `${BASE_URL.project}/${projectId}/tasks/${taskId}`;
 
   const response = useQuery(
-    [queryKey.readTasksOne, projectId, taskId, pageNumber, pageSize], async () => await api.get({ url }),
+    [queryKey.readTasksOne, projectId, taskId, pageNumber, pageSize],
+    async () => await api.get({ url }),
     {
       ...options,
       enabled: !!(projectId && taskId),
-      onSuccess: () => { },
+      onSuccess: () => {},
       onError: (err: AxiosError) => {
-        errorToast(handleErrors(err))
-      }
-    }
-  )
+        errorToast(handleErrors(err));
+      },
+    },
+  );
 
   return {
     ...response,
     data: response.data?.data as ProjectManagement | undefined,
-    metaData: response.data?.metaData
-  }
-}
+    metaData: response.data?.metaData,
+  };
+};
 
-const useUpdateTasks = ({ taskId = '', projectId = '' } = {}, options: { onSuccess: () => void }) => {
-  const {
-    onSuccess = () => { }
-  } = options;
+const useUpdateTasks = (
+  { taskId = '', projectId = '' } = {},
+  options: { onSuccess: () => void },
+) => {
+  const { onSuccess = () => {} } = options;
   const queryClient = useQueryClient();
   const { mutate, ...response } = useMutation(api.put, {
     mutationKey: [queryKey.updateTasks],
@@ -345,23 +363,23 @@ const useUpdateTasks = ({ taskId = '', projectId = '' } = {}, options: { onSucce
     onSuccess: async () => {
       onSuccess();
       await queryClient.invalidateQueries({
-        queryKey: [queryKey.readTasks, taskId, projectId]
+        queryKey: [queryKey.readTasks, taskId, projectId],
       });
       successToast('Project updated');
     },
     onError: (err: AxiosError) => {
       errorToast(handleErrors(err));
-    }
+    },
   });
 
   interface Body {
-    projectId: string
-    taskId: string
-    taskName: string
-    startDate: string
-    dueDate: string
-    taskPriority: string
-    taskStatus: string
+    projectId: string;
+    taskId: string;
+    taskName: string;
+    startDate: string;
+    dueDate: string;
+    taskPriority: string;
+    taskStatus: string;
   }
 
   return {
@@ -380,82 +398,80 @@ const useUpdateTasks = ({ taskId = '', projectId = '' } = {}, options: { onSucce
         url: `${BASE_URL.project}/${body.projectId}/tasks/${body.taskId}`,
         body: formData,
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       });
-    }
+    },
   };
 };
 
 const useDeleteTasks = (options: { onSuccess: () => void }) => {
-  const {
-    onSuccess = () => { }
-  } = options
-  const queryClient = useQueryClient()
+  const { onSuccess = () => {} } = options;
+  const queryClient = useQueryClient();
 
   const { mutate, ...response } = useMutation(api.delete, {
     mutationKey: [queryKey.deleteTasks],
     ...options,
     onSuccess: async () => {
-      onSuccess()
+      onSuccess();
       await queryClient.invalidateQueries({
-        queryKey: [queryKey.readTasks]
-      })
-      successToast('Project deleted')
+        queryKey: [queryKey.readTasks],
+      });
+      successToast('Project deleted');
     },
     onError: (err: AxiosError) => {
-      errorToast(handleErrors(err))
-    }
-  })
+      errorToast(handleErrors(err));
+    },
+  });
   return {
     ...response,
     mutate: (projectId: string, taskId: string) => {
       const config = {
         headers: {
-          'Content-Type': 'application/json'
-        }
-      }
+          'Content-Type': 'application/json',
+        },
+      };
 
       mutate({
         url: `${BASE_URL.project}/${projectId}/tasks/${taskId}`,
-        ...config
-      })
-    }
-  }
-}
+        ...config,
+      });
+    },
+  };
+};
 
-const useCreateDeliverables = (options: { onSuccess?: (response: any) => void }) => {
-  const {
-    onSuccess = () => { }
-  } = options
+const useCreateDeliverables = (options: {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onSuccess?: (response: any) => void;
+}) => {
+  const { onSuccess = () => {} } = options;
 
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   const { mutate, ...response } = useMutation(api.post, {
     mutationKey: [queryKey.createDeliverables],
     ...options,
     onSuccess: async (data) => {
-      onSuccess(data)
+      onSuccess(data);
       await queryClient.invalidateQueries({
-        queryKey: [queryKey.readDeliverables]
-      })
+        queryKey: [queryKey.readDeliverables],
+      });
 
-      successToast('Deliverable Created')
+      successToast('Deliverable Created');
     },
     onError: (err: AxiosError) => {
-      errorToast(handleErrors(err))
-    }
-  })
+      errorToast(handleErrors(err));
+    },
+  });
 
   interface Body {
-    projectId: string
-    deliverableName: string
-    description: string
-    startDate: string
-    dueDate: string
-    unitDeliverableAmount: string
-    units: string
+    projectId: string;
+    deliverableName: string;
+    description: string;
+    startDate: string;
+    dueDate: string;
+    unitDeliverableAmount: string;
+    units: string;
     // amount: string
-
   }
 
   return {
@@ -468,7 +484,7 @@ const useCreateDeliverables = (options: { onSuccess?: (response: any) => void })
         startDate: body.startDate,
         dueDate: body.dueDate,
         unitDeliverableAmount: body.unitDeliverableAmount,
-        units: body.units
+        units: body.units,
         // amount: body.amount
       };
 
@@ -476,10 +492,10 @@ const useCreateDeliverables = (options: { onSuccess?: (response: any) => void })
         url: `${BASE_URL.project}/${body.projectId}/deliverables`,
         body: requestBody,
         headers: {
-          'Content-Type': 'application/json'
-        }
-      })
-    }
+          'Content-Type': 'application/json',
+        },
+      });
+    },
   };
 };
 
@@ -487,55 +503,68 @@ const useReadDeliverables = ({ projectId = '' } = {}, options = {}) => {
   const response = useQuery(
     [queryKey.readDeliverables, projectId],
     async () => {
-      const queryParams = new URLSearchParams()
-      queryParams.append('ProjectId', projectId)
+      const queryParams = new URLSearchParams();
+      queryParams.append('ProjectId', projectId);
 
-      const url = `${BASE_URL.project}/${projectId}/deliverables?${queryParams.toString()}`
-      return await api.get({ url })
+      const url = `${
+        BASE_URL.project
+      }/${projectId}/deliverables?${queryParams.toString()}`;
+      return await api.get({ url });
     },
     {
       ...options,
-      onSuccess: () => { }
+      onSuccess: () => {},
       // onError: (err: AxiosError) => {
       //   errorToast(handleErrors(err))
       // }
-    }
-  )
+    },
+  );
 
   return {
     ...response,
     data: response.data?.data || [],
-    metaData: response.data?.metaData
-  }
-}
+    metaData: response.data?.metaData,
+  };
+};
 
-const useReadDeliverablesOne = ({ projectId = '', deliverableId = '', pageNumber = 1, pageSize = 50 } = {}, options = {}) => {
-  const url = `${BASE_URL.project}/${projectId}/deliverables/${deliverableId}`
+const useReadDeliverablesOne = (
+  { projectId = '', deliverableId = '', pageNumber = 1, pageSize = 50 } = {},
+  options = {},
+) => {
+  const url = `${BASE_URL.project}/${projectId}/deliverables/${deliverableId}`;
 
   const response = useQuery(
-    [queryKey.readOneDeliverables, projectId, deliverableId, pageNumber, pageSize], async () => await api.get({ url }),
+    [
+      queryKey.readOneDeliverables,
+      projectId,
+      deliverableId,
+      pageNumber,
+      pageSize,
+    ],
+    async () => await api.get({ url }),
     {
       ...options,
       enabled: !!(projectId && deliverableId),
-      onSuccess: () => { },
+      onSuccess: () => {},
       onError: (err: AxiosError) => {
-        errorToast(handleErrors(err))
-      }
-    }
-  )
+        errorToast(handleErrors(err));
+      },
+    },
+  );
 
   return {
     ...response,
     // data: response.data?.data as ProjectManagement | undefined,
     data: response.data?.data || [],
-    metaData: response.data?.metaData
-  }
-}
+    metaData: response.data?.metaData,
+  };
+};
 
-const useUpdateDeliverables = ({ deliverableId = '', projectId = '' } = {}, options: { onSuccess: () => void }) => {
-  const {
-    onSuccess = () => { }
-  } = options;
+const useUpdateDeliverables = (
+  { deliverableId = '', projectId = '' } = {},
+  options: { onSuccess: () => void },
+) => {
+  const { onSuccess = () => {} } = options;
   const queryClient = useQueryClient();
   const { mutate, ...response } = useMutation(api.put, {
     mutationKey: [queryKey.updateDeliverables],
@@ -543,26 +572,25 @@ const useUpdateDeliverables = ({ deliverableId = '', projectId = '' } = {}, opti
     onSuccess: async () => {
       onSuccess();
       await queryClient.invalidateQueries({
-        queryKey: [queryKey.readDeliverables, deliverableId, projectId]
+        queryKey: [queryKey.readDeliverables, deliverableId, projectId],
       });
       successToast('Deliverables updated');
     },
     onError: (err: AxiosError) => {
       errorToast(handleErrors(err));
-    }
+    },
   });
 
   interface Body {
-    projectId: string
-    deliverableId: string
-    deliverableName: string
-    deliverableDescription: string
-    startDate: string
-    dueDate: string
-    unitDeliverableAmount: string
-    units: string
+    projectId: string;
+    deliverableId: string;
+    deliverableName: string;
+    deliverableDescription: string;
+    startDate: string;
+    dueDate: string;
+    unitDeliverableAmount: string;
+    units: string;
     // deliverableAmount: string
-
   }
 
   return {
@@ -576,7 +604,7 @@ const useUpdateDeliverables = ({ deliverableId = '', projectId = '' } = {}, opti
         startDate: body.startDate,
         dueDate: body.dueDate,
         unitDeliverableAmount: body.unitDeliverableAmount,
-        units: body.units
+        units: body.units,
         // amount: body.deliverableAmount
       };
 
@@ -584,14 +612,17 @@ const useUpdateDeliverables = ({ deliverableId = '', projectId = '' } = {}, opti
         url: `${BASE_URL.project}/${body.projectId}/deliverables/${body.deliverableId}`,
         body: requestBody,
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       });
-    }
+    },
   };
 };
 
-const useDeleteDeliverables = ({ deliverableId = '', projectId = '' } = {}, options: { onSuccess: () => void }) => {
+const useDeleteDeliverables = (
+  { deliverableId = '', projectId = '' } = {},
+  options: { onSuccess: () => void },
+) => {
   const { onSuccess = () => {} } = options;
   const queryClient = useQueryClient();
 
@@ -601,18 +632,18 @@ const useDeleteDeliverables = ({ deliverableId = '', projectId = '' } = {}, opti
     onSuccess: async () => {
       onSuccess();
       await queryClient.invalidateQueries({
-        queryKey: [queryKey.readDeliverables]
+        queryKey: [queryKey.readDeliverables],
       });
       successToast('Deliverables deleted');
     },
     onError: (err: AxiosError) => {
       errorToast(handleErrors(err));
-    }
+    },
   });
 
   interface Body {
-    projectId: string
-    deliverableId: string
+    projectId: string;
+    deliverableId: string;
   }
 
   return {
@@ -620,47 +651,45 @@ const useDeleteDeliverables = ({ deliverableId = '', projectId = '' } = {}, opti
     mutate: (body: Body) => {
       const requestBody = {
         projectId: body.projectId,
-        deliverableId: body.deliverableId
+        deliverableId: body.deliverableId,
       };
 
       mutate({
         url: `${BASE_URL.project}/${body.projectId}/deliverables/${body.deliverableId}`,
         body: requestBody,
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       });
-    }
+    },
   };
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const useCreatePayment = (options: { onSuccess?: (response: any) => void }) => {
-  const {
-    onSuccess = () => { }
-  } = options
+  const { onSuccess = () => {} } = options;
 
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   const { mutate, ...response } = useMutation(api.post, {
     mutationKey: [queryKey.createPayment],
     ...options,
     onSuccess: async (data) => {
-      onSuccess(data)
+      onSuccess(data);
       await queryClient.invalidateQueries({
-        queryKey: [queryKey.readPayment]
-      })
+        queryKey: [queryKey.readPayment],
+      });
 
-      successToast('Payment Created')
+      successToast('Payment Created');
     },
     onError: (err: AxiosError) => {
-      errorToast(handleErrors(err))
-    }
-  })
+      errorToast(handleErrors(err));
+    },
+  });
 
   interface Body {
-    projectId: string
-    amountPercentage: string
-    dueDate: string
-
+    projectId: string;
+    amountPercentage: string;
+    dueDate: string;
   }
 
   return {
@@ -676,10 +705,10 @@ const useCreatePayment = (options: { onSuccess?: (response: any) => void }) => {
         url: `${BASE_URL.project}/${body.projectId}/payments`,
         body: requestBody,
         headers: {
-          'Content-Type': 'application/json'
-        }
-      })
-    }
+          'Content-Type': 'application/json',
+        },
+      });
+    },
   };
 };
 
@@ -687,31 +716,36 @@ const useReadPayment = ({ projectId = '' } = {}, options = {}) => {
   const response = useQuery(
     [queryKey.readPayment, projectId],
     async () => {
-      const queryParams = new URLSearchParams()
-      queryParams.append('ProjectId', projectId)
+      const queryParams = new URLSearchParams();
+      queryParams.append('ProjectId', projectId);
 
-      const url = `${BASE_URL.project}/${projectId}/payments?${queryParams.toString()}`
-      return await api.get({ url })
+      const url = `${
+        BASE_URL.project
+      }/${projectId}/payments?${queryParams.toString()}`;
+      return await api.get({ url });
     },
 
     {
       enabled: !!projectId,
       ...options,
-      onSuccess: () => { }
+      onSuccess: () => {},
       // onError: (err: AxiosError) => {
       //   errorToast(handleErrors(err))
       // }
-    }
-  )
+    },
+  );
 
   return {
     ...response,
     data: response.data?.data || [],
-    metaData: response.data?.metaData
-  }
-}
+    metaData: response.data?.metaData,
+  };
+};
 
-const useReadPaymentOne = ({ projectId = '', paymentId = '', pageNumber = 1, pageSize = 50 } = {}, options = {}) => {
+const useReadPaymentOne = (
+  { projectId = '', paymentId = '', pageNumber = 1, pageSize = 50 } = {},
+  options = {},
+) => {
   const url = `${BASE_URL.project}/${projectId}/payments/${paymentId}`;
 
   const response = useQuery(
@@ -722,21 +756,22 @@ const useReadPaymentOne = ({ projectId = '', paymentId = '', pageNumber = 1, pag
       enabled: !!(projectId && paymentId),
       onError: (err: AxiosError) => {
         errorToast(handleErrors(err));
-      }
-    }
+      },
+    },
   );
 
   return {
     ...response,
     data: response.data?.data || [],
-    metaData: response.data?.metaData
+    metaData: response.data?.metaData,
   };
 };
 
-const useUpdatePayment = ({ paymentId = '', projectId = '' } = {}, options: { onSuccess: () => void }) => {
-  const {
-    onSuccess = () => { }
-  } = options;
+const useUpdatePayment = (
+  { paymentId = '', projectId = '' } = {},
+  options: { onSuccess: () => void },
+) => {
+  const { onSuccess = () => {} } = options;
   const queryClient = useQueryClient();
   const { mutate, ...response } = useMutation(api.put, {
     mutationKey: [queryKey.updatePayment],
@@ -744,21 +779,20 @@ const useUpdatePayment = ({ paymentId = '', projectId = '' } = {}, options: { on
     onSuccess: async () => {
       onSuccess();
       await queryClient.invalidateQueries({
-        queryKey: [queryKey.readPayment, paymentId, projectId]
+        queryKey: [queryKey.readPayment, paymentId, projectId],
       });
       successToast('Payment updated');
     },
     onError: (err: AxiosError) => {
       errorToast(handleErrors(err));
-    }
+    },
   });
 
   interface Body {
-    projectId: string
-    paymentId: string
-    amountPercentage: string
-    dueDate: string
-
+    projectId: string;
+    paymentId: string;
+    amountPercentage: string;
+    dueDate: string;
   }
 
   return {
@@ -768,21 +802,24 @@ const useUpdatePayment = ({ paymentId = '', projectId = '' } = {}, options: { on
         projectId: body.projectId,
         paymentId: body.paymentId,
         amountPercentage: body.amountPercentage,
-        dueDate: body.dueDate
+        dueDate: body.dueDate,
       };
 
       mutate({
         url: `${BASE_URL.project}/${body.projectId}/payments/${body.paymentId}`,
         body: requestBody,
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       });
-    }
+    },
   };
 };
 
-const useDeletePayment = ({ paymentId = '', projectId = '' } = {}, options: { onSuccess: () => void }) => {
+const useDeletePayment = (
+  { paymentId = '', projectId = '' } = {},
+  options: { onSuccess: () => void },
+) => {
   const { onSuccess = () => {} } = options;
   const queryClient = useQueryClient();
 
@@ -792,18 +829,18 @@ const useDeletePayment = ({ paymentId = '', projectId = '' } = {}, options: { on
     onSuccess: async () => {
       onSuccess();
       await queryClient.invalidateQueries({
-        queryKey: [queryKey.readPayment]
+        queryKey: [queryKey.readPayment],
       });
       successToast('Payment deleted');
     },
     onError: (err: AxiosError) => {
       errorToast(handleErrors(err));
-    }
+    },
   });
 
   interface Body {
-    projectId: string
-    paymentId: string
+    projectId: string;
+    paymentId: string;
   }
 
   return {
@@ -811,21 +848,25 @@ const useDeletePayment = ({ paymentId = '', projectId = '' } = {}, options: { on
     mutate: (body: Body) => {
       const requestBody = {
         projectId: body.projectId,
-        paymentId: body.paymentId
+        paymentId: body.paymentId,
       };
 
       mutate({
         url: `${BASE_URL.project}/${body.projectId}/payments/${body.paymentId}`,
         body: requestBody,
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       });
-    }
+    },
   };
 };
 
-const useCreateAgreement = (options: { onSuccess?: (response: any) => void }) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const useCreateAgreement = (options: {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onSuccess?: (response: any) => void;
+}) => {
   const { onSuccess = () => {} } = options;
 
   const queryClient = useQueryClient();
@@ -835,19 +876,19 @@ const useCreateAgreement = (options: { onSuccess?: (response: any) => void }) =>
     onSuccess: async (data) => {
       onSuccess(data);
       await queryClient.invalidateQueries({
-        queryKey: [queryKey.readAgreement]
+        queryKey: [queryKey.readAgreement],
       });
 
       successToast('Agreement Created');
     },
     onError: (err: AxiosError) => {
       errorToast(handleErrors(err));
-    }
+    },
   });
 
   interface Body {
-    projectId: string
-    projectAgreementUrl?: File | null
+    projectId: string;
+    projectAgreementUrl?: File | null;
   }
 
   return {
@@ -863,14 +904,17 @@ const useCreateAgreement = (options: { onSuccess?: (response: any) => void }) =>
         body: formData,
         url: `${BASE_URL.project}/${body.projectId}/agreements`,
         headers: {
-          'Content-Type': 'multipart/form-data'
-        }
+          'Content-Type': 'multipart/form-data',
+        },
       });
-    }
+    },
   };
 };
 
-const useDeleteAgreement = ({ projectId = '' } = {}, options: { onSuccess: () => void }) => {
+const useDeleteAgreement = (
+  { projectId = '' } = {},
+  options: { onSuccess: () => void },
+) => {
   const { onSuccess = () => {} } = options;
   const queryClient = useQueryClient();
 
@@ -880,34 +924,34 @@ const useDeleteAgreement = ({ projectId = '' } = {}, options: { onSuccess: () =>
     onSuccess: async () => {
       onSuccess();
       await queryClient.invalidateQueries({
-        queryKey: [queryKey.readAgreement]
+        queryKey: [queryKey.readAgreement],
       });
       successToast('Agreement deleted');
     },
     onError: (err: AxiosError) => {
       errorToast(handleErrors(err));
-    }
+    },
   });
 
   interface Body {
-    projectId: string
+    projectId: string;
   }
 
   return {
     ...response,
     mutate: (body: Body) => {
       const requestBody = {
-        projectId: body.projectId
+        projectId: body.projectId,
       };
 
       mutate({
         url: `${BASE_URL.project}/${body.projectId}/agreements`,
         body: requestBody,
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       });
-    }
+    },
   };
 };
 
@@ -915,29 +959,34 @@ const useReadReview = ({ projectId = '' } = {}, options = {}) => {
   const response = useQuery(
     [queryKey.readReview, projectId],
     async () => {
-      const queryParams = new URLSearchParams()
-      queryParams.append('ProjectId', projectId)
+      const queryParams = new URLSearchParams();
+      queryParams.append('ProjectId', projectId);
 
-      const url = `${BASE_URL.project}/${projectId}/review?${queryParams.toString()}`
-      return await api.get({ url })
+      const url = `${
+        BASE_URL.project
+      }/${projectId}/review?${queryParams.toString()}`;
+      return await api.get({ url });
     },
     {
       ...options,
-      onSuccess: () => { }
+      onSuccess: () => {},
       // onError: (err: AxiosError) => {
       //   errorToast(handleErrors(err))
       // }
-    }
-  )
+    },
+  );
 
   return {
     ...response,
     data: response.data?.data || [],
-    metaData: response.data?.metaData
-  }
-}
+    metaData: response.data?.metaData,
+  };
+};
 
-const useCreateInvoice = ({ projectId = '' } = {}, options: { onSuccess: () => void }) => {
+const useCreateInvoice = (
+  { projectId = '' } = {},
+  options: { onSuccess: () => void },
+) => {
   const { onSuccess = () => {} } = options;
   const queryClient = useQueryClient();
 
@@ -947,37 +996,62 @@ const useCreateInvoice = ({ projectId = '' } = {}, options: { onSuccess: () => v
     onSuccess: async () => {
       onSuccess();
       await queryClient.invalidateQueries({
-        queryKey: [queryKey.readReview]
+        queryKey: [queryKey.readReview],
       });
       successToast('Invoice sent');
     },
     onError: (err: AxiosError) => {
       errorToast(handleErrors(err));
-    }
+    },
   });
 
   interface Body {
-    projectId: string
+    projectId: string;
   }
 
   return {
     ...response,
     mutate: (body: Body) => {
       const requestBody = {
-        projectId: body.projectId
+        projectId: body.projectId,
       };
 
       mutate({
         url: `${BASE_URL.project}/${body.projectId}/invoices`,
         body: requestBody,
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       });
-    }
+    },
   };
 };
 
-const queries = { create: useCreate, read: useRead, update: useUpdate, delete: useDelete, readone: useReadOne, createTasks: useCreateTasks, readTasks: useReadTasks, readTasksOne: useReadTasksOne, updateTasks: useUpdateTasks, deleteTasks: useDeleteTasks, createDeliverables: useCreateDeliverables, readDeliverables: useReadDeliverables, readDeliverablesOne: useReadDeliverablesOne, updateDeliverables: useUpdateDeliverables, deleteDeliverables: useDeleteDeliverables, createPayment: useCreatePayment, updateAgreement: useCreateAgreement, deleteAgreement: useDeleteAgreement, readPayment: useReadPayment, deletePayment: useDeletePayment, readPaymentOne: useReadPaymentOne, updatePayment: useUpdatePayment, readReview: useReadReview, createInvoice: useCreateInvoice };
+const queries = {
+  create: useCreate,
+  read: useRead,
+  update: useUpdate,
+  delete: useDelete,
+  readone: useReadOne,
+  createTasks: useCreateTasks,
+  readTasks: useReadTasks,
+  readTasksOne: useReadTasksOne,
+  updateTasks: useUpdateTasks,
+  deleteTasks: useDeleteTasks,
+  createDeliverables: useCreateDeliverables,
+  readDeliverables: useReadDeliverables,
+  readDeliverablesOne: useReadDeliverablesOne,
+  updateDeliverables: useUpdateDeliverables,
+  deleteDeliverables: useDeleteDeliverables,
+  createPayment: useCreatePayment,
+  updateAgreement: useCreateAgreement,
+  deleteAgreement: useDeleteAgreement,
+  readPayment: useReadPayment,
+  deletePayment: useDeletePayment,
+  readPaymentOne: useReadPaymentOne,
+  updatePayment: useUpdatePayment,
+  readReview: useReadReview,
+  createInvoice: useCreateInvoice,
+};
 
 export default queries;

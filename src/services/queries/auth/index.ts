@@ -5,7 +5,7 @@ import {
   errorToast,
   handleErrors,
   setLocalStorage,
-  successToast
+  successToast,
 } from '../../helper';
 import queryKey from './keys';
 import routes from '@/lib/routes';
@@ -20,7 +20,7 @@ const mock = {
   email: 'ayobami.aladenoye+streak@wemabank.com',
   userName: 'bambam',
   accessToken: 'string',
-  refreshToken: 'string'
+  refreshToken: 'string',
 };
 
 const BASE_URL = config.services;
@@ -35,7 +35,7 @@ const useCreate = (options = {}) => {
     },
     onError: (err: AxiosError) => {
       errorToast(handleErrors(err));
-    }
+    },
   });
 
   return {
@@ -44,9 +44,9 @@ const useCreate = (options = {}) => {
       mutate({
         url: `${BASE_URL.onboarding}/create-account`,
         body,
-        auth: false
+        auth: false,
       });
-    }
+    },
   };
 };
 
@@ -71,19 +71,20 @@ const useLogin = (options = {}) => {
       },
       onError: (err: AxiosError) => {
         errorToast(handleErrors(err));
-      }
-    }
+      },
+    },
   );
   return {
     ...response,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mutate: (body: any) => {
       mutate({
         url: `${BASE_URL.auth}/login`,
         body,
         mockData: getMockApiData(mock),
-        auth: false
+        auth: false,
       });
-    }
+    },
   };
 };
 
@@ -94,8 +95,8 @@ const useRead = (options = {}) => {
     {
       ...options,
       onSuccess: () => {},
-      onError: () => {}
-    }
+      onError: () => {},
+    },
   );
 
   return response;
@@ -104,7 +105,7 @@ const useRead = (options = {}) => {
 const queries = {
   create: useCreate,
   login: useLogin,
-  read: useRead
+  read: useRead,
 };
 
 export default queries;

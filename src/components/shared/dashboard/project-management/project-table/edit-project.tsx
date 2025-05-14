@@ -13,15 +13,16 @@ import { type InitialStep1Values } from '@/app/creatives/dashboard/project-manag
 import { ProjectType } from '@/services/queries/projects/enums';
 
 interface IProps {
-  id: string
-  item?: string
-  handleClick: () => void
-  onClose: () => void
-  onProceedToDeliverables?: () => void
-  setProjectId: (id: string) => void
-  setDeliverableId: (id: string) => void
-  handleNext: (formData: InitialStep1Values) => void
-  onAddDeliverable: (values: any) => void
+  id: string;
+  item?: string;
+  handleClick: () => void;
+  onClose: () => void;
+  onProceedToDeliverables?: () => void;
+  setProjectId: (id: string) => void;
+  setDeliverableId: (id: string) => void;
+  handleNext: (formData: InitialStep1Values) => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onAddDeliverable: (values: any) => void;
 }
 
 const validationSchema = Yup.object().shape({
@@ -43,7 +44,7 @@ const priorityMapping: Record<number, AccountType> = {
   3: AccountType.High,
 };
 
-export function EditProject (props: IProps) {
+export function EditProject(props: IProps) {
   const { id, onClose, handleNext, setProjectId, setDeliverableId } = props;
   const projectId = id;
   const { data, refetch } = queries.readone({ projectId });
@@ -83,13 +84,13 @@ export function EditProject (props: IProps) {
 
   const onSubmit = (_values: InitialValues) => {
     const payload: {
-      projectId: string
-      title: string
-      description: string
-      expectedDeliveryDate: string
-      priority: string
-      totalAmount: string
-      projectType: ProjectType
+      projectId: string;
+      title: string;
+      description: string;
+      expectedDeliveryDate: string;
+      priority: string;
+      totalAmount: string;
+      projectType: ProjectType;
     } = {
       projectId,
       title: _values.title,

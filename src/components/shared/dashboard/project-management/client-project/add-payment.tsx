@@ -20,21 +20,21 @@ import EditPayment from '@/components/shared/project-management.tsx/edit-payment
 import { formatDate } from '@/lib/utils';
 
 interface IProps {
-  handleNext: (formData: InitialStep3Values) => void
-  projectId: string
+  handleNext: (formData: InitialStep3Values) => void;
+  projectId: string;
 }
 
 interface Payment {
-  paymentId: string
-  amountPercentage: string
-  dueDate: string
-  totalDueDate?: string
-  installments?: string
-  totalPaymentAmount?: string
-  amount?: string
+  paymentId: string;
+  amountPercentage: string;
+  dueDate: string;
+  totalDueDate?: string;
+  installments?: string;
+  totalPaymentAmount?: string;
+  amount?: string;
 }
 
-export function ProjectPayment (props: IProps) {
+export function ProjectPayment(props: IProps) {
   const { handleNext, projectId } = props;
   const [editForm, setEditForm] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -46,6 +46,7 @@ export function ProjectPayment (props: IProps) {
   const { data, refetch } = queries.readPayment(
     { projectId },
     {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       onSuccess: (newData: any) => {
         if (Array.isArray(newData)) {
           const validPayment = newData.map((item) => {

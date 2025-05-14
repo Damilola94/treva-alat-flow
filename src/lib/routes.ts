@@ -211,6 +211,9 @@ const routes = {
       },
       payment: {
         path: '/creatives/dashboard/payment'
+      },
+      notifications: {
+        path: '/creatives/dashboard/notifications'
       }
     },
   },

@@ -1,40 +1,45 @@
-import { useMutation, useQuery } from 'react-query'
-import api from '../../api'
-import { errorToast, handleErrors, successToast } from '../../helper'
-import queryKey from './keys'
-import { type AxiosError } from 'axios'
+import { useMutation, useQuery } from 'react-query';
+import api from '../../api';
+import { errorToast, handleErrors, successToast } from '../../helper';
+import queryKey from './keys';
+import { type AxiosError } from 'axios';
 
-const BASE_URL = '/template'
+const BASE_URL = '/template';
 
 const useCreate = (options = {}) => {
-  const {
-    mutate, ...response
-  } = useMutation(api.post, {
+  const { mutate, ...response } = useMutation(api.post, {
     mutationKey: [queryKey.create],
     ...options,
     onSuccess: () => {
-      successToast('')
+      successToast('');
     },
     onError: (err: AxiosError) => {
-      errorToast(handleErrors(err))
-    }
-  })
+      errorToast(handleErrors(err));
+    },
+  });
   return {
     ...response,
-    mutate: (body: any) => { mutate({ url: `${BASE_URL}`, body }) }
-  }
-}
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    mutate: (body: any) => {
+      mutate({ url: `${BASE_URL}`, body });
+    },
+  };
+};
 
 const useRead = (options = {}) => {
-  const response = useQuery([queryKey.read], async () => await api.get({ url: `${BASE_URL}` }), {
-    ...options,
-    onSuccess: () => {},
-    onError: () => {}
-  })
+  const response = useQuery(
+    [queryKey.read],
+    async () => await api.get({ url: `${BASE_URL}` }),
+    {
+      ...options,
+      onSuccess: () => {},
+      onError: () => {},
+    },
+  );
 
-  return response
-}
+  return response;
+};
 
-const queries = { create: useCreate, read: useRead }
+const queries = { create: useCreate, read: useRead };
 
-export default queries
+export default queries;

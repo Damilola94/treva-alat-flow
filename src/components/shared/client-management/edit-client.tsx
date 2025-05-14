@@ -1,30 +1,32 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
-'use client'
-import React, { useRef, useState, useEffect } from 'react'
-import { Formik } from 'formik'
-import * as Yup from 'yup'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { Delete, Upload } from '@/components/shared'
-import Image from 'next/image'
-import projectManagement from '@/lib/assets/project-management'
-import { toast } from 'react-toastify'
-import clientQueries from '@/services/queries/client-management'
+'use client';
+import React, { useRef, useState, useEffect } from 'react';
+import { Formik } from 'formik';
+import * as Yup from 'yup';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Delete, Upload } from '@/components/shared';
+import Image from 'next/image';
+import projectManagement from '@/lib/assets/project-management';
+import { toast } from 'react-toastify';
+import clientQueries from '@/services/queries/client-management';
 
 interface IProps {
-  id: string
-  item: string
-  handleClick: () => void
-  onClose: () => void
+  id: string;
+  item: string;
+  handleClick: () => void;
+  onClose: () => void;
 }
 
 const validationSchema = Yup.object().shape({
   fullName: Yup.string().optional(),
-  emailAddress: Yup.string().email('Please enter a valid email address').optional(),
+  emailAddress: Yup.string()
+    .email('Please enter a valid email address')
+    .optional(),
   phoneNumber: Yup.string()
     .matches(/^[0-9]{11}$/, 'Phone number must be exactly 11 digits')
     .optional(),
-  birthday: Yup.date().optional()
+  birthday: Yup.date().optional(),
 });
 
 const initialValues = {
@@ -32,45 +34,47 @@ const initialValues = {
   emailAddress: '',
   phoneNumber: '',
   birthday: '',
-  image: null as File | null
-}
+  image: null as File | null,
+};
 
-type InitialValues = ReturnType<() => typeof initialValues>
+type InitialValues = ReturnType<() => typeof initialValues>;
 
-export function EditClient ({ id, onClose }: IProps) {
-  const clientId = id
-  const { data, refetch } = clientQueries.readone({ clientId })
+export function EditClient({ id, onClose }: IProps) {
+  const clientId = id;
+  const { data, refetch } = clientQueries.readone({ clientId });
   const { mutate, isLoading } = clientQueries.update({
     onSuccess: () => {
-      void refetch()
+      void refetch();
       onClose();
-    }
-  })
-  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+    },
+  });
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [imagePreview, setImagePreview] = useState<string>('')
+  const [imagePreview, setImagePreview] = useState<string>('');
 
-  const fileInputRef = useRef<HTMLInputElement | null>(null)
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
-    if (data) { /* empty */ }
-  }, [data, clientId])
+    if (data) {
+      /* empty */
+    }
+  }, [data, clientId]);
 
   const onSubmit = (_values: InitialValues) => {
     const formData: {
-      id: string
-      fullName: string
-      emailAddress: string
-      phoneNumber: string
-      birthday: string
-      image?: File | null
+      id: string;
+      fullName: string;
+      emailAddress: string;
+      phoneNumber: string;
+      birthday: string;
+      image?: File | null;
     } = {
       id: clientId,
       fullName: _values.fullName,
       emailAddress: _values.emailAddress,
       phoneNumber: _values.phoneNumber,
       birthday: _values.birthday,
-      image: _values.image
+      image: _values.image,
     };
 
     mutate(formData);
@@ -78,7 +82,8 @@ export function EditClient ({ id, onClose }: IProps) {
 
   const handleFileChange = (
     e: React.ChangeEvent<HTMLInputElement>,
-    setFieldValue: (field: string, value: any) => void
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    setFieldValue: (field: string, value: any) => void,
   ) => {
     const file = e.target.files?.[0];
 
@@ -95,7 +100,9 @@ export function EditClient ({ id, onClose }: IProps) {
         };
         reader.readAsDataURL(file);
       } else {
-        toast.error('Unsupported file type. Please upload a JPEG, PNG, or JPG file.');
+        toast.error(
+          'Unsupported file type. Please upload a JPEG, PNG, or JPG file.',
+        );
 
         setSelectedFile(null);
         setFieldValue('image', null);
@@ -116,13 +123,15 @@ export function EditClient ({ id, onClose }: IProps) {
 
   return (
     <div className="app_auth_login_container relative">
-      <Image src={projectManagement.topGradient} alt="top gradient" className="w-full" />
+      <Image
+        src={projectManagement.topGradient}
+        alt="top gradient"
+        className="w-full"
+      />
       <div className="app_auth_login_container__upper !-mt-80">
         <div className="app_auth_login">
           <div>
-            <h3 className="app_auth_login__title mb-5">
-              Edit client
-            </h3>
+            <h3 className="app_auth_login__title mb-5">Edit client</h3>
             <Formik
               enableReinitialize
               initialValues={{
@@ -131,7 +140,7 @@ export function EditClient ({ id, onClose }: IProps) {
                 emailAddress: data?.emailAddress ?? '',
                 phoneNumber: String(data?.phoneNumber ?? ''),
                 birthday: data.birthday ? data.birthday.split('T')[0] : '',
-                image: data?.image ? null : null
+                image: data?.image ? null : null,
               }}
               validationSchema={validationSchema}
               onSubmit={onSubmit}
@@ -143,8 +152,8 @@ export function EditClient ({ id, onClose }: IProps) {
                   handleBlur,
                   handleSubmit,
                   errors,
-                  touched
-                } = props
+                  touched,
+                } = props;
                 return (
                   <form onSubmit={handleSubmit} className="flex flex-col gap-8">
                     <div className="flex flex-col gap-8">
@@ -165,7 +174,7 @@ export function EditClient ({ id, onClose }: IProps) {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <Input
                           name="emailAddress"
-                          type='email'
+                          type="email"
                           id="emailAddress"
                           placeholder="Email address"
                           size="xl"
@@ -178,7 +187,7 @@ export function EditClient ({ id, onClose }: IProps) {
                         <Input
                           name="phoneNumber"
                           id="phoneNumber"
-                          type='text'
+                          type="text"
                           placeholder="Phone number"
                           size="xl"
                           value={values.phoneNumber}
@@ -189,7 +198,10 @@ export function EditClient ({ id, onClose }: IProps) {
                         />
                       </div>
                       <div className="flex flex-col gap-2">
-                        <label htmlFor="birthday" className="text-sm font-medium text-gray-700">
+                        <label
+                          htmlFor="birthday"
+                          className="text-sm font-medium text-gray-700"
+                        >
                           Date of Birth
                         </label>
                         <Input
@@ -213,10 +225,14 @@ export function EditClient ({ id, onClose }: IProps) {
                         accept="image/png, image/jpeg, image/jpg"
                         ref={fileInputRef}
                         style={{ display: 'none' }}
-                        onChange={(e) => { handleFileChange(e, props.setFieldValue); }}
+                        onChange={(e) => {
+                          handleFileChange(e, props.setFieldValue);
+                        }}
                       />
                       {errors.image && touched.image && (
-                        <div className="text-red-500 text-sm mt-1">{errors.image}</div>
+                        <div className="text-red-500 text-sm mt-1">
+                          {errors.image}
+                        </div>
                       )}
 
                       <Button
@@ -228,13 +244,14 @@ export function EditClient ({ id, onClose }: IProps) {
                           <Upload />
                         </div>
                         <div className="flex flex-col gap-1 pb-5">
-                          <p className="app_upload_con__title">Upload client’s image</p>
+                          <p className="app_upload_con__title">
+                            Upload client’s image
+                          </p>
                           <p className="app_upload_con__description">
                             PDF, PNG, JPG | 10MB max.
                           </p>
                         </div>
                       </Button>
-
                     </div>
                     {selectedFile && (
                       <div className="flex items-center justify-between w-full app_upload_con rounded-lg p-4">
@@ -243,7 +260,9 @@ export function EditClient ({ id, onClose }: IProps) {
                             <p className="font-medium text-sm text-gray-900">
                               {selectedFile.name}
                             </p>
-                            <p className="text-xs text-gray-500">{(selectedFile.size / 1024 / 1024).toFixed(2)} MB</p>
+                            <p className="text-xs text-gray-500">
+                              {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
+                            </p>
                           </div>
                         </div>
                         <button
@@ -263,7 +282,7 @@ export function EditClient ({ id, onClose }: IProps) {
                       {/* flex justify-between space-x-10 absolute bottom-0 w-full -left-5 mb-5 m */}
                       <Button
                         size="md"
-                        type='button'
+                        type="button"
                         backgroundColor="transparent"
                         color="primary-blue-500"
                         className="w-full hover:bg-transparent app_auth_login__btn border border-[#F1F1F1]"
@@ -282,12 +301,12 @@ export function EditClient ({ id, onClose }: IProps) {
                       </Button>
                     </div>
                   </form>
-                )
+                );
               }}
             </Formik>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }
