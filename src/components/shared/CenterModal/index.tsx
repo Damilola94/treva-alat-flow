@@ -1,5 +1,5 @@
-import React from 'react';
-import { X } from 'lucide-react';
+import React from 'react'
+import { X } from 'lucide-react'
 
 interface ModalProps {
   headerImageType?: number
@@ -22,14 +22,18 @@ const CenterModal: React.FC<ModalProps> = ({
   children,
   footerChildren,
 }) => {
-  if (!isOpen) return null;
+  if (!isOpen) return null
 
   const topBgImg =
     headerImageType === 1
       ? 'url(/media/images/projectmanagement/top-image-create-project.png)'
       : headerImageType === 2
       ? 'url(/media/images/projectmanagement/top-image-project.png)'
-      : '';
+      : headerImageType === 3
+      ? 'url(/media/images/projectmanagement/deleteImage.png)'
+      : headerImageType === 4
+      ? 'url(/media/images/projectmanagement/success.png)'
+      : ''
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4 font-spaceGrotesk">
@@ -39,19 +43,45 @@ const CenterModal: React.FC<ModalProps> = ({
       {/* Modal Content */}
       <div
         className="relative z-10 flex w-full max-w-lg flex-col overflow-hidden rounded-lg bg-white"
-        onClick={(e) => { e.stopPropagation(); }}
+        onClick={(e) => {
+          e.stopPropagation()
+        }}
       >
         {/* Modal Header */}
         <div
           style={{
             backgroundImage: topBgImg,
-            backgroundSize: headerImageType === 1 ? '110%' : '83%',
+            backgroundSize:
+              headerImageType === 1
+                ? '110%'
+                : headerImageType === 2
+                ? '83%'
+                : 'contain',
             backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
             backgroundColor: '#fff',
+             marginTop:
+              headerImageType === 3 || headerImageType === 4 ? '50px' : '16px',
+            paddingTop:
+              headerImageType === 3 || headerImageType === 4 ? '40px' : '16px',
+            paddingBottom:
+              headerImageType === 3 || headerImageType === 4 ? '20px' : '16px',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems:
+              headerImageType === 3 || headerImageType === 4
+                ? 'center'
+                : 'flex-start',
           }}
           className="w-full p-4"
         >
-          <div className="flex justify-end">
+          <div
+            className={`flex ${
+              headerImageType === 3 || headerImageType === 4
+                ? 'w-full justify-end absolute top-2'
+                : 'justify-end'
+            }`}
+          >
             <button
               onClick={onClose}
               className="p-2 text-[#262626] hover:text-gray-700"
@@ -60,11 +90,21 @@ const CenterModal: React.FC<ModalProps> = ({
               <X size={25} />
             </button>
           </div>
-          {title && <h2 className="text-2xl font-bold">{title}</h2>}
+          {title && (
+            <h2
+              className={`font-bold ${
+                headerImageType === 3 || headerImageType === 4
+                  ? 'text-xl mt-4 text-center'
+                  : 'text-2xl'
+              }`}
+            >
+              {title}
+            </h2>
+          )}
         </div>
 
         {/* Modal Body */}
-        <div className="flex-1 overflow-y-auto p-6">{children}</div>
+        <div className={`flex-1 overflow-y-auto p-6 ${headerImageType === 3 || headerImageType === 4 ? 'pt-4' : ''}`}>{children}</div>
 
         {/* Modal Footer */}
         {showFooter && (
@@ -74,7 +114,7 @@ const CenterModal: React.FC<ModalProps> = ({
         )}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export { CenterModal };
+export { CenterModal }

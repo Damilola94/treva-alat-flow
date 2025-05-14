@@ -11,7 +11,7 @@ import queries from '@/services/queries/projects'
 
 interface Payment {
   paymentId: string
-  amountPercentage: string
+  amount: string
   dueDate: string
 }
 
@@ -32,7 +32,7 @@ const validationSchema = Yup.object().shape({
 });
 
 const initialValues = {
-  amountPercentage: '',
+  amount: '',
   dueDate: '',
 };
 
@@ -68,7 +68,7 @@ export default function EditPayment (props: IProps) {
     const formData = {
       projectId,
       paymentId,
-      amountPercentage: values.amountPercentage,
+      amount: values.amount,
       dueDate: values.dueDate
         };
 
@@ -115,11 +115,11 @@ export default function EditPayment (props: IProps) {
                                     className="flex flex-col gap-4 mt-14"
                                 >
                                     <Input
-                                        name="amountPercentage"
+                                        name="amount"
                                         type="number"
-                                        placeholder="% Required"
+                                        placeholder="Amount"
                                         size="xl"
-                                        value={values.amountPercentage}
+                                        value={values.amount}
                                         onChange={handleChange}
                                         onBlur={handleBlur}
                                         errors={errors}

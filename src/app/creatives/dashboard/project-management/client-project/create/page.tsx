@@ -5,11 +5,12 @@ import { ProjectType } from '@/services/queries/projects/enums'
 import { ProgressStatus } from '@/components/shared/dashboard/get-started/progress-status copy'
 import { ProjectDetails } from '@/components/shared/dashboard/project-management/client-project/add-details'
 import { ProjectDeliverables } from '@/components/shared/dashboard/project-management/client-project/add-deliverables'
-import { ProjectPayment } from '@/components/shared/dashboard/project-management/client-project/add-payment'
+import { ProjectPaymentSchedule } from '@/components/shared/dashboard/project-management/client-project/add-payment-schedule'
 import { ProjectAgreement } from '@/components/shared/dashboard/project-management/client-project/add-agreement'
 import { ProjectReview } from '@/components/shared/dashboard/project-management/client-project/review'
 import { useSearchParams } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
+import ProjectPayment from '@/components/shared/dashboard/project-management/client-project/payment'
 
 enum AccountType {
   Low = 'low',
@@ -40,13 +41,22 @@ const step2Values = {
 const step3Values = {
   payment: [
     {
-      amountPercentage: '',
-      dueDate: '',
+      title: '',
+      amount: ''
     }
   ]
 }
 
 const step4Values = {
+  paymentSchedule: [
+    {
+      amount: '',
+      dueDate: '',
+    }
+  ]
+}
+
+const step5Values = {
   agreement: [{
     projectId: '',
     projectAgreementUrl: ''
@@ -58,7 +68,8 @@ const defaultValues = {
   step1Values,
   step2Values,
   step3Values,
-  step4Values
+  step4Values,
+  step5Values
 }
 
 interface FormDataType {
@@ -66,6 +77,7 @@ interface FormDataType {
   step2Values: typeof step2Values
   step3Values: typeof step3Values
   step4Values: typeof step4Values
+  step5Values: typeof step5Values
 }
 
 export type DefaultValues = ReturnType<() => typeof defaultValues>
@@ -82,19 +94,25 @@ export interface InitialStep2Values {
 }
 export interface InitialStep3Values {
   payment: Array<{
-    amountPercentage: string
+    title: string
+    amount: string
+  }>
+}
+export interface InitialStep4Values {
+  paymentSchedule: Array<{
+    amount: string
     dueDate: string
   }>
 }
 
-export interface InitialStep4Values {
+export interface InitialStep5Values {
   agreement: Array<{
     projectId: string
     projectAgreementUrl: string
   }>
 }
 
-export interface InitialStep5Values {
+export interface InitialStep6Values {
   review: Array<{
     projectId: string
     termsAndConditions: false
@@ -124,7 +142,7 @@ function ClientProject () {
     }
   }, [paramsProjectId]);
 
-  const handleNext = (step: 1 | 2 | 3 | 4 | 5, data: Partial<FormDataType[keyof FormDataType]>) => {
+  const handleNext = (step: 1 | 2 | 3 | 4 | 5 | 6, data: Partial<FormDataType[keyof FormDataType]>) => {
     setFormData((prevData) => ({
       ...prevData,
       [`step${step}Values`]: {
@@ -138,7 +156,7 @@ function ClientProject () {
   return (
     <Fragment>
       {/* Mobile Step Indicator */}
-      <div className="lg:hidden flex items-center justify-between my-4 mx-4">
+      <div className="lg:hidden flex items-center justify-between my-4 mx-4 ">
         {currentStep > 1 && (
           <button onClick={() => { setCurrentStep((prev) => prev - 1); }} className="p-2 text-black">
             <ArrowLeft/>
@@ -146,7 +164,7 @@ function ClientProject () {
         )}
 
         <p className="text-sm font-medium bg-[#7B37F00D] text-[#7B37F0] rounded px-3 py-1 w-fit">
-          {currentStep} of 5
+          {currentStep} of 6
         </p>
       </div>
 
@@ -156,8 +174,9 @@ function ClientProject () {
             <ProgressStatus label="Project details" checked={currentStep >= 1} />
             <ProgressStatus label="Deliverables" checked={currentStep >= 2} />
             <ProgressStatus label="Payment" checked={currentStep >= 3} />
-            <ProgressStatus label="Agreement" checked={currentStep >= 4} />
-            <ProgressStatus label="Review" checked={currentStep >= 5} />
+            <ProgressStatus label="Payment schedule" checked={currentStep >= 4} />
+            <ProgressStatus label="Agreement" checked={currentStep >= 5} />
+            <ProgressStatus label="Review" checked={currentStep >= 6} />
 
           </div>
         </div>
@@ -183,24 +202,32 @@ function ClientProject () {
           />
         </RenderIf>
 
-        <RenderIf condition={currentStep === 3}>
+         <RenderIf condition={currentStep === 3}>
           <ProjectPayment
             projectId={projectId}
             key={projectId}
             handleNext={(data) => { handleNext(3, data); }}
-
           />
-        </RenderIf>
+          </RenderIf>
 
         <RenderIf condition={currentStep === 4}>
-          <ProjectAgreement
+          <ProjectPaymentSchedule
             projectId={projectId}
             key={projectId}
             handleNext={(data) => { handleNext(4, data); }}
+
           />
         </RenderIf>
 
         <RenderIf condition={currentStep === 5}>
+          <ProjectAgreement
+            projectId={projectId}
+            key={projectId}
+            handleNext={(data) => { handleNext(5, data); }}
+          />
+        </RenderIf>
+
+        <RenderIf condition={currentStep === 6}>
           <ProjectReview
             projectId={projectId}
             key={projectId}
