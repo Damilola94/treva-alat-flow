@@ -1,25 +1,27 @@
-import * as React from 'react'
+import * as React from 'react';
 
-import { cn } from '@/lib/utils'
-import { RenderIf } from '../shared'
+import { cn } from '@/lib/utils';
+import { RenderIf } from '../shared';
 
 export interface TextareaProps
   extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
-  label?: string
-  success?: string
-  size?: 'lg' | 'xl'
-  errors?: any
-  touched?: any
+  label?: string;
+  success?: string;
+  size?: 'lg' | 'xl';
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  errors?: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  touched?: any;
   wordCount?: {
-    limit: number
-    current: number
-  }
+    limit: number;
+    current: number;
+  };
 }
 
 const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
   (args, ref) => {
     const {
-      size,
+      // size,
       label,
       success,
       errors = {},
@@ -28,16 +30,16 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
       className: cnString,
       wordCount,
       ...props
-    } = args
+    } = args;
 
-    const hasError = (errors[name] && touched[name]) || false
+    const hasError = (errors[name] && touched[name]) || false;
 
     const className = [
       'app_input',
       'app_textarea',
       'app_input_field',
-      cnString
-    ].join(' ')
+      cnString,
+    ].join(' ');
 
     return (
       <div className="app_input_con">
@@ -49,7 +51,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
         <textarea
           className={cn(
             'flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
-            className
+            className,
           )}
           ref={ref}
           maxLength={wordCount?.limit}
@@ -76,9 +78,9 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
           </RenderIf>
         </div>
       </div>
-    )
-  }
-)
-Textarea.displayName = 'Textarea'
+    );
+  },
+);
+Textarea.displayName = 'Textarea';
 
-export { Textarea }
+export { Textarea };

@@ -1,11 +1,12 @@
 'use client';
-import { Tab } from '@/components/shared';
+import { ChatSideModal, Tab } from '@/components/shared';
 import React, { useState } from 'react';
-import { NotificationsList } from './components';
+import { ChatWindow, NotificationsList } from './components';
 import { messageNotifications, notificationsList } from '@/constants';
 
 const Notifications = () => {
   const [activeTab, setActiveTab] = useState(0);
+  const [messageModal, toggleMessageModal] = useState(false);
 
   const tabs = [
     {
@@ -13,7 +14,10 @@ const Notifications = () => {
       value: 'notifications',
       content: (
         <>
-          <NotificationsList notifications={notificationsList} />
+          <NotificationsList
+            toggleMessageModal={toggleMessageModal}
+            notifications={notificationsList}
+          />
         </>
       ),
     },
@@ -22,7 +26,10 @@ const Notifications = () => {
       value: 'messages',
       content: (
         <>
-          <NotificationsList notifications={messageNotifications} />
+          <NotificationsList
+            toggleMessageModal={toggleMessageModal}
+            notifications={messageNotifications}
+          />
         </>
       ),
     },
@@ -41,6 +48,21 @@ const Notifications = () => {
           />
         </div>
       </div>
+
+      {/* withdraw funds side modal */}
+      <ChatSideModal
+        isOpen={messageModal}
+        onClose={() => {
+          toggleMessageModal(false);
+        }}
+        title={"{{Creative's Name}}"}
+        projName="{{Project Name}}"
+        usebg={false}
+      >
+        <div className="space-y-10">
+          <ChatWindow />
+        </div>
+      </ChatSideModal>
     </>
   );
 };

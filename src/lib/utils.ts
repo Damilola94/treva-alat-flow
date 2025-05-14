@@ -2,7 +2,7 @@ import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { rootColors } from './colors';
 
-export function cn (...inputs: ClassValue[]) {
+export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
@@ -14,26 +14,27 @@ export const decodeJwt = (jwt: string) => {
   }
 };
 
-export function getMockApiData (responseData: any) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function getMockApiData(responseData: any) {
   return {
     isSuccess: true,
     responseCode: '200',
     responseMessage: 'Good to go',
-    responseData
+    responseData,
   };
 }
 
 interface IAvatarProps {
-  name: string
-  fontSize?: number
-  size?: number
-  color?: string
-  background?: string
-  length?: number
-  rounded?: boolean
+  name: string;
+  fontSize?: number;
+  size?: number;
+  color?: string;
+  background?: string;
+  length?: number;
+  rounded?: boolean;
 }
 
-export function getAvatar (props: IAvatarProps) {
+export function getAvatar(props: IAvatarProps) {
   const {
     name,
     color = rootColors['wema-purple'].replace('#', ''),
@@ -52,33 +53,33 @@ export function getAvatar (props: IAvatarProps) {
   return avatar;
 }
 
-export function getFullName ({ firstName = '', lastName = '' }) {
+export function getFullName({ firstName = '', lastName = '' }) {
   return `${firstName ?? ''} ${lastName ?? ''}`.trim();
 }
 
-export function extractName (fullName: string): {
-  firstName: string
-  lastName: string
+export function extractName(fullName: string): {
+  firstName: string;
+  lastName: string;
 } {
-  const nameParts = fullName.trim().split(' ')
-  const firstName = nameParts[0] || ''
-  const lastName = nameParts.slice(1).join(' ') || ''
-  return { firstName, lastName }
+  const nameParts = fullName.trim().split(' ');
+  const firstName = nameParts[0] || '';
+  const lastName = nameParts.slice(1).join(' ') || '';
+  return { firstName, lastName };
 }
 
-export function checkWordsInSentence (sentence: string, words: string[]) {
+export function checkWordsInSentence(sentence: string, words: string[]) {
   const sentenceWords = sentence.toLowerCase().split(/\W+/);
 
   return words.every((word: string) =>
-    sentenceWords.includes(word.toLowerCase())
+    sentenceWords.includes(word.toLowerCase()),
   );
 }
 
-export function formatDate (dateString: string | number | Date) {
-  const date = new Date(dateString)
+export function formatDate(dateString: string | number | Date) {
+  const date = new Date(dateString);
   return date.toLocaleDateString('en-US', {
     month: 'short',
     day: '2-digit',
-    year: 'numeric'
-  })
+    year: 'numeric',
+  });
 }

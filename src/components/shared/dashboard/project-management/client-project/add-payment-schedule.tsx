@@ -46,6 +46,7 @@ export function ProjectPaymentSchedule (props: IProps) {
   const { data, refetch } = queries.readPayment(
     { projectId },
     {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       onSuccess: (newData: any) => {
         if (Array.isArray(newData)) {
           const validPayment = newData.map((item) => {

@@ -7,7 +7,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "prepare": "husky"
+    "prepare": "husky",
+    "typegen:trevauserservice": "openapi-typescript https://treva-userservice.somee.com/swagger/v1/swagger.json --output ./src/types/trevaUserService.ts",
+    "typegen:trevauserservice-mac": "NODE_TLS_REJECT_UNAUTHORIZED=0 openapi-typescript https://treva-userservice.somee.com/swagger/v1/swagger.json --output ./src/types/trevaUserService.ts",
+    "typegen:trevaprojectservice": "openapi-typescript https://treva-projectservice.somee.com/swagger/v1/swagger.json --output ./src/types/trevaProjectService.ts",
+    "typegen:trevaprojectservice-mac": "NODE_TLS_REJECT_UNAUTHORIZED=0 openapi-typescript https://treva-projectservice.somee.com/swagger/v1/swagger.json --output ./src/types/trevaProjectService.ts"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.3",
@@ -62,17 +66,18 @@
     "@typescript-eslint/eslint-plugin": "^6.4.0",
     "autoprefixer": "^10.0.1",
     "eslint": "^8.0.1",
-    "eslint-config-next": "14.1.0",
+    "eslint-config-next": "^15.3.2",
     "eslint-config-standard-with-typescript": "^43.0.1",
     "eslint-plugin-import": "^2.25.2",
     "eslint-plugin-n": "^15.0.0 || ^16.0.0 ",
     "eslint-plugin-promise": "^6.0.0",
     "eslint-plugin-react": "^7.34.0",
     "husky": "^9.0.11",
+    "openapi-typescript": "^7.8.0",
     "postcss": "^8",
     "sass": "^1.71.0",
     "tailwindcss": "^3.3.0",
-    "typescript": "*"
+    "typescript": "^5.8.3"
   },
   "engines": {
     "node": ">=18.17.1",

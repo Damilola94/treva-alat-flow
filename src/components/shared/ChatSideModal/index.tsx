@@ -1,26 +1,30 @@
 import React from 'react';
 import { X } from 'lucide-react';
+import Image from 'next/image';
+import { NAvatar } from '@/app/assets/pngs';
 
 interface ModalProps {
-  isOpen: boolean
-  showFooter?: boolean
-  onClose: () => void
-  title?: string
-  actionText?: string
-  onAction?: () => void
-  children: React.ReactNode
-  footerChildren?: React.ReactNode
-  usebg?: boolean
+  isOpen: boolean;
+  showFooter?: boolean;
+  onClose: () => void;
+  title?: string;
+  projName?: string;
+  actionText?: string;
+  onAction?: () => void;
+  children: React.ReactNode;
+  footerChildren?: React.ReactNode;
+  usebg?: boolean;
 }
 
-const SideModal: React.FC<ModalProps> = ({
+const ChatSideModal: React.FC<ModalProps> = ({
   isOpen,
   onClose,
   showFooter,
   title,
+  projName,
   children,
   footerChildren,
-  usebg
+  usebg,
 }) => {
   if (!isOpen) return null;
 
@@ -34,15 +38,30 @@ const SideModal: React.FC<ModalProps> = ({
         {/* Modal Header */}
         <div
           style={{
-            backgroundImage: usebg ? 'url(/media/images/projectmanagement/top-image-create-project.png)' : '',
+            backgroundImage: usebg
+              ? 'url(/media/images/projectmanagement/top-image-create-project.png)'
+              : '',
             backgroundSize: '110%',
             backgroundPosition: 'center',
             backgroundColor: '#fff',
             width: '100%',
           }}
-          className="w-full p-4"
+          className="w-full p-4 border-b border-[#E7E7E7] "
         >
-          <div className="flex justify-end">
+          <div className="flex justify-between items-center">
+            <div className="flex gap-3">
+              <div className='w-[43px] h-[43px]'>
+                <Image
+                  src={NAvatar}
+                  alt="avatar"
+                  className="rounded-full object-cover"
+                />
+              </div>
+              <div>
+                {title && <h2 className="text-[16px] font-bold">{title}</h2>}
+                {projName && <h2 className="text-[11px]">{projName}</h2>}
+              </div>
+            </div>
             <button
               onClick={onClose}
               className="text-[#262626] hover:text-gray-700 p-2"
@@ -51,11 +70,10 @@ const SideModal: React.FC<ModalProps> = ({
               <X size={25} />
             </button>
           </div>
-          {title && <h2 className="text-2xl font-bold">{title}</h2>}
         </div>
 
         {/* Modal Content - Accepts children */}
-        <div className="p-6 flex-1 overflow-y-auto">{children}</div>
+        <div className="p-4 flex-1 overflow-y-auto">{children}</div>
 
         {/* Modal Footer */}
         {showFooter && (
@@ -68,4 +86,4 @@ const SideModal: React.FC<ModalProps> = ({
   );
 };
 
-export { SideModal };
+export { ChatSideModal };

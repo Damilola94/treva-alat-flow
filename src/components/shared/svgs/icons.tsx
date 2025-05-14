@@ -1,10 +1,10 @@
 import { type SVGProps } from 'react';
 
 interface IProps {
-  stroke?: string
+  stroke?: string;
 }
 
-export function ArrowCircleRight (props: SVGProps<SVGSVGElement>) {
+export function ArrowCircleRight(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
       width="32"
@@ -33,16 +33,24 @@ export function ArrowCircleRight (props: SVGProps<SVGSVGElement>) {
   );
 }
 
-export function ArrowRightUp () {
+export function ArrowRightUp() {
   return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M7.58926 0.863323C7.12903 0.863323 6.75593 1.23642 6.75593 1.69666C6.75593 2.15689 7.12903 2.52999 7.58926 2.52999H10.2915L1.10745 11.714C0.782014 12.0394 0.782014 12.5671 1.10745 12.8925C1.43289 13.2179 1.96052 13.2179 2.28596 12.8925L11.47 3.7085V6.4107C11.47 6.87094 11.8431 7.24403 12.3033 7.24403C12.7635 7.24403 13.1366 6.87094 13.1366 6.4107V1.69666C13.1366 1.23642 12.7635 0.863323 12.3033 0.863323H7.58926Z" fill="#E7E7E7"/>
-</svg>
-
-  )
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 14 14"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M7.58926 0.863323C7.12903 0.863323 6.75593 1.23642 6.75593 1.69666C6.75593 2.15689 7.12903 2.52999 7.58926 2.52999H10.2915L1.10745 11.714C0.782014 12.0394 0.782014 12.5671 1.10745 12.8925C1.43289 13.2179 1.96052 13.2179 2.28596 12.8925L11.47 3.7085V6.4107C11.47 6.87094 11.8431 7.24403 12.3033 7.24403C12.7635 7.24403 13.1366 6.87094 13.1366 6.4107V1.69666C13.1366 1.23642 12.7635 0.863323 12.3033 0.863323H7.58926Z"
+        fill="#E7E7E7"
+      />
+    </svg>
+  );
 }
 
-export function ArrowDown () {
+export function ArrowDown() {
   return (
     <svg
       width="17"
@@ -63,7 +71,7 @@ export function ArrowDown () {
   );
 }
 
-export function ArrowDownBulk () {
+export function ArrowDownBulk() {
   return (
     <svg
       width="16"
@@ -84,7 +92,7 @@ export function ArrowDownBulk () {
   );
 }
 
-export function ArrowUpRight () {
+export function ArrowUpRight() {
   return (
     <svg
       width="20"
@@ -101,7 +109,7 @@ export function ArrowUpRight () {
   );
 }
 
-export function ArrowRLeftToBracket () {
+export function ArrowRLeftToBracket() {
   return (
     <svg
       width="16"
@@ -130,7 +138,7 @@ export function ArrowRLeftToBracket () {
   );
 }
 
-export function ArrowRightToBracket () {
+export function ArrowRightToBracket() {
   return (
     <svg
       width="14"
@@ -158,7 +166,7 @@ export function ArrowRightToBracket () {
   );
 }
 
-export function ArrowLeft () {
+export function ArrowLeft() {
   return (
     <svg
       width="16"
@@ -187,7 +195,7 @@ export function ArrowLeft () {
   );
 }
 
-export function Bell () {
+export function Bell() {
   return (
     <svg
       width="24"
@@ -204,7 +212,7 @@ export function Bell () {
   );
 }
 
-export function BinWithBG (props: SVGProps<SVGSVGElement>) {
+export function BinWithBG(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
       width="62"
@@ -212,6 +220,7 @@ export function BinWithBG (props: SVGProps<SVGSVGElement>) {
       viewBox="0 0 62 63"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      {...props}
     >
       <circle cx="31" cy="31.5" r="31" fill="url(#paint0_linear_394_33071)" />
       <path
@@ -235,7 +244,7 @@ export function BinWithBG (props: SVGProps<SVGSVGElement>) {
   );
 }
 
-export function BinGray (props: SVGProps<SVGSVGElement>) {
+export function BinGray(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
       width="20"
@@ -243,6 +252,7 @@ export function BinGray (props: SVGProps<SVGSVGElement>) {
       viewBox="0 0 20 20"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      {...props}
     >
       <path
         d="M7.91659 1.45833C7.57021 1.45833 7.25994 1.67261 7.13727 1.99654L6.94594 2.50178C6.53579 2.46079 6.1579 2.41989 5.85199 2.38554C5.62331 2.35987 5.43533 2.33791 5.30475 2.32239L5.15413 2.30432L5.10298 2.29806C4.64623 2.24151 4.22947 2.56584 4.17291 3.02259C4.11635 3.47934 4.44076 3.89546 4.89751 3.95202L4.95317 3.95882L5.10815 3.97743C5.24177 3.9933 5.43333 4.01567 5.66602 4.0418C6.13099 4.09401 6.76207 4.1614 7.42419 4.22183C8.31734 4.30334 9.29636 4.375 9.99992 4.375C10.7035 4.375 11.6825 4.30334 12.5757 4.22183C13.2378 4.1614 13.8689 4.09401 14.3338 4.0418C14.5665 4.01567 14.7581 3.9933 14.8917 3.97743L15.0467 3.95882L15.1022 3.95203C15.559 3.89547 15.8835 3.47934 15.8269 3.02259C15.7704 2.56584 15.3543 2.24143 14.8975 2.29798L14.8457 2.30432L14.6951 2.32239C14.5645 2.33791 14.3765 2.35987 14.1479 2.38554C13.842 2.41989 13.4641 2.46079 13.0539 2.50178L12.8626 1.99654C12.7399 1.67261 12.4296 1.45833 12.0833 1.45833H7.91659Z"
@@ -266,7 +276,7 @@ export function BinGray (props: SVGProps<SVGSVGElement>) {
   );
 }
 
-export function Bubble () {
+export function Bubble() {
   return (
     <svg
       width="18"
@@ -294,7 +304,7 @@ export function Bubble () {
   );
 }
 
-export function Calendar (props: SVGProps<SVGSVGElement>) {
+export function Calendar(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
       width="14"
@@ -302,6 +312,7 @@ export function Calendar (props: SVGProps<SVGSVGElement>) {
       viewBox="0 0 14 15"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      {...props}
     >
       <path
         d="M2.91675 10.7083C2.91675 10.3862 3.17792 10.125 3.50008 10.125H7.58341C7.90558 10.125 8.16675 10.3862 8.16675 10.7083C8.16675 11.0305 7.90558 11.2917 7.58341 11.2917H3.50008C3.17792 11.2917 2.91675 11.0305 2.91675 10.7083Z"
@@ -321,7 +332,10 @@ export function Calendar (props: SVGProps<SVGSVGElement>) {
   );
 }
 
-export function CalendarWithMark ({ fill = '#6D6D6D', ...props }: SVGProps<SVGSVGElement> & { fill?: string }) {
+export function CalendarWithMark({
+  fill = '#6D6D6D',
+  ...props
+}: SVGProps<SVGSVGElement> & { fill?: string }) {
   return (
     <svg
       width="14"
@@ -357,7 +371,7 @@ export function CalendarWithMark ({ fill = '#6D6D6D', ...props }: SVGProps<SVGSV
   );
 }
 
-export function CardReceive (props: SVGProps<SVGSVGElement>) {
+export function CardReceive(props: SVGProps<SVGSVGElement>) {
   const { stroke = '#00C213' } = props;
 
   return (
@@ -411,7 +425,7 @@ export function CardReceive (props: SVGProps<SVGSVGElement>) {
   );
 }
 
-export function ClientIcon () {
+export function ClientIcon() {
   return (
     <svg
       width="22"
@@ -448,7 +462,7 @@ export function ClientIcon () {
   );
 }
 
-export function Cake () {
+export function Cake() {
   return (
     <svg
       width="18"
@@ -503,7 +517,7 @@ export function Cake () {
   );
 }
 
-export function CalenderAlt () {
+export function CalenderAlt() {
   return (
     <svg
       width="20"
@@ -530,7 +544,7 @@ export function CalenderAlt () {
   );
 }
 
-export function Calculator () {
+export function Calculator() {
   return (
     <svg
       width="24"
@@ -599,7 +613,7 @@ export function Calculator () {
   );
 }
 
-export function Call () {
+export function Call() {
   return (
     <svg
       width="18"
@@ -618,7 +632,7 @@ export function Call () {
   );
 }
 
-export function CardTick (props: SVGProps<SVGSVGElement>) {
+export function CardTick(props: SVGProps<SVGSVGElement>) {
   const { width = 24, height = 25 } = props;
   return (
     <svg
@@ -670,7 +684,7 @@ export function CardTick (props: SVGProps<SVGSVGElement>) {
   );
 }
 
-export function Cards () {
+export function Cards() {
   return (
     <svg
       width="24"
@@ -721,7 +735,7 @@ export function Cards () {
   );
 }
 
-export function CloseSquare () {
+export function CloseSquare() {
   return (
     <svg
       width="40"
@@ -752,19 +766,30 @@ export function CloseSquare () {
   );
 }
 
-export function Clock () {
+export function Clock() {
   return (
-    <svg width="14"
-      height="21" viewBox="0 0 14 21"
-      fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M7.00008 5.45841C7.00008 5.13625 6.73891 4.87508 6.41675 4.87508C6.09458 4.87508 5.83341 5.13625 5.83341 5.45841V8.37508C5.83341 8.69725 6.09458 8.95841 6.41675 8.95841H8.16675C8.48891 8.95841 8.75008 8.69725 8.75008 8.37508C8.75008 8.05292 8.48891 7.79175 8.16675 7.79175H7.00008V5.45841Z" fill="#6E50DB" />
-      <path fillRule="evenodd" clipRule="evenodd" d="M7.00008 1.66675C3.77842 1.66675 1.16675 4.27842 1.16675 7.50008C1.16675 10.7217 3.77842 13.3334 7.00008 13.3334C10.2217 13.3334 12.8334 10.7217 12.8334 7.50008C12.8334 4.27842 10.2217 1.66675 7.00008 1.66675ZM2.33341 7.50008C2.33341 4.92275 4.42275 2.83341 7.00008 2.83341C9.57741 2.83341 11.6667 4.92275 11.6667 7.50008C11.6667 10.0774 9.57741 12.1667 7.00008 12.1667C4.42275 12.1667 2.33341 10.0774 2.33341 7.50008Z" fill="#6E50DB" />
+    <svg
+      width="14"
+      height="21"
+      viewBox="0 0 14 21"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M7.00008 5.45841C7.00008 5.13625 6.73891 4.87508 6.41675 4.87508C6.09458 4.87508 5.83341 5.13625 5.83341 5.45841V8.37508C5.83341 8.69725 6.09458 8.95841 6.41675 8.95841H8.16675C8.48891 8.95841 8.75008 8.69725 8.75008 8.37508C8.75008 8.05292 8.48891 7.79175 8.16675 7.79175H7.00008V5.45841Z"
+        fill="#6E50DB"
+      />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M7.00008 1.66675C3.77842 1.66675 1.16675 4.27842 1.16675 7.50008C1.16675 10.7217 3.77842 13.3334 7.00008 13.3334C10.2217 13.3334 12.8334 10.7217 12.8334 7.50008C12.8334 4.27842 10.2217 1.66675 7.00008 1.66675ZM2.33341 7.50008C2.33341 4.92275 4.42275 2.83341 7.00008 2.83341C9.57741 2.83341 11.6667 4.92275 11.6667 7.50008C11.6667 10.0774 9.57741 12.1667 7.00008 12.1667C4.42275 12.1667 2.33341 10.0774 2.33341 7.50008Z"
+        fill="#6E50DB"
+      />
     </svg>
-
-  )
+  );
 }
 
-export function ChatAlt () {
+export function ChatAlt() {
   return (
     <svg
       width="19"
@@ -795,7 +820,7 @@ export function ChatAlt () {
   );
 }
 
-export function Check () {
+export function Check() {
   return (
     <svg
       width="18"
@@ -814,7 +839,7 @@ export function Check () {
   );
 }
 
-export function ChevronLeft () {
+export function ChevronLeft() {
   return (
     <svg
       width="21"
@@ -831,7 +856,7 @@ export function ChevronLeft () {
   );
 }
 
-export function ChevronRight () {
+export function ChevronRight() {
   return (
     <svg
       width="21"
@@ -848,7 +873,7 @@ export function ChevronRight () {
   );
 }
 
-export function CheckCircleFilled (props: SVGProps<SVGSVGElement>) {
+export function CheckCircleFilled(props: SVGProps<SVGSVGElement>) {
   const { width = 24, height = 24, fill = '#A5A6F6' } = props;
 
   return (
@@ -878,7 +903,7 @@ export function CheckCircleFilled (props: SVGProps<SVGSVGElement>) {
   );
 }
 
-export function CheckCircle (props: SVGProps<SVGSVGElement>) {
+export function CheckCircle(props: SVGProps<SVGSVGElement>) {
   const { width = 24, height = 24 } = props;
 
   return (
@@ -903,7 +928,7 @@ export function CheckCircle (props: SVGProps<SVGSVGElement>) {
   );
 }
 
-export function CheckboxBlankCircle (props: SVGProps<SVGSVGElement>) {
+export function CheckboxBlankCircle(props: SVGProps<SVGSVGElement>) {
   const { fill = '#B0B0B0' } = props;
 
   return (
@@ -929,7 +954,7 @@ export function CheckboxBlankCircle (props: SVGProps<SVGSVGElement>) {
   );
 }
 
-export function Coins () {
+export function Coins() {
   return (
     <svg
       width="20"
@@ -948,7 +973,7 @@ export function Coins () {
   );
 }
 
-export function CheckBox (props: SVGProps<SVGSVGElement>) {
+export function CheckBox(props: SVGProps<SVGSVGElement>) {
   const { width, height } = props;
 
   return (
@@ -990,7 +1015,7 @@ export function CheckBox (props: SVGProps<SVGSVGElement>) {
   );
 }
 
-export function Column () {
+export function Column() {
   return (
     <svg
       width="20"
@@ -1011,7 +1036,7 @@ export function Column () {
   );
 }
 
-export function Devices () {
+export function Devices() {
   return (
     <svg
       width="24"
@@ -1036,7 +1061,7 @@ export function Devices () {
   );
 }
 
-export function Dislike () {
+export function Dislike() {
   return (
     <svg
       width="18"
@@ -1055,7 +1080,7 @@ export function Dislike () {
   );
 }
 
-export function DotsV () {
+export function DotsV() {
   return (
     <svg
       width="19"
@@ -1080,19 +1105,21 @@ export function DotsV () {
   );
 }
 
-export function Delete (props: SVGProps<SVGSVGElement>) {
+export function Delete(props: SVGProps<SVGSVGElement>) {
   return (
-    <svg width="10" height="18" viewBox="0 0 12 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="10" height="18" viewBox="0 0 12 18" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
       <path d="M3.91659 0.458252C3.57021 0.458252 3.25994 0.672526 3.13727 0.996462L2.94594 1.50169C2.53579 1.46071 2.1579 1.41981 1.85199 1.38546C1.62331 1.35978 1.43533 1.33782 1.30475 1.32231L1.15413 1.30424L1.10298 1.29798C0.646233 1.24143 0.229468 1.56576 0.172907 2.02251C0.116346 2.47925 0.440762 2.89537 0.89751 2.95194L0.95317 2.95874L1.10815 2.97734C1.24177 2.99322 1.43333 3.01559 1.66602 3.04172C2.13099 3.09393 2.76207 3.16132 3.42419 3.22175C4.31734 3.30326 5.29636 3.37492 5.99992 3.37492C6.70349 3.37492 7.68251 3.30326 8.57566 3.22175C9.23778 3.16132 9.86886 3.09393 10.3338 3.04172C10.5665 3.01559 10.7581 2.99322 10.8917 2.97734L11.0467 2.95874L11.1022 2.95195C11.559 2.89539 11.8835 2.47925 11.8269 2.02251C11.7704 1.56576 11.3543 1.24135 10.8975 1.2979L10.8457 1.30424L10.6951 1.32231C10.5645 1.33782 10.3765 1.35978 10.1479 1.38546C9.84195 1.41981 9.46406 1.46071 9.05391 1.50169L8.86258 0.996462C8.73991 0.672526 8.42964 0.458252 8.08326 0.458252H3.91659Z" fill="#888888" />
       <path d="M5.16659 8.79159C5.16659 8.33135 4.79349 7.95825 4.33326 7.95825C3.87302 7.95825 3.49992 8.33135 3.49992 8.79159V12.9583C3.49992 13.4185 3.87302 13.7916 4.33326 13.7916C4.79349 13.7916 5.16659 13.4185 5.16659 12.9583V8.79159Z" fill="#888888" />
       <path d="M7.66659 7.95825C8.12683 7.95825 8.49992 8.33135 8.49992 8.79159V12.9583C8.49992 13.4185 8.12683 13.7916 7.66659 13.7916C7.20635 13.7916 6.83326 13.4185 6.83326 12.9583V8.79159C6.83326 8.33135 7.20635 7.95825 7.66659 7.95825Z" fill="#888888" />
       <path fillRule="evenodd" clipRule="evenodd" d="M11.758 5.70872C11.8335 4.65141 10.9219 3.80378 9.886 3.9235C8.82598 4.046 7.19021 4.20825 5.99992 4.20825C4.80964 4.20825 3.17387 4.046 2.11385 3.9235C1.07791 3.80378 0.166359 4.65141 0.241881 5.70872L0.955826 15.7039C1.00995 16.4616 1.57431 17.1023 2.34879 17.2187C3.1793 17.3436 4.70321 17.5431 6.00089 17.5416C7.28262 17.5401 8.81273 17.3415 9.64689 17.2177C10.4227 17.1026 10.9899 16.4616 11.0442 15.7017L11.758 5.70872ZM10.0773 5.57915C10.0802 5.57881 10.0824 5.57901 10.0824 5.57901L10.0846 5.57951C10.0865 5.58015 10.0894 5.58167 10.0923 5.5844C10.0942 5.5862 10.0956 5.5884 10.0956 5.5884L10.0955 5.58997L9.38253 15.572C8.55696 15.694 7.14203 15.8736 5.99896 15.8749C4.8435 15.8763 3.43732 15.6965 2.61744 15.5737L1.90431 5.58997L1.90425 5.5884C1.90425 5.5884 1.90567 5.5862 1.90757 5.5844C1.91044 5.58167 1.91335 5.58015 1.9152 5.57951L1.9174 5.57901C1.9174 5.57901 1.91962 5.57881 1.92251 5.57915C2.98441 5.70187 4.70446 5.87492 5.99992 5.87492C7.29539 5.87492 9.01544 5.70187 10.0773 5.57915Z" fill="#888888" />
     </svg>
-
-  )
+  );
 }
 
-export function EditIcon ({ fill = '#7879F1', ...props }: SVGProps<SVGSVGElement> & { fill?: string }) {
+export function EditIcon({
+  fill = '#7879F1',
+  ...props
+}: SVGProps<SVGSVGElement> & { fill?: string }) {
   return (
     <svg
       width="25"
@@ -1112,7 +1139,7 @@ export function EditIcon ({ fill = '#7879F1', ...props }: SVGProps<SVGSVGElement
   );
 }
 
-export function EmptyWallet () {
+export function EmptyWallet() {
   return (
     <svg
       width="18"
@@ -1149,7 +1176,7 @@ export function EmptyWallet () {
   );
 }
 
-export function EditPencilGray (props: SVGProps<SVGSVGElement>) {
+export function EditPencilGray(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
       width="20"
@@ -1157,6 +1184,7 @@ export function EditPencilGray (props: SVGProps<SVGSVGElement>) {
       viewBox="0 0 20 20"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      {...props}
     >
       <path
         fillRule="evenodd"
@@ -1168,17 +1196,30 @@ export function EditPencilGray (props: SVGProps<SVGSVGElement>) {
   );
 }
 
-export function Edit () {
+export function Edit() {
   return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path fillRule="evenodd" clipRule="evenodd" d="M20.5961 2.91C19.2495 1.56341 17.0662 1.56341 15.7196 2.91L7.19416 11.4355C6.58217 12.0474 6.18518 12.8414 6.06279 13.6982L5.81573 15.4276C5.62717 16.7475 6.75854 17.8789 8.07847 17.6903L9.80784 17.4433C10.6646 17.3209 11.4586 16.9239 12.0706 16.3119L20.5961 7.78642C21.9426 6.43984 21.9426 4.25658 20.5961 2.91ZM17.3433 4.15052C17.907 3.76625 18.6818 3.82415 19.1818 4.32421C19.6819 4.82427 19.7398 5.59906 19.3555 6.16274L17.3433 4.15052ZM15.9112 5.54684L17.9592 7.59484L10.6564 14.8977C10.3504 15.2037 9.95339 15.4022 9.525 15.4634L7.79563 15.7104L8.04269 13.981C8.10388 13.5527 8.30238 13.1557 8.60837 12.8497L15.9112 5.54684Z" fill="#262626"/>
-    <path d="M6 2.00001C3.79086 2.00001 2 3.79087 2 6.00001V18C2 20.2091 3.79086 22 6 22H18C20.2091 22 22 20.2091 22 18V12C22 11.4477 21.5523 11 21 11C20.4477 11 20 11.4477 20 12V18C20 19.1046 19.1046 20 18 20H6C4.89543 20 4 19.1046 4 18V6.00001C4 4.89544 4.89543 4.00001 6 4.00001H8.68421C9.2365 4.00001 9.68421 3.55229 9.68421 3.00001C9.68421 2.44772 9.2365 2.00001 8.68421 2.00001H6Z" fill="#262626"/>
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M20.5961 2.91C19.2495 1.56341 17.0662 1.56341 15.7196 2.91L7.19416 11.4355C6.58217 12.0474 6.18518 12.8414 6.06279 13.6982L5.81573 15.4276C5.62717 16.7475 6.75854 17.8789 8.07847 17.6903L9.80784 17.4433C10.6646 17.3209 11.4586 16.9239 12.0706 16.3119L20.5961 7.78642C21.9426 6.43984 21.9426 4.25658 20.5961 2.91ZM17.3433 4.15052C17.907 3.76625 18.6818 3.82415 19.1818 4.32421C19.6819 4.82427 19.7398 5.59906 19.3555 6.16274L17.3433 4.15052ZM15.9112 5.54684L17.9592 7.59484L10.6564 14.8977C10.3504 15.2037 9.95339 15.4022 9.525 15.4634L7.79563 15.7104L8.04269 13.981C8.10388 13.5527 8.30238 13.1557 8.60837 12.8497L15.9112 5.54684Z"
+        fill="#262626"
+      />
+      <path
+        d="M6 2.00001C3.79086 2.00001 2 3.79087 2 6.00001V18C2 20.2091 3.79086 22 6 22H18C20.2091 22 22 20.2091 22 18V12C22 11.4477 21.5523 11 21 11C20.4477 11 20 11.4477 20 12V18C20 19.1046 19.1046 20 18 20H6C4.89543 20 4 19.1046 4 18V6.00001C4 4.89544 4.89543 4.00001 6 4.00001H8.68421C9.2365 4.00001 9.68421 3.55229 9.68421 3.00001C9.68421 2.44772 9.2365 2.00001 8.68421 2.00001H6Z"
+        fill="#262626"
+      />
     </svg>
-
   );
 }
 
-export function Ellipsis () {
+export function Ellipsis() {
   return (
     <svg
       width="24"
@@ -1202,7 +1243,7 @@ export function Ellipsis () {
   );
 }
 
-export function Export ({ fill = 'white' }) {
+export function Export({ fill = 'white' }) {
   return (
     <svg
       width="18"
@@ -1219,7 +1260,7 @@ export function Export ({ fill = 'white' }) {
   );
 }
 
-export function FavoriteChart () {
+export function FavoriteChart() {
   return (
     <svg
       width="17"
@@ -1250,7 +1291,7 @@ export function FavoriteChart () {
   );
 }
 
-export function FlagOutline (props: SVGProps<SVGSVGElement>) {
+export function FlagOutline(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
       width="14"
@@ -1258,6 +1299,7 @@ export function FlagOutline (props: SVGProps<SVGSVGElement>) {
       viewBox="0 0 14 15"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      {...props}
     >
       <path
         fillRule="evenodd"
@@ -1269,7 +1311,7 @@ export function FlagOutline (props: SVGProps<SVGSVGElement>) {
   );
 }
 
-export function File () {
+export function File() {
   return (
     <svg
       width="20"
@@ -1292,7 +1334,7 @@ export function File () {
   );
 }
 
-export function Filter () {
+export function Filter() {
   return (
     <svg
       width="18"
@@ -1319,7 +1361,7 @@ export function Filter () {
   );
 }
 
-export function Flag () {
+export function Flag() {
   return (
     <svg
       width="18"
@@ -1338,7 +1380,7 @@ export function Flag () {
   );
 }
 
-export function Grid2 () {
+export function Grid2() {
   return (
     <svg
       width="20"
@@ -1363,7 +1405,7 @@ export function Grid2 () {
   );
 }
 
-export function GlobeAlt () {
+export function GlobeAlt() {
   return (
     <svg
       width="20"
@@ -1440,7 +1482,7 @@ export function GlobeAlt () {
   );
 }
 
-export function Grid () {
+export function Grid() {
   return (
     <svg
       width="20"
@@ -1485,7 +1527,7 @@ export function Grid () {
   );
 }
 
-export function Hashtag ({ fill = '#222222', ...props }) {
+export function Hashtag({ fill = '#222222', ...props }) {
   return (
     <svg
       width="24"
@@ -1505,7 +1547,7 @@ export function Hashtag ({ fill = '#222222', ...props }) {
   );
 }
 
-export function Heart () {
+export function Heart() {
   return (
     <svg
       width="19"
@@ -1522,7 +1564,7 @@ export function Heart () {
   );
 }
 
-export function ImageIcon () {
+export function ImageIcon() {
   return (
     <svg
       width="19"
@@ -1545,7 +1587,7 @@ export function ImageIcon () {
   );
 }
 
-export function Key () {
+export function Key() {
   return (
     <svg
       width="18"
@@ -1569,7 +1611,7 @@ export function Key () {
   );
 }
 
-export function Login ({ fill = '#222222', ...props }) {
+export function Login({ fill = '#222222', ...props }) {
   return (
     <svg
       width="24"
@@ -1591,7 +1633,7 @@ export function Login ({ fill = '#222222', ...props }) {
   );
 }
 
-export function Logo (props: SVGProps<SVGSVGElement>) {
+export function Logo(props: SVGProps<SVGSVGElement>) {
   const { width = 116, height = 35 } = props;
 
   return (
@@ -1618,7 +1660,7 @@ export function Logo (props: SVGProps<SVGSVGElement>) {
         y={7}
         maskUnits="userSpaceOnUse"
         style={{
-          maskType: 'alpha'
+          maskType: 'alpha',
         }}
       >
         <path
@@ -1640,7 +1682,7 @@ export function Logo (props: SVGProps<SVGSVGElement>) {
   );
 }
 
-export function Like () {
+export function Like() {
   return (
     <svg
       width="20"
@@ -1657,7 +1699,7 @@ export function Like () {
   );
 }
 
-export function Menu (props: SVGProps<SVGSVGElement>) {
+export function Menu(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
       width="24"
@@ -1675,7 +1717,7 @@ export function Menu (props: SVGProps<SVGSVGElement>) {
   );
 }
 
-export function Messages () {
+export function Messages() {
   return (
     <svg
       width="18"
@@ -1710,7 +1752,7 @@ export function Messages () {
   );
 }
 
-export function Message (props: SVGProps<SVGSVGElement>) {
+export function Message(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
       width="15"
@@ -1752,7 +1794,7 @@ export function Message (props: SVGProps<SVGSVGElement>) {
   );
 }
 
-export function MoreSquare (props: SVGProps<SVGSVGElement>) {
+export function MoreSquare(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
       width="24"
@@ -1794,7 +1836,7 @@ export function MoreSquare (props: SVGProps<SVGSVGElement>) {
   );
 }
 
-export function Mobile () {
+export function Mobile() {
   return (
     <svg
       width="20"
@@ -1828,7 +1870,7 @@ export function Mobile () {
   );
 }
 
-export function Multiply () {
+export function Multiply() {
   return (
     <svg
       width="24"
@@ -1845,7 +1887,7 @@ export function Multiply () {
   );
 }
 
-export function Money4 ({ stroke = '#222222', ...props }) {
+export function Money4({ stroke = '#222222', ...props }) {
   return (
     <svg
       width="18"
@@ -1901,7 +1943,7 @@ export function Money4 ({ stroke = '#222222', ...props }) {
   );
 }
 
-export function Moneys (props: SVGProps<SVGSVGElement>) {
+export function Moneys(props: SVGProps<SVGSVGElement>) {
   const { stroke = '#00C213' } = props;
   return (
     <svg
@@ -1950,7 +1992,7 @@ export function Moneys (props: SVGProps<SVGSVGElement>) {
   );
 }
 
-export function Notification ({
+export function Notification({
   fill = '#222222',
   ...props
 }: SVGProps<SVGSVGElement>) {
@@ -1975,7 +2017,7 @@ export function Notification ({
   );
 }
 
-export function NotificationBing () {
+export function NotificationBing() {
   return (
     <svg
       width="17"
@@ -2005,16 +2047,26 @@ export function NotificationBing () {
   );
 }
 
-export function Payment () {
+export function Payment() {
   return (
-    <svg width="20" height="21" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path fillRule="evenodd" clipRule="evenodd" d="M3.33334 15.7878V4.27777C3.33334 2.89706 4.45262 1.77777 5.83334 1.77777H14.1667C15.5474 1.77777 16.6667 2.89706 16.6667 4.27777V15.7878C16.6667 17.3912 14.9793 18.4341 13.5451 17.717C13.4044 17.6466 13.2563 17.5918 13.1036 17.5537L10.6063 16.9294C10.2082 16.8298 9.79176 16.8298 9.39366 16.9294L6.89637 17.5537C6.7437 17.5918 6.59565 17.6466 6.45489 17.717C5.02074 18.4341 3.33334 17.3912 3.33334 15.7878ZM6.66667 5.1111C6.20643 5.1111 5.83334 5.4842 5.83334 5.94444C5.83334 6.40468 6.20643 6.77777 6.66667 6.77777H13.3333C13.7936 6.77777 14.1667 6.40468 14.1667 5.94444C14.1667 5.4842 13.7936 5.1111 13.3333 5.1111H6.66667ZM5.83334 10.1111C5.83334 9.65087 6.20643 9.27777 6.66667 9.27777H13.3333C13.7936 9.27777 14.1667 9.65087 14.1667 10.1111C14.1667 10.5713 13.7936 10.9444 13.3333 10.9444H6.66667C6.20643 10.9444 5.83334 10.5713 5.83334 10.1111ZM6.66667 13.4444C6.20643 13.4444 5.83334 13.8175 5.83334 14.2778C5.83334 14.738 6.20643 15.1111 6.66667 15.1111H8.88889C9.34913 15.1111 9.72222 14.738 9.72222 14.2778C9.72222 13.8175 9.34913 13.4444 8.88889 13.4444H6.66667ZM11.1111 13.4444C10.6509 13.4444 10.2778 13.8175 10.2778 14.2778C10.2778 14.738 10.6509 15.1111 11.1111 15.1111H13.3333C13.7936 15.1111 14.1667 14.738 14.1667 14.2778C14.1667 13.8175 13.7936 13.4444 13.3333 13.4444H11.1111Z" fill="black" />
+    <svg
+      width="20"
+      height="21"
+      viewBox="0 0 20 21"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M3.33334 15.7878V4.27777C3.33334 2.89706 4.45262 1.77777 5.83334 1.77777H14.1667C15.5474 1.77777 16.6667 2.89706 16.6667 4.27777V15.7878C16.6667 17.3912 14.9793 18.4341 13.5451 17.717C13.4044 17.6466 13.2563 17.5918 13.1036 17.5537L10.6063 16.9294C10.2082 16.8298 9.79176 16.8298 9.39366 16.9294L6.89637 17.5537C6.7437 17.5918 6.59565 17.6466 6.45489 17.717C5.02074 18.4341 3.33334 17.3912 3.33334 15.7878ZM6.66667 5.1111C6.20643 5.1111 5.83334 5.4842 5.83334 5.94444C5.83334 6.40468 6.20643 6.77777 6.66667 6.77777H13.3333C13.7936 6.77777 14.1667 6.40468 14.1667 5.94444C14.1667 5.4842 13.7936 5.1111 13.3333 5.1111H6.66667ZM5.83334 10.1111C5.83334 9.65087 6.20643 9.27777 6.66667 9.27777H13.3333C13.7936 9.27777 14.1667 9.65087 14.1667 10.1111C14.1667 10.5713 13.7936 10.9444 13.3333 10.9444H6.66667C6.20643 10.9444 5.83334 10.5713 5.83334 10.1111ZM6.66667 13.4444C6.20643 13.4444 5.83334 13.8175 5.83334 14.2778C5.83334 14.738 6.20643 15.1111 6.66667 15.1111H8.88889C9.34913 15.1111 9.72222 14.738 9.72222 14.2778C9.72222 13.8175 9.34913 13.4444 8.88889 13.4444H6.66667ZM11.1111 13.4444C10.6509 13.4444 10.2778 13.8175 10.2778 14.2778C10.2778 14.738 10.6509 15.1111 11.1111 15.1111H13.3333C13.7936 15.1111 14.1667 14.738 14.1667 14.2778C14.1667 13.8175 13.7936 13.4444 13.3333 13.4444H11.1111Z"
+        fill="black"
+      />
     </svg>
-
-  )
+  );
 }
 
-export function People ({ fill = '#222222', ...props }) {
+export function People({ fill = '#222222', ...props }) {
   return (
     <svg
       width="24"
@@ -2052,15 +2104,24 @@ export function People ({ fill = '#222222', ...props }) {
   );
 }
 
-export function PlusBlack () {
+export function PlusBlack() {
   return (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M10.8333 3.33333C10.8333 2.8731 10.4602 2.5 10 2.5C9.53976 2.5 9.16667 2.8731 9.16667 3.33333V9.16667H3.33333C2.8731 9.16667 2.5 9.53976 2.5 10C2.5 10.4602 2.8731 10.8333 3.33333 10.8333H9.16667V16.6667C9.16667 17.1269 9.53976 17.5 10 17.5C10.4602 17.5 10.8333 17.1269 10.8333 16.6667V10.8333H16.6667C17.1269 10.8333 17.5 10.4602 17.5 10C17.5 9.53976 17.1269 9.16667 16.6667 9.16667H10.8333V3.33333Z" fill="#262626"/>
-</svg>
-  )
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 20 20"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M10.8333 3.33333C10.8333 2.8731 10.4602 2.5 10 2.5C9.53976 2.5 9.16667 2.8731 9.16667 3.33333V9.16667H3.33333C2.8731 9.16667 2.5 9.53976 2.5 10C2.5 10.4602 2.8731 10.8333 3.33333 10.8333H9.16667V16.6667C9.16667 17.1269 9.53976 17.5 10 17.5C10.4602 17.5 10.8333 17.1269 10.8333 16.6667V10.8333H16.6667C17.1269 10.8333 17.5 10.4602 17.5 10C17.5 9.53976 17.1269 9.16667 16.6667 9.16667H10.8333V3.33333Z"
+        fill="#262626"
+      />
+    </svg>
+  );
 }
 
-export function PlusIcon ({ fill = 'white' }) {
+export function PlusIcon({ fill = 'white' }) {
   return (
     <svg
       width="20"
@@ -2077,17 +2138,30 @@ export function PlusIcon ({ fill = 'white' }) {
   );
 }
 
-export function Plus () {
+export function Plus() {
   return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M13 9C13 8.44772 12.5523 8 12 8C11.4477 8 11 8.44772 11 9V11H9C8.44772 11 8 11.4477 8 12C8 12.5523 8.44772 13 9 13H11V15C11 15.5523 11.4477 16 12 16C12.5523 16 13 15.5523 13 15V13H15C15.5523 13 16 12.5523 16 12C16 11.4477 15.5523 11 15 11H13V9Z" fill="#7B37F0"/>
-<path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2ZM4 12C4 7.58172 7.58172 4 12 4C16.4183 4 20 7.58172 20 12C20 16.4183 16.4183 20 12 20C7.58172 20 4 16.4183 4 12Z" fill="#7B37F0"/>
-</svg>
-
-  )
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M13 9C13 8.44772 12.5523 8 12 8C11.4477 8 11 8.44772 11 9V11H9C8.44772 11 8 11.4477 8 12C8 12.5523 8.44772 13 9 13H11V15C11 15.5523 11.4477 16 12 16C12.5523 16 13 15.5523 13 15V13H15C15.5523 13 16 12.5523 16 12C16 11.4477 15.5523 11 15 11H13V9Z"
+        fill="#7B37F0"
+      />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2ZM4 12C4 7.58172 7.58172 4 12 4C16.4183 4 20 7.58172 20 12C20 16.4183 16.4183 20 12 20C7.58172 20 4 16.4183 4 12Z"
+        fill="#7B37F0"
+      />
+    </svg>
+  );
 }
 
-export function Power () {
+export function Power() {
   return (
     <svg
       width="20"
@@ -2106,7 +2180,7 @@ export function Power () {
   );
 }
 
-export function ProfileAdd () {
+export function ProfileAdd() {
   return (
     <svg
       width="24"
@@ -2147,7 +2221,7 @@ export function ProfileAdd () {
   );
 }
 
-export function ProfileRemove () {
+export function ProfileRemove() {
   return (
     <svg
       width="24"
@@ -2181,7 +2255,7 @@ export function ProfileRemove () {
   );
 }
 
-export function ProfileCircle () {
+export function ProfileCircle() {
   return (
     <svg
       width="18"
@@ -2212,7 +2286,7 @@ export function ProfileCircle () {
   );
 }
 
-export function Profile2User (props: IProps) {
+export function Profile2User(props: IProps) {
   const { stroke = '#9A1A87' } = props;
 
   return (
@@ -2255,7 +2329,7 @@ export function Profile2User (props: IProps) {
   );
 }
 
-export function ProfileUpload () {
+export function ProfileUpload() {
   return (
     <svg
       width="300"
@@ -2318,7 +2392,7 @@ export function ProfileUpload () {
   );
 }
 
-export function PersonalIcon () {
+export function PersonalIcon() {
   return (
     <svg
       width="14"
@@ -2339,7 +2413,7 @@ export function PersonalIcon () {
   );
 }
 
-export function Receipt () {
+export function Receipt() {
   return (
     <svg
       width="20"
@@ -2358,7 +2432,7 @@ export function Receipt () {
   );
 }
 
-export function Reminder () {
+export function Reminder() {
   return (
     <svg
       width="20"
@@ -2379,16 +2453,26 @@ export function Reminder () {
   );
 }
 
-export function Send () {
+export function Send() {
   return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path fillRule="evenodd" clipRule="evenodd" d="M5.52511 12.836C6.17581 13.5089 7.13675 13.7534 8.01344 13.5009C7.35647 14.1339 7.08768 15.0884 7.34514 15.9884L8.46105 19.8893C9.03538 21.897 11.6723 22.3574 12.893 20.6631L21.9566 8.08333C23.2165 6.33465 21.8212 3.91783 19.6768 4.13459L4.25056 5.69398C2.17291 5.90401 1.25318 8.41785 2.70474 9.91909L5.52511 12.836ZM9.47137 14.8848L19.3238 8.31614L11.2703 19.494C11.0262 19.8329 10.4988 19.7408 10.3839 19.3392L9.26801 15.4383C9.2082 15.2292 9.29041 15.0054 9.47137 14.8848ZM7.54396 11.5464L18.1588 6.29824L4.45171 7.68384L4.35113 6.68891L4.45171 7.68384C4.03617 7.72585 3.85223 8.22862 4.14254 8.52886L6.96291 11.4457C7.11409 11.6021 7.349 11.6428 7.54396 11.5464Z" fill="#7B37F0"/>
-</svg>
-
-  )
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M5.52511 12.836C6.17581 13.5089 7.13675 13.7534 8.01344 13.5009C7.35647 14.1339 7.08768 15.0884 7.34514 15.9884L8.46105 19.8893C9.03538 21.897 11.6723 22.3574 12.893 20.6631L21.9566 8.08333C23.2165 6.33465 21.8212 3.91783 19.6768 4.13459L4.25056 5.69398C2.17291 5.90401 1.25318 8.41785 2.70474 9.91909L5.52511 12.836ZM9.47137 14.8848L19.3238 8.31614L11.2703 19.494C11.0262 19.8329 10.4988 19.7408 10.3839 19.3392L9.26801 15.4383C9.2082 15.2292 9.29041 15.0054 9.47137 14.8848ZM7.54396 11.5464L18.1588 6.29824L4.45171 7.68384L4.35113 6.68891L4.45171 7.68384C4.03617 7.72585 3.85223 8.22862 4.14254 8.52886L6.96291 11.4457C7.11409 11.6021 7.349 11.6428 7.54396 11.5464Z"
+        fill="#7B37F0"
+      />
+    </svg>
+  );
 }
 
-export function Settings () {
+export function Settings() {
   return (
     <svg
       width="20"
@@ -2413,7 +2497,7 @@ export function Settings () {
   );
 }
 
-export function Securitycard () {
+export function Securitycard() {
   return (
     <svg
       width="18"
@@ -2459,7 +2543,7 @@ export function Securitycard () {
   );
 }
 
-export function ShareAlt () {
+export function ShareAlt() {
   return (
     <svg
       width="19"
@@ -2478,7 +2562,7 @@ export function ShareAlt () {
   );
 }
 
-export function SignOut () {
+export function SignOut() {
   return (
     <svg
       width="18"
@@ -2499,7 +2583,7 @@ export function SignOut () {
   );
 }
 
-export function Stars () {
+export function Stars() {
   return (
     <svg
       width="20"
@@ -2530,7 +2614,7 @@ export function Stars () {
   );
 }
 
-export function SmallLogo (props: SVGProps<SVGSVGElement>) {
+export function SmallLogo(props: SVGProps<SVGSVGElement>) {
   const { width, height } = props;
 
   return (
@@ -2572,7 +2656,7 @@ export function SmallLogo (props: SVGProps<SVGSVGElement>) {
   );
 }
 
-export function SetupFlower () {
+export function SetupFlower() {
   return (
     <svg
       width="24"
@@ -2595,7 +2679,7 @@ export function SetupFlower () {
   );
 }
 
-export function UserGroup () {
+export function UserGroup() {
   return (
     <svg
       width="20"
@@ -2640,7 +2724,7 @@ export function UserGroup () {
   );
 }
 
-export function User () {
+export function User() {
   return (
     <svg
       width="18"
@@ -2665,7 +2749,7 @@ export function User () {
   );
 }
 
-export function UserOctagon () {
+export function UserOctagon() {
   return (
     <svg
       width="18"
@@ -2696,7 +2780,7 @@ export function UserOctagon () {
   );
 }
 
-export function Users () {
+export function Users() {
   return (
     <svg
       width="20"
@@ -2725,7 +2809,7 @@ export function Users () {
   );
 }
 
-export function Upload () {
+export function Upload() {
   return (
     <svg
       width="16"
@@ -2746,7 +2830,7 @@ export function Upload () {
   );
 }
 
-export function TagUser ({ fill = '#222222' }) {
+export function TagUser({ fill = '#222222' }) {
   return (
     <svg
       width="18"
@@ -2778,7 +2862,7 @@ export function TagUser ({ fill = '#222222' }) {
   );
 }
 
-export function TicketStar () {
+export function TicketStar() {
   return (
     <svg
       width="24"
@@ -2819,7 +2903,7 @@ export function TicketStar () {
   );
 }
 
-export function Warning () {
+export function Warning() {
   return (
     <svg
       width="17"

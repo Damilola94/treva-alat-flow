@@ -13,12 +13,12 @@ interface IProps {
 }
 
 interface Agreement {
-  projectAgreementUrl: string
-  projectId: string
+  projectAgreementUrl: string;
+  projectId: string;
 }
 
-export function ProjectAgreement (props: IProps) {
-  const { handleNext, projectId } = props
+export function ProjectAgreement(props: IProps) {
+  const { handleNext, projectId } = props;
 
   const [isDecisionModalOpen, setIsDecisionModalOpen] = useState(false)
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
@@ -40,6 +40,7 @@ export function ProjectAgreement (props: IProps) {
   const { data, refetch } = queries.readDeliverables(
     { projectId },
     {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       onSuccess: (newData: any) => {
         setAgreement(newData)
       },
@@ -68,6 +69,7 @@ export function ProjectAgreement (props: IProps) {
 
   const handleFileChange = (
     e: React.ChangeEvent<HTMLInputElement>,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     setFieldValue: (field: string, value: any) => void,
   ) => {
     const file = e.target.files?.[0]

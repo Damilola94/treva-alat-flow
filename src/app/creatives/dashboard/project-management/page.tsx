@@ -1,21 +1,41 @@
-'use client'
+'use client';
 
-import { useState, useCallback } from 'react'
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import Link from 'next/link'
-import { ClientIcon, PersonalIcon, AnimatedModal, PlusIcon, RenderIf, Table, Label } from '@/components/shared'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { CreateProjectCard, TakeATour, AddProject } from '@/components/shared/project-management'
-import { EditProject } from '@/components/shared/dashboard/project-management/project-table/edit-project'
-import { DeleteProject } from '@/components/shared/dashboard/project-management/project-table/delete-project'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { Check, ListFilter } from 'lucide-react'
-import projectManagement from '@/lib/assets/project-management'
-import type { ProjectPriority, ProjectStatus, ProjectType } from '@/services/queries/projects/enums'
-import queries from '@/services/queries/projects'
-import { BinGray, EditPencilGray } from '@/components/shared/svgs'
-import { popoverItems, priorityItems, statusItems } from '@/constants'
+import { useState, useCallback } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
+import {
+  ClientIcon,
+  PersonalIcon,
+  AnimatedModal,
+  PlusIcon,
+  RenderIf,
+  Table,
+  Label,
+} from '@/components/shared';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import {
+  CreateProjectCard,
+  TakeATour,
+  AddProject,
+} from '@/components/shared/project-management';
+import { EditProject } from '@/components/shared/dashboard/project-management/project-table/edit-project';
+import { DeleteProject } from '@/components/shared/dashboard/project-management/project-table/delete-project';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+import { Check, ListFilter } from 'lucide-react';
+import projectManagement from '@/lib/assets/project-management';
+import type {
+  ProjectPriority,
+  ProjectStatus,
+  ProjectType,
+} from '@/services/queries/projects/enums';
+import queries from '@/services/queries/projects';
+import { BinGray, EditPencilGray } from '@/components/shared/svgs';
+import { popoverItems, priorityItems, statusItems } from '@/constants';
 
 const createAProject = {
   img: projectManagement.topImageProject,
@@ -33,7 +53,7 @@ const createAProject = {
     },
   ],
   btnText1: 'Proceed',
-}
+};
 
 const viewTakeATour = {
   img: projectManagement.topImage,
@@ -43,7 +63,7 @@ const viewTakeATour = {
   btnText1: 'Start tour',
   btnText2: 'Skip',
   bottomInfo: '',
-}
+};
 
 const deleteClient = {
   img: projectManagement.topImage,
@@ -51,61 +71,64 @@ const deleteClient = {
   details: 'Project record will be deleted Permanently',
   btnText1: 'Cancel',
   btnText2: 'Delete',
-}
+};
 
-export default function Page () {
-  const path = usePathname()
-  const searchParams = useSearchParams()
-  const router = useRouter()
+export default function Page() {
+  const path = usePathname();
+  const searchParams = useSearchParams();
+  const router = useRouter();
 
   const handleCategorySelect = useCallback(
     (projectType: string) => {
-      const params = new URLSearchParams(searchParams.toString())
+      const params = new URLSearchParams(searchParams.toString());
       if (projectType) {
-        params.set('projectType', projectType)
+        params.set('projectType', projectType);
       } else {
-        params.delete('projectType')
+        params.delete('projectType');
       }
-      router.push(`${path}?${params.toString()}`)
+      router.push(`${path}?${params.toString()}`);
     },
     [path, searchParams, router],
-  )
+  );
 
   const handlePriorityItem = useCallback(
     (priority: string) => {
-      const params = new URLSearchParams(searchParams.toString())
+      const params = new URLSearchParams(searchParams.toString());
       if (priority) {
-        params.set('projectPriority', priority)
+        params.set('projectPriority', priority);
       } else {
-        params.delete('projectPriority')
+        params.delete('projectPriority');
       }
-      router.push(`${path}?${params.toString()}`)
+      router.push(`${path}?${params.toString()}`);
     },
     [path, searchParams, router],
-  )
+  );
 
   const handleStatusItem = useCallback(
     (status: string) => {
-      const params = new URLSearchParams(searchParams.toString())
+      const params = new URLSearchParams(searchParams.toString());
       if (status) {
-        params.set('projectStatus', status)
+        params.set('projectStatus', status);
       } else {
-        params.delete('projectStatus')
+        params.delete('projectStatus');
       }
-      router.push(`${path}?${params.toString()}`)
+      router.push(`${path}?${params.toString()}`);
     },
     [path, searchParams, router],
-  )
+  );
 
-  const selectedCategory = (searchParams.get('projectType') as ProjectType) || ''
-  const selectedPriority = (searchParams.get('projectPriority') as ProjectPriority) || ''
-  const selectedStatus = (searchParams.get('projectStatus') as ProjectStatus) || ''
+  const selectedCategory =
+    (searchParams.get('projectType') as ProjectType) || '';
+  const selectedPriority =
+    (searchParams.get('projectPriority') as ProjectPriority) || '';
+  const selectedStatus =
+    (searchParams.get('projectStatus') as ProjectStatus) || '';
 
-  const [search, setSearch] = useState('')
+  const [search, setSearch] = useState('');
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 50,
-  })
+  });
 
   const { data, refetch } = queries.read({
     projectType: selectedCategory,
@@ -114,17 +137,17 @@ export default function Page () {
     pageNumber: pagination.pageIndex + 1,
     pageSize: pagination.pageSize,
     search,
-  })
+  });
 
-  const [takeATour, setTakeATour] = useState(true)
-  const [addProject, setAddProject] = useState(true)
-  const [addProjectForm, setAddProjectForm] = useState(true)
+  const [takeATour, setTakeATour] = useState(true);
+  const [addProject, setAddProject] = useState(true);
+  const [addProjectForm, setAddProjectForm] = useState(true);
 
-  const [editForm, setEditForm] = useState(false)
-  const [editProjectId, setEditProjectId] = useState<string | null>(null)
+  const [editForm, setEditForm] = useState(false);
+  const [editProjectId, setEditProjectId] = useState<string | null>(null);
 
-  const [deleteForm, setDeleteForm] = useState(false)
-  const [deleteProjectId, setDeleteProjectId] = useState<string | null>(null)
+  const [deleteForm, setDeleteForm] = useState(false);
+  const [deleteProjectId, setDeleteProjectId] = useState<string | null>(null);
 
   // const handleEditProject = (id: string) => {
   //   setEditProjectId(id)
@@ -132,46 +155,47 @@ export default function Page () {
   // }
 
   const handleCloseEditForm = () => {
-    setEditForm(false)
-    setEditProjectId(null)
-  }
+    setEditForm(false);
+    setEditProjectId(null);
+  };
 
   const handleAddProjectClick = () => {
-    setAddProject(!addProject)
-  }
+    setAddProject(!addProject);
+  };
 
   const handleProjectFormClick = () => {
-    setAddProject(!addProject)
-    setAddProjectForm(!addProjectForm)
-  }
+    setAddProject(!addProject);
+    setAddProjectForm(!addProjectForm);
+  };
 
   const handleTakeTourClick = () => {
-    setTakeATour(!takeATour)
-  }
+    setTakeATour(!takeATour);
+  };
 
   const handleProjectFormClose = () => {
-    setAddProjectForm(!addProjectForm)
-  }
+    setAddProjectForm(!addProjectForm);
+  };
 
   const onDelete = (id: string) => {
-    setDeleteProjectId(id)
-    setDeleteForm(!deleteForm)
-  }
+    setDeleteProjectId(id);
+    setDeleteForm(!deleteForm);
+  };
 
   const handleDeleteProject = () => {
-    setDeleteForm(!deleteForm)
-  }
+    setDeleteForm(!deleteForm);
+  };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value)
-    void refetch()
-  }
+    setSearch(e.target.value);
+    void refetch();
+  };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleRowClick = (row: any) => {
     if (row?.original?.id) {
-      router.push(`/creatives/dashboard/project-management/${row.original.id}`)
+      router.push(`/creatives/dashboard/project-management/${row.original.id}`);
     }
-  }
+  };
 
   const columns = [
     {
@@ -185,50 +209,59 @@ export default function Page () {
     {
       header: 'Due date',
       accessorKey: 'expectedDeliveryDate',
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       cell: ({ row }: any) => {
-        const date = row.original.expectedDeliveryDate
-        return <div className="app_table__tbody__td__ctt">{new Date(date).toLocaleDateString()}</div>
+        const date = row.original.expectedDeliveryDate;
+        return (
+          <div className="app_table__tbody__td__ctt">
+            {new Date(date).toLocaleDateString()}
+          </div>
+        );
       },
     },
     {
       header: 'Priority',
       accessorKey: 'priority',
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       cell: ({ row }: any) => {
-        const priority = row.original.priority || 'Low'
+        const priority = row.original.priority || 'Low';
         return (
-          <div className={`app_table__priority app_table__priority--${priority}`}>
+          <div
+            className={`app_table__priority app_table__priority--${priority}`}
+          >
             <span className="app_table__priority__dot"></span>
             {priority}
           </div>
-        )
+        );
       },
     },
     {
       header: 'Status',
       accessorKey: 'status',
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       cell: ({ row }: any) => {
-        const value = row.original.status
+        const value = row.original.status;
         return (
           <div className="app_table__tbody__td__ctt">
             <Label type="status" value={value} />
-
           </div>
-        )
+        );
       },
     },
     {
       header: '',
       accessorKey: 'actions',
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       cell: ({ row }: any) => {
-        const project = row.original
+        const project = row.original;
         return (
           <div className="app_table__tbody__td__ctt flex gap-2">
             <Button
               variant="outline"
               size="icon"
               onClick={(e) => {
-                e.stopPropagation()
-                onDelete(project.id)
+                e.stopPropagation();
+                onDelete(project.id);
               }}
             >
               <BinGray className="h-4 w-4" />
@@ -237,7 +270,7 @@ export default function Page () {
               <Link
                 href={`/creatives/dashboard/project-management/personal-project/${project.id}/edit`}
                 onClick={(e) => {
-                  e.stopPropagation()
+                  e.stopPropagation();
                 }}
               >
                 <Button variant="outline" size="icon">
@@ -246,10 +279,10 @@ export default function Page () {
               </Link>
             )}
           </div>
-        )
+        );
       },
     },
-  ]
+  ];
 
   return (
     <div className="app_dashboard_page app_dashboard_home">
@@ -294,9 +327,9 @@ export default function Page () {
               handleClick={handleCloseEditForm}
               onClose={handleCloseEditForm}
               setProjectId={setEditProjectId}
-              setDeliverableId={() => { }}
-              handleNext={() => { }}
-              onAddDeliverable={() => { }}
+              setDeliverableId={() => {}}
+              handleNext={() => {}}
+              onAddDeliverable={() => {}}
             />
           )}
         </AnimatedModal>
@@ -327,7 +360,7 @@ export default function Page () {
               projectId={deleteProjectId}
               item={deleteClient}
               handleClick={() => {
-                setDeleteForm(false)
+                setDeleteForm(false);
               }}
               onClose={handleDeleteProject}
             />
@@ -341,7 +374,10 @@ export default function Page () {
             <div className="flex flex-wrap gap-2">
               <Popover>
                 <PopoverTrigger>
-                  <button type="button" className="app_dashboard_group_header__btn">
+                  <button
+                    type="button"
+                    className="app_dashboard_group_header__btn"
+                  >
                     Project Type
                     <ListFilter size={14} />
                   </button>
@@ -352,11 +388,15 @@ export default function Page () {
                       className="app_popover__content__item"
                       key={item.value}
                       onClick={() => {
-                        handleCategorySelect(item.value)
+                        handleCategorySelect(item.value);
                       }}
                     >
                       {item.label}
-                      <RenderIf condition={searchParams.get('projectType') === item.value}>
+                      <RenderIf
+                        condition={
+                          searchParams.get('projectType') === item.value
+                        }
+                      >
                         <Check />
                       </RenderIf>
                     </button>
@@ -368,22 +408,30 @@ export default function Page () {
             <div className="flex flex-wrap gap-2">
               <Popover>
                 <PopoverTrigger>
-                  <button type="button" className="app_dashboard_group_header__btn">
+                  <button
+                    type="button"
+                    className="app_dashboard_group_header__btn"
+                  >
                     Priority
                     <ListFilter size={14} />
                   </button>
                 </PopoverTrigger>
                 <PopoverContent className="app_popover__content">
+                  {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                   {priorityItems.map((item: any) => (
                     <button
                       className="app_popover__content__item"
                       key={item.value}
                       onClick={() => {
-                        handlePriorityItem(item.value)
+                        handlePriorityItem(item.value);
                       }}
                     >
                       {item.label}
-                      <RenderIf condition={searchParams.get('projectPriority') === item.value}>
+                      <RenderIf
+                        condition={
+                          searchParams.get('projectPriority') === item.value
+                        }
+                      >
                         <Check />
                       </RenderIf>
                     </button>
@@ -394,7 +442,10 @@ export default function Page () {
             <div className="flex flex-wrap gap-2">
               <Popover>
                 <PopoverTrigger>
-                  <button type="button" className="app_dashboard_group_header__btn">
+                  <button
+                    type="button"
+                    className="app_dashboard_group_header__btn"
+                  >
                     Status
                     <ListFilter size={14} />
                   </button>
@@ -405,11 +456,15 @@ export default function Page () {
                       className="app_popover__content__item"
                       key={item.value}
                       onClick={() => {
-                        handleStatusItem(item.value)
+                        handleStatusItem(item.value);
                       }}
                     >
                       {item.label}
-                      <RenderIf condition={searchParams.get('projectStatus') === item.value}>
+                      <RenderIf
+                        condition={
+                          searchParams.get('projectStatus') === item.value
+                        }
+                      >
                         <Check />
                       </RenderIf>
                     </button>
@@ -444,7 +499,7 @@ export default function Page () {
             columns={columns}
             data={data?.data ?? []}
             emptyTitle="No project yet"
-            emptyMessage="Click &quot;add project&quot; button to get started"
+            emptyMessage='Click "add project" button to get started'
             pagination={pagination}
             setPagination={setPagination}
             rowDivider={true}
@@ -457,5 +512,5 @@ export default function Page () {
         </div>
       </div>
     </div>
-  )
+  );
 }

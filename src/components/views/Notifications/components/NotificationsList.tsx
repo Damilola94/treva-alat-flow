@@ -2,24 +2,25 @@ import React from 'react';
 import Image, { type StaticImageData } from 'next/image';
 
 interface NotificationItem {
-  id: string
-  type: string
-  date: Date
-  message: string
-  name?: string
-  actionLabel?: string
-  onActionClick?: () => void
-  avatarUrl?: StaticImageData
-  icon?: any
-  highlighted?: boolean
+  id: string;
+  type: string;
+  date: Date;
+  message: string;
+  name?: string;
+  actionLabel?: string;
+  onActionClick?: () => void;
+  avatarUrl?: StaticImageData;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  icon?: any;
+  highlighted?: boolean;
 }
 
 interface GroupedNotifications {
-  dateLabel: string
-  items: NotificationItem[]
+  dateLabel: string;
+  items: NotificationItem[];
 }
 
-function formatDate (date: Date): string {
+function formatDate(date: Date): string {
   return date.toLocaleDateString('en-GB', {
     day: 'numeric',
     month: 'short',
@@ -43,9 +44,10 @@ const groupNotifications = (
   }));
 };
 
-const NotificationList: React.FC<{ notifications: NotificationItem[] }> = ({
-  notifications,
-}) => {
+const NotificationList: React.FC<{
+  notifications: NotificationItem[];
+  toggleMessageModal: (value: boolean) => void;
+}> = ({ notifications, toggleMessageModal }) => {
   const grouped = groupNotifications(notifications);
 
   return (
@@ -97,7 +99,10 @@ const NotificationList: React.FC<{ notifications: NotificationItem[] }> = ({
                 {rest?.actionLabel && (
                   <button
                     className="border border-[#7B37F0] text-[#7B37F0] px-4 py-3 rounded-full text-sm hover:bg-[#f7f1ff]"
-                    onClick={rest?.onActionClick}
+                    onClick={() => {
+                      rest?.actionLabel === 'View Message' &&
+                        toggleMessageModal(true);
+                    }}
                   >
                     {rest?.actionLabel}
                   </button>

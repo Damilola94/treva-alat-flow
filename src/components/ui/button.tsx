@@ -1,10 +1,10 @@
-import * as React from 'react'
-import { Slot } from '@radix-ui/react-slot'
-import { cva, type VariantProps } from 'class-variance-authority'
+import * as React from 'react';
+import { Slot } from '@radix-ui/react-slot';
+import { cva, type VariantProps } from 'class-variance-authority';
 
-import { cn } from '@/lib/utils'
-import { type Color } from '@/lib/colors'
-import { Loader2 } from 'lucide-react'
+import { cn } from '@/lib/utils';
+import { type Color } from '@/lib/colors';
+import { Loader2 } from 'lucide-react';
 
 const buttonVariants = cva(
   'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
@@ -19,7 +19,7 @@ const buttonVariants = cva(
         secondary:
           'bg-secondary text-secondary-foreground hover:bg-secondary/80',
         ghost: 'hover:bg-accent hover:text-accent-foreground',
-        link: 'text-primary underline-offset-4 hover:underline'
+        link: 'text-primary underline-offset-4 hover:underline',
       },
       size: {
         default: 'h-9 px-4 py-2',
@@ -27,43 +27,55 @@ const buttonVariants = cva(
         md: 'h-10 rounded-md px-3',
         lg: 'h-11 rounded-md px-8',
         xl: 'h-14 rounded-md px-8',
-        icon: 'h-10 w-10'
-      }
+        icon: 'h-10 w-10',
+      },
     },
     defaultVariants: {
       variant: 'default',
-      size: 'default'
-    }
-  }
-)
+      size: 'default',
+    },
+  },
+);
 
 export interface ButtonProps
   extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'color'>,
-  VariantProps<typeof buttonVariants> {
-  asChild?: boolean
-  backgroundColor?: keyof Color | string
-  color?: keyof Color
-  border?: keyof Color
-  fontWeight?: string
-  isLoading?: boolean
+    VariantProps<typeof buttonVariants> {
+  asChild?: boolean;
+  backgroundColor?: keyof Color | string;
+  color?: keyof Color;
+  border?: keyof Color;
+  fontWeight?: string;
+  isLoading?: boolean;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   (props, ref) => {
-    const { className: cnString, children, variant, size, asChild = false, backgroundColor, color, border, fontWeight = 'font-semibold', isLoading, ...restProps } = props
+    const {
+      className: cnString,
+      children,
+      variant,
+      size,
+      asChild = false,
+      backgroundColor,
+      color,
+      // border,
+      fontWeight = 'font-semibold',
+      isLoading,
+      ...restProps
+    } = props;
 
-    const Comp = asChild ? Slot : 'button'
+    const Comp = asChild ? Slot : 'button';
 
-    const bg = `bg-${backgroundColor}`
+    const bg = `bg-${backgroundColor}`;
 
-    const className = ['app_button', bg, color, fontWeight, cnString].join(' ')
+    const className = ['app_button', bg, color, fontWeight, cnString].join(' ');
 
     const chd = (
       <>
         {isLoading && <Loader2 size={18} className="animate-spin" />}
         {children}
       </>
-    )
+    );
 
     return (
       <Comp
@@ -74,9 +86,9 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       >
         {chd}
       </Comp>
-    )
-  }
-)
-Button.displayName = 'Button'
+    );
+  },
+);
+Button.displayName = 'Button';
 
-export { Button, buttonVariants }
+export { Button, buttonVariants };

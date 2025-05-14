@@ -1,26 +1,27 @@
 // import featureFlags from '@/lib/feature-flags'
-import { type AxiosError } from 'axios'
-import { type ToastOptions, toast } from 'react-toastify'
+import { type AxiosError } from 'axios';
+import { type ToastOptions, toast } from 'react-toastify';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const setLocalStorage = (key: string, data: any) => {
   try {
-    const jsonData = JSON.stringify(data)
-    localStorage.setItem(key, jsonData)
-    return true
+    const jsonData = JSON.stringify(data);
+    localStorage.setItem(key, jsonData);
+    return true;
   } catch (error) {
-    return false
+    return false;
   }
-}
+};
 
 export const getLocalStorage = (key: string) => {
   try {
-    const jsonData = localStorage.getItem(key)
-    if (!jsonData) return null
-    return JSON.parse(jsonData)
+    const jsonData = localStorage.getItem(key);
+    if (!jsonData) return null;
+    return JSON.parse(jsonData);
   } catch (error) {
-    return null
+    return null;
   }
-}
+};
 
 export const getQueryKeys = (namespace: string) => ({
   create: `${namespace}/create`,
@@ -29,11 +30,12 @@ export const getQueryKeys = (namespace: string) => ({
   update: `${namespace}/update`,
   patch: `${namespace}/patch`,
   put: `${namespace}/put`,
-  delete: `${namespace}/delete`
-})
+  delete: `${namespace}/delete`,
+});
 
-export function handleSuccess (data: any, message: string) {
-  return data?.description || message
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function handleSuccess(data: any, message: string) {
+  return data?.description || message;
 }
 
 // export function handleErrors (error: AxiosError) {
@@ -75,10 +77,11 @@ export function handleSuccess (data: any, message: string) {
 //   return error.message || MSG
 // }
 
-export function handleErrors (error: AxiosError) {
+export function handleErrors(error: AxiosError) {
   const MSG = 'Something went wrong';
 
   if (error.response) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const responseData = error.response?.data as any;
 
     const errorMessage = responseData?.message || responseData?.responseMessage;
@@ -88,7 +91,7 @@ export function handleErrors (error: AxiosError) {
     if (typeof errors === 'string') return errors || MSG;
 
     if (Array.isArray(errors) && errors.length > 0) {
-      const [err] = errors as Array<{ field: string, errorMessage: string }>;
+      const [err] = errors as Array<{ field: string; errorMessage: string }>;
       return err?.errorMessage ?? errorMessage ?? MSG;
     }
 
@@ -108,10 +111,16 @@ export function handleErrors (error: AxiosError) {
 //   toast.error(message, options)
 // }
 
-export const errorToast = (message = 'Something went wrong', options?: ToastOptions | undefined) => {
-  toast.error(message, options)
-}
+export const errorToast = (
+  message = 'Something went wrong',
+  options?: ToastOptions | undefined,
+) => {
+  toast.error(message, options);
+};
 
-export const successToast = (message = 'Successful', options?: ToastOptions | undefined) => {
-  toast.success(message, options)
-}
+export const successToast = (
+  message = 'Successful',
+  options?: ToastOptions | undefined,
+) => {
+  toast.success(message, options);
+};

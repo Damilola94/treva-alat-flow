@@ -38,7 +38,7 @@ import queries from '@/services/queries/profile';
 import Image from 'next/image';
 import React, { useState } from 'react';
 
-export default function Dashboard () {
+export default function Dashboard() {
   const [popOver, togglePopOver] = useState(false);
   const [withdraw, toggleWithdraw] = useState(false);
   const [addFunds, toggleAddFunds] = useState(false);
@@ -121,6 +121,7 @@ export default function Dashboard () {
     {
       header: 'Priority',
       accessorKey: 'priority',
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       cell: ({ row }: any) => {
         const value = row.original.priority;
         return (
@@ -133,6 +134,7 @@ export default function Dashboard () {
     {
       header: 'Status',
       accessorKey: 'status',
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       cell: ({ row }: any) => {
         const value = row.original.status;
         return (
@@ -221,7 +223,7 @@ export default function Dashboard () {
           title="Add Funds"
           isOpen={addFunds}
           onClose={() => {
-            toggleAddFunds(false)
+            toggleAddFunds(false);
           }}
           showFooter
         >
@@ -244,7 +246,7 @@ export default function Dashboard () {
         <SideModal
           isOpen={editAccount}
           onClose={() => {
-            toggleEditAccount(false)
+            toggleEditAccount(false);
           }}
           title="Edit Account"
           showFooter
@@ -272,7 +274,7 @@ export default function Dashboard () {
         <SideModal
           isOpen={withdraw}
           onClose={() => {
-            toggleWithdraw(false)
+            toggleWithdraw(false);
           }}
           title="Withdraw Funds"
           showFooter

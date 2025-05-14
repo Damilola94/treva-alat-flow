@@ -1,15 +1,19 @@
-'use client'
+'use client';
 import { Label, Table } from '@/components/shared';
 import { mockProjects } from '@/constants';
 import { Search } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-type TabType = 'All Project' | 'Pending Project' | 'Completed Project' | 'Due Project'
+type TabType =
+  | 'All Project'
+  | 'Pending Project'
+  | 'Completed Project'
+  | 'Due Project';
 
-export default function Page () {
-  const router = useRouter()
-  const [activeTab, setActiveTab] = useState<TabType>('All Project')
+export default function Page() {
+  const router = useRouter();
+  const [activeTab, setActiveTab] = useState<TabType>('All Project');
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 2,
@@ -42,6 +46,7 @@ export default function Page () {
     {
       header: 'Status',
       accessorKey: 'status',
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       cell: ({ row }: any) => {
         const value = row.original.status;
         return (
@@ -57,12 +62,22 @@ export default function Page () {
     <div className="app_dashboard_home__task app_dashboard_page__px">
       <div className="app_dashboard_home__task__hdr flex-wrap gap-2 mt-4">
         <div className="flex border-t border-gray-200 p-4 gap-2">
-          {['All Project', 'Pending Project', 'Completed Project', 'Due Project'].map((tab) => (
+          {[
+            'All Project',
+            'Pending Project',
+            'Completed Project',
+            'Due Project',
+          ].map((tab) => (
             <button
               key={tab}
-              className={`px-6 py-2 text-sm font-bold ${activeTab === tab ? ' border rounded-full border-[#262626] text-[#262626]' : 'text-[#808080] rounded-full border border-[#808080]'
-                }`}
-              onClick={() => { setActiveTab(tab as TabType); }}
+              className={`px-6 py-2 text-sm font-bold ${
+                activeTab === tab
+                  ? ' border rounded-full border-[#262626] text-[#262626]'
+                  : 'text-[#808080] rounded-full border border-[#808080]'
+              }`}
+              onClick={() => {
+                setActiveTab(tab as TabType);
+              }}
             >
               {tab}
             </button>

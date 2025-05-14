@@ -1,17 +1,28 @@
-export function numberFormat (number?: number, options?: Intl.NumberFormatOptions) {
-  if (typeof number !== 'number') return null
+export function numberFormat(
+  number?: number,
+  options?: Intl.NumberFormatOptions,
+) {
+  if (typeof number !== 'number') return null;
 
-  const { style = 'currency', currency = 'NGN', maximumFractionDigits = 2 } = options ?? {}
+  const {
+    style = 'currency',
+    currency = 'NGN',
+    maximumFractionDigits = 2,
+  } = options ?? {};
 
   return Intl.NumberFormat('en-NG', {
-    ...options, style, currency, maximumFractionDigits
-  }).format(number)
+    ...options,
+    style,
+    currency,
+    maximumFractionDigits,
+  }).format(number);
 }
 
-export function getParseFloat (value: any) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function getParseFloat(value: any) {
   if (Number.isNaN(Number.parseFloat(value))) {
-    return 0
+    return 0;
   }
 
-  return parseFloat(value)
+  return parseFloat(value);
 }
