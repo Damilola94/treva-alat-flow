@@ -1,5 +1,5 @@
 import { REQUEST_METHODS, endpoints } from '@/constants';
-import { projectServiceApiSlice } from '@/store';
+import { projectServiceApiSlice } from '@/store/slices';
 import { ITrevaProjectService } from '@/types';
 
 export const projectService = projectServiceApiSlice.injectEndpoints({

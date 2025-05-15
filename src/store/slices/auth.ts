@@ -1,18 +1,25 @@
 import config from '@/lib/config';
 import { getLocalStorage } from '@/services';
 import type { IRoles } from '@/types';
+import { getCookie } from '@/utils';
 import { createSlice } from '@reduxjs/toolkit';
 
 interface IAuth {
-  loggedIn: boolean
-  role: IRoles | null
+  loggedIn: boolean;
+  role: IRoles[] | null;
+  expiry: string;
+  userId: string;
+  email: string;
 }
 
-const userDetails = getLocalStorage(config.tokenKey);
+const userDetails = getCookie('_tk') || getLocalStorage(config.tokenKey);
 
 const initialState: IAuth = {
   loggedIn: !!userDetails?.accessToken || false,
-  role: null
+  role: null,
+  expiry: '',
+  userId: '',
+  email: '',
 };
 
 export const authSlice = createSlice({
@@ -23,8 +30,8 @@ export const authSlice = createSlice({
       const { payload } = action;
       return {
         ...state,
+        ...payload,
         loggedIn: true,
-        user: payload
       };
     },
 

@@ -1,1 +1,1 @@
-export type IRoles = 'Client' | 'Creative';
+export type IRoles = 'Client' | 'Creative' | 'Admin';

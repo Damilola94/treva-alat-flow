@@ -69,7 +69,10 @@ export const store = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }),
+    }).concat([
+      userServiceApiSlice.middleware,
+      projectServiceApiSlice.middleware,
+    ]),
 });
 
 export const persistor = persistStore(store);

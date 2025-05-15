@@ -15,6 +15,7 @@ import { type Request } from '../../api';
 import { getMockApiData } from '@/lib/utils';
 import { type CreateUserBody } from './types';
 import config from '@/lib/config';
+import { setCookie } from '@/utils';
 
 const mock = {
   email: 'ayobami.aladenoye+streak@wemabank.com',
@@ -63,6 +64,7 @@ const useLogin = (options = {}) => {
       onSuccess: (data) => {
         if (data.statusCode === '200') {
           setLocalStorage(config.tokenKey, data?.data);
+          setCookie("_tk", response?.data?.token);
           successToast('Sign in successful');
           setTimeout(() => {
             router.push(routes.creatives.dashboard.entry.path);
