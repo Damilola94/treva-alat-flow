@@ -77,7 +77,8 @@ export function handleSuccess(data: any, message: string) {
 //   return error.message || MSG
 // }
 
-export function handleErrors(error: AxiosError) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function handleErrors(error: AxiosError | any) {
   const MSG = 'Something went wrong';
 
   if (error.response) {
