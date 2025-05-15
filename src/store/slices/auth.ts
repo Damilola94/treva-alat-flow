@@ -12,10 +12,11 @@ interface IAuth {
   email: string;
 }
 
-const userDetails = getCookie('_tk') || getLocalStorage(config.tokenKey);
+const accessToken = getCookie('_tk');
+const fallbackAccessToken = getLocalStorage(config.tokenKey);
 
 const initialState: IAuth = {
-  loggedIn: !!userDetails?.accessToken || false,
+  loggedIn: !!accessToken || !!fallbackAccessToken?.accessToken || false,
   role: null,
   expiry: '',
   userId: '',
