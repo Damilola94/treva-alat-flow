@@ -20,6 +20,7 @@ import localforage from 'localforage';
 import {
   authSlice,
   projectServiceApiSlice,
+  registerSlice,
   userServiceApiSlice,
 } from './slices';
 
@@ -53,6 +54,7 @@ const rootReducer = combineReducers({
   [userServiceApiSlice.reducerPath]: userServiceApiSlice.reducer,
   [projectServiceApiSlice.reducerPath]: projectServiceApiSlice.reducer,
   [authSlice.reducerPath]: authSlice.reducer,
+  [registerSlice.reducerPath]: registerSlice.reducer,
 });
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

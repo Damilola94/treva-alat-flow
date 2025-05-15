@@ -27,6 +27,11 @@ export const endpoints = {
     changePassword: '/auth/change-password',
   },
 
+  users: {
+    saveClientOnboarding: '/users/save-client-onboarding',
+    getClientOnboarding: '/users/client-onboarding-record',
+  },
+
   // project service
   agreements: {
     getAgreements: (projectId: string) => `/projects/${projectId}/agreements`,

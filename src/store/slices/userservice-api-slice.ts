@@ -21,7 +21,7 @@ const baseQuery = fetchBaseQuery({
   validateStatus: (response) => {
     if (
       response.status === 401 &&
-      window.location.pathname !== '/auth/sign-in'
+      (window.location.pathname !== '/auth/sign-in')
     ) {
       if (typeof globalThis.window !== 'undefined') {
         handleLogoutRedirect();

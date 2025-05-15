@@ -54,6 +54,7 @@ const routes = {
       },
       emailVerification: {
         path: '/client/onboarding/email-verification',
+        success: '/client/onboarding/email-verification/success',
       },
     },
     dashboard: {
@@ -77,20 +78,20 @@ const routes = {
 
         done: {
           path: '/client/dashboard/get-started/done',
-        }
+        },
       },
       hiringManagement: {
-        path: '/client/dashboard/hiring-management'
+        path: '/client/dashboard/hiring-management',
       },
       projectManagement: {
-        path: '/client/dashboard/project-management'
+        path: '/client/dashboard/project-management',
       },
       payment: {
-        path: '/client/dashboard/payment'
+        path: '/client/dashboard/payment',
       },
       notifications: {
-        path: '/client/dashboard/notifications'
-      }
+        path: '/client/dashboard/notifications',
+      },
     },
   },
 
@@ -210,11 +211,11 @@ const routes = {
         path: '/creatives/dashboard/client-management',
       },
       payment: {
-        path: '/creatives/dashboard/payment'
+        path: '/creatives/dashboard/payment',
       },
       notifications: {
-        path: '/creatives/dashboard/notifications'
-      }
+        path: '/creatives/dashboard/notifications',
+      },
     },
   },
 };

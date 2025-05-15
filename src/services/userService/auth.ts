@@ -16,7 +16,7 @@ export const authService = userServiceApiSlice.injectEndpoints({
     }),
 
     register: builder.mutation({
-      query: (values: ITrevaUserService['schemas']['RegisterCommand']) => ({
+      query: (values) => ({
         url: endpoints.auth.register,
         method: REQUEST_METHODS.POST,
         body: values,
