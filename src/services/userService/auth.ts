@@ -1,5 +1,5 @@
 import { REQUEST_METHODS, endpoints } from '@/constants';
-import { userServiceApiSlice } from '@/store';
+import { userServiceApiSlice } from '@/store/slices';
 import { ITrevaUserService } from '@/types';
 
 export const authService = userServiceApiSlice.injectEndpoints({
