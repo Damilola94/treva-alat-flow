@@ -17,7 +17,11 @@ import {
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 import { encryptTransform } from 'redux-persist-transform-encrypt';
 import localforage from 'localforage';
-import { authSlice } from './slices';
+import {
+  authSlice,
+  projectServiceApiSlice,
+  userServiceApiSlice,
+} from './slices';
 
 const migrations: MigrationManifest = {
   0: (state) => state,
@@ -28,7 +32,7 @@ localforage.config({
 });
 
 const persistConfig = {
-  key: 'alat',
+  key: 'wema',
   migrate: createMigrate(migrations),
   stateReconciler: autoMergeLevel2,
   storage: localforage,
@@ -46,6 +50,8 @@ const persistConfig = {
 };
 
 const rootReducer = combineReducers({
+  [userServiceApiSlice.reducerPath]: userServiceApiSlice.reducer,
+  [projectServiceApiSlice.reducerPath]: projectServiceApiSlice.reducer,
   [authSlice.reducerPath]: authSlice.reducer,
 });
 
