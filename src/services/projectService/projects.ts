@@ -4,18 +4,17 @@ import { ITrevaProjectService } from '@/types';
 
 export const projectService = projectServiceApiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getAgreements: builder.query({
-      query: ({ projectId }: { projectId: string }) => ({
-        url: endpoints.agreements.getAgreements(projectId),
+    getAllProjects: builder.query({
+      query: (values) => ({
+        url: endpoints.projects.getAllProjects,
         method: REQUEST_METHODS.GET,
+        params: values,
       }),
       transformResponse: (
-        response: ITrevaProjectService['schemas']['AgreementModelIEnumerableBaseResponse'],
+        response: ITrevaProjectService['schemas']['ProjectModelPagedListBaseResponse'],
       ) => response,
     }),
-
-    
   }),
 });
 
-export const { useGetAgreementsQuery } = projectService;
+export const { useGetAllProjectsQuery } = projectService;

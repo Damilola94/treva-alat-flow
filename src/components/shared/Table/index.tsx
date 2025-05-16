@@ -94,11 +94,17 @@ const Table = <T,>({
 
   return (
     <div
-      className={`${styles.container} flex flex-col font-spaceGrotesk relative rounded !bg-white !mb-20`}
+      className={`${
+        styles.container
+      } flex flex-col font-spaceGrotesk relative rounded ${
+        !loading && (!data || data?.length === 0)
+          ? '!bg-transparent'
+          : '!bg-white'
+      } !mb-20`}
       style={{ maxHeight: showViewAll ? '528px' : '100% ' }}
     >
       {!loading && (!data || data?.length === 0) ? (
-        <div className="min-h-[443px] p-5 ">
+        <div className="min-h-full p-5 ">
           <EmptyState
             title={emptyTitle}
             message={emptyMessage}
