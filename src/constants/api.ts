@@ -36,4 +36,7 @@ export const endpoints = {
   agreements: {
     getAgreements: (projectId: string) => `/projects/${projectId}/agreements`,
   },
+  projects: {
+    getAllProjects: '/projects',
+  },
 };

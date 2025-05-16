@@ -30,13 +30,25 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { clientDashboardTasks, mockProjects } from '@/constants';
+import { clientDashboardTasks } from '@/constants';
+import { useProjects } from '@/hooks/Projects';
 import dashboard from '@/lib/assets/dashboard';
 import { numberFormat } from '@/lib/numbers';
 import { getAvatar, getFullName } from '@/lib/utils';
 import queries from '@/services/queries/profile';
+import { Loader2 } from 'lucide-react';
 import Image from 'next/image';
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+
+interface ProjectQueryParams {
+  type?: string;
+  status?: string;
+  priority?: string;
+  currency?: string;
+  pageNumber?: number;
+  pageSize?: number;
+  searchKey?: string;
+}
 
 export default function Dashboard() {
   const [popOver, togglePopOver] = useState(false);
@@ -45,6 +57,18 @@ export default function Dashboard() {
   const [editAccount, toggleEditAccount] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const { data } = queries.read();
+
+  const [params, setParams] = useState<ProjectQueryParams>({
+    type: 'Client',
+    status: 'Pending',
+    priority: 'Medium',
+    currency: 'NGN',
+    pageNumber: 1,
+    pageSize: 10,
+    searchKey: '',
+  });
+
+  const { allProjectsData, loading } = useProjects(params);
 
   const kpis = [
     { label: 'Active Project', value: '0' },
@@ -102,21 +126,21 @@ export default function Dashboard() {
   // to handle pagination
   const [pagination, setPagination] = useState({
     pageIndex: 0,
-    pageSize: 2,
+    pageSize: 4,
   });
 
   const headers = [
     {
       header: 'Project Name',
-      accessorKey: 'name',
+      accessorKey: 'title',
     },
     {
       header: 'Creative',
-      accessorKey: 'creative',
+      accessorKey: 'createdBy',
     },
     {
       header: 'Due Date',
-      accessorKey: 'dueDate',
+      accessorKey: 'actualDeliveryDate',
     },
     {
       header: 'Priority',
@@ -145,6 +169,27 @@ export default function Dashboard() {
       },
     },
   ];
+
+  const tableBody = useMemo(() => {
+    return allProjectsData?.isSuccess && allProjectsData.data
+      ? allProjectsData.data
+      : [];
+  }, [allProjectsData?.isSuccess, allProjectsData?.data]);
+
+  useEffect(() => {
+    setParams((prev) => ({
+      ...prev,
+      pageNumber: pagination?.pageIndex + 1,
+      pageSize: pagination?.pageSize,
+    }));
+  }, [pagination]);
+
+  const handleParamChange = (param: Partial<ProjectQueryParams>) => {
+    setParams((prev) => ({
+      ...prev,
+      ...param,
+    }));
+  };
 
   return (
     <div className="app_dashboard_page app_dashboard_home">
@@ -199,6 +244,9 @@ export default function Dashboard() {
                 active={selectedCategory === item.value}
                 onClick={() => {
                   setSelectedCategory(item.value);
+                  handleParamChange({
+                    status: item?.value === 'All' ? undefined : item?.value,
+                  });
                 }}
               >
                 {item.label}
@@ -206,17 +254,28 @@ export default function Dashboard() {
             ))}
           </div>
 
-          <SearchInput placeholder="Search for a Project" />
+          <SearchInput
+            placeholder="Search for a Project"
+            onChange={(e) => {
+              handleParamChange({ searchKey: e.target.value });
+            }}
+          />
         </div>
 
-        <Table
-          columns={headers}
-          emptyTitle="No Task Yet"
-          emptyMessage="Click “add new request” button to get started"
-          data={mockProjects}
-          pagination={pagination}
-          setPagination={setPagination}
-        />
+        {loading ? (
+          <div className="text-center flex justify-center items-center">
+            <Loader2 size={18} className="animate-spin" />
+          </div>
+        ) : (
+          <Table
+            columns={headers}
+            emptyTitle="No Task Yet"
+            emptyMessage="Click “add new request” button to get started"
+            data={tableBody}
+            pagination={pagination}
+            setPagination={setPagination}
+          />
+        )}
 
         <CenterModal
           headerImageType={1}
