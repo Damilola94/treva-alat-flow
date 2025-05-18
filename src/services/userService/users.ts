@@ -13,7 +13,19 @@ export const usersService = userServiceApiSlice.injectEndpoints({
         response: ITrevaUserService['schemas']['TempClientOnboardingModelBaseResponse'],
       ) => response,
     }),
+
+    saveClientOnboarding: builder.mutation({
+      query: (values) => ({
+        url: endpoints.users.saveClientOnboarding,
+        method: REQUEST_METHODS.POST,
+        body: values,
+      }),
+      transformResponse: (
+        response: ITrevaUserService['schemas']['UnitBaseResponse'],
+      ) => response,
+    }),
   }),
 });
 
-export const { useGetClientOnboardingQuery } = usersService;
+export const { useGetClientOnboardingQuery, useSaveClientOnboardingMutation } =
+  usersService;

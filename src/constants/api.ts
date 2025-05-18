@@ -27,6 +27,15 @@ export const endpoints = {
     changePassword: '/auth/change-password',
   },
 
+  location: {
+    getStates: `/locations/states`,
+    getCities: `/locations/cities`,
+  },
+
+  professions: {
+    getProfessions: '/professions',
+  },
+
   users: {
     saveClientOnboarding: '/users/save-client-onboarding',
     getClientOnboarding: '/users/client-onboarding-record',
