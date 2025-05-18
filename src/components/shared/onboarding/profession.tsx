@@ -15,6 +15,8 @@ import { useRouter } from 'next/navigation';
 import { Header } from '@/components/shared/onboarding';
 import { Pill } from '@/components/shared';
 import { useCreativeOnboardingForm } from '@/store';
+import { useGetProfessionsQuery } from '@/services';
+import { useMemo } from 'react';
 
 const validationSchema = Yup.object().shape({
   professions: Yup.array()
@@ -34,7 +36,14 @@ export function Profession(props?: {
 }) {
   const rt = useRouter();
   const { isLoading } = queries.login();
-  const { data: professions } = queries.read();
+  // const { data: professions } = queries.read();
+  const { data: professionsData, isLoading: loadingProfessions } =
+    useGetProfessionsQuery(undefined, { refetchOnMountOrArgChange: true });
+
+  const professions = useMemo(
+    () => professionsData?.data || [],
+    [professionsData],
+  );
   const { setFormData } = useCreativeOnboardingForm();
 
   const onSubmit = (values: InitialValues) => {
@@ -74,7 +83,7 @@ export function Profession(props?: {
                           {!professions ? (
                             <div>Loading professions...</div>
                           ) : (
-                            professions.data.map(({ name, id }: any) => (
+                            professions?.map(({ name, id }: any) => (
                               <Pill
                                 key={id}
                                 onClick={() => {

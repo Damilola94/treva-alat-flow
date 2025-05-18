@@ -11,6 +11,7 @@ export * from './Table';
 export * from './Label';
 export * from './CenterModal';
 export * from './SideModal';
+export * from "./SelectField";
 export * from './ChatSideModal';
 export { default as EmptyState } from './EmptyState';
 export { default as Tab } from './Tab';

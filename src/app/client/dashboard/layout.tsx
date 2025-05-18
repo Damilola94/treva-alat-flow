@@ -1,21 +1,17 @@
 'use client';
 
 import { Suspense, useEffect, useState } from 'react';
-import {
-  Footer,
-  Header,
-  Sidebar,
-} from '@/components/shared/dashboard';
+import { Footer, Header, Sidebar } from '@/components/shared/dashboard';
 import { Inter } from 'next/font/google';
 import { Column, Users, GlobeAlt, Grid, Payment } from '@/components/shared';
 import routes from '@/lib/routes';
 import queries from '@/services/queries/profile';
 import { usePathname } from 'next/navigation';
-import { Notifications } from '@/app/assets/svgs';
+import { ChatIcon, Notifications } from '@/app/assets/svgs';
 
 const inter = Inter({
   subsets: ['latin'],
-  weight: ['400', '500', '600', '700']
+  weight: ['400', '500', '600', '700'],
 });
 
 const showBackArrowRoutes = [
@@ -23,22 +19,50 @@ const showBackArrowRoutes = [
   '/client/dashboard/hiring-management/',
 ];
 
-function Main ({ children }: { children: React.ReactNode }) {
-  const pt = usePathname()
-  const shouldShowBackArrow = showBackArrowRoutes.some(prefix =>
-    pt.startsWith(prefix)
+function Main({ children }: { children: React.ReactNode }) {
+  const pt = usePathname();
+  const shouldShowBackArrow = showBackArrowRoutes.some((prefix) =>
+    pt.startsWith(prefix),
   );
   const [mounted, setMounted] = useState(false);
   const { data } = queries.read();
 
   const clientMenuItems = [
-    { label: 'Get Started', href: routes.client.dashboard.getStarted.path, icon: <GlobeAlt /> },
-    { label: 'Dashboard', href: routes.client.dashboard.entry.path, icon: <Grid /> },
-    { label: 'Hiring Management', href: routes.client.dashboard.hiringManagement.path, icon: <Users /> },
-    { label: 'Project Management', href: routes.client.dashboard.projectManagement.path, icon: <Column /> },
-    { label: 'Payment', href: routes.client.dashboard.payment.path, icon: <Payment /> },
-    { label: 'Reminders and Notification', href: routes.client.dashboard.notifications.path, icon: <Notifications /> }
-
+    {
+      label: 'Get Started',
+      href: routes.client.dashboard.getStarted.path,
+      icon: <GlobeAlt />,
+    },
+    {
+      label: 'Dashboard',
+      href: routes.client.dashboard.entry.path,
+      icon: <Grid />,
+    },
+    {
+      label: 'Hiring Management',
+      href: routes.client.dashboard.hiringManagement.path,
+      icon: <Users />,
+    },
+    {
+      label: 'Project Management',
+      href: routes.client.dashboard.projectManagement.path,
+      icon: <Column />,
+    },
+    {
+      label: 'Chat',
+      href: routes.client.dashboard.chat.path,
+      icon: <ChatIcon />,
+    },
+    {
+      label: 'Payment',
+      href: routes.client.dashboard.payment.path,
+      icon: <Payment />,
+    },
+    {
+      label: 'Reminders and Notification',
+      href: routes.client.dashboard.notifications.path,
+      icon: <Notifications />,
+    },
   ];
 
   useEffect(() => {
@@ -50,18 +74,19 @@ function Main ({ children }: { children: React.ReactNode }) {
   return (
     <main className="app_dash_main flex-col">
       <div className="app_dash_main flex-1 relative">
-      <div
-          className="z-50 md:relative fixed top-0"
-        >
-   <Sidebar menuItems={clientMenuItems} logoHref={routes.client.dashboard.entry.path} userData={data} />;
+        <div className="z-50 md:relative fixed top-0">
+          <Sidebar
+            menuItems={clientMenuItems}
+            logoHref={routes.client.dashboard.entry.path}
+            userData={data}
+          />
+          ;
         </div>
         <div className="app_dash_main__ctt">
           <Header showBackArrow={shouldShowBackArrow} />
           <div className="app_dash_main__ctt__mn w-full">
             <div className="app_dashboard_page">{children}</div>
-            {false &&
-        <Footer/>
-            }
+            {false && <Footer />}
           </div>
         </div>
       </div>
@@ -69,10 +94,10 @@ function Main ({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function RootLayout ({
-  children
+export default function RootLayout({
+  children,
 }: Readonly<{
-  children: React.ReactNode
+  children: React.ReactNode;
 }>) {
   return (
     <html lang="en">
