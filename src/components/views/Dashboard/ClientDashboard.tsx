@@ -32,6 +32,7 @@ import {
 } from '@/components/ui/popover';
 import { clientDashboardTasks } from '@/constants';
 import { useProjects } from '@/hooks/Projects';
+import { useUsers } from '@/hooks/Users';
 import dashboard from '@/lib/assets/dashboard';
 import { numberFormat } from '@/lib/numbers';
 import { getAvatar, getFullName } from '@/lib/utils';
@@ -68,7 +69,10 @@ export default function Dashboard() {
     searchKey: '',
   });
 
+  const { userOnboardingData } = useUsers();
   const { allProjectsData, loading } = useProjects(params);
+
+  console.log(userOnboardingData);
 
   const kpis = [
     { label: 'Active Project', value: '0' },

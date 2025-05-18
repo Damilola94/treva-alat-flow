@@ -2,7 +2,12 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Header } from '@/components/shared/onboarding';
-import { loginSuccess, useAppDispatch, useAppSelector } from '@/store';
+import {
+  clearValues,
+  loginSuccess,
+  useAppDispatch,
+  useAppSelector,
+} from '@/store';
 import { errorToast, successToast, useLoginMutation } from '@/services';
 import { getErrorMessage, setCookie } from '@/utils';
 import { useRouter } from 'next/navigation';
@@ -39,6 +44,7 @@ export default function Page() {
               role: response?.data?.roles,
             }),
           );
+          dispatch(clearValues());
         }
         successToast('Sign in successful');
         setTimeout(() => {
