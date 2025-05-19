@@ -11,7 +11,7 @@ export const projectService = projectServiceApiSlice.injectEndpoints({
         params: values,
       }),
       transformResponse: (
-        response: ITrevaProjectService['schemas']['ProjectModelPagedListBaseResponse'],
+        response: ITrevaProjectService['schemas']['ProjectMiniModelPagedListBaseResponse'],
       ) => response,
     }),
   }),

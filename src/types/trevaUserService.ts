@@ -760,6 +760,128 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/users/creative-detail/{userId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get creative detail by id */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    userId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["UserCreativeDetailModelBaseResponse"];
+                        "application/json": components["schemas"]["UserCreativeDetailModelBaseResponse"];
+                        "text/json": components["schemas"]["UserCreativeDetailModelBaseResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/users/{userId}/ratings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get user ratings */
+        get: {
+            parameters: {
+                query?: {
+                    PageNumber?: number;
+                    PageSize?: number;
+                    SearchKey?: string;
+                };
+                header?: never;
+                path: {
+                    userId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["UserRatingModelBaseResponse"];
+                        "application/json": components["schemas"]["UserRatingModelBaseResponse"];
+                        "text/json": components["schemas"]["UserRatingModelBaseResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/users/my-hiring-statistics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get hiring statistics */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["HiringStatisticsModelBaseResponse"];
+                        "application/json": components["schemas"]["HiringStatisticsModelBaseResponse"];
+                        "text/json": components["schemas"]["HiringStatisticsModelBaseResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -768,6 +890,8 @@ export interface components {
         AccountTypeEnums: "Company" | "Individual";
         /** @enum {string} */
         ActorTypeEnums: "Client" | "Creative";
+        /** @enum {string} */
+        AddressTypeEnums: "Home" | "Office" | "Other";
         ChangePasswordCommand: {
             currentPassword: string | null;
             newPassword: string | null;
@@ -787,8 +911,30 @@ export interface components {
         };
         /** @enum {string} */
         CompanySizeEnums: "ElevenToFifty" | "FiftyOneToTwoHundred" | "FiveHundredOneToThousand" | "NotSet" | "OneToTen" | "ThousandOneToTwoThousand" | "TwoHundredOneToFiveHundred" | "TwoThousandPlus";
+        CountryModel: {
+            /** Format: uuid */
+            id?: string;
+            name: string | null;
+            code?: string | null;
+            flagUrl?: string | null;
+        };
         ForgotPasswordCommand: {
             email: string | null;
+        };
+        HiringStatisticsModel: {
+            /** Format: int32 */
+            hiredCreativeCount?: number;
+            /** Format: int32 */
+            publishedProjectCount?: number;
+            /** Format: int32 */
+            onboardedCreativeCount?: number;
+        };
+        HiringStatisticsModelBaseResponse: {
+            isSuccess?: boolean;
+            statusCode?: string | null;
+            message?: string | null;
+            data?: components["schemas"]["HiringStatisticsModel"];
+            metaData?: unknown;
         };
         LoginCommand: {
             email: string | null;
@@ -822,6 +968,15 @@ export interface components {
             data?: components["schemas"]["ProfessionModel"][] | null;
             metaData?: unknown;
         };
+        RatingModel: {
+            ratedUserId: string | null;
+            ratedByUser?: components["schemas"]["UserDto"];
+            /** Format: date-time */
+            createdDate?: string;
+            /** Format: int32 */
+            rating?: number;
+            review?: string | null;
+        };
         RefreshTokenCommand: {
             expiredToken: string | null;
             refreshToken: string | null;
@@ -846,6 +1001,12 @@ export interface components {
             email: string | null;
             newPassword: string | null;
             token: string | null;
+        };
+        SocialMediaTypeModel: {
+            /** Format: uuid */
+            id?: string | null;
+            name: string | null;
+            iconUrl?: string | null;
         };
         StateModel: {
             /** Format: uuid */
@@ -960,6 +1121,35 @@ export interface components {
             data?: components["schemas"]["Unit"];
             metaData?: unknown;
         };
+        UserAddressModel: {
+            /** Format: uuid */
+            id?: string | null;
+            addressType?: components["schemas"]["AddressTypeEnums"];
+            houseNumber?: string | null;
+            street?: string | null;
+            city?: components["schemas"]["CityModel"];
+            state?: components["schemas"]["StateModel"];
+            country?: components["schemas"]["CountryModel"];
+            userId: string | null;
+        };
+        UserCreativeDetailModel: {
+            id?: string | null;
+            firstName: string | null;
+            lastName: string | null;
+            profilePicture?: string | null;
+            bio?: string | null;
+            portfolioLink?: string | null;
+            userProfession?: components["schemas"]["UserProfessionModel"];
+            userSocialMedias?: components["schemas"]["UserSocialMediaModel"][] | null;
+            userAddresses?: components["schemas"]["UserAddressModel"][] | null;
+        };
+        UserCreativeDetailModelBaseResponse: {
+            isSuccess?: boolean;
+            statusCode?: string | null;
+            message?: string | null;
+            data?: components["schemas"]["UserCreativeDetailModel"];
+            metaData?: unknown;
+        };
         UserCreativeModel: {
             id?: string | null;
             name?: string | null;
@@ -976,6 +1166,56 @@ export interface components {
             message?: string | null;
             data?: components["schemas"]["UserCreativeModel"][] | null;
             metaData?: unknown;
+        };
+        UserDto: {
+            id: string | null;
+            firstName: string | null;
+            profilePicture?: string | null;
+            lastName: string | null;
+            /** Format: uuid */
+            actorId?: string;
+        };
+        UserProfessionModel: {
+            userId: string | null;
+            profession?: components["schemas"]["ProfessionModel"];
+        };
+        UserRatingModel: {
+            ratings: components["schemas"]["RatingModel"][] | null;
+            summary: components["schemas"]["UserRatingSummary"];
+        };
+        UserRatingModelBaseResponse: {
+            isSuccess?: boolean;
+            statusCode?: string | null;
+            message?: string | null;
+            data?: components["schemas"]["UserRatingModel"];
+            metaData?: unknown;
+        };
+        UserRatingSummary: {
+            userId?: string | null;
+            /** Format: int32 */
+            totalReviews?: number;
+            /** Format: int32 */
+            totalRating?: number;
+            /** Format: double */
+            averageRating?: number;
+            /** Format: int32 */
+            fiveCount?: number;
+            /** Format: int32 */
+            fourCount?: number;
+            /** Format: int32 */
+            threeCount?: number;
+            /** Format: int32 */
+            twoCount?: number;
+            /** Format: int32 */
+            oneCount?: number;
+        };
+        UserSocialMediaModel: {
+            /** Format: uuid */
+            id?: string | null;
+            url?: string | null;
+            username?: string | null;
+            socialMediaType?: components["schemas"]["SocialMediaTypeModel"];
+            userId: string | null;
         };
         VerifyAccountCommand: {
             email: string | null;
