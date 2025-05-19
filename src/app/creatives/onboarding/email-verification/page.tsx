@@ -2,10 +2,8 @@
 import React from 'react';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import { Button } from '@/components/ui/button';
-import queries from '@/services/queries/auth';
+// import queries from '@/services/queries/auth';
 import { Header } from '@/components/shared/onboarding';
-import { extractName } from '@/lib/utils';
 import { useCreativeOnboardingForm } from '@/store';
 
 const validationSchema = Yup.object().shape({});
@@ -16,24 +14,24 @@ const initialValues = {
 
 export default function Page () {
   const { formData } = useCreativeOnboardingForm();
-  const { isLoading, mutate } = queries.create()
+  // const { isLoading, mutate } = queries.create()
   const onSubmit = () => {
-    const { email, professions, fullName, password, accountType } = formData;
-    const { firstName, lastName } = extractName(fullName)
+    // const { email, profession, fullName, password, accountType } = formData;
+    // const { firstName, lastName } = extractName(fullName)
 
-    const payload = {
-      accountType,
-      email,
-      password,
-      firstName,
-      lastName,
-      professionIds: professions,
-      organization: {
-        name: 'string',
-        organizationSizeId: '3fa85f64-5717-4562-b3fc-2c963f66afa6'
-      }
-    }
-    mutate(payload)
+    // const payload = {
+    //   accountType,
+    //   email,
+    //   password,
+    //   firstName,
+    //   lastName,
+    //   professionIds: profession,
+    //   organization: {
+    //     name: 'string',
+    //     organizationSizeId: '3fa85f64-5717-4562-b3fc-2c963f66afa6'
+    //   }
+    // }
+    // mutate(payload)
   }
 
   const email = formData.email ?? '';
@@ -70,14 +68,14 @@ export default function Page () {
                         <br />
                         Verify your email to begin
                       </p>
-                      <Button
+                      {/* <Button
                         size="xl"
                         isLoading={isLoading}
                         backgroundColor="primary-blue-500"
                         className="w-full app_auth_login__btn"
                       >
                         Sign Up
-                      </Button>
+                      </Button> */}
                     </div>
                   </form>
                 );

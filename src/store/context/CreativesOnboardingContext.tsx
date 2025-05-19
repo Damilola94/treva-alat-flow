@@ -8,16 +8,16 @@ import React, {
 } from 'react';
 
 interface FormData {
-  email: string
-  fullName: string
-  password: string
-  accountType: string
-  professions: string[]
+  email: string;
+  fullName: string;
+  password: string;
+  accountType: string;
+  profession: string;
 }
 
 interface CreativesOnboardingContextProps {
-  formData: FormData
-  setFormData: (data: Partial<FormData>) => void
+  formData: FormData;
+  setFormData: (data: Partial<FormData>) => void;
 }
 
 const CreativesOnboardingContext =
@@ -26,14 +26,14 @@ const CreativesOnboardingContext =
 export const CreativesOnboardingProvider = ({
   children,
 }: {
-  children: ReactNode
+  children: ReactNode;
 }) => {
   const [formData, setFormDataState] = useState<FormData>({
     email: '',
     fullName: '',
     password: '',
     accountType: '',
-    professions: [],
+    profession: '',
   });
 
   const setFormData = (data: Partial<FormData>) => {

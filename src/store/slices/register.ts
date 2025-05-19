@@ -12,6 +12,9 @@ interface RegisterState {
   countryCode: string;
   phoneNumber: string;
   password: string;
+  companySize?: string;
+  companyName?: string;
+  professionId?: string;
 }
 
 const initialState: RegisterState = {

@@ -109,6 +109,7 @@ const routes = {
 
       emailVerification: {
         path: '/creatives/onboarding/email-verification',
+        success: '/creatives/onboarding/email-verification/success',
       },
 
       personalDetails: {

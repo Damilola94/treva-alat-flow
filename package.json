@@ -8,10 +8,10 @@
     "start": "next start",
     "lint": "next lint",
     "prepare": "husky",
-    "typegen:trevauserservice": "openapi-typescript https://treva-userservice.somee.com/swagger/v1/swagger.json --output ./src/types/trevaUserService.ts",
-    "typegen:trevauserservice-mac": "NODE_TLS_REJECT_UNAUTHORIZED=0 openapi-typescript https://treva-userservice.somee.com/swagger/v1/swagger.json --output ./src/types/trevaUserService.ts",
-    "typegen:trevaprojectservice": "openapi-typescript https://treva-projectservice.somee.com/swagger/v1/swagger.json --output ./src/types/trevaProjectService.ts",
-    "typegen:trevaprojectservice-mac": "NODE_TLS_REJECT_UNAUTHORIZED=0 openapi-typescript https://treva-projectservice.somee.com/swagger/v1/swagger.json --output ./src/types/trevaProjectService.ts"
+    "typegen:trevauserservice": "openapi-typescript https://treva-api.wemabank.com/treva-user-service/swagger/v1/swagger.json --output ./src/types/trevaUserService.ts",
+    "typegen:trevauserservice-mac": "NODE_TLS_REJECT_UNAUTHORIZED=0 openapi-typescript https://treva-api.wemabank.com/treva-user-service/swagger/v1/swagger.json --output ./src/types/trevaUserService.ts",
+    "typegen:trevaprojectservice": "openapi-typescript https://treva-api.wemabank.com/treva-project-service/swagger/v1/swagger.json --output ./src/types/trevaProjectService.ts",
+    "typegen:trevaprojectservice-mac": "NODE_TLS_REJECT_UNAUTHORIZED=0 openapi-typescript https://treva-api.wemabank.com/treva-project-service/swagger/v1/swagger.json --output ./src/types/trevaProjectService.ts"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.3",

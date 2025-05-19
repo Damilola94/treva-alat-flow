@@ -9,27 +9,33 @@ import queries from '@/services/queries/auth';
 import routes from '@/lib/routes';
 import { useRouter } from 'next/navigation';
 import { Header } from '@/components/shared/onboarding';
-import { useCreativeOnboardingForm } from '@/store';
+import {
+  storeValues,
+  useAppDispatch,
+  useCreativeOnboardingForm,
+} from '@/store';
 
 interface FormData {
-  fullName: string
+  fullName: string;
 }
 
-const validationSchema = Yup.object().shape({})
+const validationSchema = Yup.object().shape({});
 
 const initialValues: FormData = {
-  fullName: ''
-}
+  fullName: '',
+};
 
 type InitialValues = ReturnType<() => typeof initialValues>;
 
-export default function Page () {
+export default function Page() {
+  const dispatch = useAppDispatch();
   const rt = useRouter();
   const { isLoading } = queries.login();
   const { setFormData } = useCreativeOnboardingForm();
 
   const onSubmit = (values: FormData) => {
     setFormData(values);
+    dispatch(storeValues(values));
     rt.push(routes.creatives.onboarding.security.path);
   };
 
@@ -52,7 +58,7 @@ export default function Page () {
                   handleBlur,
                   handleSubmit,
                   errors,
-                  touched
+                  touched,
                 } = props;
 
                 const getProps = (args: { name: keyof InitialValues }) => {
@@ -65,7 +71,7 @@ export default function Page () {
                     onChange: handleChange,
                     onBlur: handleBlur,
                     errors,
-                    touched
+                    touched,
                   };
                 };
 

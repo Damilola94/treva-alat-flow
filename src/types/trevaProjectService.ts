@@ -175,6 +175,151 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/clientmanagement/create-client": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create client */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "multipart/form-data": {
+                        Name: string;
+                        Email: string;
+                        /** Format: binary */
+                        Avatar?: string;
+                        PhoneNumber?: string;
+                        /** Format: int32 */
+                        Birthday?: number;
+                        BirthMonth?: components["schemas"]["MonthEnums"];
+                    };
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["MyClientModelBaseResponse"];
+                        "application/json": components["schemas"]["MyClientModelBaseResponse"];
+                        "text/json": components["schemas"]["MyClientModelBaseResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/clientmanagement/update-client": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Update client */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "multipart/form-data": {
+                        Name?: string;
+                        Email?: string;
+                        PhoneNumber?: string;
+                        /** Format: int32 */
+                        Birthday?: number;
+                        BirthMonth?: components["schemas"]["MonthEnums"];
+                        ClientUserId?: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["MyClientModelBaseResponse"];
+                        "application/json": components["schemas"]["MyClientModelBaseResponse"];
+                        "text/json": components["schemas"]["MyClientModelBaseResponse"];
+                    };
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/clientmanagement/my-clients": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get my clients */
+        get: {
+            parameters: {
+                query?: {
+                    Birthday?: number;
+                    BirthMonth?: components["schemas"]["MonthEnums"];
+                    PageNumber?: number;
+                    PageSize?: number;
+                    SearchKey?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["MyClientModelPagedListBaseResponse"];
+                        "application/json": components["schemas"]["MyClientModelPagedListBaseResponse"];
+                        "text/json": components["schemas"]["MyClientModelPagedListBaseResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/projects/{projectId}/comments": {
         parameters: {
             query?: never;
@@ -1035,9 +1180,9 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "text/plain": components["schemas"]["ProjectModelPagedListBaseResponse"];
-                        "application/json": components["schemas"]["ProjectModelPagedListBaseResponse"];
-                        "text/json": components["schemas"]["ProjectModelPagedListBaseResponse"];
+                        "text/plain": components["schemas"]["ProjectMiniModelPagedListBaseResponse"];
+                        "application/json": components["schemas"]["ProjectMiniModelPagedListBaseResponse"];
+                        "text/json": components["schemas"]["ProjectMiniModelPagedListBaseResponse"];
                     };
                 };
             };
@@ -1360,16 +1505,6 @@ export interface components {
         DeliverableModel: {
             /** Format: uuid */
             id?: string;
-            /** Format: date-time */
-            createdDate?: string;
-            createdBy?: string | null;
-            /** Format: date-time */
-            modifiedDate?: string | null;
-            modifiedBy?: string | null;
-            isDeleted?: boolean;
-            /** Format: date-time */
-            deletedDate?: string | null;
-            deletedBy?: string | null;
             name: string | null;
             description?: string | null;
             /** Format: date-time */
@@ -1384,8 +1519,6 @@ export interface components {
             unit?: number;
             /** Format: double */
             total?: number;
-            /** Format: uuid */
-            projectId?: string;
         };
         DeliverableModelBaseResponse: {
             isSuccess?: boolean;
@@ -1404,16 +1537,6 @@ export interface components {
         DeliverableTaskModel: {
             /** Format: uuid */
             id?: string;
-            /** Format: date-time */
-            createdDate?: string;
-            createdBy?: string | null;
-            /** Format: date-time */
-            modifiedDate?: string | null;
-            modifiedBy?: string | null;
-            isDeleted?: boolean;
-            /** Format: date-time */
-            deletedDate?: string | null;
-            deletedBy?: string | null;
             name: string | null;
             /** Format: date-time */
             startDate?: string;
@@ -1421,8 +1544,6 @@ export interface components {
             endDate?: string;
             priority?: components["schemas"]["ProjectPriorityEnums"];
             status?: components["schemas"]["StatusEnums"];
-            /** Format: uuid */
-            deliverableId?: string;
         };
         DeliverableTaskModelBaseResponse: {
             isSuccess?: boolean;
@@ -1472,25 +1593,46 @@ export interface components {
             data?: components["schemas"]["ExtraCostModel"][] | null;
             metaData?: unknown;
         };
+        /** @enum {string} */
+        MonthEnums: "April" | "August" | "December" | "February" | "January" | "July" | "June" | "March" | "May" | "November" | "October" | "September";
+        MyClientModel: {
+            name?: string | null;
+            email?: string | null;
+            avatarUrl?: string | null;
+            phoneNumber?: string | null;
+            /** Format: int32 */
+            birthday?: number;
+            birthMonth?: components["schemas"]["MonthEnums"];
+            clientUserId?: string | null;
+        };
+        MyClientModelBaseResponse: {
+            isSuccess?: boolean;
+            statusCode?: string | null;
+            message?: string | null;
+            data?: components["schemas"]["MyClientModel"];
+            metaData?: unknown;
+        };
+        MyClientModelPagedListBaseResponse: {
+            isSuccess?: boolean;
+            statusCode?: string | null;
+            message?: string | null;
+            data?: components["schemas"]["MyClientModel"][] | null;
+            metaData?: unknown;
+        };
         PaymentScheduleModel: {
             /** Format: uuid */
             id?: string;
-            /** Format: date-time */
-            createdDate?: string;
-            createdBy?: string | null;
-            /** Format: date-time */
-            modifiedDate?: string | null;
-            modifiedBy?: string | null;
-            isDeleted?: boolean;
-            /** Format: date-time */
-            deletedDate?: string | null;
-            deletedBy?: string | null;
             /** Format: double */
             amount?: number;
             /** Format: date-time */
             dueDate?: string;
-            /** Format: uuid */
-            projectId?: string;
+            status?: components["schemas"]["PaymentStatusEnums"];
+            /** Format: double */
+            paidAmount?: number | null;
+            /** Format: double */
+            remainingAmount?: number | null;
+            /** Format: date-time */
+            createdDate?: string;
         };
         PaymentScheduleModelBaseResponse: {
             isSuccess?: boolean;
@@ -1506,50 +1648,65 @@ export interface components {
             data?: components["schemas"]["PaymentScheduleModel"][] | null;
             metaData?: unknown;
         };
-        ProjectModel: {
+        /** @enum {string} */
+        PaymentStatusEnums: "Cancelled" | "Due" | "Failed" | "Overdue" | "Paid" | "PartiallyPaid" | "Pending" | "Refunded";
+        ProjectMetric: {
+            /** Format: int32 */
+            daysLeft?: number;
+            readonly daysLeftDisplay?: string | null;
+            readonly isEndNear?: boolean;
+            readonly isOverdue?: boolean;
+            /** Format: double */
+            progressPercent?: number;
+            readonly progressPercentDisplay?: string | null;
+        };
+        ProjectMiniModel: {
             /** Format: uuid */
             id?: string;
-            /** Format: date-time */
-            createdDate?: string;
-            createdBy?: string | null;
-            /** Format: date-time */
-            modifiedDate?: string | null;
-            modifiedBy?: string | null;
-            isDeleted?: boolean;
-            /** Format: date-time */
-            deletedDate?: string | null;
-            deletedBy?: string | null;
             title: string | null;
             description?: string | null;
             /** Format: date-time */
             startDate?: string | null;
             /** Format: date-time */
             expectedDeliveryDate?: string | null;
-            /** Format: date-time */
-            actualDeliveryDate?: string | null;
             type?: components["schemas"]["ProjectTypeEnums"];
             status?: components["schemas"]["StatusEnums"];
             priority?: components["schemas"]["ProjectPriorityEnums"];
-            /** Format: double */
-            budget?: number | null;
-            /** Format: double */
-            actualCost?: number | null;
-            currency?: components["schemas"]["CurrencyEnums"];
-            clientRatingStatus?: components["schemas"]["RatingStatusEnums"];
-            creativeRatingStatus?: components["schemas"]["RatingStatusEnums"];
+            /** Format: date-time */
+            createdDate?: string;
+        };
+        ProjectMiniModelPagedListBaseResponse: {
+            isSuccess?: boolean;
+            statusCode?: string | null;
+            message?: string | null;
+            data?: components["schemas"]["ProjectMiniModel"][] | null;
+            metaData?: unknown;
+        };
+        ProjectModel: {
+            /** Format: uuid */
+            id?: string;
+            title: string | null;
+            description?: string | null;
+            /** Format: date-time */
+            startDate?: string | null;
+            /** Format: date-time */
+            expectedDeliveryDate?: string | null;
+            type?: components["schemas"]["ProjectTypeEnums"];
+            status?: components["schemas"]["StatusEnums"];
+            priority?: components["schemas"]["ProjectPriorityEnums"];
+            creativeUser?: components["schemas"]["UserDto"];
+            clientUser?: components["schemas"]["UserDto"];
+            /** Format: date-time */
+            createdDate?: string;
+            deliverables?: components["schemas"]["DeliverableModel"][] | null;
+            paymentSchedules?: components["schemas"]["PaymentScheduleModel"][] | null;
+            metrics?: components["schemas"]["ProjectMetric"];
         };
         ProjectModelBaseResponse: {
             isSuccess?: boolean;
             statusCode?: string | null;
             message?: string | null;
             data?: components["schemas"]["ProjectModel"];
-            metaData?: unknown;
-        };
-        ProjectModelPagedListBaseResponse: {
-            isSuccess?: boolean;
-            statusCode?: string | null;
-            message?: string | null;
-            data?: components["schemas"]["ProjectModel"][] | null;
             metaData?: unknown;
         };
         /** @enum {string} */
@@ -1563,8 +1720,6 @@ export interface components {
             rating?: number;
             review?: string | null;
         };
-        /** @enum {string} */
-        RatingStatusEnums: "Cancelled" | "NotRtated" | "Rated";
         /** @enum {string} */
         StatusEnums: "Archived" | "Cancelled" | "Completed" | "Due" | "InProgress" | "OnHold" | "Pending" | "ToDo";
         Unit: Record<string, never>;
