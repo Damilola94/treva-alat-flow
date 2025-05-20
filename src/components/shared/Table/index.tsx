@@ -172,7 +172,7 @@ const Table = <T,>({
                           cursor: onRowClick ? 'pointer' : 'default',
                         }}
                         // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
-                        onClick={() => onRowClick && onRowClick(row)}
+                        onClick={() => onRowClick && onRowClick(row.original)}
                       >
                         <td>
                           {pagination.pageIndex * pagination.pageSize +

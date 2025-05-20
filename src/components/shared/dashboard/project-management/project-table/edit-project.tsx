@@ -77,7 +77,7 @@ export function EditProject(props: IProps) {
     expectedDeliveryDate: '',
     priority: AccountType.Low as `${AccountType}`,
     totalAmount: '',
-    projectType: userType,
+    type: 'Personal',
   };
 
   type InitialValues = ReturnType<() => typeof initialValues>;
@@ -90,7 +90,7 @@ export function EditProject(props: IProps) {
       expectedDeliveryDate: string;
       priority: string;
       totalAmount: string;
-      projectType: ProjectType;
+      type: 'Personal';
     } = {
       projectId,
       title: _values.title,
@@ -98,7 +98,7 @@ export function EditProject(props: IProps) {
       expectedDeliveryDate: _values.expectedDeliveryDate,
       priority: _values.priority,
       totalAmount: _values.totalAmount,
-      projectType: _values.projectType,
+      type: _values.type as 'Personal',
     };
 
     mutate(payload);

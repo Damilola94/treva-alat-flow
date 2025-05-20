@@ -1,3 +1,4 @@
+import clientManagement from '@/lib/assets/client-management';
 import dashboard from '@/lib/assets/dashboard';
 import routes from '@/lib/routes';
 
@@ -82,6 +83,11 @@ export const priorityItems = [
     { label: 'Pending', value: 'Pending' },
     { label: 'Completed', value: 'Completed' },
     { label: 'Due', value: 'Due' },
+  ]
+
+  export const deliverableItems = [
+    { label: 'All', value: 'All' },
+    { label: 'Completed', value: 'Completed' },
   ]
 
 export const mockProjects = [
@@ -264,3 +270,57 @@ export const mockInvoices = [
     status: 'Completed',
   },
 ]
+
+export const mockComments = [
+     {
+      id: "1",
+      author: {
+        name: "Client's Name",
+        avatar: clientManagement.femaleClient,
+        isClient: true,
+      },
+      content: "Can we hasten the duration of the project? I'd really like to get it done within the few days.",
+      timestamp: "Time",
+    },
+    {
+      id: "2",
+      author: {
+        name: "Creative's Name",
+        avatar: clientManagement.femaleClient,
+        isClient: false,
+      },
+      content: "Can we hasten the duration of the project? I'd really like to get it done within the few days.",
+      timestamp: "Time",
+    },
+    {
+      id: "3",
+      author: {
+        name: "Client's Name",
+        avatar: clientManagement.femaleClient,
+        isClient: true,
+      },
+      content: "Can we hasten the duration of the project? I'd really like to get it done within the few days.",
+      timestamp: "Time",
+    },
+    {
+      id: "4",
+      author: {
+        name: "Creative's Name",
+        avatar: clientManagement.femaleClient,
+
+        isClient: false,
+      },
+      content: "Can we hasten the duration of the project? I'd really like to get it done within the few days.",
+      timestamp: "Time",
+    },
+    {
+      id: "5",
+      author: {
+        name: "Client's Name",
+         avatar: clientManagement.femaleClient,
+        isClient: true,
+      },
+      content: "Can we hasten the duration of the project? I'd really like to get it done within the few days.",
+      timestamp: "Time",
+    }
+  ]

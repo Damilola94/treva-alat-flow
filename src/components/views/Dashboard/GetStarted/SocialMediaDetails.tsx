@@ -42,7 +42,7 @@ export default function SocialMediaDetails() {
     if (saveOnboardingResponse?.isSuccess) {
       router.push(routes.client.dashboard.getStarted.bio.path);
     }
-  }, [saveOnboardingResponse]);
+  }, [router, saveOnboardingResponse]);
 
   return (
     <div className="app_get_started_professional_details py-6 px-4 flex flex-col gap-14">

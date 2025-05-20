@@ -14,7 +14,49 @@ export const projectService = projectServiceApiSlice.injectEndpoints({
         response: ITrevaProjectService['schemas']['ProjectMiniModelPagedListBaseResponse'],
       ) => response,
     }),
+
+    createProject: builder.mutation({
+      query: (values) => ({
+        url: endpoints.projects.createProject,
+        method: REQUEST_METHODS.POST,
+        body: values,
+      }),
+      transformResponse: (
+        response: ITrevaProjectService['schemas']['ProjectModelBaseResponse'],
+      ) => response,
+    }),
+
+    getProjectById: builder.query({
+      query: (projectId: string) => ({
+        url: endpoints.projects.getProjectById(projectId),
+        method: REQUEST_METHODS.GET,
+      }),
+      transformResponse: (
+        response: ITrevaProjectService['schemas']['ProjectModelBaseResponse'],
+      ) => response,
+    }),
+
+    updateProject: builder.mutation({
+      query: ({ projectId, ...values }) => ({
+        url: endpoints.projects.updateProject(projectId),
+        method: REQUEST_METHODS.PUT,
+        body: values,
+      }),
+      transformResponse: (
+        response: ITrevaProjectService['schemas']['ProjectModelBaseResponse'],
+      ) => response,
+    }),
+
+    deleteProject: builder.mutation({
+      query: (projectId: string) => ({
+        url: endpoints.projects.deleteProject(projectId),
+        method: REQUEST_METHODS.DELETE,
+      }),
+      transformResponse: (
+        response: ITrevaProjectService['schemas']['ProjectModelBaseResponse'],
+      ) => response,
+    }),
   }),
 });
 
-export const { useGetAllProjectsQuery } = projectService;
+export const { useGetAllProjectsQuery, useCreateProjectMutation, useGetProjectByIdQuery, useUpdateProjectMutation,useDeleteProjectMutation } = projectService;

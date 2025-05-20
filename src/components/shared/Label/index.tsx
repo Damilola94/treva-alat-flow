@@ -2,7 +2,7 @@ import { HighStatus, LowStatus, MediumStatus } from '@/app/assets/svgs';
 import React from 'react';
 
 type PriorityLevel = 'High' | 'Medium' | 'Low'
-type StatusType = 'Pending' | 'Due' | 'Completed'
+type StatusType = 'Pending' | 'Due' | 'Completed' | 'To Do'
 type TransactionType = 'Credit' | 'Debit'
 type LabelType = PriorityLevel | StatusType | TransactionType
 
@@ -13,6 +13,19 @@ interface LabelProps {
   showIcon?: boolean
   size?: 'sm' | 'md' | 'lg'
 }
+
+const priorityMap: Record<number, PriorityLevel> = {
+  1: 'Low',
+  2: 'Medium',
+  3: 'High',
+};
+
+const statusMap: Record<number, StatusType> = {
+  1: 'To Do',
+  2: 'Pending',
+  8: 'Due',
+  4: 'Completed',
+};
 
 const Label: React.FC<LabelProps> = ({
   type,
@@ -43,6 +56,9 @@ const Label: React.FC<LabelProps> = ({
   };
 
   const statusConfig = {
+    'To Do': {
+      style: 'bg-[#26A17B] text-[#0A4C8D]',
+    },
     Pending: {
       style: 'bg-[#FEF6E7] text-[#865503]',
     },
@@ -63,17 +79,25 @@ const Label: React.FC<LabelProps> = ({
     },
   }
 
+   let displayValue = value;
+  if (type === 'priority' && typeof value === 'number') {
+    displayValue = priorityMap[value] || value;
+  }
+  if (type === 'status' && typeof value === 'number') {
+    displayValue = statusMap[value] || value;
+  }
+
   const isPriority = type === 'priority';
   const isStatus = type === 'status';
 
   const config = isPriority
-    ? priorityConfig[value as PriorityLevel]
+    ? priorityConfig[displayValue as PriorityLevel]
     : isStatus
-      ? statusConfig[value as StatusType]
-      : transactionConfig[value as TransactionType];
+      ? statusConfig[displayValue as StatusType]
+      : transactionConfig[displayValue as TransactionType];
 
   const style = config?.style ?? 'bg-gray-100 text-gray-800';
-  const icon = isPriority ? priorityConfig[value as PriorityLevel]?.icon : null;
+  const icon = isPriority ? priorityConfig[displayValue as PriorityLevel]?.icon : null;
 
   const selectedSizeClass = sizeClasses[size];
 
@@ -82,7 +106,7 @@ const Label: React.FC<LabelProps> = ({
       className={`inline-flex items-center rounded-full font-medium ${selectedSizeClass} ${style} ${className}`}
     >
       {showIcon && icon && <span className="mr-1.5">{icon}</span>}
-      {value}
+      {displayValue}
     </span>
   );
 };
