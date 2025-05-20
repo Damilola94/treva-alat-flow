@@ -88,6 +88,10 @@ const Table = <T,>({
     },
   });
 
+  console.log('Table data length:', data.length);
+console.log('RowModel rows:', table.getRowModel().rows.length);
+
+
   useEffect(() => {
     table.setGlobalFilter(searchFilter);
   }, [searchFilter, table]);

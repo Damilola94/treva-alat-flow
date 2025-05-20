@@ -103,5 +103,9 @@ export const endpoints = {
       `/projects/${projectId}/extra-costs/${extraCostId}`,
     deleteExtraCosts: (projectId: string, extraCostId: string) =>
       `/projects/${projectId}/extra-costs/${extraCostId}`,
+  },
+  comments: {
+    getComments: (projectId: string) => `/projects/${projectId}/comments`,
+    createComment: (projectId: string) => `/projects/${projectId}/comments`
   }
 };

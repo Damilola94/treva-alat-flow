@@ -1,17 +1,6 @@
 import { useGetProjectByIdQuery } from '@/services';
 import { useAppSelector } from '@/store';
 
-// interface ProjectQueryParams {
-//   projectId?: string;
-//   type?: string;
-//   status?: string;
-//   priority?: string;
-//   currency?: string;
-//   pageNumber?: number;
-//   pageSize?: number;
-//   searchKey?: string;
-// }
-
 const useProjectById = (projectId?: string ) => {
   const { loggedIn } = useAppSelector((state) => state?.auth);
   
