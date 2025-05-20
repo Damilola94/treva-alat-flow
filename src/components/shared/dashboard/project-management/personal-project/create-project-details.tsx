@@ -1,13 +1,12 @@
 'use client';
-import React, { useState } from 'react';
+import React from 'react';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Pill } from '@/components/shared';
-import queries from '@/services/queries/projects';
 import { type InitialStep1Values } from '@/app/creatives/dashboard/project-management/personal-project/create/page';
-import { ProjectType } from '@/services/queries/projects/enums';
+import { useCreateProjectMutation } from '@/services';
 
 interface IProps {
   handleNext: (formData: InitialStep1Values) => void
@@ -32,34 +31,50 @@ enum AccountType {
 export function PersonalProjectDetails (props: IProps) {
   const { handleNext, setProjectId } = props;
 
-  const [userType] = useState<ProjectType>(ProjectType.PersonalProject);
+  const [createProject, { isLoading }] = useCreateProjectMutation();
 
-  const { mutate, isLoading } = queries.create({
-    onSuccess: (response) => {
-      if (response?.data?.id) {
-        const projectId = response.data.id;
-        setProjectId(projectId);
-      } else {
-        console.warn('Project ID not found. Polling...');
-      }
-    },
-  });
+  // const { mutate, isLoading } = queries.create({
+  //   onSuccess: (response) => {
+  //     if (response?.data?.id) {
+  //       const projectId = response.data.id;
+  //       setProjectId(projectId);
+  //     } else {
+  //       console.warn('Project ID not found. Polling...');
+  //     }
+  //   },
+  // });
 
   const initialValues = {
     title: '',
     description: '',
     expectedDeliveryDate: '',
     priority: AccountType.Low as `${AccountType}`,
-    projectType: userType,
+    type: 'Personal',
   };
 
   type InitialValues = ReturnType<() => typeof initialValues>;
 
-  const onSubmit = (_values: InitialValues) => {
-    mutate({ ..._values });
-    handleNext(_values);
-  };
+  // const onSubmit = (_values: InitialValues) => {
+  //   mutate({ ..._values });
+  //   handleNext(_values);
+  // };
 
+const onSubmit = async (_values: InitialValues) => {
+  try {
+    const response = await createProject(_values).unwrap();
+    if (response?.data?.id) {
+      setProjectId(response.data.id);
+      handleNext(_values);
+    } else {
+      
+      console.warn('Project ID not found. Cannot proceed to next step.');
+    }
+  } catch (error) {
+    console.error('Failed to create project:', error);
+  }
+};
+
+  
   return (
     <div className="app_get_started_professional_details py-6 px-4 flex flex-col gap-14">
       <div className="app_get_started_professional_details__form flex flex-col gap-10 !overflow-y-auto">

@@ -26,7 +26,7 @@ interface IProps {
 }
 
 export function CreateProjectCard (props: IProps) {
-  const router = useRouter();
+  const rt = useRouter();
   const { item, onClose } = props;
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
 
@@ -80,14 +80,6 @@ export function CreateProjectCard (props: IProps) {
         </div>
         <div className="project_management_card__action mb-10">
           <button
-            // className="project_management_card__action__btn1"
-            // type="button"
-            // onClick={handleProject}
-            // onClick={() => {
-            //   if (selectedProject) {
-            //     router.push(`/${selectedProject.toLowerCase()}-project`);
-            //   }
-            // }}
             className={`project_management_card__action__btn1 ${
               selectedProject ? 'bg-[#7B37F0] text-white' : 'bg-gray-400 cursor-not-allowed'
             }`}
@@ -95,7 +87,8 @@ export function CreateProjectCard (props: IProps) {
             disabled={!selectedProject}
             onClick={() => {
               if (selectedProject && projectPaths[selectedProject]) {
-                router.push(projectPaths[selectedProject]);
+               rt.push(`${projectPaths[selectedProject]}?type=${selectedProject}`);
+
               }
             }}
               >

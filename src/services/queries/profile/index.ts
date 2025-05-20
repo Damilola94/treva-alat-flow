@@ -31,7 +31,7 @@ const useReadOne = (options = {}) => {
 const useRead = (options = {}) => {
   const response = useQuery(
     [queryKey.read],
-    async () => await api.get({ url: `${USER_BASE_URL.usermanagement}/profile` }),
+    async () => await api.get({ url: `${USER_BASE_URL.user}/profile` }),
     {
       ...options,
       onSuccess: () => {},

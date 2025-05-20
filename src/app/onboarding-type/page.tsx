@@ -50,7 +50,7 @@ export default function Page() {
     if (actorType) {
       setFieldValue('onboardingType', actorType);
     }
-  }, [actorType]);
+  }, [actorType, setFieldValue]);
 
   return (
     <div className="app_auth_login_container">
