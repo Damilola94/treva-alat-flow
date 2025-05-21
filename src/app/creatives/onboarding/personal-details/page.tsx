@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Formik } from 'formik';
+import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -12,6 +12,7 @@ import { Header } from '@/components/shared/onboarding';
 import {
   storeValues,
   useAppDispatch,
+  useAppSelector,
   useCreativeOnboardingForm,
 } from '@/store';
 
@@ -21,23 +22,29 @@ interface FormData {
 
 const validationSchema = Yup.object().shape({});
 
-const initialValues: FormData = {
-  fullName: '',
-};
-
-type InitialValues = ReturnType<() => typeof initialValues>;
-
 export default function Page() {
+  const { fullName } = useAppSelector((state) => state?.register);
   const dispatch = useAppDispatch();
   const rt = useRouter();
   const { isLoading } = queries.login();
   const { setFormData } = useCreativeOnboardingForm();
 
-  const onSubmit = (values: FormData) => {
-    setFormData(values);
-    dispatch(storeValues(values));
-    rt.push(routes.creatives.onboarding.security.path);
+  const initialValues: FormData = {
+    fullName: fullName,
   };
+
+  const formik = useFormik({
+    initialValues,
+    onSubmit: (values: FormData) => {
+      setFormData(values);
+      dispatch(storeValues(values));
+      rt.push(routes.creatives.onboarding.security.path);
+    },
+    validationSchema,
+  });
+
+  const { errors, handleBlur, handleChange, handleSubmit, touched, values } =
+    formik;
 
   return (
     <div className="app_auth_login_container">
@@ -46,62 +53,34 @@ export default function Page() {
       <div className="app_auth_login_container__upper">
         <div className="app_auth_login">
           <div>
-            <Formik
-              initialValues={initialValues}
-              validationSchema={validationSchema}
-              onSubmit={onSubmit}
-            >
-              {(props) => {
-                const {
-                  values,
-                  handleChange,
-                  handleBlur,
-                  handleSubmit,
-                  errors,
-                  touched,
-                } = props;
+            <form onSubmit={handleSubmit} className="flex flex-col gap-8">
+              <h3 className="app_auth_login__title">Your full name</h3>
+              <div className="flex flex-col gap-6">
+                <div className="">
+                  <Input
+                    name="fullName"
+                    placeholder="Enter your full name"
+                    size="xl"
+                    value={values.fullName}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    errors={errors}
+                    touched={touched}
+                  />
+                </div>
+              </div>
 
-                const getProps = (args: { name: keyof InitialValues }) => {
-                  const name = args.name;
-
-                  return {
-                    name,
-                    id: name,
-                    value: values[name],
-                    onChange: handleChange,
-                    onBlur: handleBlur,
-                    errors,
-                    touched,
-                  };
-                };
-
-                return (
-                  <form onSubmit={handleSubmit} className="flex flex-col gap-8">
-                    <h3 className="app_auth_login__title">Your full name</h3>
-                    <div className="flex flex-col gap-6">
-                      <div className="">
-                        <Input
-                          {...getProps({ name: 'fullName' })}
-                          placeholder="Enter your full name"
-                          size="xl"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="">
-                      <Button
-                        size="xl"
-                        isLoading={isLoading}
-                        backgroundColor="primary-blue-500"
-                        className="w-full app_auth_login__btn"
-                      >
-                        Next
-                      </Button>
-                    </div>
-                  </form>
-                );
-              }}
-            </Formik>
+              <div className="">
+                <Button
+                  size="xl"
+                  isLoading={isLoading}
+                  backgroundColor="primary-blue-500"
+                  className="w-full app_auth_login__btn"
+                >
+                  Next
+                </Button>
+              </div>
+            </form>
           </div>
         </div>
       </div>

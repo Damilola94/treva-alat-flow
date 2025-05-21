@@ -15,14 +15,16 @@ import { useUsers } from '@/hooks/Users';
 
 export default function Bio() {
   const router = useRouter();
-  const { saveClientOnboarding, saveOnboardingResponse } = useUsers();
+  const { saveClientOnboarding, saveOnboardingResponse, userOnboardingData } =
+    useUsers();
 
   const initialValues = {
-    bio: '',
+    bio: userOnboardingData?.data?.bio || '',
   };
 
   const formik = useFormik({
     initialValues,
+    enableReinitialize: true,
     onSubmit: (values) => {
       const payload = {
         ...values,
