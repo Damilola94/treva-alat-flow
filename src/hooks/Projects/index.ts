@@ -1,1 +1,2 @@
-export { default as useProjects } from './useProjects';
+export { useProjects, useDeliverable } from './useProjects';
+export { default as useProjectById } from './useProjectId';

@@ -1,39 +1,70 @@
 'use client';
-import { Label, Table } from '@/components/shared';
-import { mockProjects } from '@/constants';
-import { Search } from 'lucide-react';
+import { Label, Pill, Table } from '@/components/shared';
+import SearchInput from '@/components/ui/SearchInput';
+import { clientDashboardTasks } from '@/constants';
+import { useProjects } from '@/hooks/Projects';
+import clientManagement from '@/lib/assets/client-management';
+import { Loader2 } from 'lucide-react';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-
-type TabType =
-  | 'All Project'
-  | 'Pending Project'
-  | 'Completed Project'
-  | 'Due Project';
+import { useEffect, useMemo, useState } from 'react';
+interface ProjectQueryParams {
+  type?: string;
+  status?: string;
+  priority?: string;
+  currency?: string;
+  pageNumber?: number;
+  pageSize?: number;
+  searchKey?: string;
+}
 
 export default function Page() {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<TabType>('All Project');
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+
+  const [params, setParams] = useState<ProjectQueryParams>({
+    // type: '2',
+    // status: '2',
+    // priority: '3',
+    currency: 'NGN',
+    pageNumber: 1,
+    pageSize: 50,
+    searchKey: '',
+  });
+
+  const { allProjectsData, loading } = useProjects(params);  
+
   const [pagination, setPagination] = useState({
     pageIndex: 0,
-    pageSize: 2,
+    pageSize: 50,
   });
-  const handleRowClick = (id: string) => {
-    // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
-    void router.push(`/client/dashboard/project-management/${id}`);
-  };
+
   const headers = [
     {
       header: 'Project Name',
-      accessorKey: 'name',
+      accessorKey: 'title',
     },
     {
       header: 'Creative',
-      accessorKey: 'creative',
+      accessorKey: 'creativeUser',
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      cell: ({ row }: any) => {
+        const creative = row.original.creativeUser;
+        return (
+          <div className="flex items-center gap-2">
+            <Image
+              src={creative.profilePicture || clientManagement.femaleClient}
+              alt={creative.firstName}
+              className="w-6 h-6 rounded-full"
+            />
+            <span>{creative.firstName} {creative.lastName}</span>
+          </div>
+        )
+      },
     },
     {
-      header: 'Budget (NGN)',
-      accessorKey: 'budget',
+      header: 'Amount (NGN)',
+      accessorKey: 'actualCost',
     },
     {
       header: 'Start date',
@@ -41,7 +72,7 @@ export default function Page() {
     },
     {
       header: 'Due Date',
-      accessorKey: 'dueDate',
+      accessorKey: 'expectedDeliveryDate',
     },
     {
       header: 'Status',
@@ -58,52 +89,69 @@ export default function Page() {
     },
   ];
 
+  const tableBody = useMemo(() => {
+    return allProjectsData?.isSuccess && allProjectsData.data
+      ? allProjectsData.data
+      : [];
+  }, [allProjectsData?.isSuccess, allProjectsData?.data]);
+
+  useEffect(() => {
+    setParams((prev) => ({
+      ...prev,
+      pageNumber: pagination?.pageIndex + 1,
+      pageSize: pagination?.pageSize,
+    }));
+  }, [pagination]);
+
+  const handleParamChange = (param: Partial<ProjectQueryParams>) => {
+    setParams((prev) => ({
+      ...prev,
+      ...param,
+    }));
+  };
+
   return (
     <div className="app_dashboard_home__task app_dashboard_page__px">
       <div className="app_dashboard_home__task__hdr flex-wrap gap-2 mt-4">
         <div className="flex border-t border-gray-200 p-4 gap-2">
-          {[
-            'All Project',
-            'Pending Project',
-            'Completed Project',
-            'Due Project',
-          ].map((tab) => (
-            <button
-              key={tab}
-              className={`px-6 py-2 text-sm font-bold ${
-                activeTab === tab
-                  ? ' border rounded-full border-[#262626] text-[#262626]'
-                  : 'text-[#808080] rounded-full border border-[#808080]'
-              }`}
+          {clientDashboardTasks.map((item) => (
+            <Pill
+              key={item.value}
+              size="md"
+              active={selectedCategory === item.value}
               onClick={() => {
-                setActiveTab(tab as TabType);
+                setSelectedCategory(item.value);
+                handleParamChange({
+                  status: item?.value === 'All' ? undefined : item?.value,
+                });
               }}
             >
-              {tab}
-            </button>
+              {item.label}
+            </Pill>
           ))}
         </div>
-
-        <div className="relative w-full sm:w-64">
-          <input
-            type="text"
-            placeholder="Search for creatives"
-            className="w-full border border-gray-200 rounded-full px-4 py-2 pl-10 text-sm"
-          />
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <Search className="h-4 w-4 text-gray-400" />
-          </div>
-        </div>
+        <SearchInput
+          placeholder="Search for Project"
+          onChange={(e) => {
+            handleParamChange({ searchKey: e.target.value });
+          }}
+        />
       </div>
-      <Table
-        columns={headers}
-        emptyTitle="No Task Yet"
-        emptyMessage="Click “add new request” button to get started"
-        data={mockProjects}
-        pagination={pagination}
-        setPagination={setPagination}
-        onRowClick={handleRowClick}
-      />
+      {loading ? (
+        <div className="text-center flex justify-center items-center">
+          <Loader2 size={18} className="animate-spin" />
+        </div>
+      ) : (
+        <Table
+          columns={headers}
+          emptyTitle="No Project Yet"
+          emptyMessage="You'll see all your projects here"
+          data={tableBody}
+          pagination={pagination}
+          setPagination={setPagination}
+          onRowClick={(row) => router.push(`/client/dashboard/project-management/${row.id}`)}
+        />
+      )}
     </div>
   );
 }

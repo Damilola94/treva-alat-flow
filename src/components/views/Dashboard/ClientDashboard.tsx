@@ -33,6 +33,7 @@ import {
 import { clientDashboardTasks } from '@/constants';
 import { useProjects } from '@/hooks/Projects';
 import { useUsers } from '@/hooks/Users';
+import clientManagement from '@/lib/assets/client-management';
 import dashboard from '@/lib/assets/dashboard';
 import { numberFormat } from '@/lib/numbers';
 import routes from '@/lib/routes';
@@ -63,12 +64,12 @@ export default function Dashboard() {
   const { data } = queries.read();
 
   const [params, setParams] = useState<ProjectQueryParams>({
-    type: 'Client',
-    status: 'Pending',
-    priority: 'Medium',
+    // type: '2',
+    // status: '2',
+    // priority: '3',
     currency: 'NGN',
     pageNumber: 1,
-    pageSize: 10,
+    pageSize: 4,
     searchKey: '',
   });
 
@@ -141,13 +142,27 @@ export default function Dashboard() {
       header: 'Project Name',
       accessorKey: 'title',
     },
-    {
+   {
       header: 'Creative',
-      accessorKey: 'createdBy',
+      accessorKey: 'creativeUser',
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      cell: ({ row }: any) => {
+        const creative = row.original.creativeUser;
+        return (
+          <div className="flex items-center gap-2">
+            <Image
+              src={creative.profilePicture || clientManagement.femaleClient}
+              alt={creative.firstName}
+              className="w-6 h-6 rounded-full"
+            />
+            <span>{creative.firstName} {creative.lastName}</span>
+          </div>
+        )
+      },
     },
     {
       header: 'Due Date',
-      accessorKey: 'actualDeliveryDate',
+      accessorKey: 'expectedDeliveryDate',
     },
     {
       header: 'Priority',
@@ -282,8 +297,8 @@ export default function Dashboard() {
         ) : (
           <Table
             columns={headers}
-            emptyTitle="No Task Yet"
-            emptyMessage="Click “add new request” button to get started"
+            emptyTitle="No Project Yet"
+            emptyMessage="You'll see all your projects here"
             data={tableBody}
             pagination={pagination}
             setPagination={setPagination}

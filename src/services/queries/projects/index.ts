@@ -175,7 +175,7 @@ const useUpdate = (options: { onSuccess?: (response: any) => void }) => {
     priority?: string;
     totalAmount?: string;
     clientId?: string;
-    projectType: string;
+    type: string;
   }
 
   return {
@@ -185,10 +185,10 @@ const useUpdate = (options: { onSuccess?: (response: any) => void }) => {
         projectId: body.projectId,
         title: body?.title,
         description: body?.description,
-        projectType: body?.projectType,
+        type: body?.type,
         expectedDeliveryDate: body?.expectedDeliveryDate,
         priority: body?.priority,
-        ...(body.projectType === ProjectType.ClientProject && {
+        ...(body.type === ProjectType.ClientProject && {
           totalAmount: body?.totalAmount,
           clientId: body?.clientId,
         }),
