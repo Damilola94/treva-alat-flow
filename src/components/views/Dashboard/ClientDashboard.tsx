@@ -61,12 +61,12 @@ export default function Dashboard() {
   const { data } = queries.read();
 
   const [params, setParams] = useState<ProjectQueryParams>({
-    type: '2',
-    status: '2',
-    priority: '3',
+    // type: '2',
+    // status: '2',
+    // priority: '3',
     currency: 'NGN',
     pageNumber: 1,
-    pageSize: 10,
+    pageSize: 4,
     searchKey: '',
   });
 

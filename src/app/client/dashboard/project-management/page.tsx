@@ -23,20 +23,20 @@ export default function Page() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   const [params, setParams] = useState<ProjectQueryParams>({
-    type: '2',
-    status: '2',
-    priority: '3',
+    // type: '2',
+    // status: '2',
+    // priority: '3',
     currency: 'NGN',
     pageNumber: 1,
-    pageSize: 10,
+    pageSize: 50,
     searchKey: '',
   });
 
-  const { allProjectsData, loading } = useProjects(params);
+  const { allProjectsData, loading } = useProjects(params);  
 
   const [pagination, setPagination] = useState({
     pageIndex: 0,
-    pageSize: 4,
+    pageSize: 50,
   });
 
   const headers = [

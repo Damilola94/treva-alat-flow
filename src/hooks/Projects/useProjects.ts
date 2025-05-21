@@ -1,4 +1,5 @@
 import { useGetAllProjectsQuery, useGetDeliverablesQuery } from '@/services';
+import { useGetCommentsQuery } from '@/services/projectService/comment';
 import { useAppSelector } from '@/store';
 
 interface ProjectQueryParams {
@@ -40,7 +41,6 @@ export const useProjects = (params: ProjectQueryParams) => {
   };
 };
 
-// export default useProjects;
 
 export const useDeliverable = (projectId?: string) => {
   const { loggedIn } = useAppSelector((state) => state?.auth);
@@ -66,4 +66,25 @@ export const useDeliverable = (projectId?: string) => {
   };
 };
 
-// export default useDeliverableId;
+export const useComment = (projectId?: string) => {
+  const { loggedIn } = useAppSelector((state) => state?.auth);
+
+  const {
+    data: allCommentsData,
+    isFetching: fetchingAllComments,
+    isLoading: loadingAllComments,
+    refetch: refetchAllComments,
+    error: allCommentError,
+  } = useGetCommentsQuery({ projectId: projectId ?? '' },
+    {
+      refetchOnMountOrArgChange: true,
+      skip: !loggedIn || !projectId,
+    });
+
+  return {
+    allCommentsData,
+    loading: fetchingAllComments || loadingAllComments,
+    refetchAllComments,
+    allCommentError,
+  };
+}

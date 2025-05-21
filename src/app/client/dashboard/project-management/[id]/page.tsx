@@ -16,21 +16,41 @@ import Image from 'next/image';
 import clientManagement from '@/lib/assets/client-management';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { Input } from '@/components/ui/input';
-import { mockComments } from '@/constants';
 import { Avatar } from '@/components/shared/avatar';
+import { useComment } from '@/hooks/Projects/useProjects';
+import { useCreateCommentMutation } from '@/services/projectService/comment';
 
 export default function Page() {
   const { id } = useParams();
   const projectId = Array.isArray(id) ? id[0] : id;
+
+  const { allProjectsByIdData, loading } = useProjectById(projectId);
+  const { allCommentsData, refetchAllComments } = useComment(projectId);
+  const [triggerComment, { isLoading: loadingComment }] =
+    useCreateCommentMutation();
+
   const [showRatingModal, setShowRatingModal] = useState(false);
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [commentModal, setCommentModal] = useState(false);
   const [rating, setRating] = useState(0);
   const [hoveredRating, setHoveredRating] = useState(0);
+  const [content, setContent] = useState('');
 
-  const { allProjectsByIdData, loading } = useProjectById(projectId);
   const project = allProjectsByIdData?.data;
+  const commentDetails = allCommentsData?.data;
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!content.trim()) return;
+
+    try {
+      await triggerComment({ content, projectId });
+      setContent('');
+      refetchAllComments();
+    } catch (error) {
+      console.error('Failed to create comment:', error);
+    }
+  };
 
   useEffect(() => {
     const progress = allProjectsByIdData?.data?.metrics?.progressPercent;
@@ -174,48 +194,88 @@ export default function Page() {
         title="Comments"
         showFooter
         footerChildren={
-          <div className="w-full flex justify-between px-3 py-1 bg-[#F6F6F6] border border-[#E7E7E7] rounded-full">
-            <Input
+          <div className="w-full relative px-3 py-1 bg-[#F6F6F6] border border-[#E7E7E7]">
+            <Textarea
               name="comment"
-              type="text"
               id="comment"
               placeholder="Add a comment"
-              className="w-full"
+              className="w-[90%] resize-none"
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              disabled={loading}
+              wordCount={{
+                limit: 1000,
+                current: content.length,
+              }}  
             />
-             <Button size="icon" variant="ghost" className='bg-[#7C3AED] '>
-            <Send className="h-5 w-5  text-white" />
-          </Button>
+            <Button
+              size="icon"
+              variant="ghost"
+              className="bg-[#7C3AED] absolute right-3 top-8 -translate-y-1/2 "
+              type="submit"
+              disabled={loading || !content.trim()}
+              onClick={handleSubmit}
+            >
+              <Send className="h-5 w-5  text-white" />
+            </Button>
           </div>
         }
       >
-         <div className="flex flex-col space-y-6 p-1">
-        {mockComments.map((comment) => (
-          <div key={comment.id} className={`flex gap-3 rounded-lg p-3 ${
-                comment.author.isClient
-                  ? "bg-[#EEE4FF] border border-[#EEE4FF]"
-                  : "bg-[#CCFFFF] border border-[#CCFFFF]"
-              } `}>
-            <Avatar
-              size="sm"
-              className="h-8 w-8 rounded-full bg-muted"
-              src={comment.author.avatar || "/placeholder.svg"}
-            />
-            <div className="flex-1">
-              <div className="flex items-center justify-between">
-                <p className="text-sm font-medium">
-                  {comment.author.isClient ? (
-                    <span className="text-blue-600">{comment.author.name}</span>
-                  ) : (
-                    <span className="text-purple-600">{comment.author.name}</span>
-                  )}
-                </p>
-                <span className="text-xs text-muted-foreground">{comment.timestamp}</span>
-              </div>
-              <p className="mt-1 text-sm text-gray-700">{comment.content}</p>
-            </div>
+        {loadingComment ? (
+          <div className="text-center flex justify-center items-center">
+            <Loader2 size={18} className="animate-spin" />
           </div>
-        ))}
-      </div>
+        ) : (
+          <div className="flex flex-col space-y-6 p-1">
+            {commentDetails && commentDetails.length > 0 ? (
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              commentDetails.map((comment: any) => (
+                <div
+                  key={comment.id}
+                  className={`flex gap-3 rounded-lg p-3 ${
+                    comment.user.id === project?.creativeUser?.id
+                      ? 'bg-[#EEE4FF] border border-[#EEE4FF]'
+                      : 'bg-[#CCFFFF] border border-[#CCFFFF]'
+                  }`}
+                >
+                  <Avatar
+                    size="sm"
+                    className="h-8 w-8 rounded-full bg-muted"
+                    src={comment.user.avatar || clientManagement.femaleClient}
+                  />
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm font-medium">
+                        {comment.user ? (
+                          <span className="text-blue-600">
+                            {comment.user.firstName}
+                          </span>
+                        ) : (
+                          <span className="text-purple-600">
+                            {comment.user.lastName}
+                          </span>
+                        )}
+                      </p>
+                      <span className="text-xs text-muted-foreground">
+                        {comment.createdDate
+                          ? new Date(comment.createdDate).toLocaleTimeString(
+                              [],
+                              { hour: '2-digit', minute: '2-digit' },
+                            )
+                          : ''}
+                      </span>
+                    </div>
+                    <p className="mt-1 text-sm text-gray-700">
+                      {comment.content}
+                    </p>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="text-center text-gray-400">No comments yet.</div>
+            )}
+          </div>
+        )}
       </SideModal>
 
       {loading ? (
