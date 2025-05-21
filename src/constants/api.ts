@@ -39,6 +39,7 @@ export const endpoints = {
   users: {
     saveClientOnboarding: '/users/save-client-onboarding',
     getClientOnboarding: '/users/client-onboarding-record',
+    getUserProfile: '/users/my-profile',
   },
 
   // project service

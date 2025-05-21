@@ -882,6 +882,44 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/users/my-profile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get user profile */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["UserModelBaseResponse"];
+                        "application/json": components["schemas"]["UserModelBaseResponse"];
+                        "text/json": components["schemas"]["UserModelBaseResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1174,6 +1212,23 @@ export interface components {
             lastName: string | null;
             /** Format: uuid */
             actorId?: string;
+        };
+        UserModel: {
+            id?: string | null;
+            firstName: string | null;
+            middleName?: string | null;
+            lastName: string | null;
+            profilePicture?: string | null;
+            bio?: string | null;
+            phoneNumber?: string | null;
+            userAddresses?: components["schemas"]["UserAddressModel"][] | null;
+        };
+        UserModelBaseResponse: {
+            isSuccess?: boolean;
+            statusCode?: string | null;
+            message?: string | null;
+            data?: components["schemas"]["UserModel"];
+            metaData?: unknown;
         };
         UserProfessionModel: {
             userId: string | null;

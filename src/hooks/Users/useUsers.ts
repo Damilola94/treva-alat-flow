@@ -23,10 +23,18 @@ interface ISaveClientOnboaring {
   currentStep?: number;
 }
 
+interface ISaveOnboardingResponse {
+  isSuccess?: boolean;
+  statusCode?: string | null;
+  message?: string | null;
+  data?: Record<string, unknown>;
+  metaData?: unknown;
+}
+
 const useUsers = () => {
   const { loggedIn } = useAppSelector((state) => state?.auth);
   const [saveOnboardingResponse, setSaveOnboardingResponse] = useState<
-    Record<string, never> | undefined
+    ISaveOnboardingResponse | undefined
   >(undefined);
 
   const {
@@ -61,7 +69,7 @@ const useUsers = () => {
 
       if (response?.isSuccess) {
         successToast(response?.message || 'Details Saved Successfully');
-        setSaveOnboardingResponse(response?.data);
+        setSaveOnboardingResponse(response);
       } else {
         errorToast(response?.message || 'Something went wrong');
       }

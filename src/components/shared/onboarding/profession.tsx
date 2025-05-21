@@ -6,15 +6,18 @@
 
 /* eslint-disable */
 
-import { Formik, useFormik } from 'formik';
+import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { Button } from '@/components/ui/button';
-import queries from '@/services/queries/auth';
 import routes from '@/lib/routes';
 import { useRouter } from 'next/navigation';
 import { Header } from '@/components/shared/onboarding';
 import { Pill } from '@/components/shared';
-import { useAppSelector, useCreativeOnboardingForm } from '@/store';
+import {
+  storeValues,
+  useAppSelector,
+  useCreativeOnboardingForm,
+} from '@/store';
 import {
   errorToast,
   successToast,
@@ -24,16 +27,31 @@ import {
 import { useMemo } from 'react';
 import { extractName } from '@/lib/utils';
 import { getErrorMessage } from '@/utils';
+import { useDispatch } from 'react-redux';
 
 const validationSchema = Yup.object().shape({
   profession: Yup.string().required('Please select your profession'),
 });
 
+enum CompanySize {
+  '1-10' = '1-10',
+  '11-50' = '11-50',
+  '101 - 500' = '101 - 500',
+  '501 - 2000+' = '501 - 2000+',
+}
+
+const companySizeMap: Record<CompanySize, string> = {
+  [CompanySize['1-10']]: 'OneToTen',
+  [CompanySize['11-50']]: 'ElevenToFifty',
+  [CompanySize['101 - 500']]: 'TwoHundredOneToFiveHundred', // Assuming this is the right match
+  [CompanySize['501 - 2000+']]: 'FiveHundredOneToThousand', // Could also be 'ThousandOneToTwoThousand' or 'TwoThousandPlus' depending on UX
+};
+
 export function Profession() {
   const rt = useRouter();
-  const { password, fullName, ...rest } = useAppSelector(
-    (state) => state?.register,
-  );
+  const dispatch = useDispatch();
+  const { password, fullName, companySize, professionId, ...rest } =
+    useAppSelector((state) => state?.register);
 
   // const { isLoading } = queries.login();
   // const { data: professions } = queries.read();
@@ -45,32 +63,32 @@ export function Profession() {
     () => professionsData?.data || [],
     [professionsData],
   );
-  const { setFormData, formData } = useCreativeOnboardingForm();
+  const { setFormData } = useCreativeOnboardingForm();
 
   const initialValues = {
-    profession: '',
+    profession: professionId,
   };
 
   const formik = useFormik({
     initialValues,
     onSubmit: async (values) => {
+      dispatch(storeValues({ professionId: values?.profession }));
       setFormData(values);
-      const { email, fullName, password, accountType } = formData;
       const { firstName, lastName } = extractName(fullName);
 
       try {
         const payload = {
           ...rest,
           actorType: 'Creative',
-          accountType,
-          email,
-          password,
           firstName,
           lastName,
+          password,
           professionId: values?.profession,
-          companySize: '',
-          companyName: '',
+          companySize: companySizeMap[companySize as CompanySize] || '',
+          countryCode: '+234',
         };
+
+        console.log(payload);
 
         const response = await triggerRegister(payload).unwrap();
         if (response?.isSuccess) {
@@ -82,8 +100,6 @@ export function Profession() {
       } catch (error) {
         errorToast(getErrorMessage(error));
       }
-
-      rt.push(routes.creatives.onboarding.emailVerification.path);
     },
     validationSchema,
   });
@@ -92,8 +108,10 @@ export function Profession() {
 
   const toggleProfession = (id: string) => {
     const current = values.profession;
-    setFieldValue('professions', current === id ? '' : id); // deselect if clicked again
+    setFieldValue('profession', current === id ? '' : id); // deselect if clicked again
   };
+
+  console.log(values);
 
   return (
     <div className="app_auth_login_container">

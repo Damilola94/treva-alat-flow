@@ -6,34 +6,68 @@ import {
   Header,
   Sidebar,
   SubscribeToPlan,
-  SubscribeToPlanLeft
+  SubscribeToPlanLeft,
 } from '@/components/shared/dashboard';
 import { Inter } from 'next/font/google';
 import routes from '@/lib/routes';
-import queries from '@/services/queries/profile';
-import { Column, File, GlobeAlt, Grid, Like, Payment, Users } from '@/components/shared';
+// import queries from '@/services/queries/profile';
+import {
+  Column,
+  File,
+  GlobeAlt,
+  Grid,
+  Like,
+  Payment,
+  Users,
+} from '@/components/shared';
 import { Notifications } from '@/app/assets/svgs';
+import { useProfile } from '@/hooks/Users';
 
 const inter = Inter({
   subsets: ['latin'],
-  weight: ['400', '500', '600', '700']
+  weight: ['400', '500', '600', '700'],
 });
 
-function Main ({ children }: { children: React.ReactNode }) {
+function Main({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
-  const { data } = queries.read();
+  // const { data } = queries.read();
+  const { data } = useProfile();
 
   const creativeMenuItems = [
-    { label: 'Get started', href: routes.creatives.dashboard.getStarted.path, icon: <GlobeAlt /> },
-    { label: 'Dashboard', href: routes.creatives.dashboard.entry.path, icon: <Grid /> },
-    { label: 'Client Management', href: routes.creatives.dashboard.clientManagement.path, icon: <Users /> },
-    { label: 'Project Management', href: routes.creatives.dashboard.projectManagement.path, icon: <Column /> },
-    { label: 'Payment', href: routes.creatives.dashboard.payment.path, icon: <Payment /> },
+    {
+      label: 'Get started',
+      href: routes.creatives.dashboard.getStarted.path,
+      icon: <GlobeAlt />,
+    },
+    {
+      label: 'Dashboard',
+      href: routes.creatives.dashboard.entry.path,
+      icon: <Grid />,
+    },
+    {
+      label: 'Client Management',
+      href: routes.creatives.dashboard.clientManagement.path,
+      icon: <Users />,
+    },
+    {
+      label: 'Project Management',
+      href: routes.creatives.dashboard.projectManagement.path,
+      icon: <Column />,
+    },
+    {
+      label: 'Payment',
+      href: routes.creatives.dashboard.payment.path,
+      icon: <Payment />,
+    },
     { label: 'Contracts', href: '#', icon: <File /> },
-    { label: 'Reminders and Notification', href: routes.creatives.dashboard.notifications.path, icon: <Notifications /> },
+    {
+      label: 'Reminders and Notification',
+      href: routes.creatives.dashboard.notifications.path,
+      icon: <Notifications />,
+    },
     { label: 'Reviews and Feedback', href: '#', icon: <Like /> },
-  ].filter(item => item.href !== '#');
+  ].filter((item) => item.href !== '#');
 
   useEffect(() => {
     setMounted(true);
@@ -44,20 +78,24 @@ function Main ({ children }: { children: React.ReactNode }) {
   return (
     <main className="app_dash_main flex-col">
       <div className="app_dash_main flex-1 relative">
-      <div
-          className="z-50 md:relative fixed top-0"
-        >
-         <Sidebar menuItems={creativeMenuItems} logoHref={routes.creatives.dashboard.entry.path} userData={data} />
+        <div className="z-50 md:relative fixed top-0">
+          <Sidebar
+            menuItems={creativeMenuItems}
+            logoHref={routes.creatives.dashboard.entry.path}
+            userData={data?.data}
+          />
         </div>
         <div className="app_dash_main__ctt">
-          {pathname === '/dashboard/get-started'
-            ? (
+          {pathname === '/dashboard/get-started' ? (
             <SubscribeToPlan />
-              )
-            : (
+          ) : (
             <SubscribeToPlanLeft />
-              )}
-                   <Header showBackArrow={pathname.startsWith('/creatives/dashboard/project-management/')} />
+          )}
+          <Header
+            showBackArrow={pathname.startsWith(
+              '/creatives/dashboard/project-management/',
+            )}
+          />
 
           <div className="app_dash_main__ctt__mn w-full">
             <div className="app_dashboard_page">{children}</div>
@@ -68,10 +106,10 @@ function Main ({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function RootLayout ({
-  children
+export default function RootLayout({
+  children,
 }: Readonly<{
-  children: React.ReactNode
+  children: React.ReactNode;
 }>) {
   return (
     <html lang="en">

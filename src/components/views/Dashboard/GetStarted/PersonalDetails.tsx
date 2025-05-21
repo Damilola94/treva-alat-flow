@@ -23,7 +23,8 @@ export default function PersonalDetails() {
 
   const { stateData } = useStates({ country: 'Nigeria' });
   const { citiesData } = useCities({ state: state });
-  const { saveClientOnboarding, saveOnboardingResponse } = useUsers();
+  const { saveClientOnboarding, saveOnboardingResponse, userOnboardingData } =
+    useUsers();
 
   const stateOptions = useMemo(() => {
     return (
@@ -43,16 +44,20 @@ export default function PersonalDetails() {
     );
   }, [citiesData]);
 
-  const initialValues = {
-    photo: null as File | null,
-    address: '',
-    website: '',
-    city: '',
-    state: '',
-  };
+  const initialValues = useMemo(
+    () => ({
+      photo: null as File | null, // file upload is manual; we'll preview with photoUrl
+      address: userOnboardingData?.data?.address || '',
+      website: userOnboardingData?.data?.websiteUrl || '',
+      city: userOnboardingData?.data?.cityId || '',
+      state: userOnboardingData?.data?.stateId || '',
+    }),
+    [userOnboardingData?.data],
+  );
 
   const formik = useFormik({
     initialValues,
+    enableReinitialize: true, // this is important
     onSubmit: (values) => {
       const payload = {
         photo: values?.photo,
@@ -63,10 +68,23 @@ export default function PersonalDetails() {
         currentStep: 1,
       };
       saveClientOnboarding(payload);
-      // router.push(routes.client.dashboard.getStarted.socialMediaDetails.path);
     },
     validationSchema,
   });
+
+  console.log(userOnboardingData);
+
+  useEffect(() => {
+    if (saveOnboardingResponse?.isSuccess) {
+      router.push(routes.client.dashboard.getStarted.socialMediaDetails.path);
+    }
+  }, [saveOnboardingResponse]);
+
+  useEffect(() => {
+    if (userOnboardingData?.data?.photoUrl) {
+      setPreviewUrl(userOnboardingData?.data.photoUrl);
+    }
+  }, [userOnboardingData?.data?.photoUrl]);
 
   const {
     handleBlur,
@@ -127,7 +145,7 @@ export default function PersonalDetails() {
           <div>
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
               <div className="flex flex-col gap-8">
-                {values.photo ? (
+                {values.photo || previewUrl ? (
                   <div className="flex flex-col items-center gap-2 border p-4 rounded-md bg-gray-50">
                     {previewUrl && (
                       // eslint-disable-next-line @next/next/no-img-element
@@ -138,9 +156,9 @@ export default function PersonalDetails() {
                       />
                     )}
                     <p className="text-sm text-gray-700">
-                      {typeof values.photo === 'string'
-                        ? values.photo
-                        : values.photo.name}
+                      {typeof values?.photo === 'string'
+                        ? values?.photo
+                        : values?.photo?.name}
                     </p>
                     <button
                       type="button"

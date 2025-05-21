@@ -54,7 +54,6 @@ const routes = {
       },
       emailVerification: {
         path: '/client/onboarding/email-verification',
-        success: '/client/onboarding/email-verification/success',
       },
     },
     dashboard: {
@@ -109,7 +108,6 @@ const routes = {
 
       emailVerification: {
         path: '/creatives/onboarding/email-verification',
-        success: '/creatives/onboarding/email-verification/success',
       },
 
       personalDetails: {

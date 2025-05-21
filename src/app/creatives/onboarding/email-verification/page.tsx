@@ -4,21 +4,20 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 // import queries from '@/services/queries/auth';
 import { Header } from '@/components/shared/onboarding';
-import { useCreativeOnboardingForm } from '@/store';
+import { useAppSelector } from '@/store';
 
 const validationSchema = Yup.object().shape({});
 
 const initialValues = {
-  email: ''
-}
+  email: '',
+};
 
-export default function Page () {
-  const { formData } = useCreativeOnboardingForm();
+export default function Page() {
+  const formData = useAppSelector((state) => state?.register);
   // const { isLoading, mutate } = queries.create()
   const onSubmit = () => {
     // const { email, profession, fullName, password, accountType } = formData;
     // const { firstName, lastName } = extractName(fullName)
-
     // const payload = {
     //   accountType,
     //   email,
@@ -32,7 +31,7 @@ export default function Page () {
     //   }
     // }
     // mutate(payload)
-  }
+  };
 
   const email = formData.email ?? '';
 
@@ -59,14 +58,15 @@ export default function Page () {
 
                     <div className="flex flex-col gap-8">
                       <p className="app_auth_verification__p">
-                        We will send an email to
+                        We have sent an email to
                         <br />
                         <span className="app_auth_verification__p__span">
                           <strong>{email}</strong>
                         </span>
                         <br />
                         <br />
-                        Verify your email to begin
+                        Check your email and click the verification link to
+                        begin.
                       </p>
                       {/* <Button
                         size="xl"
