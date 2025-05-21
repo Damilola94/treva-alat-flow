@@ -24,8 +24,21 @@ export const usersService = userServiceApiSlice.injectEndpoints({
         response: ITrevaUserService['schemas']['UnitBaseResponse'],
       ) => response,
     }),
+
+    getUserProfile: builder.query({
+      query: () => ({
+        url: endpoints.users.getUserProfile,
+        method: REQUEST_METHODS.GET,
+      }),
+      transformResponse: (
+        response: ITrevaUserService['schemas']['UserModelBaseResponse'],
+      ) => response,
+    }),
   }),
 });
 
-export const { useGetClientOnboardingQuery, useSaveClientOnboardingMutation } =
-  usersService;
+export const {
+  useGetClientOnboardingQuery,
+  useSaveClientOnboardingMutation,
+  useGetUserProfileQuery,
+} = usersService;

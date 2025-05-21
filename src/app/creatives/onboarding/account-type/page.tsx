@@ -8,7 +8,12 @@ import routes from '@/lib/routes';
 import { useRouter } from 'next/navigation';
 import { Header } from '@/components/shared/onboarding';
 import { Pill } from '@/components/shared';
-import { useCreativeOnboardingForm } from '@/store';
+import {
+  storeValues,
+  useAppDispatch,
+  useAppSelector,
+  useCreativeOnboardingForm,
+} from '@/store';
 
 // const validationSchema = Yup.object().shape({});
 
@@ -21,15 +26,18 @@ export default function Page() {
   const rt = useRouter();
   // const { isLoading } = queries.login();
   const { setFormData } = useCreativeOnboardingForm();
+  const dispatch = useAppDispatch();
+  const { accountType } = useAppSelector((state) => state?.register);
 
   const initialValues = {
-    accountType: AccountType.Individual as `${AccountType}`,
+    accountType: accountType || (AccountType.Individual as `${AccountType}`),
   };
 
   const formik = useFormik({
     initialValues,
     onSubmit: async (values) => {
       setFormData(values);
+      dispatch(storeValues(values));
       if (values.accountType === AccountType.Individual) {
         rt.push(routes.creatives.onboarding.individual.profession.path);
       } else {

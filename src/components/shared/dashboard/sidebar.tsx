@@ -12,51 +12,105 @@ import { useIsActive } from '@/hooks/use-active-route';
 import useClickOutsideBox from '@/hooks/use-click-outside-box';
 import type { JSX } from 'react/jsx-runtime';
 import { Logo } from '../svgs';
+import { useAppSelector } from '@/store';
+
+type Location = {
+  id: string;
+  name: string;
+};
+
+type Country = Location & {
+  code: string;
+  flagUrl: string;
+};
+
+type UserAddress = {
+  id: string | null;
+  addressType: 'Home' | 'Work' | 'Other'; // you can extend as needed
+  houseNumber: string | null;
+  street: string | null;
+  city: Location;
+  state: Location;
+  country: Country;
+  userId: string | null;
+};
+
+type User = {
+  id: string;
+  firstName: string;
+  middleName: string;
+  lastName: string;
+  profilePicture: string;
+  bio: string;
+  phoneNumber: string;
+  userAddresses: UserAddress[];
+};
 
 interface ISidebarItem {
-  label: string
-  href: string
-  icon: JSX.Element
+  label: string;
+  href: string;
+  icon: JSX.Element;
 }
 
 interface SidebarProps {
-  menuItems: ISidebarItem[]
-  logoHref: string
-  userData: {
-    firstName?: string
-    email?: string
-  }
+  menuItems: ISidebarItem[];
+  logoHref: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  userData: User | any;
 }
 
-const SidebarItem = ({ item, toggleMenu }: { item: ISidebarItem, toggleMenu?: () => void }) => {
+const SidebarItem = ({
+  item,
+  toggleMenu,
+}: {
+  item: ISidebarItem;
+  toggleMenu?: () => void;
+}) => {
   const { isActive } = useIsActive();
-  const activeCN = isActive(item?.href, item.label === 'Dashboard') ? 'active' : '';
+  const activeCN = isActive(item?.href, item.label === 'Dashboard')
+    ? 'active'
+    : '';
 
   return (
     <div className={`app_dash_main__aside__links__item ${activeCN}`}>
-      <Link className="app_dash_main__aside__links__item__a" href={item.href} onClick={toggleMenu}>
+      <Link
+        className="app_dash_main__aside__links__item__a"
+        href={item.href}
+        onClick={toggleMenu}
+      >
         <div className="app_dash_main__aside__links__item__ctt">
           {item.icon}
-          <p className="app_dash_main__aside__links__item__ctt__p">{item.label}</p>
+          <p className="app_dash_main__aside__links__item__ctt__p">
+            {item.label}
+          </p>
         </div>
       </Link>
     </div>
   );
 };
 
-export function Sidebar ({ menuItems, logoHref, userData }: SidebarProps) {
+export function Sidebar({ menuItems, logoHref, userData }: SidebarProps) {
+  const { email } = useAppSelector((state) => state?.auth);
   const wrapperRef = useRef(null);
   const [showMenu, setShowMenu] = useState(false);
 
-  useClickOutsideBox(wrapperRef, () => { setShowMenu(false); });
+  useClickOutsideBox(wrapperRef, () => {
+    setShowMenu(false);
+  });
 
   useEffect(() => {
-    const handleRouteChange = () => { setShowMenu(false); };
+    const handleRouteChange = () => {
+      setShowMenu(false);
+    };
     window.addEventListener('popstate', handleRouteChange);
-    return () => { window.removeEventListener('popstate', handleRouteChange); };
+    return () => {
+      window.removeEventListener('popstate', handleRouteChange);
+    };
   }, []);
 
-  const toggleMenu = () => { setShowMenu(!showMenu); };
+  const toggleMenu = () => {
+    setShowMenu(!showMenu);
+  };
 
   return (
     <div ref={wrapperRef} className="sidebar-wrapper">
@@ -86,29 +140,43 @@ export function Sidebar ({ menuItems, logoHref, userData }: SidebarProps) {
           <div className="w-full px-6 py-5 h-20">
             <Link href={logoHref}>
               <div className="flex items-center gap-3">
-              <Logo />
+                <Logo />
               </div>
             </Link>
           </div>
 
           <div className="app_dash_main__aside__links">
             {menuItems.map((item) => (
-              <SidebarItem key={item.href} item={item} toggleMenu={toggleMenu} />
+              <SidebarItem
+                key={item.href}
+                item={item}
+                toggleMenu={toggleMenu}
+              />
             ))}
           </div>
         </div>
 
         <div className="app_dash_main__aside__btm">
-          <Avatar src={getAvatar({ name: getFullName(userData), length: 2 })} />
+          <Avatar
+            src={getAvatar({
+              name: userData ? getFullName(userData) : '',
+              length: 2,
+            })}
+          />
           <div className="flex-1">
-            <p className="app_dash_main__aside__btm__name">{userData?.firstName}</p>
-            <p className="app_dash_main__aside__btm__email">{userData?.email}</p>
+            <p className="app_dash_main__aside__btm__name">
+              {userData?.firstName}
+            </p>
+            <p className="app_dash_main__aside__btm__email">{email}</p>
           </div>
         </div>
       </aside>
 
       {showMenu && (
-        <div className="fixed inset-0 bg-black/50 z-20 lg:hidden" onClick={toggleMenu} />
+        <div
+          className="fixed inset-0 bg-black/50 z-20 lg:hidden"
+          onClick={toggleMenu}
+        />
       )}
     </div>
   );

@@ -35,10 +35,12 @@ import { useProjects } from '@/hooks/Projects';
 import { useUsers } from '@/hooks/Users';
 import dashboard from '@/lib/assets/dashboard';
 import { numberFormat } from '@/lib/numbers';
+import routes from '@/lib/routes';
 import { getAvatar, getFullName } from '@/lib/utils';
 import queries from '@/services/queries/profile';
 import { Loader2 } from 'lucide-react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import React, { useEffect, useMemo, useState } from 'react';
 
 interface ProjectQueryParams {
@@ -52,6 +54,7 @@ interface ProjectQueryParams {
 }
 
 export default function Dashboard() {
+  const router = useRouter();
   const [popOver, togglePopOver] = useState(false);
   const [withdraw, toggleWithdraw] = useState(false);
   const [addFunds, toggleAddFunds] = useState(false);
@@ -194,6 +197,12 @@ export default function Dashboard() {
       ...param,
     }));
   };
+
+  useEffect(() => {
+    if (!userOnboardingData?.data?.isCompleted && userOnboardingData?.data) {
+      router.push(routes.client.dashboard.getStarted.path);
+    }
+  }, [userOnboardingData]);
 
   return (
     <div className="app_dashboard_page app_dashboard_home">

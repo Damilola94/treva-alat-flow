@@ -5,9 +5,10 @@ import { Footer, Header, Sidebar } from '@/components/shared/dashboard';
 import { Inter } from 'next/font/google';
 import { Column, Users, GlobeAlt, Grid, Payment } from '@/components/shared';
 import routes from '@/lib/routes';
-import queries from '@/services/queries/profile';
+// import queries from '@/services/queries/profile';
 import { usePathname } from 'next/navigation';
 import { ChatIcon, Notifications } from '@/app/assets/svgs';
+import { useProfile } from '@/hooks/Users';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -25,7 +26,8 @@ function Main({ children }: { children: React.ReactNode }) {
     pt.startsWith(prefix),
   );
   const [mounted, setMounted] = useState(false);
-  const { data } = queries.read();
+  // const { data } = queries.read();
+  const { data } = useProfile();
 
   const clientMenuItems = [
     {
@@ -78,7 +80,7 @@ function Main({ children }: { children: React.ReactNode }) {
           <Sidebar
             menuItems={clientMenuItems}
             logoHref={routes.client.dashboard.entry.path}
-            userData={data}
+            userData={data?.data}
           />
           ;
         </div>

@@ -14,18 +14,23 @@ import { useUsers } from '@/hooks/Users';
 
 export default function SocialMediaDetails() {
   const router = useRouter();
-  const { saveClientOnboarding, saveOnboardingResponse } = useUsers();
+  const { saveClientOnboarding, saveOnboardingResponse, userOnboardingData } =
+    useUsers();
 
-  const initialValues = {
-    x: '',
-    linkedin: '',
-    instagram: '',
-    facebook: '',
-    tiktok: '',
-  };
+  const initialValues = React.useMemo(
+    () => ({
+      x: userOnboardingData?.data?.x || '',
+      linkedin: userOnboardingData?.data?.linkedIn || '',
+      instagram: userOnboardingData?.data?.instagram || '',
+      facebook: userOnboardingData?.data?.facebook || '',
+      tiktok: userOnboardingData?.data?.tikTok || '',
+    }),
+    [userOnboardingData?.data],
+  );
 
   const formik = useFormik({
     initialValues,
+    enableReinitialize: true,
     onSubmit: async (values) => {
       const payload = {
         ...values,
@@ -84,7 +89,7 @@ export default function SocialMediaDetails() {
                     type="text"
                     id="instagram"
                     label="Instagram"
-                    placeholder="Enter company name"
+                    placeholder="Enter instagram handle"
                     size="lg"
                     value={values.instagram}
                     onChange={handleChange}
@@ -100,7 +105,7 @@ export default function SocialMediaDetails() {
                     type="text"
                     id="facebook"
                     label="Facebook"
-                    placeholder="Enter company name"
+                    placeholder="Enter facebook handle"
                     size="lg"
                     value={values.facebook}
                     onChange={handleChange}
@@ -116,7 +121,7 @@ export default function SocialMediaDetails() {
                     type="text"
                     id="x"
                     label="X"
-                    placeholder="Enter company name"
+                    placeholder="Enter x handle"
                     size="lg"
                     value={values.x}
                     onChange={handleChange}
@@ -132,7 +137,7 @@ export default function SocialMediaDetails() {
                     type="text"
                     id="tiktok"
                     label="Tiktok"
-                    placeholder="Enter company name"
+                    placeholder="Enter tiktok handle"
                     size="lg"
                     value={values.tiktok}
                     onChange={handleChange}
