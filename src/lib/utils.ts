@@ -25,7 +25,7 @@ export function getMockApiData(responseData: any) {
 }
 
 interface IAvatarProps {
-  name: string;
+  name?: string | null;
   fontSize?: number;
   size?: number;
   color?: string;
@@ -53,7 +53,13 @@ export function getAvatar(props: IAvatarProps) {
   return avatar;
 }
 
-export function getFullName({ firstName = '', lastName = '' }) {
+export function getFullName({
+  firstName = '',
+  lastName = '',
+}: {
+  firstName: string | null | undefined;
+  lastName: string | null | undefined;
+}) {
   return `${firstName ?? ''} ${lastName ?? ''}`.trim();
 }
 

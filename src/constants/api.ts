@@ -36,10 +36,21 @@ export const endpoints = {
     getProfessions: '/professions',
   },
 
+  subscription: {
+    getAllSubs: '/subscriptions',
+    getSubById: (subscriptionId: string) => `/subscriptions/${subscriptionId}`,
+  },
+
   users: {
     saveClientOnboarding: '/users/save-client-onboarding',
+    saveCreativeOnboarding: '/users/save-creative-onboarding',
     getClientOnboarding: '/users/client-onboarding-record',
+    getCreativeOnboarding: '/users/creative-onboarding-record',
     getUserProfile: '/users/my-profile',
+    getHiriingStatistics: '/users/my-hiring-statistics',
+    getCreatives: '/users/creatives',
+    getCreativesById: (userId: string) => `/users/creative-detail/${userId}`,
+    getUserRatings: (userId: string) => `/users/${userId}/ratings`,
   },
 
   // project service
@@ -59,11 +70,13 @@ export const endpoints = {
     getProjectById: (projectId: string) => `/projects/${projectId}`,
     updateProject: (projectId: string) => `/projects/${projectId}`,
     deleteProject: (projectId: string) => `/projects/${projectId}`,
-    rateProject: (projectId: string) => `/projects/${projectId}/rate`
+    rateProject: (projectId: string) => `/projects/${projectId}/rate`,
   },
   deliverables: {
-    getDeliverables: (projectId: string) => `/projects/${projectId}/deliverables`,
-    createDeliverable: (projectId: string) => `/projects/${projectId}/deliverables`,
+    getDeliverables: (projectId: string) =>
+      `/projects/${projectId}/deliverables`,
+    createDeliverable: (projectId: string) =>
+      `/projects/${projectId}/deliverables`,
     getDeliverableById: (projectId: string, deliverableId: string) =>
       `/projects/${projectId}/deliverables/${deliverableId}`,
     updateDeliverable: (projectId: string, deliverableId: string) =>
@@ -74,12 +87,21 @@ export const endpoints = {
       `/projects/${projectId}/deliverables/${deliverableId}/tasks`,
     createDeliverableTask: (projectId: string, deliverableId: string) =>
       `/projects/${projectId}/deliverables/${deliverableId}/tasks`,
-    getDeliverableTaskById: (projectId: string, deliverableId: string, taskId: string) =>
-      `/projects/${projectId}/deliverables/${deliverableId}/tasks/${taskId}`,
-    updateDeliverableTask: (projectId: string, deliverableId: string, taskId: string) =>
-      `/projects/${projectId}/deliverables/${deliverableId}/tasks/${taskId}`,
-    deleteDeliverableTask: (projectId: string, deliverableId: string, taskId: string) =>
-      `/projects/${projectId}/deliverables/${deliverableId}/tasks/${taskId}`,
+    getDeliverableTaskById: (
+      projectId: string,
+      deliverableId: string,
+      taskId: string,
+    ) => `/projects/${projectId}/deliverables/${deliverableId}/tasks/${taskId}`,
+    updateDeliverableTask: (
+      projectId: string,
+      deliverableId: string,
+      taskId: string,
+    ) => `/projects/${projectId}/deliverables/${deliverableId}/tasks/${taskId}`,
+    deleteDeliverableTask: (
+      projectId: string,
+      deliverableId: string,
+      taskId: string,
+    ) => `/projects/${projectId}/deliverables/${deliverableId}/tasks/${taskId}`,
   },
   paymentSchedules: {
     getPaymentSchedules: (projectId: string) =>
@@ -94,8 +116,7 @@ export const endpoints = {
       `/projects/${projectId}/payment-schedules/${paymentScheduleId}`,
   },
   extraCosts: {
-    getExtraCosts: (projectId: string) =>
-      `/projects/${projectId}/extra-costs`,
+    getExtraCosts: (projectId: string) => `/projects/${projectId}/extra-costs`,
     createExtraCosts: (projectId: string) =>
       `/projects/${projectId}/extra-costs`,
     getExtraCostById: (projectId: string, extraCostId: string) =>
@@ -107,6 +128,6 @@ export const endpoints = {
   },
   comments: {
     getComments: (projectId: string) => `/projects/${projectId}/comments`,
-    createComment: (projectId: string) => `/projects/${projectId}/comments`
-  }
+    createComment: (projectId: string) => `/projects/${projectId}/comments`,
+  },
 };

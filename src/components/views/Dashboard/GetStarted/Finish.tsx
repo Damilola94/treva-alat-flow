@@ -11,6 +11,7 @@ export default function Finish () {
   const handleNext = () => {
     rt.push(routes.client.dashboard.entry.path);
   }
+  
   return (
     <div className="app_get_started_professional_details app_get_started_done py-6 px-4 h-full flex">
       <div className="flex-1 flex flex-col items-center justify-center gap-11">

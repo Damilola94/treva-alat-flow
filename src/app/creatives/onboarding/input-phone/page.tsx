@@ -13,55 +13,64 @@ import {
   storeValues,
   useAppDispatch,
   useAppSelector,
-  useCreativeOnboardingForm,
+  useClientOnboardingForm,
 } from '@/store';
+// import { useForm } from '../../context/onboard-context';
 
 interface FormData {
-  fullName: string;
+  phoneNumber: string;
 }
 
-const validationSchema = Yup.object().shape({});
-
 export default function Page() {
-  const { fullName } = useAppSelector((state) => state?.register);
   const dispatch = useAppDispatch();
+  const { phoneNumber } = useAppSelector((state) => state?.register);
   const rt = useRouter();
   const { isLoading } = queries.login();
-  const { setFormData } = useCreativeOnboardingForm();
+  const { setFormData } = useClientOnboardingForm();
+
+  const validationSchema = Yup.object().shape({
+    phoneNumber: Yup.string()
+      .test('phone', 'Enter a valid Nigerian phone number', (value) => {
+        if (!value) return false;
+        const phoneRegex = /^0[789][01]\d{8}$/;
+        return phoneRegex.test(value);
+      })
+      .required('Phone number is required'),
+  });
 
   const initialValues: FormData = {
-    fullName: fullName,
+    phoneNumber: phoneNumber,
   };
 
   const formik = useFormik({
     initialValues,
-    onSubmit: (values: FormData) => {
+    onSubmit: () => {
+      dispatch(storeValues({ ...values, countryCode: '+234' }));
       setFormData(values);
-      dispatch(storeValues(values));
-      rt.push(routes.creatives.onboarding.phoneNumber.path);
+      rt.push(routes.creatives.onboarding.security.path);
     },
     validationSchema,
   });
 
-  const { errors, handleBlur, handleChange, handleSubmit, touched, values } =
+  const { handleBlur, handleChange, handleSubmit, errors, touched, values } =
     formik;
 
   return (
     <div className="app_auth_login_container">
       <Header />
-
       <div className="app_auth_login_container__upper">
         <div className="app_auth_login">
           <div>
             <form onSubmit={handleSubmit} className="flex flex-col gap-8">
-              <h3 className="app_auth_login__title">Your full name</h3>
+              <h3 className="app_auth_login__title">Your Phone Number</h3>
               <div className="flex flex-col gap-6">
                 <div className="">
                   <Input
-                    name="fullName"
-                    placeholder="Enter your full name"
+                    name="phoneNumber"
+                    type="text"
+                    placeholder="(+234)"
                     size="xl"
-                    value={values.fullName}
+                    value={values.phoneNumber}
                     onChange={handleChange}
                     onBlur={handleBlur}
                     errors={errors}
