@@ -1,35 +1,59 @@
-'use client'
-import React from 'react'
-import { Formik } from 'formik'
-import * as Yup from 'yup'
-import { ProgressStatus } from '@/components/shared/dashboard/get-started'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { useRouter } from 'next/navigation'
-import routes from '@/lib/routes'
+'use client';
+import React, { useEffect } from 'react';
+import { useFormik } from 'formik';
+// import * as Yup from 'yup';
+import { ProgressStatus } from '@/components/shared/dashboard/get-started';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
+import routes from '@/lib/routes';
+import { useUsers } from '@/hooks/Users';
 
-const validationSchema = Yup.object().shape({
-  // startTour: Yup.string().required('Please enter company name')
-})
+// const validationSchema = Yup.object().shape({
+//   // startTour: Yup.string().required('Please enter company name')
+// });
 
-const initialValues = {
-  startTour: '',
-  startTour2: ''
-}
+export default function Page() {
+  const router = useRouter();
 
-export default function Page () {
-  const router = useRouter()
+  const {
+    saveCreativeOnboarding,
+    saveOnboardingResponse,
+    creativeOnboardingData,
+    loading,
+  } = useUsers();
 
-  const onSubmit = () => {
-    router.push(routes.creatives.dashboard.getStarted.selectPlan.path)
-  }
+  const initialValues = {
+    bio: creativeOnboardingData?.data?.bio || '',
+  };
+
+  const formik = useFormik({
+    initialValues,
+    enableReinitialize: true,
+    onSubmit: (values) => {
+      const payload = {
+        ...values,
+        currentStep: 3,
+      };
+      saveCreativeOnboarding(payload);
+    },
+  });
+
+  const { handleBlur, handleChange, errors, values, touched, handleSubmit } =
+    formik;
+
+  useEffect(() => {
+    if (saveOnboardingResponse?.isSuccess) {
+      router.push(routes.creatives.dashboard.getStarted.selectPlan.path);
+    }
+  }, [router, saveOnboardingResponse]);
 
   return (
     <div className="app_get_started_professional_details py-6 px-4 flex flex-col gap-14">
       <div className="flex justify-center items-center gap-4">
         <ProgressStatus label="Professional details" checked />
         <ProgressStatus label="Social media details" checked />
-        <ProgressStatus label="Bio" />
+        <ProgressStatus label="Bio" active />
         <ProgressStatus label="Select plan" />
         <ProgressStatus label="Finish" />
         {/* <ProgressStatus label="Team setup" /> */}
@@ -41,58 +65,40 @@ export default function Page () {
         </h3>
         <div className="">
           <div>
-            <Formik
-              initialValues={initialValues}
-              validationSchema={validationSchema}
-              onSubmit={onSubmit}
-            >
-              {(props) => {
-                const {
-                  values,
-                  handleChange,
-                  handleBlur,
-                  handleSubmit,
-                  errors,
-                  touched
-                } = props
-                return (
-                  <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-                    <div className="flex flex-col gap-8">
-                      <div className="">
-                        <Input
-                          name="startTour"
-                          type="text"
-                          id="startTour"
-                          label="Company name"
-                          placeholder="Enter company name"
-                          size="lg"
-                          value={values.startTour}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          errors={errors}
-                          touched={touched}
-                        />
-                      </div>
-                    </div>
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+              <div className="flex flex-col gap-8">
+                <div className="">
+                  <Input
+                    name="bio"
+                    type="text"
+                    id="bio"
+                    placeholder="Enter your bio"
+                    size="lg"
+                    value={values.bio}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    errors={errors}
+                    touched={touched}
+                  />
+                </div>
+              </div>
 
-                    <div className="pt-4 flex">
-                      <div className="">
-                        <Button
-                          size="xl"
-                          backgroundColor="primary-blue-500"
-                          className="w-full py-3 px-12"
-                        >
-                          Save & Continue
-                        </Button>
-                      </div>
-                    </div>
-                  </form>
-                )
-              }}
-            </Formik>
+              <div className="pt-4 flex">
+                <div className="">
+                  <Button
+                    size="xl"
+                    backgroundColor="primary-blue-500"
+                    className="w-full py-3 px-12"
+                    isLoading={loading}
+                  >
+                    Save & Continue
+                  </Button>
+                </div>
+              </div>
+            </form>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }

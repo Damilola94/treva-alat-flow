@@ -32,13 +32,13 @@ import {
 } from '@/components/ui/popover';
 import { clientDashboardTasks } from '@/constants';
 import { useProjects } from '@/hooks/Projects';
-import { useUsers } from '@/hooks/Users';
+import { useProfile, useUsers } from '@/hooks/Users';
 import clientManagement from '@/lib/assets/client-management';
 import dashboard from '@/lib/assets/dashboard';
 import { numberFormat } from '@/lib/numbers';
 import routes from '@/lib/routes';
 import { getAvatar, getFullName } from '@/lib/utils';
-import queries from '@/services/queries/profile';
+// import queries from '@/services/queries/profile';
 import { Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -61,7 +61,9 @@ export default function Dashboard() {
   const [addFunds, toggleAddFunds] = useState(false);
   const [editAccount, toggleEditAccount] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const { data } = queries.read();
+  // const { data } = queries.read();
+  const { data } = useProfile();
+  const userData = useMemo(() => data?.data || null, [data]);
 
   const [params, setParams] = useState<ProjectQueryParams>({
     // type: '2',
@@ -142,7 +144,7 @@ export default function Dashboard() {
       header: 'Project Name',
       accessorKey: 'title',
     },
-   {
+    {
       header: 'Creative',
       accessorKey: 'creativeUser',
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -155,9 +157,11 @@ export default function Dashboard() {
               alt={creative.firstName}
               className="w-6 h-6 rounded-full"
             />
-            <span>{creative.firstName} {creative.lastName}</span>
+            <span>
+              {creative.firstName} {creative.lastName}
+            </span>
           </div>
-        )
+        );
       },
     },
     {
@@ -229,9 +233,14 @@ export default function Dashboard() {
                 <Image src={dashboard.avi} alt="avi" className="w-full" />
               </div>
             )}
-            <Avatar src={getAvatar({ name: getFullName(data), length: 2 })} />
+            <Avatar
+              src={getAvatar({
+                name: userData && getFullName(userData),
+                length: 2,
+              })}
+            />
             <h4 className="app_dashboard_home__header__profile__h4">
-              Welcome, {data?.firstName}
+              Welcome, {userData?.firstName}
             </h4>
           </div>
         </div>

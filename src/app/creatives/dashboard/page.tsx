@@ -1,22 +1,34 @@
 'use client';
 
-import { AnimatedModal, ClientIcon, EmptyStatus, PersonalIcon, Pill, PlusIcon, RenderIf } from '@/components/shared';
+import {
+  AnimatedModal,
+  ClientIcon,
+  EmptyStatus,
+  PersonalIcon,
+  Pill,
+  PlusIcon,
+  RenderIf,
+} from '@/components/shared';
 import { Avatar } from '@/components/shared/avatar';
 // import { ProjectsTable } from '@/components/shared/dashboard';
 import { EmptyState } from '@/components/shared/dashboard/empty-state';
 import { ProjectsTable } from '@/components/shared/dashboard/project-management/project-table/projects-table';
-import { AddProject, CreateProjectCard } from '@/components/shared/project-management';
+import {
+  AddProject,
+  CreateProjectCard,
+} from '@/components/shared/project-management';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useProfile, useUsers } from '@/hooks/Users';
 import dashboard from '@/lib/assets/dashboard';
 import projectManagement from '@/lib/assets/project-management';
 import { numberFormat } from '@/lib/numbers';
 import routes from '@/lib/routes';
 import { getAvatar, getFullName } from '@/lib/utils';
-import queries from '@/services/queries/profile';
 import { ProjectStatus } from '@/services/queries/projects/enums';
 import Image from 'next/image';
-import React, { Fragment, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import React, { Fragment, useEffect, useMemo, useState } from 'react';
 // import { createAProject } from './project-management/page';
 
 const createAProject = {
@@ -26,23 +38,23 @@ const createAProject = {
     {
       icon: <PersonalIcon />,
       title: 'Personal',
-      details: 'Support a cause by making one-time donations.'
+      details: 'Support a cause by making one-time donations.',
     },
     {
       icon: <ClientIcon />,
       title: 'Client',
-      details: 'Support a cause by making one-time donations.'
-    }
+      details: 'Support a cause by making one-time donations.',
+    },
   ],
-  btnText1: 'Proceed'
-}
+  btnText1: 'Proceed',
+};
 
 enum Tasks {
   'Due Task' = 'Due Task',
   'Ongoing Task' = 'Ongoing Task',
 }
 
-function EllIcon () {
+function EllIcon() {
   return (
     <svg
       width="28"
@@ -96,29 +108,47 @@ const kpis = [
         Wallet balance <EllIcon />
       </>
     ),
-    value: numberFormat(0)
-  }
+    value: numberFormat(0),
+  },
 ];
 
-export default function Page () {
-  const [addProject, setAddProject] = useState(true)
-  const [addProjectForm, setAddProjectForm] = useState(true)
-  const [selectedCategory, setSelectedCategory] = useState<ProjectStatus | null>(null)
-  const [search, setSearch] = useState('')
-  const { data } = queries.read()
+export default function Page() {
+  const router = useRouter();
+
+  const [addProject, setAddProject] = useState(true);
+  const [addProjectForm, setAddProjectForm] = useState(true);
+  const [selectedCategory, setSelectedCategory] =
+    useState<ProjectStatus | null>(null);
+  const [search, setSearch] = useState('');
+  // const { data } = queries.read();
+
+  const { data } = useProfile();
+  const userData = useMemo(() => data?.data || null, [data]);
+
+  const { creativeOnboardingData } = useUsers();
 
   const handleAddProjectClick = () => {
-    setAddProject(!addProject)
-  }
+    setAddProject(!addProject);
+  };
 
   const handleProjectFormClick = () => {
-    setAddProject(!addProject)
-    setAddProjectForm(!addProjectForm)
-  }
+    setAddProject(!addProject);
+    setAddProjectForm(!addProjectForm);
+  };
 
   const handleProjectFormClose = () => {
-    setAddProjectForm(!addProjectForm)
-  }
+    setAddProjectForm(!addProjectForm);
+  };
+
+  useEffect(() => {
+    if (
+      !creativeOnboardingData?.data?.isCompleted &&
+      creativeOnboardingData?.data
+    ) {
+      router.push(routes.creatives.dashboard.getStarted.path);
+    }
+  }, [creativeOnboardingData]);
+
   return (
     <div className="app_dashboard_page app_dashboard_home">
       <RenderIf condition={!addProject}>
@@ -128,7 +158,7 @@ export default function Page () {
               isOpen: true,
               from: 'middle',
               onClose: handleAddProjectClick,
-              className: 'sm:max-w-[450px] h-[420px] p-0'
+              className: 'sm:max-w-[450px] h-[420px] p-0',
             }}
           >
             <CreateProjectCard
@@ -149,7 +179,7 @@ export default function Page () {
               from: 'right',
               onClose: handleProjectFormClose,
               className:
-                'absolute bottom-0 right-0 h-[calc(100vh-20px)] w-full sm:w-[350px] bg-white p-0 flex flex-col mb-2 mr-2'
+                'absolute bottom-0 right-0 h-[calc(100vh-20px)] w-full sm:w-[350px] bg-white p-0 flex flex-col mb-2 mr-2',
             }}
           >
             <AddProject onClose={handleProjectFormClose} />
@@ -160,14 +190,19 @@ export default function Page () {
       <div className="app_dashboard_home__header">
         <div className="app_dashboard_home__header__profile_con app_dashboard_page__px">
           <div className="app_dashboard_home__header__profile">
-            {false &&
+            {false && (
               <div className="app_dash_main__aside__btm__avi">
                 <Image src={dashboard.avi} alt="avi" className="w-full" />
               </div>
-            }
-            <Avatar src={getAvatar({ name: getFullName(data), length: 2 })} />
+            )}
+            <Avatar
+              src={getAvatar({
+                name: userData && getFullName(userData),
+                length: 2,
+              })}
+            />
             <h4 className="app_dashboard_home__header__profile__h4">
-              Welcome, {data?.firstName}
+              Welcome, {userData?.firstName}
             </h4>
           </div>
           <Button
@@ -175,8 +210,10 @@ export default function Page () {
             backgroundColor="text-color-100"
             color="shark-950"
             className="app_auth_login__btn"
-            onClick={() => { window.location.href = routes.creatives.dashboard.projectManagement.path; }}
-
+            onClick={() => {
+              window.location.href =
+                routes.creatives.dashboard.projectManagement.path;
+            }}
           >
             <PlusIcon fill="var(--shark-950)" />
             Create Project
@@ -189,8 +226,9 @@ export default function Page () {
 
             return (
               <div
-                className={`app_dashboard_home__kpis__item ${IS_WALLET ? 'app_dashboard_home__kpis__item--wallet' : ''
-                  }`}
+                className={`app_dashboard_home__kpis__item ${
+                  IS_WALLET ? 'app_dashboard_home__kpis__item--wallet' : ''
+                }`}
                 key={index}
               >
                 <h6 className="app_dashboard_home__kpis__item__h6">
@@ -223,18 +261,19 @@ export default function Page () {
             title="No task yet"
             description="Click “create project” button to get started"
           />
-
         </div>
       </div>
 
       <div className="app_dashboard_home__task app_dashboard_page__px">
         <div className="app_dashboard_home__task__hdr flex-wrap gap-2">
           <div className="flex md:flex-wrap gap-2">
-          <Pill
+            <Pill
               key="all-projects"
               size="md"
               active={selectedCategory === null}
-              onClick={() => { setSelectedCategory(null); }}
+              onClick={() => {
+                setSelectedCategory(null);
+              }}
             >
               All Projects
             </Pill>
@@ -243,7 +282,9 @@ export default function Page () {
                 key={status}
                 size="md"
                 active={selectedCategory === status}
-                onClick={() => { setSelectedCategory(status); }}
+                onClick={() => {
+                  setSelectedCategory(status);
+                }}
               >
                 {status}
               </Pill>
@@ -253,12 +294,19 @@ export default function Page () {
           <Input
             placeholder="Search for project"
             value={search}
-            onChange={(e) => { setSearch(e.target.value); }}
+            onChange={(e) => {
+              setSearch(e.target.value);
+            }}
             className="app_navbar__right__searchbar"
           />
         </div>
 
-        <ProjectsTable category='' search={search} projectPriority={''} projectStatus={selectedCategory ?? ''}/>
+        <ProjectsTable
+          category=""
+          search={search}
+          projectPriority={''}
+          projectStatus={selectedCategory ?? ''}
+        />
       </div>
     </div>
   );

@@ -102,6 +102,9 @@ const routes = {
       inputEmail: {
         path: '/creatives/onboarding/input-email',
       },
+      phoneNumber: {
+        path: '/creatives/onboarding/input-phone',
+      },
       accountType: {
         path: '/creatives/onboarding/account-type',
       },
