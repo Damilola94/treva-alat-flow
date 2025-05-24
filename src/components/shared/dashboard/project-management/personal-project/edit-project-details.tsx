@@ -1,24 +1,19 @@
 'use client';
-import { useEffect, useState } from 'react';
+import React from 'react';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Pill } from '@/components/shared';
-import queries from '@/services/queries/projects';
+import { useUpdateProjectMutation } from '@/services';
+import { useAppDispatch } from '@/store';
+import { storeValues } from '@/store/slices/project';
+import { useProjectById } from '@/hooks/Projects/useProjects';
 
 interface IProps {
   projectId: string;
   handleNext: () => void;
 }
-
-const validationSchema = Yup.object().shape({
-  title: Yup.string().required('Please enter a project title'),
-  description: Yup.string().required('Please enter a project description'),
-  expectedDeliveryDate: Yup.string().required(
-    'Please enter an expected delivery date',
-  ),
-});
 
 enum AccountType {
   Low = 'low',
@@ -26,7 +21,7 @@ enum AccountType {
   High = 'high',
 }
 
-const priorityMapping: Record<number, AccountType> = {
+const priorityMap: Record<number, AccountType> = {
   1: AccountType.Low,
   2: AccountType.Medium,
   3: AccountType.High,
@@ -34,44 +29,50 @@ const priorityMapping: Record<number, AccountType> = {
 
 export function EditProjectDetails(props: IProps) {
   const { projectId, handleNext } = props;
-  const [initialValues, setInitialValues] = useState({
-    title: '',
-    description: '',
-    expectedDeliveryDate: '',
-    priority: AccountType.Low as `${AccountType}`,
+  const dispatch = useAppDispatch();
+
+  const [updateProject, { isLoading }] = useUpdateProjectMutation();
+  const { allProjectsByIdData } = useProjectById(projectId);
+  const projectData = allProjectsByIdData?.data?.[0];
+
+  const validationSchema = Yup.object().shape({
+    title: Yup.string().required('Please enter a project title'),
+    description: Yup.string().required('Please enter a project description'),
+    expectedDeliveryDate: Yup.date()
+      .min(new Date(), 'Expected delivery date must be in the future')
+      .required('Please enter an expected delivery date'),
+    priority: Yup.string().required('Please select a priority'),
+  });
+
+  const initialValues = {
+    title: projectData?.title ?? '',
+    description: projectData?.description ?? '',
+    expectedDeliveryDate: projectData?.expectedDeliveryDate
+      ? projectData.expectedDeliveryDate.split('T')[0]
+      : '',
+    priority:
+      typeof projectData?.priority === 'number'
+        ? priorityMap[projectData.priority]
+        : AccountType.Low,
     type: 'Personal',
-  });
-
-  const { data: projectData, isLoading: isLoadingProject } = queries.readone({
-    projectId,
-  });
-  const { mutate: updateProject, isLoading: isUpdating } = queries.update({
-    onSuccess: () => {
-      handleNext();
-    },
-  });
-
-  useEffect(() => {
-    if (projectData) {
-      setInitialValues({
-        title: projectData.title || '',
-        description: projectData.description || '',
-        expectedDeliveryDate: projectData.expectedDeliveryDate
-          ? projectData.expectedDeliveryDate.split('T')[0]
-          : '',
-        priority: priorityMapping[projectData?.priority] ?? AccountType.Low,
-        type: projectData.type,
-      });
-    }
-  }, [projectData]);
-
-  const onSubmit = (values: typeof initialValues) => {
-    updateProject({ projectId, ...values });
   };
 
-  if (isLoadingProject) {
-    return <div>Loading...</div>;
-  }
+  type InitialValues = ReturnType<() => typeof initialValues>;
+
+  const onSubmit = async (values: InitialValues) => {
+    try {
+      const response = await updateProject({...values, projectId}).unwrap();
+      if (response?.data?.id || projectId) {
+        dispatch(storeValues(values));
+        handleNext();
+        console.log('Submitting update with:', { ...values, id: projectId });
+      } else {
+        console.warn('Project ID not found. Cannot proceed to next step.');
+      }
+    } catch (error) {
+      console.error('Failed to create project:', error);
+    }
+  };
 
   return (
     <div className="app_get_started_professional_details py-6 px-4 flex flex-col gap-14">
@@ -84,7 +85,7 @@ export function EditProjectDetails(props: IProps) {
             initialValues={initialValues}
             validationSchema={validationSchema}
             onSubmit={onSubmit}
-            enableReinitialize
+            enableReinitialize={true}
           >
             {(props) => {
               const {
@@ -183,7 +184,7 @@ export function EditProjectDetails(props: IProps) {
                     <Button
                       type="submit"
                       size="md"
-                      isLoading={isUpdating}
+                      isLoading={isLoading}
                       backgroundColor="primary-blue-500"
                       className="w-1/2 app_auth_login__btn flex items-center justify-center gap-2"
                     >

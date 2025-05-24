@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-misused-promises */
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { Input } from '@/components/ui/input';
@@ -8,9 +9,11 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight, Pill } from '@/components/shared';
 import Image from 'next/image';
 import projectManagement from '@/lib/assets/project-management';
-import queries from '@/services/queries/projects';
 import { type InitialStep1Values } from '@/app/creatives/dashboard/project-management/personal-project/create/page';
 import { ProjectType } from '@/services/queries/projects/enums';
+import { useProjects, useUpdateProject } from '@/hooks/Projects/useProjects';
+import { useAppDispatch, useAppSelector } from '@/store';
+import { storeValues } from '@/store/slices/project';
 
 interface IProps {
   id: string;
@@ -25,89 +28,82 @@ interface IProps {
   onAddDeliverable: (values: any) => void;
 }
 
-const validationSchema = Yup.object().shape({
-  title: Yup.string().optional(),
-  description: Yup.string().optional(),
-  expectedDeliveryDate: Yup.string().optional(),
-  priority: Yup.string().required('Please select a priority'),
-});
-
 enum AccountType {
   Low = 'low',
   Medium = 'medium',
   High = 'high',
 }
-
-const priorityMapping: Record<number, AccountType> = {
-  1: AccountType.Low,
-  2: AccountType.Medium,
-  3: AccountType.High,
-};
+interface ProjectQueryParams {
+  type?: string;
+  status?: string;
+  priority?: string;
+  currency?: string;
+  pageNumber?: number;
+  pageSize?: number;
+  searchKey?: string;
+}
 
 export function EditProject(props: IProps) {
-  const { id, onClose, handleNext, setProjectId, setDeliverableId } = props;
-  const projectId = id;
-  const { data, refetch } = queries.readone({ projectId });
+  const { id, onClose, handleNext, setProjectId } = props;
+  const dispatch = useAppDispatch()
+  
+    const [params, setParams] = useState<ProjectQueryParams>({
+      // type: '2',
+      // status: '2',
+      // priority: '3',
+      pageNumber: 1,
+      pageSize: 50,
+      currency: 'NGN',
+      searchKey: '',
+    });
+  const { allProjectsData, refetchAllProjects } = useProjects(params);
 
-  const { mutate, isLoading } = queries.update({
-    onSuccess: (response) => {
-      if (response?.data?.id) {
-        const projectId = response.data.id;
-        setProjectId(projectId);
-        setDeliverableId(projectId);
-      } else {
-        console.warn('Project ID not found. Polling...');
-      }
-    },
+    const { title, description, expectedDeliveryDate, priority } = useAppSelector((state) => state?.project)
+  
+    const validationSchema = Yup.object().shape({
+    title: Yup.string().required('Please enter a project title'),
+    description: Yup.string().required('Please enter a project description'),
+    expectedDeliveryDate: Yup.date()
+      .min(new Date(), 'Expected delivery date must be in the future')
+      .required('Please enter an expected delivery date'),
+    priority: Yup.string().required('Please select a priority'),
   });
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  
+  const { updateProject, isLoading } = useUpdateProject();
+
+  const projectData = Array.isArray(allProjectsData?.data)
+    ? allProjectsData?.data.find((p) => p.id === id)
+    : allProjectsData?.data;
+
   const [userType, setUserType] = useState<ProjectType>(
     ProjectType.PersonalProject,
   );
 
-  useEffect(() => {
-    if (data) {
-      void refetch();
-    }
-  }, [data, projectId, refetch]);
-
-  const initialValues = {
-    title: '',
-    description: '',
-    expectedDeliveryDate: '',
-    priority: AccountType.Low as `${AccountType}`,
-    totalAmount: '',
+ const initialValues = {
+    title: projectData?.title ?? '',
+    description: projectData?.description ?? '',
+    expectedDeliveryDate: projectData?.expectedDeliveryDate ?? '',
+    priority: projectData?.priority ?? '',
     type: 'Personal',
   };
 
   type InitialValues = ReturnType<() => typeof initialValues>;
 
-  const onSubmit = (_values: InitialValues) => {
-    const payload: {
-      projectId: string;
-      title: string;
-      description: string;
-      expectedDeliveryDate: string;
-      priority: string;
-      totalAmount: string;
-      type: 'Personal';
-    } = {
-      projectId,
-      title: _values.title,
-      description: _values.description,
-      expectedDeliveryDate: _values.expectedDeliveryDate,
-      priority: _values.priority,
-      totalAmount: _values.totalAmount,
-      type: _values.type as 'Personal',
+  const onSubmit = async (_values: InitialValues) => {
+   try {
+      const response = await updateProject(_values).unwrap();
+      if (response?.data?.id) {
+        dispatch(storeValues(_values))
+        setProjectId(response.data.id);
+        handleNext(_values);
+      } else {
+        
+        console.warn('Project ID not found. Cannot proceed to next step.');
+      }
+    } catch (error) {
+      console.error('Failed to create project:', error);
+    }
     };
-
-    mutate(payload);
-    handleNext(_values);
-  };
-
-  if (!data) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <div className="app_auth_login_container relative !overflow-y-auto">
@@ -124,17 +120,7 @@ export function EditProject(props: IProps) {
             <h3 className="app_auth_login__title !mb-6">Edit Project</h3>
             <Formik
               enableReinitialize
-              initialValues={{
-                ...initialValues,
-                title: data?.title ?? '',
-                description: data?.description ?? '',
-                expectedDeliveryDate: data.expectedDeliveryDate
-                  ? data.expectedDeliveryDate.split('T')[0]
-                  : '',
-                priority: priorityMapping[data?.priority] ?? AccountType.Low,
-                totalAmount: data?.totalAmount ?? '',
-                projectType: data?.projectType ?? userType,
-              }}
+              initialValues={initialValues}
               validationSchema={validationSchema}
               onSubmit={onSubmit}
             >

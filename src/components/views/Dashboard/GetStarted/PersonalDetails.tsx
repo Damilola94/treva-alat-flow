@@ -78,6 +78,7 @@ export default function PersonalDetails() {
     if (saveOnboardingResponse?.isSuccess) {
       router.push(routes.client.dashboard.getStarted.socialMediaDetails.path);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [saveOnboardingResponse]);
 
   useEffect(() => {

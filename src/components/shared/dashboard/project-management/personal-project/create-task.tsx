@@ -1,16 +1,21 @@
-import Image from 'next/image'
-import projectManagement from '@/lib/assets/project-management'
-import * as Yup from 'yup'
-import { Formik } from 'formik'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { Pill } from '../../../pill'
-import queries from '@/services/queries/projects'
+import Image from 'next/image';
+import projectManagement from '@/lib/assets/project-management';
+import * as Yup from 'yup';
+import { Formik } from 'formik';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Pill } from '../../../pill';
+import { useAppDispatch, useAppSelector } from '@/store';
+import { useCreateDeliverableTaskMutation } from '@/services';
+import { storeValues } from '@/store/slices/project';
+import { useParams } from 'next/navigation';
+import { useDeliverable } from '@/hooks/Projects/useProjects';
 
 interface IProps {
-  onClose: () => void
-  projectId: string
-  setDeliverableId: (id: string) => void
+  onClose: () => void;
+  projectId: string;
+  deliverableId?: string;
+  setDeliverableId: (id: string) => void;
 }
 
 enum AccountType {
@@ -19,56 +24,91 @@ enum AccountType {
   High = 'high',
 }
 
-const validationSchema = Yup.object().shape({
-  taskName: Yup.string().required('Please enter a task name'),
-  startDate: Yup.date().required('Please select a start date'),
-  dueDate: Yup.date().required('Please select a due date'),
-  taskPriority: Yup.string().required('Please select a priority')
-})
+export function CreateTaskCard(props: IProps) {
+  const { id } = useParams();
+  const projectId = Array.isArray(id) ? id[0] : id;
+  const { onClose } = props;
+  const dispatch = useAppDispatch();
+  const { name, startDate, dueDate, priority, deliverableId } = useAppSelector(
+    (state) => state?.project,
+  );
 
-export function CreateTaskCard (props: IProps) {
-  const { onClose, projectId, setDeliverableId } = props
+  const validationSchema = Yup.object().shape({
+    name: Yup.string().required('Please enter a task name'),
+    startDate: Yup.date().required('Please select a start date'),
+    dueDate: Yup.date().required('Please select a due date'),
+    priority: Yup.string().required('Please select a priority'),
+    deliverableId: Yup.string().required('Please select a deliverable'),
+  });
+
+  const [createTask, { isLoading }] = useCreateDeliverableTaskMutation();
+ const { allDeliverablesData } = useDeliverable(projectId);
+  const deliverables = allDeliverablesData?.data;
 
   const initialValues = {
     projectId,
-    taskName: '',
-    startDate: '',
-    dueDate: '',
-    taskPriority: AccountType.Low as `${AccountType}`
-  }
+    deliverableId: deliverableId,
+    name: name,
+    startDate: startDate,
+    dueDate: dueDate,
+    priority: priority,
+  };
 
-  const { mutate, isLoading } = queries.createTasks({
-    onSuccess: (response) => {
+  type InitialValues = ReturnType<() => typeof initialValues>;
+
+  const onSubmit = async (_values: InitialValues) => {
+    try {
+      const response = await createTask(_values).unwrap();
       if (response?.data?.id) {
-        const deliverableId = response.data.id
-        setDeliverableId(deliverableId)
+        dispatch(storeValues(_values));
+        onClose();
+        // setDeliverableId(response.data.id);
+        console.log(deliverableId, 'deliverableId');
       } else {
-        console.warn('Task ID not found in response')
-      }
-      onClose()
-    }
-  })
+        console.log(deliverableId, 'deliverableId');
 
-  const onSubmit = (values: typeof initialValues) => {
-    mutate(values)
-  }
+        console.warn('Project ID not found. Cannot proceed to next step.');
+      }
+    } catch (error) {
+      console.error('Failed to create project:', error);
+    }
+  };
 
   return (
     <div className="app_auth_login_container relative">
-      <Image src={projectManagement.topGradient || '/placeholder.svg'} alt="top gradient" className="w-full" />
+      <Image
+        src={projectManagement.topGradient || '/placeholder.svg'}
+        alt="top gradient"
+        className="w-full"
+      />
       <div className="app_auth_login_container__upper !-mt-80">
         <div className="app_auth_login">
           <div>
             <h3 className="app_auth_login__title mb-5">Add new task</h3>
-            <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
-              {({ values, handleChange, handleBlur, handleSubmit, setFieldValue, errors, touched }) => (
-                <form onSubmit={handleSubmit} className="flex flex-col gap-4 mt-14">
+            <Formik
+              initialValues={initialValues}
+              validationSchema={validationSchema}
+              onSubmit={onSubmit}
+            >
+              {({
+                values,
+                handleChange,
+                handleBlur,
+                handleSubmit,
+                setFieldValue,
+                errors,
+                touched,
+              }) => (
+                <form
+                  onSubmit={handleSubmit}
+                  className="flex flex-col gap-4 mt-14"
+                >
                   <Input
-                    name="taskName"
+                    name="name"
                     type="text"
                     placeholder="Task Name"
                     size="xl"
-                    value={values.taskName}
+                    value={values.name}
                     onChange={handleChange}
                     onBlur={handleBlur}
                     errors={errors}
@@ -107,8 +147,10 @@ export function CreateTaskCard (props: IProps) {
                           key={priority}
                           size="md"
                           // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                          onClick={async () => await setFieldValue('taskPriority', priority)}
-                          active={values.taskPriority === priority}
+                          onClick={async () =>
+                            await setFieldValue('priority', priority)
+                          }
+                          active={values.priority === priority}
                           className="w-full"
                         >
                           {priority.charAt(0).toUpperCase() + priority.slice(1)}
@@ -116,6 +158,23 @@ export function CreateTaskCard (props: IProps) {
                       ))}
                     </div>
                   </div>
+
+                  <select
+                    name="deliverableId"
+                    value={values.deliverableId}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    className="border rounded px-3 py-2"
+                  >
+                    <option value="">Select Deliverable</option>
+                    {deliverables &&
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      deliverables.map((deliverables: any) =>
+                        <option key={deliverables.id} value={deliverables.id}>
+                          {deliverables.name}
+                        </option>
+                      )}
+                  </select>
 
                   <div className="flex justify-between space-x-10 absolute bottom-0 w-full -left-5 mb-5">
                     <Button
@@ -145,5 +204,5 @@ export function CreateTaskCard (props: IProps) {
         </div>
       </div>
     </div>
-  )
+  );
 }

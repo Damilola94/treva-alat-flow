@@ -1,115 +1,77 @@
 'use client';
-import { Fragment, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import routes from '@/lib/routes';
-import {
-  AnimatedModal,
-  CalendarWithMark,
-  Delete,
-  EditIcon,
-  Money4,
-  PlusIcon,
-  RenderIf,
-} from '@/components/shared';
-import { Modal } from '@/components/shared/decisionModal';
+import { AnimatedModal, CalendarWithMark, Delete, EditIcon, PlusIcon, RenderIf} from '@/components/shared';
 import { AddDeliverables } from '@/components/shared/project-management.tsx/add-deliverables';
 import { EditDeliverables } from '@/components/shared/project-management.tsx/edit-deliverables';
-import queries from '@/services/queries/projects';
 import { formatDate } from '@/lib/utils';
+import { Loader2 } from 'lucide-react';
+import { useGetDeliverablesQuery } from '@/services';
+import { useRouter } from 'next/navigation';
+import { useAppDispatch } from '@/store';
+import { clearValues } from '@/store/slices/project';
+import { DeleteDeliverable } from '../project-table/delete-deliverable';
+import projectManagement from '@/lib/assets/project-management';
 
 interface Deliverable {
   deliverableId: string;
-  deliverableName: string;
-  deliverableDescription: string;
+  name: string;
+  description: string;
   startDate: string;
   dueDate: string;
-  deliverableAmount: string;
-  timeline?: string;
-  totalAmount?: string;
 }
 
-export function PersonalProjectDeliverables({
-  projectId,
-}: {
-  projectId: string;
-}) {
+const deleteDeliverableItem = {
+  img: projectManagement.topImage,
+  title: 'Are you sure you want to delete this deliverable?',
+  details: 'deliverable record will be deleted Permanently',
+  btnText1: 'Cancel',
+  btnText2: 'Delete',
+};
+
+export function PersonalProjectDeliverables({projectId,}: {projectId: string;}) {
+  const rt = useRouter();
+  const dispatch = useAppDispatch();
+
   const [editForm, setEditForm] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isDecisionModalOpen, setIsDecisionModalOpen] = useState(false);
   const [deliverables, setDeliverables] = useState<Deliverable[]>([]);
-  // const [selectedDeliverableId, setSelectedDeliverableId] = useState<string>('')
   const [deliverableId, setDeliverableId] = useState<string>('');
+  const [deleteForm, setDeleteForm] = useState(false);
+  const [deleteDeliverableId, setDeleteDeliverableId] = useState<string | null>(
+    null,
+  );
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selectedDeliverable, setSelectedDeliverable] =
     useState<Deliverable | null>(null);
 
-  const { data, refetch } = queries.readDeliverables(
-    { projectId },
-    {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      onSuccess: (newData: any) => {
-        if (Array.isArray(newData)) {
-          const validDeliverables = newData.map((item) => {
-            return {
-              ...item,
-              deliverableId: item.deliverableId || item.id || '',
-            };
-          });
-          setDeliverables(validDeliverables);
-        } else {
-          setDeliverables([]);
-        }
-      },
-    },
-  );
-
-  const { mutate: deleteDeliverables } = queries.deleteDeliverables(
-    {},
-    {
-      onSuccess: () => {
-        void refetch();
-      },
-    },
-  );
+  const { data: deliverablesData, isLoading, refetch} = useGetDeliverablesQuery({ projectId },{ refetchOnMountOrArgChange: true },);
 
   useEffect(() => {
-    if (data) {
-      if (Array.isArray(data)) {
-        const validDeliverables = data.map((item) => ({
-          ...item,
-          deliverableId: item.deliverableId || item.id || '',
-        }));
-        setDeliverables(validDeliverables);
-      }
+    if (deliverablesData?.data) {
+      setDeliverables(
+        deliverablesData.data.map((item) => ({
+          deliverableId: item.id ?? '',
+          name: item.name ?? '',
+          description: item.description ?? '',
+          startDate: item.startDate ?? '',
+          dueDate: item.endDate ?? '',
+        })),
+      );
     }
-  }, [data]);
-
-  const handleCloseModal = () => {
-    setIsDecisionModalOpen(false);
-  };
+  }, [deliverablesData]);
 
   const closeModal = () => {
     setIsModalOpen(false);
   };
 
   const handleAddDeliverables = (newDeliverable: Deliverable) => {
-    const deliverableWithId = {
-      ...newDeliverable,
-      deliverableId: newDeliverable.deliverableId || '',
-    };
-    setDeliverables((prev) => [...prev, deliverableWithId]);
-    void refetch();
-  };
-
-  const handleDelete = () => {
-    if (!deliverableId) {
-      console.error('Deliverable ID is undefined. Cannot delete.');
-      return;
-    }
-    setDeliverables((prev) =>
-      prev.filter((d) => d.deliverableId !== deliverableId),
-    );
-    deleteDeliverables({ projectId, deliverableId });
-    setIsDecisionModalOpen(false);
+    setDeliverables((prev) => [...prev, newDeliverable]);
+    closeModal();
+    refetch();
   };
 
   const onEdit = (id: string) => {
@@ -123,8 +85,19 @@ export function PersonalProjectDeliverables({
     setEditForm(false);
   };
 
+  const onDelete = (id: string) => {
+    setDeleteDeliverableId(id);
+    setDeleteForm(!deleteForm);
+  };
+
+  
+  const handleDeleteProject = () => {
+    setDeleteForm(!deleteForm);
+  };
+
   const handleSkip = () => {
-    window.location.href = routes.creatives.dashboard.projectManagement.path;
+    dispatch(clearValues());
+    rt.push(routes.creatives.dashboard.projectManagement.path);
   };
 
   return (
@@ -147,76 +120,59 @@ export function PersonalProjectDeliverables({
       </AnimatedModal>
 
       <RenderIf condition={!editForm}>
-        <Fragment>
-          <AnimatedModal
-            {...{
-              isOpen: true,
-              from: 'right',
-              onClose: () => {
-                setEditForm(true);
-              },
-              className:
-                'absolute bottom-0 right-0 h-[calc(100vh-20px)] w-full sm:w-[350px] bg-white p-0 flex flex-col mb-2 mr-2',
+        <AnimatedModal
+          isOpen={true}
+          from="right"
+          onClose={() => {
+            setEditForm(true);
+            setSelectedDeliverable(null);
+          }}
+          className="absolute bottom-0 right-0 h-[calc(100vh-20px)] w-full sm:w-[350px] bg-white p-0 flex flex-col mb-2 mr-2"
+        >
+          <EditDeliverables
+            onClose={() => {
+              setEditForm(true);
+              setSelectedDeliverable(null);
             }}
-          >
-            <EditDeliverables
-              onClose={() => {
-                setEditForm(true);
-                setSelectedDeliverable(null);
+            projectId={projectId}
+            deliverableId={deliverableId}
+            onEditDeliverable={(updatedDeliverable) => {
+              setDeliverables((prev) =>
+                prev.map((d) =>
+                  d.deliverableId === updatedDeliverable.deliverableId
+                    ? updatedDeliverable
+                    : d,
+                ),
+              );
+              void refetch();
+            }}
+          />
+        </AnimatedModal>
+      </RenderIf>
+
+      <RenderIf condition={deleteForm}>
+        <AnimatedModal
+          isOpen={true}
+          from="middle"
+          onClose={onDelete}
+          className="sm:max-w-[450px] h-[300px] p-0 mx-7 lg:mx-0"
+        >
+          {deleteDeliverableId && (
+            <DeleteDeliverable
+              projectId={deleteDeliverableId}
+              deliverableId={deleteDeliverableId}
+              item={deleteDeliverableItem}
+              handleClick={() => {
+                setDeleteForm(false);
               }}
-              projectId={projectId}
-              deliverableId={deliverableId}
-              deliverable={selectedDeliverable}
-              onEditDeliverable={(updatedDeliverable) => {
-                setDeliverables((prev) =>
-                  prev.map((d) =>
-                    d.deliverableId === updatedDeliverable.deliverableId
-                      ? updatedDeliverable
-                      : d,
-                  ),
-                );
-                void refetch();
-              }}
+              onClose={handleDeleteProject}
+              refetchAllDeliverables={refetch}
             />
-          </AnimatedModal>
-        </Fragment>
+          )}
+        </AnimatedModal>
       </RenderIf>
 
       <div className="app_get_started_professional_details__form flex flex-col gap-10 !overflow-y-auto">
-        <Modal
-          {...{ open: isDecisionModalOpen, handleClose: handleCloseModal }}
-        >
-          <div className="app_modal__ctt__mid">
-            <h2 className="app_modal__ctt__mid__h2">
-              Are you sure you want to delete this deliverable?
-            </h2>
-            <p className="text-[#888888]">
-              Deliverable will be deleted Permanently
-            </p>
-          </div>
-
-          <div className="app_modal__ctt__btm flex gap-4">
-            <Button
-              backgroundColor="transparent"
-              size="xl"
-              color="treva-purple-500"
-              className="w-full border border-[#F1F1F1]"
-              onClick={handleCloseModal}
-            >
-              Cancel
-            </Button>
-            <Button
-              backgroundColor="error-500"
-              color="white"
-              size="xl"
-              className="w-full"
-              onClick={handleDelete}
-            >
-              Delete
-            </Button>
-          </div>
-        </Modal>
-
         <h3 className="app_get_started_professional_details__form__title">
           Deliverables <br />
           <span className="text-[#6D6D6D]">
@@ -237,77 +193,57 @@ export function PersonalProjectDeliverables({
           </button>
         </div>
         <div>
-          {deliverables.map((item, index) => {
-            return (
+          {isLoading ? (
+            <div className="text-center flex justify-center items-center">
+              <Loader2 size={18} className="animate-spin" />
+            </div>
+          ) : deliverables.length > 0 ? (
+            deliverables.map((deliverable) => (
               <div
-                key={index}
-                className="border p-4 rounded-md shadow mb-4 flex justify-between items-center bg-[#E7E7E7] "
+                key={deliverable.deliverableId}
+                className="border p-4 rounded-md shadow mb-4 flex justify-between items-center bg-[#E7E7E7]"
               >
-                <div>
-                  <div className="flex items-center gap-24 lg:gap-60">
-                    <h4 className="font-semibold mb-3">
-                      {item.deliverableName}
-                    </h4>
+                <div className="w-full">
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-semibold mb-3">{deliverable.name}</h4>
                     <div className="flex gap-4">
                       <EditIcon
                         className="cursor-pointer"
                         fill="#888888"
-                        onClick={() => {
-                          if (item.deliverableId) {
-                            onEdit(item.deliverableId);
-                          }
-                        }}
+                        onClick={() => onEdit(deliverable.deliverableId)}
                       />
                       <button
                         onClick={() => {
-                          if (item.deliverableId) {
-                            setDeliverableId(item.deliverableId);
-                            setIsDecisionModalOpen(true);
-                          }
-                        }}
+                         if (!deliverable?.deliverableId) {
+                          console.error('Item ID is undefined. Cannot delete.');
+                          return;
+                        }
+                       onDelete(deliverable?.deliverableId);
+                        setDeleteDeliverableId(deliverable.deliverableId);
+                      }}
+                      
                       >
                         <Delete className="cursor-pointer" />
                       </button>
                     </div>
                   </div>
-                  <p className="mb-2">{item.deliverableDescription}</p>
-                  <p className="flex gap-4 mb-3 ">
+                  <p className="mb-2">{deliverable.description}</p>
+                  <p className="flex gap-4 mb-3">
                     <CalendarWithMark fill="#6E50DB" />
-                    {item.startDate}
+                    {formatDate(deliverable.startDate)}
                   </p>
                   <p className="flex gap-4 mb-3">
                     <CalendarWithMark fill="#6E50DB" />
-                    {formatDate(item.dueDate)}
-                  </p>
-                  <p className="flex gap-4">
-                    <Money4 stroke="#6E50DB" /> {item.deliverableAmount}
+                    {formatDate(deliverable.dueDate)}
                   </p>
                 </div>
               </div>
-            );
-          })}
-
-          {deliverables.length > 0 && (
-            <div className="mt-10 text-[#262626]">
-              <p className="flex justify-between mb-2">
-                Total deliverables: <span>{deliverables.length}</span>
-              </p>
-              <p className="flex justify-between mb-2">
-                Timeline <span>{deliverables[0].timeline}</span>
-              </p>
-              <p className="flex justify-between mb-2">
-                Sub Total: <span>NGN {deliverables[0].totalAmount}</span>
-              </p>
-              <p className="flex justify-between">
-                Total{' '}
-                <span className="font-bold">
-                  NGN {deliverables[0].totalAmount}
-                </span>
-              </p>
-            </div>
+            ))
+          ) : (
+            <p className="text-gray-500">No deliverables added yet.</p>
           )}
         </div>
-        <div className="pt-4 flex justify-end">
+        <div className="py-5 flex justify-end">
           <Button
             type="button"
             size="xl"
@@ -315,6 +251,7 @@ export function PersonalProjectDeliverables({
             className="w-1/2 py-3 px-12"
             onClick={handleSkip}
             disabled={deliverables.length === 0}
+            isLoading={isLoading}
           >
             Create Project
           </Button>

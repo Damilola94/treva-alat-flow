@@ -147,6 +147,7 @@ export default function Page() {
     ) {
       router.push(routes.creatives.dashboard.getStarted.path);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [creativeOnboardingData]);
 
   return (

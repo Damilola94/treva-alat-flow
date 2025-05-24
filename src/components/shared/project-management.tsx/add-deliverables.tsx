@@ -6,7 +6,9 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import projectManagement from '@/lib/assets/project-management';
 import Image from 'next/image';
-import queries from '@/services/queries/projects';
+import { useCreateDeliverableMutation } from '@/services';
+import { useAppDispatch, useAppSelector } from '@/store';
+import { clearValues, storeValues } from '@/store/slices/project';
 
 interface IProps {
   onClose: () => void;
@@ -16,58 +18,49 @@ interface IProps {
   setDeliverableId: (id: string) => void;
 }
 
-const validationSchema = Yup.object().shape({
-  deliverableName: Yup.string().required('Please enter a deliverable name'),
-  description: Yup.string().required('Please enter a description'),
-  startDate: Yup.date().required('Please select a start date'),
-  dueDate: Yup.date().required('Please select a due date'),
-});
-
-enum AccountType {
-  Low = 'low',
-  Medium = 'medium',
-  High = 'high',
-}
-
 export function AddDeliverables(props: IProps) {
+  const dispatch = useAppDispatch();
   const { onClose, projectId, setDeliverableId, onAddDeliverable } = props;
-
-  const { mutate, isLoading } = queries.createDeliverables({
-    onSuccess: (response) => {
-      if (response?.data?.id) {
-        const deliverableId = response.data.id;
-        setDeliverableId(deliverableId);
-
-        const newDeliverable = {
-          deliverableId,
-          deliverableName: response.data.deliverableName,
-          deliverableDescription: response.data.description,
-          startDate: response.data.startDate,
-          dueDate: response.data.dueDate,
-          deliverableAmount: response.data.deliverableAmount,
-        };
-
-        onAddDeliverable(newDeliverable);
-      }
-      onClose();
-    },
+  const [createDeliverables, { isLoading }] = useCreateDeliverableMutation();
+  const { name, deliverableDescription, startDate, endDate } = useAppSelector((state) => state?.project)
+ 
+  const initialValues = {
+    name: name,
+    description: deliverableDescription,
+    startDate: startDate,
+    endDate: endDate,
+  };
+  const validationSchema = Yup.object().shape({
+    name: Yup.string().required('Please enter a deliverable name'),
+    description: Yup.string().required('Please enter a description'),
+    startDate: Yup.date().required('Please select a start date'),
+    endDate: Yup.date().required('Please select a due date'),
   });
 
-  const initialValues = {
-    projectId,
-    deliverableName: '',
-    description: '',
-    startDate: '',
-    dueDate: '',
-    unitDeliverableAmount: '',
-    units: '',
-    accountType: AccountType.Low as `${AccountType}`,
-  };
 
-  type InitialValues = ReturnType<() => typeof initialValues>;
-
-  const onSubmit = (_values: InitialValues) => {
-    mutate({ ..._values });
+  const onSubmit = async (values: typeof initialValues) => {
+    try {
+      const response = await createDeliverables({
+        projectId,
+        ...values,
+        description: values.description,
+      }).unwrap();
+      const deliverable = response?.data;
+      if (deliverable?.id) {
+        dispatch(storeValues(values))
+        setDeliverableId(deliverable.id);
+        onAddDeliverable({
+          ...deliverable,
+          deliverableId: deliverable.id,
+        });
+        dispatch(clearValues())
+        onClose();
+      } else {
+        console.warn('Deliverable ID not found in response.');
+      }
+    } catch (error) {
+      console.error('Failed to create deliverable:', error);
+    }
   };
 
   return (
@@ -85,6 +78,7 @@ export function AddDeliverables(props: IProps) {
               initialValues={initialValues}
               validationSchema={validationSchema}
               onSubmit={onSubmit}
+              enableReinitialize={true}
             >
               {({
                 values,
@@ -99,11 +93,11 @@ export function AddDeliverables(props: IProps) {
                   className="flex flex-col gap-4 mt-14"
                 >
                   <Input
-                    name="deliverableName"
+                    name="name"
                     type="text"
                     placeholder="Deliverable Name"
                     size="xl"
-                    value={values.deliverableName}
+                    value={values.name}
                     onChange={handleChange}
                     onBlur={handleBlur}
                     errors={errors}
@@ -135,51 +129,17 @@ export function AddDeliverables(props: IProps) {
                     />
 
                     <Input
-                      name="dueDate"
+                      name="endDate"
                       type="date"
-                      label="Due Date"
+                      label="End Date"
                       size="xl"
-                      value={values.dueDate}
+                      value={values.endDate}
                       onChange={handleChange}
                       onBlur={handleBlur}
                       errors={errors}
                       touched={touched}
                     />
                   </div>
-
-                  <div className="flex gap-5">
-                    <Input
-                      name="unitDeliverableAmount"
-                      type="number"
-                      placeholder="Unit Amount"
-                      size="xl"
-                      value={values.unitDeliverableAmount}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      errors={errors}
-                      touched={touched}
-                    />
-
-                    <Input
-                      name="units"
-                      type="number"
-                      placeholder="Units"
-                      size="xl"
-                      value={values.units}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      errors={errors}
-                      touched={touched}
-                    />
-                  </div>
-
-                  <p className="font-semibold">
-                    Total Amount:{' '}
-                    <span className="font-normal">
-                      {Number(values.unitDeliverableAmount) *
-                        Number(values.units)}
-                    </span>
-                  </p>
 
                   <div className="flex justify-between space-x-10 absolute bottom-0 w-full -left-5 mb-5">
                     <Button

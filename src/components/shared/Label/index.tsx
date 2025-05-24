@@ -2,7 +2,7 @@ import { HighStatus, LowStatus, MediumStatus } from '@/app/assets/svgs';
 import React from 'react';
 
 type PriorityLevel = 'High' | 'Medium' | 'Low'
-type StatusType = 'Pending' | 'Due' | 'Completed' | 'To Do'
+type StatusType = 'Pending' | 'Due' | 'Completed' | 'ToDo'
 type TransactionType = 'Credit' | 'Debit'
 type LabelType = PriorityLevel | StatusType | TransactionType
 
@@ -20,8 +20,13 @@ const priorityMap: Record<number, PriorityLevel> = {
   3: 'High',
 };
 
+export const projectTypeMap: Record<number, string> = {
+  1: 'Personal',
+  2: 'Client',
+};
+
 const statusMap: Record<number, StatusType> = {
-  1: 'To Do',
+  1: 'ToDo',
   2: 'Pending',
   8: 'Due',
   4: 'Completed',
@@ -56,8 +61,8 @@ const Label: React.FC<LabelProps> = ({
   };
 
   const statusConfig = {
-    'To Do': {
-      style: 'bg-[#26A17B] text-[#0A4C8D]',
+    ToDo: {
+      style: 'bg-[#56A17B] text-[#0A4C8D]',
     },
     Pending: {
       style: 'bg-[#FEF6E7] text-[#865503]',

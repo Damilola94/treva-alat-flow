@@ -1,219 +1,245 @@
-'use client'
+/* eslint-disable @typescript-eslint/no-explicit-any */
+'use client';
 
-import { EmptyStatus } from '../../../svgs'
-import { useState, useEffect } from 'react'
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
-import { useParams } from 'next/navigation'
-import queries from '@/services/queries/projects'
-import { formatDate } from '@/lib/utils'
-import { TaskGirdView } from '../grid-view/grid-view'
-import { ProjectStatus } from '@/services/queries/projects/enums'
+import { useState, useMemo } from 'react';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { useParams } from 'next/navigation';
+import { formatDate } from '@/lib/utils';
+import { TaskGirdView } from '../grid-view/grid-view';
+import { Label } from '@/components/shared/Label';
+import { Loader2 } from 'lucide-react';
+import { Table } from '@/components/shared/Table';
+import { useTasks } from '@/hooks/Projects/useProjects';
+import { useUpdateDeliverableTaskMutation } from '@/services';
+import { Button } from '@/components/ui/button';
+import { useAppDispatch } from '@/store';
+import { clearValues } from '@/store/slices/project';
+import { Plus } from '@/components/shared/svgs';
 
 interface TaskTableProps {
-  viewType?: string
-  projectId?: string
-  taskId?: string
+  viewType?: string;
+  projectId?: string;
+  taskId?: string;
+  onAddTask: () => void;
+  deliverableId?: string;
 }
-
 interface Task {
-  id: string
-  projectId: string
-  taskName: string
-  dueDate: string
-  startDate: string
-  taskPriority: string
-  priorityColor: string
-  taskStatus: string
+  id: string;
+  name: string;
+  startDate: string;
+  endDate: string;
+  priority: string;
+  status: number | string;
 }
 
-const thead = [
-  { label: 'Name' },
-  { label: 'Start date' },
-  { label: 'Due date' },
-  { label: 'Priority' },
-  { label: 'Status' }
-]
+export function TaskTable({ viewType, onAddTask, deliverableId,}: TaskTableProps) {
+  const { id } = useParams();
+  const projectId = Array.isArray(id) ? id[0] : id;
+  const dispatch = useAppDispatch();
+  dispatch(clearValues());
 
-export function TaskTable ({ viewType, taskId }: TaskTableProps) {
-  const param = useParams()
-  const projectId = Array.isArray(param.id) ? param.id[0] : param.id
-  const { data } = queries.readTasks({ projectId })
-  const { mutate } = queries.updateTasks({ taskId, projectId },
-    {
-      onSuccess: () => {
-      }
-    }
-  )
+  const [activeTab, setActiveTab] = useState<'todo' | 'completed'>('todo');
 
-  const [tasks, setTasks] = useState<Task[]>([])
-  const [activeTab, setActiveTab] = useState<'todo' | 'completed'>('todo')
+  const { allTasksData, loading, refetchAllTasks } = useTasks( projectId, deliverableId,);
+  const [updateTask] = useUpdateDeliverableTaskMutation();
 
-  const updateTaskStatus = (taskId: string, newStatus: string) => {
-    const task = tasks.find((task) => task.id === taskId);
-    if (task) {
-      mutate({
-        taskId,
-        projectId,
-        taskName: task.taskName,
+  const tableBody: Task[] = useMemo(() => {
+    if (allTasksData?.isSuccess && Array.isArray(allTasksData.data)) {
+      return allTasksData.data.map((task: any) => ({
+        id: task.id,
+        name: task.name,
         startDate: task.startDate,
-        dueDate: task.dueDate,
-        taskPriority: task.taskPriority,
-        taskStatus: newStatus
-      });
+        endDate: task.endDate,
+        priority: task.priority,
+        status: task.status,
+      }));
     }
-  };
+    return [];
+  }, [allTasksData?.isSuccess, allTasksData?.data]);
 
-  useEffect(() => {
-    if (data) {
-      setTasks(data.data || [])
-    }
-  }, [data])
+  const todoTasks = useMemo(() => {
+    return tableBody.filter((task: Task) => task.status === 1);
+  }, [tableBody]);
 
-  useEffect(() => {
-    setTasks((prevTasks) =>
-      prevTasks.map((task) =>
-        task.taskStatus === ProjectStatus.Completed ? { ...task, taskStatus: ProjectStatus.Completed } : task
-      )
-    );
-  }, [tasks]);
+  const completedTasks = useMemo(() => {
+    return tableBody.filter((task: Task) => task.status === 4);
+  }, [tableBody]);
 
-  if (tasks.length === 0) {
-    return (
-      <div className="app_dashboard_home__task__ctt app_dashboard_home__task__ctt--empty">
-        <EmptyStatus />
-        <div className="flex flex-col gap-1">
-          <p className="app_dashboard_home__task__ctt__title">No task yet</p>
-          <p className="app_dashboard_home__task__ctt__desc">Click &quot;add new request&quot; button to get started</p>
-        </div>
-      </div>
-    )
-  }
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 4,
+  });
 
-  const todoTasks = tasks.filter((task: Task) => task.taskStatus === ProjectStatus.ToDo)
-  const completedTasks = tasks.filter((task: Task) => task.taskStatus === ProjectStatus.Completed)
+  const headers = [
+    {
+      header: 'Name',
+      accessorKey: 'name',
+    },
+    {
+      header: 'Start date',
+      accessorKey: 'startDate',
+      cell: ({ row }: any) => {
+        const date = row.original.startDate;
+        return formatDate(date);
+      },
+    },
+    {
+      header: 'End date',
+      accessorKey: 'endDate',
+      cell: ({ row }: any) => {
+        const date = row.original.endDate;
+        return formatDate(date);
+      },
+    },
+    {
+      header: 'Priority',
+      accessorKey: 'priority',
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      cell: ({ row }: any) => {
+        const value = row.original.priority;
+        return (
+          <div className="">
+            <Label type="priority" value={value} showIcon />
+          </div>
+        );
+      },
+    },
+    {
+      header: '',
+      accessorKey: 'actions',
+      cell: ({ row }: any) => {
+        const task = row.original;
+        const isCompleted = task.status === 4;
+         const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+          const newStatus = e.target.checked ? 4 : 2;
+          await updateTask({
+            projectId,
+            deliverableId,
+            taskId: task.id,
+            status: newStatus,
+          });
+          if (refetchAllTasks) refetchAllTasks();
+        };
+        return (
+          <div className="flex items-center gap-3">
+            <input
+              type="checkbox"
+              className="w-5 h-5 cursor-pointer"
+              checked={isCompleted}
+              onChange={handleChange}
+            />
+            <label>Mark as {isCompleted ? 'Incomplete' : 'Completed'}</label>
+          </div>
+        );
+      },
+    },
+  ];
 
   return (
     <div className="app_dashboard_home__task__cct">
-      <Tabs value={activeTab} onValueChange={(value) => { setActiveTab(value as 'todo' | 'completed'); }} className="w-full">
-        {viewType === 'table' && (
-          <TabsList className="mb-4 gap-3">
-            <TabsTrigger
-              value="todo"
-              className='flex gap-2 rounded-full border-none'
-              style={{
-                backgroundColor: activeTab === 'todo' ? '#26A17B' : 'white',
-                color: activeTab === 'todo' ? 'white' : 'black'
-              }}
+      <div className="flex justify-between items-center mb-4">
+        <Tabs
+          value={activeTab}
+          onValueChange={(value) => {
+            setActiveTab(value as 'todo' | 'completed');
+          }}
+          className="w-full"
+        >
+          <div className="flex justify-between items-center">
+            <TabsList className="gap-3">
+              <TabsTrigger
+                value="todo"
+                className="flex gap-2 rounded-full border-none"
+                style={{
+                  backgroundColor: activeTab === 'todo' ? '#26A17B' : 'white',
+                  color: activeTab === 'todo' ? 'white' : 'black',
+                }}
+              >
+                To do
+                <span className="inline-flex items-center justify-center w-6 h-6 bg-gray-100 rounded-full text-sm text-black">
+                  {todoTasks.length}
+                </span>
+              </TabsTrigger>
+              <TabsTrigger
+                value="completed"
+                className="flex gap-2 rounded-full border-none"
+                style={{
+                  backgroundColor:
+                    activeTab === 'completed' ? '#26A17B' : 'white',
+                  color: activeTab === 'completed' ? 'white' : 'black',
+                }}
+              >
+                Completed
+                <span className="inline-flex items-center justify-center w-6 h-6 bg-gray-100 rounded-full text-sm text-black">
+                  {completedTasks.length}
+                </span>
+              </TabsTrigger>
+            </TabsList>
+
+            <Button
+              onClick={onAddTask}
+              className="flex items-center gap-2 text-purple-600 bg-transparent hover:bg-purple-50"
             >
-              To do
-              <span className="inline-flex items-center justify-center w-6 h-6 bg-gray-100 rounded-full text-sm text-black">
-                {todoTasks.length}
-              </span>
-            </TabsTrigger>
-            <TabsTrigger
-              value="completed"
-              className='flex gap-2 rounded-full border-none'
-              style={{
-                backgroundColor: activeTab === 'completed' ? '#26A17B' : 'white',
-                color: activeTab === 'completed' ? 'white' : 'black'
-              }}
-            >
-              Completed
-              <span className="inline-flex items-center justify-center w-6 h-6 bg-gray-100 rounded-full text-sm text-black">
-                {completedTasks.length}
-              </span>
-            </TabsTrigger>
-          </TabsList>
-        )}
+              <Plus />
+              Add new task
+            </Button>
+          </div>
 
-        <TabsContent value="todo">
-          {viewType === 'table' ? <TaskList tasks={todoTasks} updateTaskStatus={updateTaskStatus} /> : <TaskGirdView />}
-        </TabsContent>
+          <TabsContent value="todo" className="mt-4">
+            {viewType === 'table' ? (
+              <div className="w-full text-left relative rounded-xl overflow-auto">
+                <div className="shadow-sm overflow">
+                  {loading ? (
+                    <div className="text-center flex justify-center items-center">
+                      <Loader2 size={18} className="animate-spin" />
+                    </div>
+                  ) : (
+                    <Table<Task>
+                      columns={headers}
+                      emptyTitle="No Tasks Yet"
+                      emptyMessage="You'll see all your tasks here"
+                      data={tableBody}
+                      pagination={pagination}
+                      setPagination={setPagination}
+                    />
+                  )}
+                </div>
+              </div>
+            ) : (
+              <TaskGirdView onAddTask={function (): void {
+                  throw new Error('Function not implemented.');
+                } } />
+            )}
+          </TabsContent>
 
-        <TabsContent value="completed">
-          {viewType === 'table'
-            ? (
-              <TaskList tasks={completedTasks} updateTaskStatus={updateTaskStatus} />
-              )
-            : (
-              <TaskGirdView />
-              )}
-        </TabsContent>
-      </Tabs>
-    </div>
-  )
-}
-
-interface TaskListProps {
-  tasks: Task[]
-  updateTaskStatus: (taskId: string, newStatus: string) => void
-}
-
-function TaskList ({ tasks, updateTaskStatus }: TaskListProps) {
-  return (
-    <div className="w-full text-left relative rounded-xl overflow-auto">
-      <div className="shadow-sm overflow">
-        <table className="border-collapse table-auto w-full app_table">
-          <thead>
-            <tr className="app_table__tr">
-              {thead.map(({ label }) => (
-                <th key={label} className="app_table__tr__th">
-                  <div className="app_table__tr__th__edit">{label}</div>
-                </th>
-              ))}
-            </tr>
-          </thead>
-
-          <tbody className="app_table__tbody">
-            {tasks.length === 0
-              ? (
-                <tr>
-                  <td colSpan={5} className="app_table__tbody__td text-center py-8">
-                    No tasks in this category
-                  </td>
-                </tr>
-                )
-              : (
-                  tasks.map((item: Task) => (
-                  <tr key={item.id} className="border-t border-gray-100">
-                    <td className="app_table__tbody__td font-medium text-[--text-color-500]">
-                      <div className="app_table__tbody__td__ctt font-semibold">{item.taskName}</div>
-                    </td>
-                    <td className="app_table__tbody__td text-[--text-color-500]">
-                      <div className="app_table__tbody__td__ctt">{formatDate(item.startDate)}</div>
-                    </td>
-                    <td className="app_table__tbody__td text-[--text-color-500]">
-                      <div className="app_table__tbody__td__ctt">{formatDate(item.dueDate)}</div>
-                    </td>
-                    <td className="app_table__tbody__td text">
-                      <div className={`app_table__priority app_table__priority--${item.taskPriority || 'Low'}`}>
-                        <span className="app_table__priority__dot"></span>
-                        {item.taskPriority || 'Low'}
-                      </div>
-                    </td>
-                    <td className="app_table__tbody__td">
-                      <div className="flex items-center gap-4">
-                        <input
-                          type="checkbox"
-                          checked={item.taskStatus === ProjectStatus.Completed}
-                          onChange={() => {
-                            updateTaskStatus(
-                              item.id,
-                              item.taskStatus === ProjectStatus.ToDo ? ProjectStatus.Completed : ProjectStatus.ToDo
-                            )
-                          }}
-
-                          className="w-5 h-5 accent-green-500 cursor-pointer"
-                        />
-                        <label>Mark as {item.taskStatus === ProjectStatus.Completed ? 'incomplete' : 'complete'}</label>
-                      </div>
-                    </td>
-                  </tr>
-                  ))
-                )}
-          </tbody>
-        </table>
+          <TabsContent value="completed" className="mt-4">
+            {viewType === 'table' ? (
+              <div className="w-full text-left relative rounded-xl overflow-auto">
+                <div className="shadow-sm overflow">
+                  {loading ? (
+                    <div className="text-center flex justify-center items-center">
+                      <Loader2 size={18} className="animate-spin" />
+                    </div>
+                  ) : (
+                    <Table<Task>
+                      columns={headers}
+                      emptyTitle="No Completed Tasks"
+                      emptyMessage="You'll see all your completed tasks here"
+                      data={completedTasks}
+                      pagination={pagination}
+                      setPagination={setPagination}
+                    />
+                  )}
+                </div>
+              </div>
+            ) : (
+              <TaskGirdView onAddTask={function (): void {
+                  throw new Error('Function not implemented.');
+                } } />
+            )}
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
-  )
+  );
 }
