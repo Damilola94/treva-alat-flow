@@ -7,20 +7,13 @@ import { Button } from '@/components/ui/button';
 import { Pill } from '@/components/shared';
 import { type InitialStep1Values } from '@/app/creatives/dashboard/project-management/personal-project/create/page';
 import { useCreateProjectMutation } from '@/services';
+import {  useAppDispatch, useAppSelector } from '@/store';
+import { storeValues } from '@/store/slices/project';
 
 interface IProps {
   handleNext: (formData: InitialStep1Values) => void
   setProjectId: (id: string) => void
 }
-
-const validationSchema = Yup.object().shape({
-  title: Yup.string().required('Please enter a project title'),
-  description: Yup.string().required('Please enter a project description'),
-  expectedDeliveryDate: Yup.date()
-    .min(new Date(), 'Expected delivery date must be in the future')
-    .required('Please enter an expected delivery date'),
-  priority: Yup.string().required('Please select a priority'),
-});
 
 enum AccountType {
   Low = 'low',
@@ -30,43 +23,38 @@ enum AccountType {
 
 export function PersonalProjectDetails (props: IProps) {
   const { handleNext, setProjectId } = props;
+  const dispatch = useAppDispatch()
+  const { title, description, expectedDeliveryDate, priority } = useAppSelector((state) => state?.project)
+
+  const validationSchema = Yup.object().shape({
+  title: Yup.string().required('Please enter a project title'),
+  description: Yup.string().required('Please enter a project description'),
+  expectedDeliveryDate: Yup.date()
+    .min(new Date(), 'Expected delivery date must be in the future')
+    .required('Please enter an expected delivery date'),
+  priority: Yup.string().required('Please select a priority'),
+});
 
   const [createProject, { isLoading }] = useCreateProjectMutation();
 
-  // const { mutate, isLoading } = queries.create({
-  //   onSuccess: (response) => {
-  //     if (response?.data?.id) {
-  //       const projectId = response.data.id;
-  //       setProjectId(projectId);
-  //     } else {
-  //       console.warn('Project ID not found. Polling...');
-  //     }
-  //   },
-  // });
-
   const initialValues = {
-    title: '',
-    description: '',
-    expectedDeliveryDate: '',
-    priority: AccountType.Low as `${AccountType}`,
+    title: title,
+    description: description,
+    expectedDeliveryDate: expectedDeliveryDate,
+    priority: priority,
     type: 'Personal',
   };
 
   type InitialValues = ReturnType<() => typeof initialValues>;
 
-  // const onSubmit = (_values: InitialValues) => {
-  //   mutate({ ..._values });
-  //   handleNext(_values);
-  // };
-
 const onSubmit = async (_values: InitialValues) => {
   try {
     const response = await createProject(_values).unwrap();
     if (response?.data?.id) {
+      dispatch(storeValues(_values))
       setProjectId(response.data.id);
       handleNext(_values);
     } else {
-      
       console.warn('Project ID not found. Cannot proceed to next step.');
     }
   } catch (error) {
@@ -74,7 +62,7 @@ const onSubmit = async (_values: InitialValues) => {
   }
 };
 
-  
+
   return (
     <div className="app_get_started_professional_details py-6 px-4 flex flex-col gap-14">
       <div className="app_get_started_professional_details__form flex flex-col gap-10 !overflow-y-auto">
@@ -86,6 +74,7 @@ const onSubmit = async (_values: InitialValues) => {
             initialValues={initialValues}
             validationSchema={validationSchema}
             onSubmit={onSubmit}
+            enableReinitialize={true}
           >
             {(props) => {
               const {

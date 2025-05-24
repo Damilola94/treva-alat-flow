@@ -8,7 +8,7 @@ const useProjectById = (projectId?: string ) => {
     data: allProjectsByIdData,
     isFetching: fetchingAllProjects,
     isLoading: loadingAllProjects,
-    refetch: refetchAllProjects,
+    refetch: refetchAllProjectsById,
     error: allProjectError,
   } = useGetProjectByIdQuery(projectId ?? '', {
     skip: !loggedIn || !projectId,
@@ -18,7 +18,7 @@ const useProjectById = (projectId?: string ) => {
   return {
     allProjectsByIdData,
     loading: fetchingAllProjects || loadingAllProjects,
-    refetchAllProjects,
+    refetchAllProjectsById,
     allProjectError,
   };
 };

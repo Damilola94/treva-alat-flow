@@ -67,8 +67,8 @@ export const invoiceTabs = [
 
 export const popoverItems = [
   { label: 'All Project', value: '' },
-  { label: 'Personal Project', value: 'PersonalProject' },
-  { label: 'Client Project', value: 'ClientProject' },
+  { label: 'Personal Project', value: 'Personal' },
+  { label: 'Client Project', value: 'Client' },
 ]
 
 export const priorityItems = [

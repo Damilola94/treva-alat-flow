@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useCallback } from 'react';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useState, useMemo, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import {
   ClientIcon,
@@ -11,31 +11,37 @@ import {
   RenderIf,
   Table,
   Label,
+  projectTypeMap,
 } from '@/components/shared';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import {
   CreateProjectCard,
   TakeATour,
   AddProject,
 } from '@/components/shared/project-management';
-import { EditProject } from '@/components/shared/dashboard/project-management/project-table/edit-project';
 import { DeleteProject } from '@/components/shared/dashboard/project-management/project-table/delete-project';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { Check, ListFilter } from 'lucide-react';
+import { Check, ListFilter, Loader2 } from 'lucide-react';
 import projectManagement from '@/lib/assets/project-management';
-import type {
-  ProjectPriority,
-  ProjectStatus,
-  ProjectType,
-} from '@/services/queries/projects/enums';
-import queries from '@/services/queries/projects';
 import { BinGray, EditPencilGray } from '@/components/shared/svgs';
 import { popoverItems, priorityItems, statusItems } from '@/constants';
+import { useProjects } from '@/hooks/Projects';
+import SearchInput from '@/components/ui/SearchInput';
+import { formatDate } from '@/lib/utils';
+
+interface ProjectQueryParams {
+  type?: string;
+  status?: string;
+  priority?: string;
+  currency?: string;
+  pageNumber?: number;
+  pageSize?: number;
+  searchKey?: string;
+}
 
 const createAProject = {
   img: projectManagement.topImageProject,
@@ -65,7 +71,7 @@ const viewTakeATour = {
   bottomInfo: '',
 };
 
-const deleteClient = {
+const deleteProject = {
   img: projectManagement.topImage,
   title: 'Are you sure you want to delete this project',
   details: 'Project record will be deleted Permanently',
@@ -74,89 +80,54 @@ const deleteClient = {
 };
 
 export default function Page() {
-  const path = usePathname();
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const handleCategorySelect = useCallback(
-    (projectType: string) => {
-      const params = new URLSearchParams(searchParams.toString());
-      if (projectType) {
-        params.set('projectType', projectType);
-      } else {
-        params.delete('projectType');
-      }
-      router.push(`${path}?${params.toString()}`);
-    },
-    [path, searchParams, router],
-  );
+  const [params, setParams] = useState<ProjectQueryParams>({
+    // type: '2',
+    // status: '2',
+    // priority: '3',
+    pageNumber: 1,
+    pageSize: 50,
+    currency: 'NGN',
+    searchKey: '',
+  });
 
-  const handlePriorityItem = useCallback(
-    (priority: string) => {
-      const params = new URLSearchParams(searchParams.toString());
-      if (priority) {
-        params.set('projectPriority', priority);
-      } else {
-        params.delete('projectPriority');
-      }
-      router.push(`${path}?${params.toString()}`);
-    },
-    [path, searchParams, router],
-  );
+  const { allProjectsData, loading, refetchAllProjects } = useProjects(params);
+  
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [takeATour, setTakeATour] = useState(true);
+  const [addProject, setAddProject] = useState(true);
+  const [addProjectForm, setAddProjectForm] = useState(true);
 
-  const handleStatusItem = useCallback(
-    (status: string) => {
-      const params = new URLSearchParams(searchParams.toString());
-      if (status) {
-        params.set('projectStatus', status);
-      } else {
-        params.delete('projectStatus');
-      }
-      router.push(`${path}?${params.toString()}`);
-    },
-    [path, searchParams, router],
-  );
+  const [deleteForm, setDeleteForm] = useState(false);
+  const [deleteProjectId, setDeleteProjectId] = useState<string | null>(null);
 
-  const selectedCategory =
-    (searchParams.get('projectType') as ProjectType) || '';
-  const selectedPriority =
-    (searchParams.get('projectPriority') as ProjectPriority) || '';
-  const selectedStatus =
-    (searchParams.get('projectStatus') as ProjectStatus) || '';
-
-  const [search, setSearch] = useState('');
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 50,
   });
 
-  const { data, refetch } = queries.read({
-    projectType: selectedCategory,
-    priority: selectedPriority,
-    status: selectedStatus,
-    pageNumber: pagination.pageIndex + 1,
-    pageSize: pagination.pageSize,
-    search,
-  });
+  const tableBody = useMemo(() => {
+    return allProjectsData?.isSuccess && allProjectsData.data
+      ? allProjectsData.data
+      : [];
+  }, [allProjectsData?.isSuccess, allProjectsData?.data]);
 
-  const [takeATour, setTakeATour] = useState(true);
-  const [addProject, setAddProject] = useState(true);
-  const [addProjectForm, setAddProjectForm] = useState(true);
+  useEffect(() => {
+    setParams((prev) => ({
+      ...prev,
+      pageNumber: pagination?.pageIndex + 1,
+      pageSize: pagination?.pageSize,
+    }));
+  }, [pagination]);
 
-  const [editForm, setEditForm] = useState(false);
-  const [editProjectId, setEditProjectId] = useState<string | null>(null);
-
-  const [deleteForm, setDeleteForm] = useState(false);
-  const [deleteProjectId, setDeleteProjectId] = useState<string | null>(null);
-
-  // const handleEditProject = (id: string) => {
-  //   setEditProjectId(id)
-  //   setEditForm(true)
-  // }
-
-  const handleCloseEditForm = () => {
-    setEditForm(false);
-    setEditProjectId(null);
+  const handleParamChange = (param: Partial<ProjectQueryParams>) => {
+    setParams((prev) => ({
+      ...prev,
+      ...param,
+    }));
   };
 
   const handleAddProjectClick = () => {
@@ -185,18 +156,6 @@ export default function Page() {
     setDeleteForm(!deleteForm);
   };
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value);
-    void refetch();
-  };
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleRowClick = (row: any) => {
-    if (row?.original?.id) {
-      router.push(`/creatives/dashboard/project-management/${row.original.id}`);
-    }
-  };
-
   const columns = [
     {
       header: 'Project name',
@@ -204,7 +163,12 @@ export default function Page() {
     },
     {
       header: 'Project Type',
-      accessorKey: 'projectType',
+      accessorKey: 'type',
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      cell: ({ row }: any) => {
+        const typeValue = row.original.type;
+        return <div>{projectTypeMap[typeValue] || 'Unknown'}</div>;
+      },
     },
     {
       header: 'Due date',
@@ -212,11 +176,7 @@ export default function Page() {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       cell: ({ row }: any) => {
         const date = row.original.expectedDeliveryDate;
-        return (
-          <div className="app_table__tbody__td__ctt">
-            {new Date(date).toLocaleDateString()}
-          </div>
-        );
+        return formatDate(date)
       },
     },
     {
@@ -224,13 +184,10 @@ export default function Page() {
       accessorKey: 'priority',
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       cell: ({ row }: any) => {
-        const priority = row.original.priority || 'Low';
+        const value = row.original.priority;
         return (
-          <div
-            className={`app_table__priority app_table__priority--${priority}`}
-          >
-            <span className="app_table__priority__dot"></span>
-            {priority}
+          <div className="">
+            <Label type="priority" value={value} showIcon />
           </div>
         );
       },
@@ -242,7 +199,7 @@ export default function Page() {
       cell: ({ row }: any) => {
         const value = row.original.status;
         return (
-          <div className="app_table__tbody__td__ctt">
+          <div className="">
             <Label type="status" value={value} />
           </div>
         );
@@ -266,7 +223,7 @@ export default function Page() {
             >
               <BinGray className="h-4 w-4" />
             </Button>
-            {project.projectType === 'PersonalProject' && (
+            {project.type === 1 && (
               <Link
                 href={`/creatives/dashboard/project-management/personal-project/${project.id}/edit`}
                 onClick={(e) => {
@@ -313,27 +270,6 @@ export default function Page() {
         </AnimatedModal>
       </RenderIf>
 
-      <RenderIf condition={editForm}>
-        <AnimatedModal
-          isOpen={editForm}
-          from="right"
-          onClose={handleCloseEditForm}
-          className="lg:absolute lg:bottom-0 lg:right-0 h-[calc(100vh-20px)] w-full sm:w-[350px] bg-white p-0 flex flex-col lg:mb-2 lg:mr-2 mx-7"
-        >
-          {editProjectId && (
-            <EditProject
-              id={editProjectId}
-              item={editProjectId}
-              handleClick={handleCloseEditForm}
-              onClose={handleCloseEditForm}
-              setProjectId={setEditProjectId}
-              setDeliverableId={() => {}}
-              handleNext={() => {}}
-              onAddDeliverable={() => {}}
-            />
-          )}
-        </AnimatedModal>
-      </RenderIf>
 
       {false && (
         <RenderIf condition={takeATour}>
@@ -358,11 +294,12 @@ export default function Page() {
           {deleteProjectId && (
             <DeleteProject
               projectId={deleteProjectId}
-              item={deleteClient}
+              item={deleteProject}
               handleClick={() => {
                 setDeleteForm(false);
               }}
               onClose={handleDeleteProject}
+              refetchAllProjects={refetchAllProjects}
             />
           )}
         </AnimatedModal>
@@ -388,14 +325,15 @@ export default function Page() {
                       className="app_popover__content__item"
                       key={item.value}
                       onClick={() => {
-                        handleCategorySelect(item.value);
+                        setSelectedCategory(item.value);
+                        handleParamChange({
+                          type: item?.value === 'All' ? undefined : item?.value,
+                        });
                       }}
                     >
                       {item.label}
                       <RenderIf
-                        condition={
-                          searchParams.get('projectType') === item.value
-                        }
+                        condition={searchParams.get('Type') === item.value}
                       >
                         <Check />
                       </RenderIf>
@@ -423,7 +361,11 @@ export default function Page() {
                       className="app_popover__content__item"
                       key={item.value}
                       onClick={() => {
-                        handlePriorityItem(item.value);
+                        setSelectedCategory(item.value);
+                        handleParamChange({
+                          priority:
+                            item?.value === 'All' ? undefined : item?.value,
+                        });
                       }}
                     >
                       {item.label}
@@ -456,7 +398,11 @@ export default function Page() {
                       className="app_popover__content__item"
                       key={item.value}
                       onClick={() => {
-                        handleStatusItem(item.value);
+                        setSelectedCategory(item.value);
+                        handleParamChange({
+                          status:
+                            item?.value === 'All' ? undefined : item?.value,
+                        });
                       }}
                     >
                       {item.label}
@@ -475,11 +421,11 @@ export default function Page() {
           </div>
 
           <div className="flex gap-2">
-            <Input
-              placeholder="Search for project"
-              className="app_navbar__right__searchbar"
-              onChange={handleSearchChange}
-              value={search}
+            <SearchInput
+              placeholder="Search for Project"
+              onChange={(e) => {
+                handleParamChange({ searchKey: e.target.value });
+              }}
             />
             <Button
               type="button"
@@ -495,20 +441,23 @@ export default function Page() {
         </div>
 
         <div className="app_dashboard_home__task__ctt">
-          <Table
-            columns={columns}
-            data={data?.data ?? []}
-            emptyTitle="No project yet"
-            emptyMessage='Click "add project" button to get started'
-            pagination={pagination}
-            setPagination={setPagination}
-            rowDivider={true}
-            manualPagination={true}
-            pageCount={data?.metaData?.totalPages ?? 1}
-            rowCount={data?.metaData?.totalCount ?? 0}
-            // onRowClick={handleRowSelect}
-            onRowClick={handleRowClick}
-          />
+          {loading ? (
+            <div className="text-center flex justify-center items-center">
+              <Loader2 size={18} className="animate-spin" />
+            </div>
+          ) : (
+            <Table
+              columns={columns}
+              data={tableBody}
+              emptyTitle="No project yet"
+              emptyMessage='Click "add project" button to get started'
+              pagination={pagination}
+              setPagination={setPagination}
+              onRowClick={(row) =>
+                router.push(`/creatives/dashboard/project-management/${row.id}`)
+              }
+            />
+          )}
         </div>
       </div>
     </div>

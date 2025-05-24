@@ -206,17 +206,16 @@ export default function Page() {
               wordCount={{
                 limit: 1000,
                 current: content.length,
-              }}  
+              }}
             />
             <Button
-              size="icon"
-              variant="ghost"
-              className="bg-[#7C3AED] absolute right-3 top-8 -translate-y-1/2 "
+              size="md"
+             className="bg-[#7C3AED] hover:bg-[#7C3AED] focus:bg-[#7C3AED] active:bg-[#7C3AED] absolute right-3 top-8 -translate-y-1/2"
               type="submit"
               disabled={loading || !content.trim()}
               onClick={handleSubmit}
             >
-              <Send className="h-5 w-5  text-white" />
+              <Send className="h-5 w-5 text-white" />
             </Button>
           </div>
         }

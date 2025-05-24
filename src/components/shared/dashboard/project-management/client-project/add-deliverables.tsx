@@ -41,6 +41,7 @@ export function ProjectDeliverables(props: IProps) {
   const [isDecisionModalOpen, setIsDecisionModalOpen] = useState(false);
   const [deliverables, setDeliverables] = useState<Deliverable[]>([]);
   const [deliverableId, setDeliverableId] = useState<string>('');
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selectedDeliverable, setSelectedDeliverable] =
     useState<Deliverable | null>(null);
 
@@ -175,7 +176,7 @@ export function ProjectDeliverables(props: IProps) {
               }}
               projectId={projectId}
               deliverableId={deliverableId}
-              deliverable={selectedDeliverable}
+              // deliverable={selectedDeliverable}
               onEditDeliverable={(updatedDeliverable) => {
                 setDeliverables((prev) =>
                   prev.map((d) =>

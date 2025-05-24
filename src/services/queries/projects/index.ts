@@ -584,13 +584,11 @@ const useUpdateDeliverables = (
   interface Body {
     projectId: string;
     deliverableId: string;
-    deliverableName: string;
-    deliverableDescription: string;
+    name: string;
+    description: string;
     startDate: string;
     dueDate: string;
-    unitDeliverableAmount: string;
-    units: string;
-    // deliverableAmount: string
+    amount: string;
   }
 
   return {
@@ -599,13 +597,11 @@ const useUpdateDeliverables = (
       const requestBody = {
         projectId: body.projectId,
         deliverableId: body.deliverableId,
-        deliverableName: body.deliverableName,
-        description: body.deliverableDescription,
+        name: body.name,
+        description: body.description,
         startDate: body.startDate,
         dueDate: body.dueDate,
-        unitDeliverableAmount: body.unitDeliverableAmount,
-        units: body.units,
-        // amount: body.deliverableAmount
+        amount: body.amount,  
       };
 
       mutate({

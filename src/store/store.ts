@@ -23,6 +23,7 @@ import {
   registerSlice,
   userServiceApiSlice,
 } from './slices';
+import { projectSlice } from './slices/project';
 
 const migrations: MigrationManifest = {
   0: (state) => state,
@@ -55,6 +56,8 @@ const rootReducer = combineReducers({
   [projectServiceApiSlice.reducerPath]: projectServiceApiSlice.reducer,
   [authSlice.reducerPath]: authSlice.reducer,
   [registerSlice.reducerPath]: registerSlice.reducer,
+  [projectSlice.reducerPath]: projectSlice.reducer,
+
 });
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

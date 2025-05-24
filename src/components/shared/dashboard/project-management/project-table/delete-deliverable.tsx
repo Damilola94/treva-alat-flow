@@ -1,9 +1,10 @@
 import React from 'react'
 import { BinWithBG } from '@/components/shared/svgs'
-import { useDeleteProject } from '@/hooks/Projects/useProjects'
+import { useDeleteDeliverable } from '@/hooks/Projects/useProjects'
 
 interface IProps {
   projectId: string
+  deliverableId: string
   onClose: () => void
   item: {
     title: string
@@ -20,23 +21,23 @@ interface IProps {
   }
   handleClick?: () => void
   showSteps?: boolean
-  refetchAllProjects?: () => void
+  refetchAllDeliverables?: () => void
 }
 
-export function DeleteProject (props: IProps) {
-  const { projectId, item, handleClick, onClose, refetchAllProjects } = props;
+export function DeleteDeliverable (props: IProps) {
+  const { projectId, deliverableId, item, handleClick, onClose, refetchAllDeliverables } = props;
 
-    const {deleteProject, loading } = useDeleteProject();
+    const {deleteDeliverable, loading } = useDeleteDeliverable();
   
   const handleDelete = async () => {
     try {
-      await deleteProject( projectId ).unwrap();
-      if (refetchAllProjects) {
-        refetchAllProjects();
+      await deleteDeliverable({ projectId, deliverableId }).unwrap();
+      if (refetchAllDeliverables) {
+        refetchAllDeliverables();
       }
       onClose()
   } catch (e) {
-      console.error('Error deleting project:', e);
+      console.error('Error deleting deliverable:', e);
     }
   }
   return (

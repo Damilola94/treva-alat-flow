@@ -1,73 +1,73 @@
-import React, { useEffect, useState } from 'react';
-import { FlagOutline, CalendarWithMark, Calendar } from '@/components/shared';
+import React, { useMemo, } from 'react';
+import {
+  FlagOutline,
+  CalendarWithMark,
+  Calendar,
+} from '@/components/shared';
 import { useParams } from 'next/navigation';
-import queries from '@/services/queries/projects';
 import { formatDate } from '@/lib/utils';
-import { ProjectStatus } from '@/services/queries/projects/enums';
+import { useAppDispatch } from '@/store';
+import { clearValues } from '@/store/slices/project';
+import { useTasks } from '@/hooks/Projects/useProjects';
+import { useUpdateDeliverableTaskMutation } from '@/services';
 
 interface IProps {
-  taskId?: string
+  taskId?: string;
+  onAddTask: () => void;
+  deliverableId?: string;
 }
-
 interface Task {
-  id: string
-  projectId: string
-  taskName: string
-  dueDate: string
-  startDate: string
-  taskPriority: string
-  priorityColor: string
-  taskStatus: string
+  id: string;
+  name: string;
+  startDate: string;
+  endDate: string;
+  priority: string;
+  status: number | string;
 }
 
-export function TaskGirdView ({ taskId }: IProps) {
-  const param = useParams()
-  const projectId = Array.isArray(param.id) ? param.id[0] : param.id
-  const { data, isLoading } = queries.readTasks({ projectId })
-  const { mutate } = queries.updateTasks({ taskId, projectId },
-    {
-      onSuccess: () => {
-        console.log('Completed');
-      }
-    }
-  )
-  const [tasks, setTasks] = useState<Task[]>([])
+export function TaskGirdView({ deliverableId }: IProps) {
+  const { id } = useParams();
+  const projectId = Array.isArray(id) ? id[0] : id;
+  const dispatch = useAppDispatch();
+  dispatch(clearValues());
 
-  const todoTasks = tasks.filter((task: Task) => task.taskStatus === ProjectStatus.ToDo)
-  const completedTasks = tasks.filter((task: Task) => task.taskStatus === ProjectStatus.Completed)
-
-  const updateTaskStatus = (taskId: string, newStatus: string) => {
-    const task = tasks.find((task) => task.id === taskId);
-    if (task) {
-      mutate({
-        taskId,
-        projectId,
-        taskName: task.taskName,
+  const { allTasksData, refetchAllTasks } = useTasks(
+    projectId,
+    deliverableId,
+  );
+  const [updateTask] = useUpdateDeliverableTaskMutation();
+  const tableBody: Task[] = useMemo(() => {
+    if (allTasksData?.isSuccess && Array.isArray(allTasksData.data)) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      return allTasksData.data.map((task: any) => ({
+        id: task.id,
+        name: task.name,
         startDate: task.startDate,
-        dueDate: task.dueDate,
-        taskPriority: task.taskPriority,
-        taskStatus: newStatus
-      });
+        endDate: task.endDate,
+        priority: task.priority,
+        status: task.status,
+      }));
     }
+    return [];
+  }, [allTasksData?.isSuccess, allTasksData?.data]);
+
+  const todoTasks = useMemo(() => {
+    return tableBody.filter((task: Task) => task.status === 1);
+  }, [tableBody]);
+
+  const completedTasks = useMemo(() => {
+    return tableBody.filter((task: Task) => task.status === 4);
+  }, [tableBody]);
+
+  const updateTaskStatus = async (taskId: string, newStatus: number) => {
+    await updateTask({
+      projectId,
+      deliverableId,
+      taskId,
+      status: newStatus,
+    });
+    if (refetchAllTasks) refetchAllTasks();
   };
-
-  useEffect(() => {
-    if (data) {
-      setTasks(data)
-    }
-  }, [data])
-
-  useEffect(() => {
-    setTasks((prevTasks) =>
-      prevTasks.map((task) =>
-        task.taskStatus === ProjectStatus.Completed ? { ...task, taskStatus: ProjectStatus.Completed } : task
-      )
-    );
-  }, [tasks]);
-
-  if (isLoading) {
-    return <div>Loading...</div>
-  }
 
   return (
     <div className="task-board">
@@ -81,41 +81,45 @@ export function TaskGirdView ({ taskId }: IProps) {
         {todoTasks.map((item: Task) => (
           <div key={item.id} className="task-section__content">
             <div className="task-card">
-              <h4 className="task-card__title">{item.taskName}</h4>
+              <h4 className="task-card__title">{item.name}</h4>
               <ul className="task-card__options">
                 <li className="flex">
                   <input
                     type="checkbox"
-                    checked={item.taskStatus === ProjectStatus.Completed}
+                    checked={item.status === 4}
                     onChange={() => {
-                      updateTaskStatus(
-                        item.id,
-                        item.taskStatus === ProjectStatus.ToDo ? ProjectStatus.Completed : ProjectStatus.ToDo
-                      );
-                    }
-                    }
+                      updateTaskStatus(item.id, item.status === 1 ? 4 : 1);
+                    }}
                     className="w-5 h-5 accent-green-500 cursor-pointer"
                   />
                   <label>
-                    Mark as {item.taskStatus === ProjectStatus.Completed ? 'incomplete' : 'complete'}
+                    Mark as {item.status === 4 ? 'incomplete' : 'complete'}
                   </label>
                 </li>
                 <li className="flex gap-2">
                   <Calendar />
                   Start date:
-                  <div className="project_action_group__button">{formatDate(item.startDate)}</div>
+                  <div className="project_action_group__button">
+                    {formatDate(item.startDate)}
+                  </div>
                 </li>
                 <li className="flex gap-2">
                   <CalendarWithMark />
                   Due date:
-                  <div className="project_action_group__button">{formatDate(item.dueDate)}</div>
+                  <div className="project_action_group__button">
+                    {formatDate(item.endDate)}
+                  </div>
                 </li>
                 <li className="flex gap-2">
                   <FlagOutline />
                   Priority:
-                  <div className={`app_table__priority app_table__priority--${item.taskPriority || 'Low'}`}>
+                  <div
+                    className={`app_table__priority app_table__priority--${
+                      item.priority || 'Low'
+                    }`}
+                  >
                     <span className="app_table__priority__dot"></span>
-                    {item.taskPriority || 'Low'}
+                    {item.priority || 'Low'}
                   </div>
                 </li>
               </ul>
@@ -134,41 +138,45 @@ export function TaskGirdView ({ taskId }: IProps) {
         {completedTasks.map((item: Task) => (
           <div key={item.id} className="task-section__content">
             <div className="task-card">
-              <h4 className="task-card__title">{item.taskName}</h4>
+              <h4 className="task-card__title">{item.name}</h4>
               <ul className="task-card__options">
                 <li className="flex">
                   <input
                     type="checkbox"
-                    checked={item.taskStatus === ProjectStatus.Completed}
+                    checked={item.status === 4}
                     onChange={() => {
-                      updateTaskStatus(
-                        item.id,
-                        item.taskStatus === ProjectStatus.ToDo ? ProjectStatus.Completed : ProjectStatus.ToDo
-                      );
-                    }
-                    }
+                      updateTaskStatus(item.id, item.status === 1 ? 4 : 1);
+                    }}
                     className="w-5 h-5 accent-green-500 cursor-pointer"
                   />
                   <label>
-                    Mark as {item.taskStatus === ProjectStatus.Completed ? 'incomplete' : 'complete'}
+                    Mark as {item.status === 4 ? 'incomplete' : 'complete'}
                   </label>
                 </li>
                 <li className="flex gap-2">
                   <Calendar />
                   Start date:
-                  <div className="project_action_group__button">{formatDate(item.startDate)}</div>
+                  <div className="project_action_group__button">
+                    {formatDate(item.startDate)}
+                  </div>
                 </li>
                 <li className="flex gap-2">
                   <CalendarWithMark />
                   Due date:
-                  <div className="project_action_group__button">{formatDate(item.dueDate)}</div>
+                  <div className="project_action_group__button">
+                    {formatDate(item.endDate)}
+                  </div>
                 </li>
                 <li className="flex gap-2">
                   <FlagOutline />
                   Priority:
-                  <div className={`app_table__priority app_table__priority--${item.taskPriority || 'Low'}`}>
+                  <div
+                    className={`app_table__priority app_table__priority--${
+                      item.priority || 'Low'
+                    }`}
+                  >
                     <span className="app_table__priority__dot"></span>
-                    {item.taskPriority || 'Low'}
+                    {item.priority || 'Low'}
                   </div>
                 </li>
               </ul>

@@ -1,28 +1,27 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 'use client';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import projectManagement from '@/lib/assets/project-management';
-import queries from '@/services/queries/projects';
+import { useDeliverableById } from '@/hooks/Projects/useProjects';
+import { useUpdateDeliverableMutation } from '@/services';
 
 interface Deliverable {
   deliverableId: string;
-  deliverableName: string;
-  deliverableDescription: string;
+  name: string;
+  description: string;
   startDate: string;
-  dueDate: string;
-  deliverableAmount: string;
-  unitDeliverableAmount?: string;
-  units?: string;
+  endDate: string;
 }
 
 interface IProps {
   onClose: () => void;
   projectId: string;
+  item?: string;
   deliverableId: string;
   deliverable?: Deliverable | null;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -30,34 +29,21 @@ interface IProps {
 }
 
 const validationSchema = Yup.object().shape({
-  deliverableName: Yup.string().optional(),
+  name: Yup.string().optional(),
   description: Yup.string().optional(),
   startDate: Yup.date()
     .min(new Date(), 'Start date must be in the future')
     .optional(),
-  dueDate: Yup.date()
+  endDate: Yup.date()
     .min(new Date(), 'Due date must be in the future')
     .optional(),
-  // amount: Yup.number()
-  //   .required('Please enter an amount')
-  //   .positive('Amount must be positive')
 });
 
-enum AccountType {
-  Low = 'low',
-  Medium = 'medium',
-  High = 'high',
-}
-
 const initialValues = {
-  deliverableName: '',
-  deliverableDescription: '',
+  name: '',
+  description: '',
   startDate: '',
-  dueDate: '',
-  unitDeliverableAmount: '',
-  units: '',
-  // deliverableAmount: '',
-  accountType: AccountType.Low as `${AccountType}`,
+  endDate: ''
 };
 
 type InitialValues = ReturnType<() => typeof initialValues>;
@@ -66,54 +52,36 @@ export function EditDeliverables({
   onClose,
   projectId,
   deliverableId,
-  deliverable,
+  onEditDeliverable
 }: IProps) {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [, setDeliverableData] = useState<any>(null);
-  const { data, refetch } = queries.readDeliverablesOne({
-    projectId,
-    deliverableId,
-  });
+  
+  const { allDeliverableIdData } = useDeliverableById(projectId, deliverableId);
+  const [ updatedDeliverable, { isLoading} ] = useUpdateDeliverableMutation();
+  
+  const deliverableData = allDeliverableIdData?.data 
 
-  const { mutate, isLoading } = queries.updateDeliverables(
-    { deliverableId, projectId },
-    {
-      onSuccess: () => {
-        void refetch();
+  const onSubmit = async (values: InitialValues) => {
+    try {
+      const response = await updatedDeliverable({
+        projectId,
+        deliverableId,
+        ...values,
+      }).unwrap();
+
+      const deliverable = response?.data;
+      if (deliverable?.id) {
+        onEditDeliverable({
+          ...deliverable,
+          deliverableId: deliverable.id,
+        });
         onClose();
-      },
-    },
-  );
-  useEffect(() => {
-    if (deliverable) {
-      setDeliverableData(deliverable);
+      } else {
+        console.warn('Deliverable ID not found in response.');
+      }
     }
-  }, [deliverable, deliverableId]);
-
-  useEffect(() => {
-    if (data) {
-      /* empty */
+    catch (error) {
+      console.error('Failed to update deliverable:', error);
     }
-  }, [data, projectId, deliverableId]);
-
-  const onSubmit = (values: InitialValues) => {
-    const formData = {
-      projectId,
-      deliverableId,
-      deliverableName: values.deliverableName,
-      deliverableDescription: values.deliverableDescription,
-      startDate: values.startDate,
-      dueDate: values.dueDate,
-      unitDeliverableAmount: values.unitDeliverableAmount,
-      units: values.units,
-      // deliverableAmount: values.deliverableAmount
-    };
-
-    mutate(formData);
-  };
-
-  if (!data) {
-    return <div>Loading...</div>;
   }
 
   return (
@@ -131,14 +99,10 @@ export function EditDeliverables({
               enableReinitialize
               initialValues={{
                 ...initialValues,
-                deliverableName: data?.deliverableName ?? '',
-                deliverableDescription: data?.deliverableDescription ?? '',
-                startDate: data.startDate ? data?.startDate.split('T')[0] : '',
-                dueDate: data.dueDate ? data?.dueDate.split('T')[0] : '',
-                unitDeliverableAmount: data?.unitDeliverableAmount ?? '',
-                units: data?.units ?? '',
-                // deliverableAmount: (data?.deliverableAmount ??
-                //   '')
+                name: deliverableData?.name ?? '',
+                description: deliverableData?.description ?? '',
+                startDate: deliverableData?.startDate ? deliverableData?.startDate.split('T')[0] : '',
+                endDate: deliverableData?.endDate ? deliverableData?.endDate.split('T')[0] : ''
               }}
               validationSchema={validationSchema}
               onSubmit={onSubmit}
@@ -156,11 +120,11 @@ export function EditDeliverables({
                   className="flex flex-col gap-4 mt-14"
                 >
                   <Input
-                    name="deliverableName"
+                    name="name"
                     type="text"
                     placeholder="Deliverable Name"
                     size="xl"
-                    value={values.deliverableName}
+                    value={values.name}
                     onChange={handleChange}
                     onBlur={handleBlur}
                     errors={errors}
@@ -168,11 +132,11 @@ export function EditDeliverables({
                   />
 
                   <Input
-                    name="deliverableDescription"
+                    name="description"
                     type="text"
                     placeholder="Description"
                     size="xl"
-                    value={values.deliverableDescription}
+                    value={values.description}
                     onChange={handleChange}
                     onBlur={handleBlur}
                     errors={errors}
@@ -193,63 +157,17 @@ export function EditDeliverables({
                     />
 
                     <Input
-                      name="dueDate"
+                      name="endDate"
                       type="date"
-                      label="Due Date"
+                      label="End Date"
                       size="xl"
-                      value={values.dueDate}
+                      value={values.endDate}
                       onChange={handleChange}
                       onBlur={handleBlur}
                       errors={errors}
                       touched={touched}
                     />
                   </div>
-
-                  <div className="flex gap-5">
-                    <Input
-                      name="unitDeliverableAmount"
-                      type="number"
-                      placeholder="Unit Amount"
-                      size="xl"
-                      value={values.unitDeliverableAmount}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      errors={errors}
-                      touched={touched}
-                    />
-
-                    <Input
-                      name="units"
-                      type="number"
-                      placeholder="Units"
-                      size="xl"
-                      value={values.units}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      errors={errors}
-                      touched={touched}
-                    />
-                  </div>
-
-                  <p className="font-semibold">
-                    Total Amount:{' '}
-                    <span className="font-normal">
-                      {Number(values.unitDeliverableAmount) *
-                        Number(values.units)}
-                    </span>
-                  </p>
-
-                  {/* <Input
-                    name="deliverableAmount"
-                    placeholder="Amount"
-                    type="number"
-                    size="xl"
-                    value={values.deliverableAmount}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    errors={errors}
-                    touched={touched}
-                  /> */}
 
                   <div className="flex justify-between space-x-10 absolute bottom-0 w-full -left-5 mb-5">
                     <Button

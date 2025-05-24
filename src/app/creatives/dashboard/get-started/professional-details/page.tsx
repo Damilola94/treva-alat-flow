@@ -92,6 +92,7 @@ export default function Page() {
         routes.creatives.dashboard.getStarted.socialMediaDetails.path,
       );
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [saveOnboardingResponse]);
 
   useEffect(() => {

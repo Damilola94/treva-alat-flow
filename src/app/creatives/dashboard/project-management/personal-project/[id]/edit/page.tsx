@@ -19,7 +19,7 @@ export default function EditPersonalProject () {
 
       <RenderIf condition={currentStep === 1}>
         <EditProjectDetails projectId={id as string} handleNext={() => { setCurrentStep(2); }} />
-      </RenderIf>
+     </RenderIf>
 
       <RenderIf condition={currentStep === 2}>
         <EditProjectDeliverables projectId={id as string} />

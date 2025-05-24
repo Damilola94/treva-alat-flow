@@ -1,4 +1,4 @@
-import { useGetAllProjectsQuery, useGetDeliverablesQuery } from '@/services';
+import { useDeleteDeliverableMutation, useDeleteDeliverableTaskMutation, useDeleteProjectMutation, useGetAllProjectsQuery, useGetDeliverableByIdQuery, useGetDeliverablesQuery, useGetDeliverableTaskByIdQuery, useGetDeliverableTasksQuery, useUpdateDeliverableMutation, useUpdateDeliverableTaskMutation, useUpdateProjectMutation } from '@/services';
 import { useGetCommentsQuery } from '@/services/projectService/comment';
 import { useAppSelector } from '@/store';
 
@@ -15,7 +15,6 @@ interface ProjectQueryParams {
 export const useProjects = (params: ProjectQueryParams) => {
   const { loggedIn } = useAppSelector((state) => state?.auth);
 
-  // Remove undefined, 0 or null parameters
   const cleanedFilters = Object.fromEntries(
     Object.entries(params).filter(([, value]) =>
       Boolean(Array.isArray(value) ? value.length > 0 : value),
@@ -41,18 +40,59 @@ export const useProjects = (params: ProjectQueryParams) => {
   };
 };
 
+export const useDeleteProject = () => {
+const [deleteProject, { data, isLoading, error }] = useDeleteProjectMutation();
+return {
+  deleteProject,
+  data,
+  loading: isLoading,
+  error,
+};
+ 
+};
+
+export const useUpdateProject = () => {
+  const [updateProject, { data, isLoading }] = useUpdateProjectMutation();
+
+  return {
+    updateProject,
+    data,
+    isLoading: isLoading,
+  };
+};
+
+export const useProjectById = (projectId?: string) => {
+  const { loggedIn } = useAppSelector((state) => state?.auth);
+  const {
+    data: allProjectsByIdData,
+    isFetching: fetchingAllProjectsById,
+    isLoading: loadingAllProjectsById,
+    refetch: refetchAllProjectsById,
+    error: allProjectError,
+  } = useGetAllProjectsQuery({ projectId: projectId ?? '' },
+    {
+      refetchOnMountOrArgChange: true,
+      skip: !loggedIn || !projectId,
+    });
+  return {
+    allProjectsByIdData,
+    loading: fetchingAllProjectsById || loadingAllProjectsById,
+    refetchAllProjectsById,
+    allProjectError,
+  };
+};
+
 
 export const useDeliverable = (projectId?: string) => {
   const { loggedIn } = useAppSelector((state) => state?.auth);
-  
 
   const {
     data: allDeliverablesData,
     isFetching: fetchingAllDeliverables,
     isLoading: loadingAllDeliverables,
-    refetch: refetchAllProjects,
+    refetch: refetchAllDeliverables,
     error: allProjectError,
-  } = useGetDeliverablesQuery({ projectId: projectId ?? '' }, // <-- pass as object
+  } = useGetDeliverablesQuery({ projectId: projectId ?? '' },
     {
       refetchOnMountOrArgChange: true,
       skip: !loggedIn || !projectId,
@@ -61,10 +101,53 @@ export const useDeliverable = (projectId?: string) => {
   return {
     allDeliverablesData,
     loading: fetchingAllDeliverables || loadingAllDeliverables,
-    refetchAllProjects,
+    refetchAllDeliverables,
     allProjectError,
   };
 };
+
+export const useUpdateDeliverable = () => {
+  const [updateDeliverable, { data, isLoading, error }] = useUpdateDeliverableMutation();
+
+  return {
+    updateDeliverable,
+    data,
+    loading: isLoading,
+    error,
+  };
+};
+
+export const useDeleteDeliverable = () => {
+  const [deleteDeliverable, { data, isLoading, error }] = useDeleteDeliverableMutation();
+
+  return {
+    deleteDeliverable,
+    data,
+    loading: isLoading,
+    error,
+  };
+}
+
+export const useDeliverableById = (projectId?: string, deliverableId?: string) => {
+  const { loggedIn } = useAppSelector((state) => state?.auth);
+  const {
+    data: allDeliverableIdData,
+    isFetching: fetchingAllDeliverables,
+    isLoading: loadingAllDeliverables,
+    refetch: refetchAllDeliverables,
+    error: allProjectError,
+  } = useGetDeliverableByIdQuery({ projectId: projectId ?? '', deliverableId: deliverableId ?? '' },
+    {
+      refetchOnMountOrArgChange: true,
+      skip: !loggedIn || !projectId || !deliverableId,
+    });
+  return {
+    allDeliverableIdData,
+    loading: fetchingAllDeliverables || loadingAllDeliverables,
+    refetchAllDeliverables,
+    allProjectError,
+  };
+}
 
 export const useComment = (projectId?: string) => {
   const { loggedIn } = useAppSelector((state) => state?.auth);
@@ -86,5 +169,96 @@ export const useComment = (projectId?: string) => {
     loading: fetchingAllComments || loadingAllComments,
     refetchAllComments,
     allCommentError,
+  };
+}
+
+export const useGetTask = (projectId?: string, deliverableId?: string) => {
+  const { loggedIn } = useAppSelector((state) => state?.auth);
+
+  const {
+    data: allTasksData,
+    isFetching: fetchingAllTasks,
+    isLoading: loadingAllTasks,
+    refetch: refetchAllTasks,
+    error: allTaskError,
+  } = useGetDeliverableTasksQuery({ projectId: projectId ?? '', deliverableId: deliverableId ?? '' },
+    {
+      refetchOnMountOrArgChange: true,
+      skip: !loggedIn || !projectId || !deliverableId,
+    });
+
+  return {
+    allTasksData,
+    loading: fetchingAllTasks || loadingAllTasks,
+    refetchAllTasks,
+    allTaskError,
+  };
+}
+
+export const useTasks = (projectId?: string, deliverableId?: string) => {
+  const { loggedIn } = useAppSelector((state) => state?.auth);
+
+  const {
+    data: allTasksData,
+    isFetching: fetchingAllTasks,
+    isLoading: loadingAllTasks,
+    refetch: refetchAllTasks,
+    error: allTaskError,
+  } = useGetDeliverableTasksQuery({ projectId: projectId ?? '', deliverableId: deliverableId ?? '' },
+    {
+      refetchOnMountOrArgChange: true,
+      skip: !loggedIn || !projectId || !deliverableId,
+    });
+
+  return {
+    allTasksData,
+    loading: fetchingAllTasks || loadingAllTasks,
+    refetchAllTasks,
+    allTaskError,
+  };
+}
+
+export const useGetTaskById = (projectId?: string, deliverableId?: string, taskId?: string) => {
+  const { loggedIn } = useAppSelector((state) => state?.auth);
+
+  const {
+    data: allTaskByIdData,
+    isFetching: fetchingAllTasks,
+    isLoading: loadingAllTasks,
+    refetch: refetchAllTasks,
+    error: allTaskError,
+  } = useGetDeliverableTaskByIdQuery({ projectId: projectId ?? '', deliverableId: deliverableId ?? '', taskId: taskId ?? '' },
+    {
+      refetchOnMountOrArgChange: true,
+      skip: !loggedIn || !projectId || !deliverableId || !taskId,
+    });
+
+  return {
+    allTaskByIdData,
+    loading: fetchingAllTasks || loadingAllTasks,
+    refetchAllTasks,
+    allTaskError,
+  };
+}
+
+export const updateTask = () => {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const [updateTask, { data, isLoading, error }] = useUpdateDeliverableTaskMutation();
+  return {
+    updateTask,
+    data,
+    loading: isLoading,
+    error,
+  };
+}
+export const deleteTask = () => {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const [deleteTask, { data, isLoading, error }] = useDeleteDeliverableTaskMutation();
+
+  return {
+    deleteTask,
+    data,
+    loading: isLoading,
+    error,
   };
 }

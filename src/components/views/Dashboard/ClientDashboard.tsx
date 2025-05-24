@@ -221,6 +221,7 @@ export default function Dashboard() {
     if (!userOnboardingData?.data?.isCompleted && userOnboardingData?.data) {
       router.push(routes.client.dashboard.getStarted.path);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userOnboardingData]);
 
   return (
