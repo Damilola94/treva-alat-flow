@@ -43,13 +43,15 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
-                    ProjectId: string;
+                    projectId: string;
                 };
                 cookie?: never;
             };
             requestBody?: {
                 content: {
                     "multipart/form-data": {
+                        /** Format: uuid */
+                        ProjectId?: string;
                         /** Format: binary */
                         Document: string;
                     };
@@ -111,21 +113,23 @@ export interface paths {
         /** Update an agreement */
         put: {
             parameters: {
-                query?: {
-                    Id?: string;
-                };
+                query?: never;
                 header?: never;
                 path: {
+                    projectId: string;
                     agreementId: string;
-                    ProjectId: string;
                 };
                 cookie?: never;
             };
             requestBody?: {
                 content: {
                     "multipart/form-data": {
+                        /** Format: uuid */
+                        Id?: string;
                         /** Format: binary */
                         Document?: string;
+                        /** Format: uuid */
+                        ProjectId?: string;
                     };
                 };
             };
@@ -315,6 +319,51 @@ export interface paths {
         put?: never;
         post?: never;
         delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/clientmanagement/delete-client": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete my client */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json-patch+json": components["schemas"]["DeleteMyClientCommand"];
+                    "application/json": components["schemas"]["DeleteMyClientCommand"];
+                    "text/json": components["schemas"]["DeleteMyClientCommand"];
+                    "application/*+json": components["schemas"]["DeleteMyClientCommand"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["UnitBaseResponse"];
+                        "application/json": components["schemas"]["UnitBaseResponse"];
+                        "text/json": components["schemas"]["UnitBaseResponse"];
+                    };
+                };
+            };
+        };
         options?: never;
         head?: never;
         patch?: never;
@@ -980,6 +1029,89 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/invoices": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get all invoices with given optional params */
+        get: {
+            parameters: {
+                query?: {
+                    Status?: components["schemas"]["InvoiceStatusEnums"];
+                    PageNumber?: number;
+                    PageSize?: number;
+                    SearchKey?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["InvoiceMiniModelPagedListBaseResponse"];
+                        "application/json": components["schemas"]["InvoiceMiniModelPagedListBaseResponse"];
+                        "text/json": components["schemas"]["InvoiceMiniModelPagedListBaseResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/invoices/{invoiceId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get invoice by id */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    invoiceId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["InvoiceModelBaseResponse"];
+                        "application/json": components["schemas"]["InvoiceModelBaseResponse"];
+                        "text/json": components["schemas"]["InvoiceModelBaseResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/projects/{projectId}/payment-schedules": {
         parameters: {
             query?: never;
@@ -1455,7 +1587,6 @@ export interface components {
             startDate?: string;
             /** Format: date-time */
             endDate?: string;
-            priority?: components["schemas"]["ProjectPriorityEnums"];
             /** Format: double */
             unitAmount?: number;
             /** Format: int32 */
@@ -1502,6 +1633,9 @@ export interface components {
         };
         /** @enum {string} */
         CurrencyEnums: "AUD" | "CAD" | "EUR" | "GBP" | "JPY" | "NGN" | "USD";
+        DeleteMyClientCommand: {
+            clientUserId?: string | null;
+        };
         DeliverableModel: {
             /** Format: uuid */
             id?: string;
@@ -1593,6 +1727,38 @@ export interface components {
             data?: components["schemas"]["ExtraCostModel"][] | null;
             metaData?: unknown;
         };
+        InvoiceMiniModel: {
+            /** Format: uuid */
+            id?: string;
+            status?: components["schemas"]["InvoiceStatusEnums"];
+            clientUser?: components["schemas"]["UserDto"];
+            creativeUser?: components["schemas"]["UserDto"];
+            paymentSchedule?: components["schemas"]["PaymentScheduleInvoiceMiniModel"];
+        };
+        InvoiceMiniModelPagedListBaseResponse: {
+            isSuccess?: boolean;
+            statusCode?: string | null;
+            message?: string | null;
+            data?: components["schemas"]["InvoiceMiniModel"][] | null;
+            metaData?: unknown;
+        };
+        InvoiceModel: {
+            /** Format: uuid */
+            id?: string;
+            status?: components["schemas"]["InvoiceStatusEnums"];
+            clientUser?: components["schemas"]["UserDto"];
+            creativeUser?: components["schemas"]["UserDto"];
+            paymentSchedule?: components["schemas"]["PaymentScheduleInvoiceModel"];
+        };
+        InvoiceModelBaseResponse: {
+            isSuccess?: boolean;
+            statusCode?: string | null;
+            message?: string | null;
+            data?: components["schemas"]["InvoiceModel"];
+            metaData?: unknown;
+        };
+        /** @enum {string} */
+        InvoiceStatusEnums: "Closed" | "Due" | "Pending";
         /** @enum {string} */
         MonthEnums: "April" | "August" | "December" | "February" | "January" | "July" | "June" | "March" | "May" | "November" | "October" | "September";
         MyClientModel: {
@@ -1618,6 +1784,22 @@ export interface components {
             message?: string | null;
             data?: components["schemas"]["MyClientModel"][] | null;
             metaData?: unknown;
+        };
+        PaymentScheduleInvoiceMiniModel: {
+            /** Format: double */
+            amount?: number;
+            /** Format: date-time */
+            dueDate?: string;
+            status?: components["schemas"]["PaymentStatusEnums"];
+            project?: components["schemas"]["ProjectMiniInvoiceModel"];
+        };
+        PaymentScheduleInvoiceModel: {
+            /** Format: double */
+            amount?: number;
+            /** Format: date-time */
+            dueDate?: string;
+            status?: components["schemas"]["PaymentStatusEnums"];
+            project?: components["schemas"]["ProjectInvoiceModel"];
         };
         PaymentScheduleModel: {
             /** Format: uuid */
@@ -1650,6 +1832,12 @@ export interface components {
         };
         /** @enum {string} */
         PaymentStatusEnums: "Cancelled" | "Due" | "Failed" | "Overdue" | "Paid" | "PartiallyPaid" | "Pending" | "Refunded";
+        ProjectInvoiceModel: {
+            /** Format: uuid */
+            id?: string;
+            title: string | null;
+            deliverables?: components["schemas"]["DeliverableModel"][] | null;
+        };
         ProjectMetric: {
             /** Format: int32 */
             daysLeft?: number;
@@ -1659,6 +1847,11 @@ export interface components {
             /** Format: double */
             progressPercent?: number;
             readonly progressPercentDisplay?: string | null;
+        };
+        ProjectMiniInvoiceModel: {
+            /** Format: uuid */
+            id?: string;
+            title: string | null;
         };
         ProjectMiniModel: {
             /** Format: uuid */
@@ -1672,6 +1865,10 @@ export interface components {
             type?: components["schemas"]["ProjectTypeEnums"];
             status?: components["schemas"]["StatusEnums"];
             priority?: components["schemas"]["ProjectPriorityEnums"];
+            /** Format: double */
+            actualCost?: number | null;
+            creativeUser?: components["schemas"]["UserDto"];
+            clientUser?: components["schemas"]["UserDto"];
             /** Format: date-time */
             createdDate?: string;
         };
@@ -1694,6 +1891,8 @@ export interface components {
             type?: components["schemas"]["ProjectTypeEnums"];
             status?: components["schemas"]["StatusEnums"];
             priority?: components["schemas"]["ProjectPriorityEnums"];
+            /** Format: double */
+            actualCost?: number | null;
             creativeUser?: components["schemas"]["UserDto"];
             clientUser?: components["schemas"]["UserDto"];
             /** Format: date-time */
@@ -1740,20 +1939,18 @@ export interface components {
         UpdateDeliverableCommand: {
             /** Format: uuid */
             id?: string;
-            name: string | null;
+            name?: string | null;
             description?: string | null;
             /** Format: date-time */
-            startDate?: string;
+            startDate?: string | null;
             /** Format: date-time */
-            endDate?: string;
+            endDate?: string | null;
             priority?: components["schemas"]["ProjectPriorityEnums"];
             status?: components["schemas"]["StatusEnums"];
             /** Format: double */
-            unitAmount?: number;
+            unitAmount?: number | null;
             /** Format: int32 */
-            unit?: number;
-            /** Format: uuid */
-            projectId?: string | null;
+            unit?: number | null;
         };
         UpdateDeliverableTaskCommand: {
             /** Format: uuid */

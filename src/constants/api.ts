@@ -130,4 +130,10 @@ export const endpoints = {
     getComments: (projectId: string) => `/projects/${projectId}/comments`,
     createComment: (projectId: string) => `/projects/${projectId}/comments`,
   },
+  clientManagement: {
+    getMyClients: '/clientmanagement/my-clients',
+    addClient: `/clientmanagement/create-client`,
+    updateClient: `/clientmanagement/update-client`,
+    deleteClient: `/clientmanagement/delete-client`,
+  },
 };

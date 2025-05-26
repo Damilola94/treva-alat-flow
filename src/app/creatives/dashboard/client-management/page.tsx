@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import {
   AnimatedModal,
@@ -18,10 +18,23 @@ import {
   EditClient,
 } from '@/components/shared/client-management';
 import projectManagement from '@/lib/assets/project-management';
-import queries from '@/services/queries/client-management';
 import clientManagement from '@/lib/assets/client-management';
 import Image from 'next/image';
 import { EditPencilGray, BinGray } from '@/components/shared/svgs';
+import { useClientManagement } from '@/hooks/Projects';
+import { dayJs } from '@/utils';
+import { extractName, getAvatar, getFullName } from '@/lib/utils';
+import { Avatar } from '@/components/shared/avatar';
+
+export interface IClient {
+  avatarUrl: string;
+  birthMonth: number;
+  birthday: number;
+  clientUserId: string;
+  email: string;
+  name: string;
+  phoneNumber: string;
+}
 
 const viewTakeATour = {
   img: projectManagement.topImage,
@@ -49,29 +62,41 @@ export default function Page() {
   const [deleteClientId, setDeleteClientId] = useState<string | null>(null);
   const [deleteForm, setDeleteForm] = useState(false);
   const [search, setSearch] = useState('');
+  const [selectedClient, setSelectedClient] = useState<IClient | null>(null);
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 50,
   });
 
-  const { refetch } = queries.read({ search });
-
-  const { data } = queries.read({
-    search,
-    pageNumber: pagination.pageIndex + 1,
-    pageSize: pagination.pageSize,
+  const [params, setParams] = useState({
+    birthday: '',
+    birthmonth: '',
+    pageNumber: 0,
+    pageSize: 10,
+    searchKey: '',
   });
 
-  const clientData = data?.data ?? [];
+  const { myClientData, loading, refetch } = useClientManagement(params);
+
+  const clientData = useMemo(
+    () => myClientData?.data || [],
+    [myClientData?.data],
+  );
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setParams((prev) => ({
+      ...prev,
+      searchKey: e.target.value,
+    }));
     setSearch(e.target.value);
-    void refetch();
   };
 
   const clearSearch = () => {
     setSearch('');
-    void refetch();
+    setParams((prev) => ({
+      ...prev,
+      searchKey: '',
+    }));
   };
 
   const onDelete = (id: string) => {
@@ -103,28 +128,40 @@ export default function Page() {
   const columns = [
     {
       header: 'Client',
-      accessorKey: 'fullName',
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       cell: ({ row }: any) => {
         const client = row.original;
         return (
           <div className="app_table__tbody__td__ctt flex items-center">
-            <Image
-              src={client.imageUrl || clientManagement?.femaleClient}
-              alt="client"
-              width={100}
-              height={100}
-              className="w-8 h-8 rounded-full border-2 border-[#E4BACA] object-cover mr-3"
-              unoptimized
-            />
-            {client.fullName}
+            {client?.avatarUrl ? (
+              <Image
+                src={client.avatarUrl || clientManagement?.femaleClient}
+                alt="client"
+                width={100}
+                height={100}
+                className="w-8 h-8 rounded-full border-2 border-[#E4BACA] object-cover mr-3"
+                unoptimized
+              />
+            ) : (
+              <Avatar
+                src={getAvatar({
+                  name: client?.name
+                    ? getFullName(extractName(client?.name))
+                    : '',
+                  length: 2,
+                })}
+                className="w-8 h-8 rounded-full border-[2.42px] border-[#A5A6F6] object-cover"
+                size="sm"
+              />
+            )}
+            {client.name}
           </div>
         );
       },
     },
     {
       header: 'Email address',
-      accessorKey: 'emailAddress',
+      accessorKey: 'email',
     },
     {
       header: 'Phone number',
@@ -132,7 +169,19 @@ export default function Page() {
     },
     {
       header: 'Birthday',
-      accessorKey: 'birthdayDayMonth',
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      cell: ({ row }: any) => {
+        const birthDay = row?.original?.birthday;
+        const birthMonth = row?.original?.birthMonth;
+
+        if (!birthDay || !birthMonth) return '-';
+
+        const formattedDate = dayJs(`${birthMonth}-${birthDay}`, 'M-D').format(
+          'MMMM D',
+        );
+
+        return formattedDate; // e.g., "May 23"
+      },
     },
     {
       header: '',
@@ -145,7 +194,8 @@ export default function Page() {
             <div
               className="cursor-pointer"
               onClick={() => {
-                onEdit(client.id);
+                onEdit(client.clientUserId);
+                setSelectedClient(client);
               }}
             >
               <EditPencilGray />
@@ -153,7 +203,7 @@ export default function Page() {
             <div
               className="cursor-pointer"
               onClick={() => {
-                onDelete(client.id);
+                onDelete(client.clientUserId);
               }}
             >
               <BinGray />
@@ -163,6 +213,12 @@ export default function Page() {
       },
     },
   ];
+
+  useEffect(() => {
+    if (addClientForm || editForm || deleteForm) {
+      refetch && refetch();
+    }
+  }, [addClientForm, editForm, deleteForm]);
 
   return (
     <div className="app_dashboard_page app_dashboard_home">
@@ -187,7 +243,7 @@ export default function Page() {
           {editClientId && (
             <EditClient
               id={editClientId}
-              item={editClientId}
+              item={selectedClient}
               handleClick={() => {
                 setEditForm(false);
               }}
@@ -272,9 +328,15 @@ export default function Page() {
             setPagination={setPagination}
             rowDivider={true}
             manualPagination={true}
-            pageCount={data?.metaData?.totalPages ?? 1}
-            rowCount={data?.metaData?.totalCount ?? 0}
-            // loading={isLoading}
+            pageCount={
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              ((myClientData?.metaData as any)?.totalPages as number) ?? 1
+            }
+            rowCount={
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              ((myClientData?.metaData as any)?.totalCount as number) ?? 0
+            }
+            loading={loading}
           />
         </div>
       </div>

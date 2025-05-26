@@ -1,38 +1,47 @@
-import React from 'react'
-import { BinWithBG } from '../svgs'
-import clientQueries from '@/services/queries/client-management'
+import React from 'react';
+import { BinWithBG } from '../svgs';
+import { errorToast, successToast, useDeleteClientMutation } from '@/services';
+import { getErrorMessage } from '@/utils';
 
 interface IProps {
-  clientId: string
-  onClose: () => void
+  clientId: string;
+  onClose: () => void;
   item: {
-    title: string
-    details?: string
-    btnText1?: string
-    btnText2?: string
-    modalType?: string
+    title: string;
+    details?: string;
+    btnText1?: string;
+    btnText2?: string;
+    modalType?: string;
     createProject?: {
-      icon: string
-      title: string
-      details: string
-    }
-    bottomInfo?: string
-  }
-  handleClick?: () => void
-  showSteps?: boolean
+      icon: string;
+      title: string;
+      details: string;
+    };
+    bottomInfo?: string;
+  };
+  handleClick?: () => void;
+  showSteps?: boolean;
 }
 
-export function DeleteClient (props: IProps) {
+export function DeleteClient(props: IProps) {
   const { clientId, item, handleClick, onClose } = props;
 
-  const { mutate: deleteClient, isLoading: isDeleting } = clientQueries.delete({
-    onSuccess: () => {
-      onClose();
+  const [triggerDelete, { isLoading }] = useDeleteClientMutation();
+
+  const handleDelete = async () => {
+    try {
+      const response = await triggerDelete({ clientUserId: clientId }).unwrap();
+      if (response?.isSuccess) {
+        successToast(response?.message || 'Client Addedd Successfully');
+        onClose();
+      } else {
+        errorToast(response?.message || 'Something went wrong');
+      }
+    } catch (error) {
+      const message = getErrorMessage(error);
+      errorToast(message || 'Something went wrong');
     }
-  })
-  const handleDelete = () => {
-    deleteClient(clientId)
-  }
+  };
   return (
     <div className="delete_card flex flex-col gap-4">
       <div className={'flex flex-col gap-9 justify-between flex-1'}>
@@ -59,13 +68,13 @@ export function DeleteClient (props: IProps) {
               className="delete_card__action__btn1"
               type="button"
               onClick={handleDelete}
-              disabled={isDeleting}
+              disabled={isLoading}
             >
-             {isDeleting ? 'Deleting...' : item?.btnText2}
+              {isLoading ? 'Deleting...' : item?.btnText2}
             </button>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }
