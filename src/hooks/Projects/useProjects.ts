@@ -251,7 +251,7 @@ export const updateTask = () => {
     error,
   };
 }
-export const deleteTask = () => {
+export const useDeleteTask = () => {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const [deleteTask, { data, isLoading, error }] = useDeleteDeliverableTaskMutation();
 
@@ -262,3 +262,4 @@ export const deleteTask = () => {
     error,
   };
 }
+

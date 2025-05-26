@@ -1,7 +1,6 @@
 'use client'
 import React, { Fragment, Suspense, useEffect, useState } from 'react'
 import { RenderIf } from '@/components/shared'
-import { ProjectType } from '@/services/queries/projects/enums'
 import { ProgressStatus } from '@/components/shared/dashboard/get-started/progress-status copy'
 import { ProjectDetails } from '@/components/shared/dashboard/project-management/client-project/add-details'
 import { ProjectDeliverables } from '@/components/shared/dashboard/project-management/client-project/add-deliverables'
@@ -12,36 +11,32 @@ import { useSearchParams } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
 import ProjectPayment from '@/components/shared/dashboard/project-management/client-project/payment'
 
-enum AccountType {
-  Low = 'low',
-  Medium = 'medium',
-  High = 'high',
-}
-
 const step1Values = {
   title: '',
   description: '',
   expectedDeliveryDate: '',
-  priority: AccountType.Low as `${AccountType}`,
-  projectType: ProjectType.ClientProject
+  priority: '',
+  type: 'Client'
 }
 
 const step2Values = {
   deliverables: [
     {
-      deliverableName: '',
+      name: '',
       description: '',
       startDate: '',
-      dueDate: '',
-      amount: ''
+      endDate: '',
+      unitAmount: '',
+      unit:''
     }
   ]
 };
 
 const step3Values = {
-  payment: [
+  extraCost: [
     {
       title: '',
+      description: '',
       amount: ''
     }
   ]
@@ -85,16 +80,18 @@ export type DefaultValues = ReturnType<() => typeof defaultValues>
 export type InitialStep1Values = ReturnType<() => typeof step1Values>
 export interface InitialStep2Values {
   deliverables: Array<{
-    deliverableName: string
+    name: string
     description: string
     startDate: string
-    dueDate: string
-    amount: string
+    endDate: string
+    unitAmount: string
+    unit: string
   }>
 }
 export interface InitialStep3Values {
-  payment: Array<{
+  extraCost: Array<{
     title: string
+    description: string
     amount: string
   }>
 }
@@ -128,12 +125,6 @@ function ClientProject () {
   const [projectId, setProjectId] = useState<string>('');
 
   const [formData, setFormData] = useState<FormDataType>(defaultValues);
-
-  // useEffect(() => {
-  //   if (paramsProjectId) {
-  //     setCurrentStep(3)
-  //   }
-  // }, [paramsProjectId])
 
   useEffect(() => {
     if (paramsProjectId) {
@@ -174,7 +165,7 @@ function ClientProject () {
             <ProgressStatus label="Project details" checked={currentStep >= 1} />
             <ProgressStatus label="Deliverables" checked={currentStep >= 2} />
             <ProgressStatus label="Payment" checked={currentStep >= 3} />
-            <ProgressStatus label="Payment schedule" checked={currentStep >= 4} />
+            <ProgressStatus label="Billing schedule" checked={currentStep >= 4} />
             <ProgressStatus label="Agreement" checked={currentStep >= 5} />
             <ProgressStatus label="Review" checked={currentStep >= 6} />
 

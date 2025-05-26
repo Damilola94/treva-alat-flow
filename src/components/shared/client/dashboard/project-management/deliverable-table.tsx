@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
 import { Table } from '@/components/shared/Table';
 import { useDeliverable } from '@/hooks/Projects';
+import { formatDate } from '@/lib/utils';
 
 export function DeliverableTable() {
   const { id } = useParams();
@@ -28,6 +29,11 @@ export function DeliverableTable() {
     {
       header: 'Due date',
       accessorKey: 'endDate',
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      cell: ({ row }: any) => {
+        const date = row.original.endDate;
+        return formatDate(date);
+      },
     },
     {
       header: 'Unit',
@@ -56,7 +62,7 @@ export function DeliverableTable() {
     },
   ];
 
-   const allDeliverables = useMemo(() => {
+  const allDeliverables = useMemo(() => {
     return allDeliverablesData?.isSuccess && allDeliverablesData.data
       ? allDeliverablesData.data
       : [];
@@ -64,11 +70,12 @@ export function DeliverableTable() {
 
   const completedDeliverables = useMemo(
     () => allDeliverables.filter((d) => d.status === 'Completed'),
-    [allDeliverables]
+    [allDeliverables],
   );
 
   // Table data based on tab
-  const tableBody = activeTab === 'all' ? allDeliverables : completedDeliverables;
+  const tableBody =
+    activeTab === 'all' ? allDeliverables : completedDeliverables;
 
   return (
     <div className="app_dashboard_home__task__cct">
@@ -90,7 +97,7 @@ export function DeliverableTable() {
           >
             All
             <span className="inline-flex items-center justify-center w-6 h-6 bg-gray-100 rounded-full text-sm text-black">
-             {allDeliverables.length}
+              {allDeliverables.length}
             </span>
           </TabsTrigger>
           <TabsTrigger
@@ -109,7 +116,6 @@ export function DeliverableTable() {
         </TabsList>
       </Tabs>
 
-
       <div className="w-full text-left relative rounded-xl overflow-auto">
         {loading ? (
           <div className="text-center flex justify-center items-center">
@@ -118,7 +124,7 @@ export function DeliverableTable() {
         ) : (
           <Table
             columns={headers}
-             emptyTitle={
+            emptyTitle={
               activeTab === 'completed'
                 ? 'No completed deliverable'
                 : 'No deliverable Yet'

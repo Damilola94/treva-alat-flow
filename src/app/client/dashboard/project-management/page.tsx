@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 import { Label, Pill, Table } from '@/components/shared';
 import SearchInput from '@/components/ui/SearchInput';
 import { clientDashboardTasks } from '@/constants';
 import { useProjects } from '@/hooks/Projects';
 import clientManagement from '@/lib/assets/client-management';
+import { formatDate } from '@/lib/utils';
 import { Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -32,7 +34,7 @@ export default function Page() {
     searchKey: '',
   });
 
-  const { allProjectsData, loading } = useProjects(params);  
+  const { allProjectsData, loading } = useProjects(params);
 
   const [pagination, setPagination] = useState({
     pageIndex: 0,
@@ -57,9 +59,11 @@ export default function Page() {
               alt={creative.firstName}
               className="w-6 h-6 rounded-full"
             />
-            <span>{creative.firstName} {creative.lastName}</span>
+            <span>
+              {creative.firstName} {creative.lastName}
+            </span>
           </div>
-        )
+        );
       },
     },
     {
@@ -69,10 +73,18 @@ export default function Page() {
     {
       header: 'Start date',
       accessorKey: 'startDate',
+      cell: ({ row }: any) => {
+        const date = row.original.startDate;
+        return formatDate(date);
+      },
     },
     {
       header: 'Due Date',
       accessorKey: 'expectedDeliveryDate',
+      cell: ({ row }: any) => {
+        const date = row.original.expectedDeliveryDate;
+        return formatDate(date);
+      },
     },
     {
       header: 'Status',
@@ -149,7 +161,9 @@ export default function Page() {
           data={tableBody}
           pagination={pagination}
           setPagination={setPagination}
-          onRowClick={(row) => router.push(`/client/dashboard/project-management/${row.id}`)}
+          onRowClick={(row) =>
+            router.push(`/client/dashboard/project-management/${row.id}`)
+          }
         />
       )}
     </div>

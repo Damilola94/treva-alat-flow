@@ -7,7 +7,7 @@ interface ProjectState {
   startDate: string;
   expectedDeliveryDate: string;
   type: string;
-  priority?: string;
+  priority: string;
   clientUserId?: string;
   projectId: string;
   name: string;
@@ -23,6 +23,11 @@ interface ProjectState {
   documentUrl: string;
   deliverableId?: string;
   status?: string;
+  paymentId?: string;
+  paymentTitle: string;
+  paymentScheduleId: string;
+  amount: string;
+  paymentDescription?: string;
 }
 
 const initialState: ProjectState = {
@@ -40,7 +45,14 @@ const initialState: ProjectState = {
   unit: '',
   id: '',
   createdDate: '',
-  documentUrl: ''
+  documentUrl: '',
+  paymentId: '',
+  paymentScheduleId: '',
+  amount: '',
+  paymentTitle: '',
+  priority: '',
+  clientUserId: '',
+  deliverableId: '',
 }
 
 export const projectSlice = createSlice({

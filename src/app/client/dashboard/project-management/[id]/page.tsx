@@ -19,6 +19,7 @@ import { useEffect, useState } from 'react';
 import { Avatar } from '@/components/shared/avatar';
 import { useComment } from '@/hooks/Projects/useProjects';
 import { useCreateCommentMutation } from '@/services/projectService/comment';
+// import { useRateProject } from '@/services';
 
 export default function Page() {
   const { id } = useParams();
@@ -28,6 +29,7 @@ export default function Page() {
   const { allCommentsData, refetchAllComments } = useComment(projectId);
   const [triggerComment, { isLoading: loadingComment }] =
     useCreateCommentMutation();
+  // const [createRating] = useRateProject(projectId);
 
   const [showRatingModal, setShowRatingModal] = useState(false);
   const [showReviewModal, setShowReviewModal] = useState(false);
@@ -52,10 +54,25 @@ export default function Page() {
     }
   };
 
+  // const handleRateProject = async (star: number) => {
+  //   loading
+  //   try {
+  //     await createRating({ rating: star });
+  //     setRating(star);
+  //     setShowRatingModal(false);
+  //     setShowReviewModal(true);
+  //   } catch (error) {
+  //     console.error('Failed to rate project:', error);
+  //   }
+  //   finally {
+  //     // loading = false;
+  //   }
+  // }
+
   useEffect(() => {
     const progress = allProjectsByIdData?.data?.metrics?.progressPercent;
     if (progress === 100) {
-      setShowReviewModal(true);
+      setShowRatingModal(true);
     }
   }, [allProjectsByIdData?.data?.metrics?.progressPercent]);
 

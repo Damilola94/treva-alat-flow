@@ -56,7 +56,19 @@ export const projectService = projectServiceApiSlice.injectEndpoints({
         response: ITrevaProjectService['schemas']['ProjectModelBaseResponse'],
       ) => response,
     }),
+    
+    rateProject: builder.mutation({
+      query: ({ projectId, ...values }) => ({
+        url: endpoints.projects.rateProject(projectId),
+        method: REQUEST_METHODS.POST,
+        body: values,
+      }),
+      transformResponse: (
+        response: ITrevaProjectService['schemas']['ProjectModelBaseResponse'],
+      ) => response,
+    }),
   }),
-});
 
-export const { useGetAllProjectsQuery, useCreateProjectMutation, useGetProjectByIdQuery, useUpdateProjectMutation,useDeleteProjectMutation } = projectService;
+})
+
+export const { useGetAllProjectsQuery, useCreateProjectMutation, useGetProjectByIdQuery, useUpdateProjectMutation,useDeleteProjectMutation, useRateProjectMutation } = projectService;

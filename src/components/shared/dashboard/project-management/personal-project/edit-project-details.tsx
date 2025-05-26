@@ -15,13 +15,13 @@ interface IProps {
   handleNext: () => void;
 }
 
-enum AccountType {
+export enum AccountType {
   Low = 'low',
   Medium = 'medium',
   High = 'high',
 }
 
-const priorityMap: Record<number, AccountType> = {
+export const priorityMap: Record<number, AccountType> = {
   1: AccountType.Low,
   2: AccountType.Medium,
   3: AccountType.High,

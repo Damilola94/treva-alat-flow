@@ -150,7 +150,7 @@ export default function Page() {
                     : '',
                   length: 2,
                 })}
-                className="w-8 h-8 rounded-full border-[2.42px] border-[#A5A6F6] object-cover"
+                className="w-8 h-8 rounded-full border-[2.42px] border-[#A5A6F6] object-cover mr-3"
                 size="sm"
               />
             )}
@@ -218,6 +218,7 @@ export default function Page() {
     if (addClientForm || editForm || deleteForm) {
       refetch && refetch();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addClientForm, editForm, deleteForm]);
 
   return (
