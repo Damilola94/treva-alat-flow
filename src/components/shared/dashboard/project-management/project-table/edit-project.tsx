@@ -76,7 +76,7 @@ export function EditProject(props: IProps) {
     : allProjectsData?.data;
 
   const [userType, setUserType] = useState<ProjectType>(
-    ProjectType.PersonalProject,
+    ProjectType.Personal,
   );
 
  const initialValues = {

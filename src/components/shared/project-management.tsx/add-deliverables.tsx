@@ -22,19 +22,25 @@ export function AddDeliverables(props: IProps) {
   const dispatch = useAppDispatch();
   const { onClose, projectId, setDeliverableId, onAddDeliverable } = props;
   const [createDeliverables, { isLoading }] = useCreateDeliverableMutation();
-  const { name, deliverableDescription, startDate, endDate } = useAppSelector((state) => state?.project)
+  const { name, deliverableDescription, startDate, endDate, unitAmount, unit, type } = useAppSelector((state) => state?.project)
  
   const initialValues = {
     name: name,
     description: deliverableDescription,
     startDate: startDate,
     endDate: endDate,
+     ...(type === 'Client' && {
+    unitAmount: unitAmount,
+    unit: unit,
+  }),
   };
   const validationSchema = Yup.object().shape({
     name: Yup.string().required('Please enter a deliverable name'),
     description: Yup.string().required('Please enter a description'),
     startDate: Yup.date().required('Please select a start date'),
     endDate: Yup.date().required('Please select a due date'),
+    unitAmount: Yup.number().required('Please enter unit amount'),
+    unit: Yup.number().required('Please enter unit')
   });
 
 
@@ -140,6 +146,35 @@ export function AddDeliverables(props: IProps) {
                       touched={touched}
                     />
                   </div>
+
+                  { type === 'Client' && (
+                    <div className="flex gap-5">
+                    <Input
+                      name="unitAmount"
+                      type="number"
+                      placeholder="Unit Amount"
+                      size="xl"
+                      value={values.unitAmount}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      errors={errors}
+                      touched={touched}
+                    />
+
+                    <Input
+                      name="unit"
+                      type="number"
+                      placeholder="Unit"
+                      size="xl"
+                      value={values.unit}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      errors={errors}
+                      touched={touched}
+                    />
+                  </div>
+                  )
+                  }
 
                   <div className="flex justify-between space-x-10 absolute bottom-0 w-full -left-5 mb-5">
                     <Button

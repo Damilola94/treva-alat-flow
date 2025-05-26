@@ -56,14 +56,10 @@ export function CreateProjectCard (props: IProps) {
             {item?.createProject.map((project, index) => (
               <div
                 key={index}
-                // className="project_management_card__ctt__option"
                 className={`project_management_card__ctt__option ${
                   selectedProject === project.title ? 'selected' : ''
                 }`}
                 onClick={() => { setSelectedProject(project.title); }}
-                // onClick={() => {
-                //   if (handleClick) handleClick();
-                // }}
               >
                 <div className="">{project.icon}</div>
                 <div className="">

@@ -4,28 +4,32 @@ import {
   AnimatedModal,
   ClientIcon,
   EmptyStatus,
+  Label,
   PersonalIcon,
   Pill,
   PlusIcon,
+  projectTypeMap,
   RenderIf,
+  Table,
 } from '@/components/shared';
 import { Avatar } from '@/components/shared/avatar';
 // import { ProjectsTable } from '@/components/shared/dashboard';
 import { EmptyState } from '@/components/shared/dashboard/empty-state';
-import { ProjectsTable } from '@/components/shared/dashboard/project-management/project-table/projects-table';
 import {
   AddProject,
   CreateProjectCard,
 } from '@/components/shared/project-management';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import SearchInput from '@/components/ui/SearchInput';
+import { clientDashboardTasks } from '@/constants';
+import { useProjects } from '@/hooks/Projects';
 import { useProfile, useUsers } from '@/hooks/Users';
 import dashboard from '@/lib/assets/dashboard';
 import projectManagement from '@/lib/assets/project-management';
 import { numberFormat } from '@/lib/numbers';
 import routes from '@/lib/routes';
-import { getAvatar, getFullName } from '@/lib/utils';
-import { ProjectStatus } from '@/services/queries/projects/enums';
+import { formatDate, getAvatar, getFullName } from '@/lib/utils';
+import { Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React, { Fragment, useEffect, useMemo, useState } from 'react';
@@ -48,6 +52,16 @@ const createAProject = {
   ],
   btnText1: 'Proceed',
 };
+
+interface ProjectQueryParams {
+  type?: string;
+  status?: string;
+  priority?: string;
+  currency?: string;
+  pageNumber?: number;
+  pageSize?: number;
+  searchKey?: string;
+}
 
 enum Tasks {
   'Due Task' = 'Due Task',
@@ -115,11 +129,47 @@ const kpis = [
 export default function Page() {
   const router = useRouter();
 
+  const [params, setParams] = useState<ProjectQueryParams>({
+    // type: '2',
+    // status: '2',
+    // priority: '3',
+    pageNumber: 1,
+    pageSize: 50,
+    currency: 'NGN',
+    searchKey: '',
+  });
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+
   const [addProject, setAddProject] = useState(true);
+  const { allProjectsData, loading } = useProjects(params);
+
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 50,
+  });
+
+  const tableBody = useMemo(() => {
+    return allProjectsData?.isSuccess && allProjectsData.data
+      ? allProjectsData.data
+      : [];
+  }, [allProjectsData?.isSuccess, allProjectsData?.data]);
+
+  useEffect(() => {
+    setParams((prev) => ({
+      ...prev,
+      pageNumber: pagination?.pageIndex + 1,
+      pageSize: pagination?.pageSize,
+    }));
+  }, [pagination]);
+
+  const handleParamChange = (param: Partial<ProjectQueryParams>) => {
+    setParams((prev) => ({
+      ...prev,
+      ...param,
+    }));
+  };
+
   const [addProjectForm, setAddProjectForm] = useState(true);
-  const [selectedCategory, setSelectedCategory] =
-    useState<ProjectStatus | null>(null);
-  const [search, setSearch] = useState('');
   // const { data } = queries.read();
 
   const { data } = useProfile();
@@ -142,14 +192,64 @@ export default function Page() {
 
   useEffect(() => {
     if (
-      !creativeOnboardingData?.data?.isCompleted &&
+      creativeOnboardingData?.data?.isCompleted &&
       creativeOnboardingData?.data
     ) {
       router.push(routes.creatives.dashboard.getStarted.path);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [creativeOnboardingData]);
 
+  const columns = [
+    {
+      header: 'Project name',
+      accessorKey: 'title',
+    },
+    {
+      header: 'Project Type',
+      accessorKey: 'type',
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      cell: ({ row }: any) => {
+        const typeValue = row.original.type;
+        return <div>{projectTypeMap[typeValue] || 'Unknown'}</div>;
+      },
+    },
+    {
+      header: 'Due date',
+      accessorKey: 'expectedDeliveryDate',
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      cell: ({ row }: any) => {
+        const date = row.original.expectedDeliveryDate;
+        return formatDate(date);
+      },
+    },
+    {
+      header: 'Priority',
+      accessorKey: 'priority',
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      cell: ({ row }: any) => {
+        const value = row.original.priority;
+        return (
+          <div className="">
+            <Label type="priority" value={value} showIcon />
+          </div>
+        );
+      },
+    },
+    {
+      header: 'Status',
+      accessorKey: 'status',
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      cell: ({ row }: any) => {
+        const value = row.original.status;
+        return (
+          <div className="">
+            <Label type="status" value={value} />
+          </div>
+        );
+      },
+    },
+  ];
   return (
     <div className="app_dashboard_page app_dashboard_home">
       <RenderIf condition={!addProject}>
@@ -245,69 +345,79 @@ export default function Page() {
         </div>
       </div>
 
+      {false && (
+        <div className="app_dashboard_home__task app_dashboard_page__px pt-4">
+          <div className="app_dashboard_home__task__hdr flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2">
+              {Object.entries(Tasks).map(([label]) => (
+                <Pill
+                  key={label}
+                  size="md"
+                  active={Tasks['Due Task'] === label}
+                >
+                  {label}
+                </Pill>
+              ))}
+            </div>
+          </div>
+
+          <div className="app_dashboard_home__task__ctt app_dashboard_home__task__ctt--empty">
+            <EmptyState
+              icon={<EmptyStatus />}
+              title="No task yet"
+              description="Click “create project” button to get started"
+            />
+          </div>
+        </div>
+      )}
+
       <div className="app_dashboard_home__task app_dashboard_page__px pt-4">
         <div className="app_dashboard_home__task__hdr flex-wrap gap-2">
-          <div className="flex flex-wrap gap-2">
-            {Object.entries(Tasks).map(([label]) => (
-              <Pill key={label} size="md" active={Tasks['Due Task'] === label}>
-                {label}
-              </Pill>
-            ))}
-          </div>
-        </div>
-
-        <div className="app_dashboard_home__task__ctt app_dashboard_home__task__ctt--empty">
-          <EmptyState
-            icon={<EmptyStatus />}
-            title="No task yet"
-            description="Click “create project” button to get started"
-          />
-        </div>
-      </div>
-
-      <div className="app_dashboard_home__task app_dashboard_page__px">
-        <div className="app_dashboard_home__task__hdr flex-wrap gap-2">
           <div className="flex md:flex-wrap gap-2">
-            <Pill
-              key="all-projects"
-              size="md"
-              active={selectedCategory === null}
-              onClick={() => {
-                setSelectedCategory(null);
-              }}
-            >
-              All Projects
-            </Pill>
-            {Object.values(ProjectStatus).map((status) => (
+            {clientDashboardTasks.map((item) => (
               <Pill
-                key={status}
+                key={item.value}
                 size="md"
-                active={selectedCategory === status}
+                active={selectedCategory === item.value}
                 onClick={() => {
-                  setSelectedCategory(status);
+                  setSelectedCategory(item.value);
+                  handleParamChange({
+                    status: item?.value === 'All' ? undefined : item?.value,
+                  });
                 }}
               >
-                {status}
+                {item.label}
               </Pill>
             ))}
           </div>
 
-          <Input
-            placeholder="Search for project"
-            value={search}
+          <SearchInput
+            placeholder="Search for a Project"
             onChange={(e) => {
-              setSearch(e.target.value);
+              handleParamChange({ searchKey: e.target.value });
             }}
-            className="app_navbar__right__searchbar"
           />
         </div>
 
-        <ProjectsTable
-          category=""
-          search={search}
-          projectPriority={''}
-          projectStatus={selectedCategory ?? ''}
-        />
+        <div className="app_dashboard_home__task__ctt">
+          {loading ? (
+            <div className="text-center flex justify-center items-center">
+              <Loader2 size={18} className="animate-spin" />
+            </div>
+          ) : (
+            <Table
+              columns={columns}
+              data={tableBody}
+              emptyTitle="No project yet"
+              emptyMessage='Click "add project" button to get started'
+              pagination={pagination}
+              setPagination={setPagination}
+              onRowClick={(row) =>
+                router.push(`/creatives/dashboard/project-management/${row.id}`)
+              }
+            />
+          )}
+        </div>
       </div>
     </div>
   );

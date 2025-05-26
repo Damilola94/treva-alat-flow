@@ -1,30 +1,21 @@
 'use client';
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useMemo, useState } from 'react';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { AnimatedModal, Pill, RenderIf } from '@/components/shared';
-import queries from '@/services/queries/projects';
 import type { InitialStep1Values } from '@/app/creatives/dashboard/project-management/client-project/create/page';
-import { ProjectType } from '@/services/queries/projects/enums';
-import clientQueries from '@/services/queries/client-management';
 import { AddClient } from '../../../client-management';
+import { useClientManagement } from '@/hooks/Projects';
+import { useCreateProjectMutation } from '@/services';
+import { useAppDispatch, useAppSelector } from '@/store';
+import { storeValues } from '@/store/slices/project';
 
 interface IProps {
-  handleNext: (formData: InitialStep1Values) => void
-  setProjectId: (id: string) => void
+  handleNext: (formData: InitialStep1Values) => void;
+  setProjectId: (id: string) => void;
 }
-
-const validationSchema = Yup.object().shape({
-  title: Yup.string().required('Please enter a project title'),
-  description: Yup.string().required('Please enter a project description'),
-  expectedDeliveryDate: Yup.date()
-    .min(new Date(), 'Expected delivery date must be in the future')
-    .required('Please enter an expected delivery date'),
-  priority: Yup.string().required('Please select a priority'),
-  clientId: Yup.string().required('Please select a client'),
-});
 
 enum AccountType {
   Low = 'low',
@@ -32,51 +23,73 @@ enum AccountType {
   High = 'high',
 }
 
-export function ProjectDetails (props: IProps) {
+export function ProjectDetails(props: IProps) {
   const { handleNext, setProjectId } = props;
+  const dispatch = useAppDispatch();
+  const { title, description, expectedDeliveryDate, priority } = useAppSelector(
+    (state) => state?.project,
+  );
 
-  const [userType] = useState<ProjectType>(ProjectType.ClientProject);
+  const validationSchema = Yup.object().shape({
+    title: Yup.string().required('Please enter a project title'),
+    description: Yup.string().required('Please enter a project description'),
+    expectedDeliveryDate: Yup.date()
+      .min(new Date(), 'Expected delivery date must be in the future')
+      .required('Please enter an expected delivery date'),
+    priority: Yup.string().required('Please select a priority'),
+    clientUserId: Yup.string().required('Please select a client'),
+  });
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [params, setParams] = useState({
+    birthday: '',
+    birthmonth: '',
+    pageNumber: 0,
+    pageSize: 10,
+    searchKey: '',
+  });
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { myClientData, loading, refetch } = useClientManagement(params);
+  const [createProject] = useCreateProjectMutation();
+
+  const clientData = useMemo(
+    () => myClientData?.data || [],
+    [myClientData?.data],
+  );
+
+  // const [userType] = useState<ProjectType>(ProjectType.ClientProject);
   const [isAddClientModalOpen, setIsAddClientModalOpen] = useState(false);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selected, setSelected] = useState<string | null>(null);
-  const { data, refetch } = clientQueries.read();
-
-  const { mutate, isLoading } = queries.create({
-    onSuccess: (response) => {
-      if (response?.data?.id) {
-        const projectId = response.data.id;
-        setProjectId(projectId);
-      } else {
-        console.warn('Project ID not found. Polling...');
-      }
-    },
-  });
 
   const initialValues = {
-    title: '',
-    description: '',
-    expectedDeliveryDate: '',
-    priority: AccountType.Low as `${AccountType}`,
-    projectType: userType,
-    clientId: '',
+    title: title,
+    description: description,
+    expectedDeliveryDate: expectedDeliveryDate,
+    priority: priority,
+    type: 'Client',
+    clientUserId: '',
   };
 
   type InitialValues = ReturnType<() => typeof initialValues>;
 
-  const onSubmit = (values: InitialValues) => {
-    if (!values.clientId) {
-      return;
+  const onSubmit = async (_values: InitialValues) => {
+      console.log('Submitting values:', _values);
+    try {
+      const response = await createProject(_values).unwrap();
+      if (response?.data?.id) {
+        dispatch(storeValues(_values));
+        setProjectId(response.data.id);
+        handleNext(_values);
+      } else {
+        console.warn('Project ID not found. Cannot proceed to next step.');
+      }
+    } catch (error) {
+      console.error('Failed to create project:', error);
     }
-    mutate(values);
-    handleNext(values);
   };
-
-  useEffect(() => {
-    if (data && userType === ProjectType.ClientProject) {
-      void refetch();
-    }
-  }, [userType, refetch, data]);
 
   const handleAddClientClick = () => {
     setIsAddClientModalOpen(true);
@@ -191,15 +204,15 @@ export function ProjectDetails (props: IProps) {
                 </div>
                 <div className="relative w-full">
                   <select
-                    name="clientId"
-                    value={values.clientId ?? ''}
+                    name="clientUserId"
+                    value={values.clientUserId ?? ''}
                     onChange={(e) => {
                       const { value } = e.target;
                       if (value === 'new-client') {
                         handleAddClientClick();
                       } else {
                         setSelected(value);
-                        void setFieldValue('clientId', value);
+                        void setFieldValue('clientUserId', value);
                       }
                     }}
                     className="w-full border-b-[#d1d5db] p-2 focus:ring-1 focus:ring-[#7B37F0] bg-white text-left"
@@ -207,9 +220,12 @@ export function ProjectDetails (props: IProps) {
                     <option value="" disabled>
                       Select client
                     </option>
-                    {data?.data?.map((item) => (
-                      <option key={item.id} value={item.id}>
-                        {item.fullName}
+                    {clientData?.map((item) => (
+                      <option
+                        key={item.clientUserId ?? ''}
+                        value={item.clientUserId ?? ''}
+                      >
+                        {item.name}
                       </option>
                     ))}
                     <option value="new-client" className="text-blue-400">
@@ -218,10 +234,10 @@ export function ProjectDetails (props: IProps) {
                     </option>
                   </select>
                 </div>
-                <RenderIf condition={!!errors.clientId}>
+                <RenderIf condition={!!errors.clientUserId}>
                   <div>
                     <p className="app_input_con__spt--error">
-                      {errors.clientId}
+                      {errors.clientUserId}
                     </p>
                   </div>
                 </RenderIf>
@@ -229,7 +245,7 @@ export function ProjectDetails (props: IProps) {
                   <Button
                     type="submit"
                     size="md"
-                    isLoading={isLoading}
+                    // isLoading={isLoading}
                     backgroundColor="primary-blue-500"
                     className="w-1/2 app_auth_login__btn flex items-center justify-center gap-2"
                   >

@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Button } from '@/components/ui/button'
 // import routes from '@/lib/routes'
 import {
@@ -10,10 +11,15 @@ import {
   PlusIcon,
   SideModal,
 } from '@/components/shared'
-import queries from '@/services/queries/projects'
 import { type InitialStep3Values } from '@/app/creatives/dashboard/project-management/client-project/create/page'
 import routes from '@/lib/routes'
 import { Input } from '@/components/ui/input'
+import { useAppDispatch, useAppSelector } from '@/store'
+import { clearValues } from '@/store/slices/project';
+import * as Yup from 'yup';
+import { useCreateExtraCostMutation } from '@/services'
+
+
 
 interface IProps {
   handleNext: (formData: InitialStep3Values) => void
@@ -24,100 +30,52 @@ interface PaymentSchedule {
   paymentId: string
   title: string
   amount: string
+  description: string
 }
 
 export default function ProjectPayment (props: IProps) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { handleNext, projectId } = props
+  const dispatch = useAppDispatch()
+  const { paymentTitle, amount, paymentDescription } = useAppSelector((state) => state?.project)
+ 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [createPayment, {isLoading} ] = useCreateExtraCostMutation()
+
+  const initialValues = {
+    title: paymentTitle,
+    amount: amount,
+    description: paymentDescription
+  }
+
+  // const validationSchema = Yup.object().shape({
+  //   title: Yup.string().required('Please enter a payment schedule title'),
+  //   amount: Yup.number().required('Please enter amount')
+  // })
+
   const [editExpenses, setEditExpenses] = useState(false)
   const [addExpenses, setAddExpenses] = useState(false)
   const [isDecisionModalOpen, setIsDecisionModalOpen] = useState(false)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [payment, setPayment] = useState<PaymentSchedule[]>([])
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [paymentId] = useState<string>('')
 //   const [setSelectedPayment] =
 //     useState<PaymentSchedule | null>(null)
 
-  const { data, refetch } = queries.readPayment(
-    { projectId },
-    {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      onSuccess: (newData: any) => {
-        if (Array.isArray(newData)) {
-          const validPayment = newData.map((item) => {
-            return {
-              ...item,
-              deliverableId: item.deliverableId || item.id || '',
-            }
-          })
-          setPayment(validPayment)
-        } else {
-          setPayment([])
-        }
-      },
-    },
-  )
-
-  const { mutate: deletePayment } = queries.deletePayment(
-    {},
-    {
-      onSuccess: () => {
-        void refetch()
-      },
-    },
-  )
-
-  //   useEffect(() => {
-  //     if (data) {
-  //       if (Array.isArray(data)) {
-  //         const validPayment = data.map((item) => ({
-  //           ...item,
-  //           paymentId: item.paymentId || item.id || '',
-  //         }))
-  //         setPayment(validPayment)
-  //       }
-  //     }
-  //   }, [data])
-
-  useEffect(() => {
-    if (data && Array.isArray(data)) {
-      const validPayment = data.map((item) => ({
-        ...item,
-        paymentId: item.paymentId || item.id || '',
-      }))
-
-      // Only update state if the new data is different from the current state
-      if (JSON.stringify(validPayment) !== JSON.stringify(payment)) {
-        setPayment(validPayment)
-      }
-    }
-  }, [data, payment])
-//   const handleAddPayment = (newPayment: PaymentSchedule) => {
-//     const paymentWithId = {
-//       ...newPayment,
-//       paymentId: newPayment.paymentId || '',
-//     }
-//     setPayment((prev) => [...prev, paymentWithId])
-//     void refetch()
-//   }
-
-  const handleDelete = () => {
-    setPayment((prev) => prev.filter((d) => d.paymentId !== paymentId))
-    deletePayment({
-      projectId,
-      // eslint-disable-next-line object-shorthand
-      paymentId: paymentId,
-    })
-    setIsDecisionModalOpen(false)
-  }
-
-//   const onEdit = (id: string) => {
-//     const paymentToEdit = payment.find((d) => d.paymentId === id)
-//     if (!paymentToEdit) {
-//       console.error('Cannot find deliverable with ID:', id)
-//       return
-//     }
-//     setPaymentId(id)
-//     setSelectedPayment(paymentToEdit)
-//   }
+//  const onSubmit = async (_values: typeof initialValues) => {
+//      try {
+//        const response = await createPayment({
+//          projectId,
+//          ...values,
+//        }).unwrap();
+//        const payment = response?.data;
+//          dispatch(clearValues())
+//       handleNext(_values);
+//        } catch (error) {
+//        console.error('Failed to create deliverable:', error);
+//      }
+//    };
 
   const handleSkip = () => {
     window.location.href = routes.creatives.dashboard.projectManagement.path
@@ -125,9 +83,10 @@ export default function ProjectPayment (props: IProps) {
 
   const handleNextStep = () => {
     const step4Data = {
-      payment: payment.map((d) => ({
+      extraCost: payment.map((d) => ({
         title: d.title,
         amount: d.amount,
+        description: d.description,
       })),
     }
     handleNext(step4Data)
@@ -203,7 +162,8 @@ export default function ProjectPayment (props: IProps) {
             <button className="border p-3 rounded-full w-full border-[#F1F1F1] text-[#7B37F0]">
               Cancel
             </button>
-            <button className="border p-3 bg-[#F9403A] rounded-full w-full border-[#F1F1F1] text-[#fff]" onClick={handleDelete}>
+            <button className="border p-3 bg-[#F9403A] rounded-full w-full border-[#F1F1F1] text-[#fff]" >
+              {/* onClick={handleDelete} */}
               Delete
             </button>
           </div>

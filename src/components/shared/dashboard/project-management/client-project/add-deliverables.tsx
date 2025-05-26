@@ -14,9 +14,11 @@ import {
 import { Modal } from '@/components/shared/decisionModal';
 import { AddDeliverables } from '@/components/shared/project-management.tsx/add-deliverables';
 import { EditDeliverables } from '@/components/shared/project-management.tsx/edit-deliverables';
-import queries from '@/services/queries/projects';
 import { type InitialStep2Values } from '@/app/creatives/dashboard/project-management/client-project/create/page';
 import { formatDate } from '@/lib/utils';
+import { Loader2 } from 'lucide-react';
+// import { useAppDispatch } from '@/store';
+import { useGetDeliverablesQuery } from '@/services';
 
 interface IProps {
   handleNext: (formData: InitialStep2Values) => void;
@@ -25,67 +27,51 @@ interface IProps {
 
 interface Deliverable {
   deliverableId: string;
-  deliverableName: string;
-  deliverableDescription: string;
+  name: string;
+  description: string;
   startDate: string;
-  dueDate: string;
-  deliverableAmount: string;
-  timeline?: string;
-  totalAmount?: string;
+  endDate: string;
+  unitAmount: string;
+  unit: string;
+  total?: string;
 }
 
 export function ProjectDeliverables(props: IProps) {
   const { handleNext, projectId } = props;
+  // const dispatch = useAppDispatch();
+
   const [editForm, setEditForm] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDecisionModalOpen, setIsDecisionModalOpen] = useState(false);
   const [deliverables, setDeliverables] = useState<Deliverable[]>([]);
   const [deliverableId, setDeliverableId] = useState<string>('');
+  // const [deleteForm, setDeleteForm] = useState(false);
+    // const [deleteDeliverableId, setDeleteDeliverableId] = useState<string | null>(
+    //   null,
+    // );
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selectedDeliverable, setSelectedDeliverable] =
     useState<Deliverable | null>(null);
+  const { data: deliverablesData, isLoading, refetch} = useGetDeliverablesQuery({ projectId },{ refetchOnMountOrArgChange: true },);
+    
+   useEffect(() => {
+  if (deliverablesData?.data) {
+    setDeliverables(
+      deliverablesData.data.map((item) => ({
+        deliverableId: item.id ?? '',
+        name: item.name ?? '',
+        description: item.description ?? '',
+        startDate: item.startDate ?? '',
+        endDate: item.endDate ?? '',
+        unitAmount: item.unitAmount !== undefined && item.unitAmount !== null ? String(item.unitAmount) : '',
+        unit: item.unit !== undefined && item.unit !== null ? String(item.unit) : '',
+        total: item.total !== undefined && item.total !== null ? String(item.total) : '',
+      }))
+    );
+  }
+}, [deliverablesData]);
 
-  const { data, refetch } = queries.readDeliverables(
-    { projectId },
-    {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      onSuccess: (newData: any) => {
-        if (Array.isArray(newData)) {
-          const validDeliverables = newData.map((item) => {
-            return {
-              ...item,
-              deliverableId: item.deliverableId || item.id || '',
-            };
-          });
-          setDeliverables(validDeliverables);
-        } else {
-          setDeliverables([]);
-        }
-      },
-    },
-  );
-
-  const { mutate: deleteDeliverables } = queries.deleteDeliverables(
-    {},
-    {
-      onSuccess: () => {
-        void refetch();
-      },
-    },
-  );
-
-  useEffect(() => {
-    if (data) {
-      if (Array.isArray(data)) {
-        const validDeliverables = data.map((item) => ({
-          ...item,
-          deliverableId: item.deliverableId || item.id || '',
-        }));
-        setDeliverables(validDeliverables);
-      }
-    }
-  }, [data]);
-
+  
   const handleCloseModal = () => {
     setIsDecisionModalOpen(false);
   };
@@ -110,7 +96,7 @@ export function ProjectDeliverables(props: IProps) {
     setDeliverables((prev) =>
       prev.filter((d) => d.deliverableId !== deliverableId),
     );
-    deleteDeliverables({ projectId, deliverableId });
+    // deleteDeliverables({ projectId, deliverableId });
     setIsDecisionModalOpen(false);
   };
 
@@ -128,11 +114,12 @@ export function ProjectDeliverables(props: IProps) {
   const handleNextStep = () => {
     const step2Data = {
       deliverables: deliverables.map((d) => ({
-        deliverableName: d.deliverableName,
-        description: d.deliverableDescription,
+        name: d.name,
+        description: d.description,
         startDate: d.startDate,
-        dueDate: d.dueDate,
-        amount: d.deliverableAmount,
+        endDate: d.endDate,
+        unitAmount: d.unitAmount,
+        unit: d.unit,
       })),
     };
     handleNext(step2Data);
@@ -249,74 +236,69 @@ export function ProjectDeliverables(props: IProps) {
           </button>
         </div>
         <div>
-          {deliverables.map((item, index) => (
-            <>
+          <div>
+          {isLoading ? (
+            <div className="text-center flex justify-center items-center">
+              <Loader2 size={18} className="animate-spin" />
+            </div>
+          ) : deliverables.length > 0 ? (
+            deliverables.map((deliverable) => (
               <div
-                key={index}
-                className="border p-4 rounded-md shadow mb-4 flex justify-between items-center bg-[#E7E7E7] "
+                key={deliverable.deliverableId}
+                className="border p-4 rounded-md shadow mb-4 flex justify-between items-center bg-[#E7E7E7]"
               >
-                <div>
-                  <div className="flex items-center gap-24 lg:gap-60">
-                    <h4 className="font-semibold mb-3">
-                      {item.deliverableName}
-                    </h4>
+                <div className="w-full">
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-semibold mb-3">{deliverable.name}</h4>
                     <div className="flex gap-4">
                       <EditIcon
                         className="cursor-pointer"
                         fill="#888888"
-                        onClick={() => {
-                          if (item.deliverableId) {
-                            onEdit(item.deliverableId);
-                          }
-                        }}
+                        onClick={() => onEdit(deliverable.deliverableId)}
                       />
                       <button
                         onClick={() => {
-                          if (item.deliverableId) {
-                            setDeliverableId(item.deliverableId);
-                            setIsDecisionModalOpen(true);
-                          }
-                        }}
+                         if (!deliverable?.deliverableId) {
+                          console.error('Item ID is undefined. Cannot delete.');
+                          return;
+                        }
+                      //  onDelete(deliverable?.deliverableId);
+                        // setDeleteDeliverableId(deliverable.deliverableId);
+                      }}
+                      
                       >
                         <Delete className="cursor-pointer" />
                       </button>
                     </div>
                   </div>
-                  <p className="mb-2">{item.deliverableDescription}</p>
-                  <p className="flex gap-4 mb-3 ">
+                  <p className="mb-2">{deliverable.description}</p>
+                  <p className="flex gap-4 mb-3">
                     <CalendarWithMark fill="#6E50DB" />
-                    {formatDate(item.startDate)}
+                    {formatDate(deliverable.startDate)}
                   </p>
                   <p className="flex gap-4 mb-3">
                     <CalendarWithMark fill="#6E50DB" />
-                    {formatDate(item.dueDate)}
+                    {formatDate(deliverable.endDate)}
                   </p>
-                  <p className="flex gap-4">
-                    <Money4 stroke="#6E50DB" /> {item.deliverableAmount}
+                  <p className="flex gap-4 mb-3">
+                    <Money4 />
+                    {deliverable.unit}
+                  </p>
+                   <p className="flex gap-4 mb-3">
+                    <Money4 />
+                    {deliverable.unitAmount}
+                  </p>
+                   <p className="flex gap-4 mb-3">
+                    <Money4 />
+                    {deliverable.total}
                   </p>
                 </div>
               </div>
-            </>
-          ))}
-          {deliverables.length > 0 && (
-            <div className="mt-10 text-[#262626]">
-              <p className="flex justify-between mb-2">
-                Total deliverables: <span>{deliverables.length}</span>
-              </p>
-              <p className="flex justify-between mb-2">
-                Timeline <span>{deliverables[0].timeline}</span>
-              </p>
-              <p className="flex justify-between mb-2">
-                Sub Total: <span>NGN {deliverables[0].totalAmount}</span>
-              </p>
-              <p className="flex justify-between">
-                Total{' '}
-                <span className="font-bold">
-                  NGN {deliverables[0].totalAmount}
-                </span>
-              </p>
-            </div>
+            ))
+          ) : (
+            <p className="text-gray-500">No deliverables added yet.</p>
           )}
+        </div>
         </div>
         <div className="pt-4 flex gap-5 text-right">
           <Button

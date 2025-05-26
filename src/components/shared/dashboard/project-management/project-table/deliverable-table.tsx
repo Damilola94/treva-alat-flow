@@ -50,6 +50,7 @@ export function DeliverableTable({ refetchProject, onDeliverableClick}: {refetch
         const isCompleted = deliverable.status === 4;
 
         const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+          e.stopPropagation();
           const newStatus = e.target.checked ? 4 : 2;
           await updatedDeliverable({
             projectId,
@@ -62,13 +63,14 @@ export function DeliverableTable({ refetchProject, onDeliverableClick}: {refetch
         };
 
         return (
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3" onClick={(e) => e.stopPropagation()}>
             <input
               type="checkbox"
               className="w-5 h-5 cursor-pointer"
               checked={isCompleted}
               onChange={handleChange}
               disabled={isLoading}
+              onClick={(e) => e.stopPropagation()}
             />
             <label>Mark as Completed</label>
           </div>

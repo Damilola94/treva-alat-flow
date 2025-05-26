@@ -114,9 +114,9 @@ export function AddProject ({ onClose }: IProps) {
                         Personal
                       </button>
                       <button
-                        className={userType === ProjectType.ClientProject ? '' : 'active'}
+                        className={userType === ProjectType.Client ? '' : 'active'}
                         onClick={() => {
-                          setUserType(ProjectType.ClientProject);
+                          setUserType(ProjectType.Client);
                           void props.setFieldValue('projectType', 'ClientProject');
                         }}
                       >

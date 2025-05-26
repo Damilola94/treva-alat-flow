@@ -52,7 +52,7 @@ const useCreate = (options: { onSuccess?: (response: any) => void }) => {
         projectType: body.projectType,
         expectedDeliveryDate: body.expectedDeliveryDate,
         priority: body.priority,
-        ...(body.projectType === ProjectType.ClientProject && {
+        ...(body.projectType === ProjectType.Client && {
           totalAmount: body.totalAmount,
           clientId: body.clientId,
         }),
@@ -189,7 +189,7 @@ const useUpdate = (options: { onSuccess?: (response: any) => void }) => {
         type: body?.type,
         expectedDeliveryDate: body?.expectedDeliveryDate,
         priority: body?.priority,
-        ...(body.type === ProjectType.ClientProject && {
+        ...(body.type === ProjectType.Client && {
           totalAmount: body?.totalAmount,
           clientId: body?.clientId,
         }),
