@@ -106,7 +106,8 @@ const useRead = (
       ...options,
       onSuccess: () => {},
       onError: (err: AxiosError) => {
-        errorToast(handleErrors(err));
+        // errorToast(handleErrors(err));
+        console.log(err);
       },
     },
   );
@@ -601,7 +602,7 @@ const useUpdateDeliverables = (
         description: body.description,
         startDate: body.startDate,
         dueDate: body.dueDate,
-        amount: body.amount,  
+        amount: body.amount,
       };
 
       mutate({
@@ -683,10 +684,9 @@ const useCreatePayment = (options: { onSuccess?: (response: any) => void }) => {
   });
 
   interface Body {
-    projectId: string
-    amount: string
-    dueDate: string
-
+    projectId: string;
+    amount: string;
+    dueDate: string;
   }
 
   return {
@@ -786,11 +786,10 @@ const useUpdatePayment = (
   });
 
   interface Body {
-    projectId: string
-    paymentId: string
-    amount: string
-    dueDate: string
-
+    projectId: string;
+    paymentId: string;
+    amount: string;
+    dueDate: string;
   }
 
   return {
@@ -800,7 +799,7 @@ const useUpdatePayment = (
         projectId: body.projectId,
         paymentId: body.paymentId,
         amount: body.amount,
-        dueDate: body.dueDate
+        dueDate: body.dueDate,
       };
 
       mutate({
