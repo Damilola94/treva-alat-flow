@@ -27,8 +27,6 @@ export default function Page() {
     loading,
   } = useUsers();
 
-  console.log(creativeOnboardingData);
-
   const initialValues = useMemo(
     () => ({
       cv: null as File | null, // file upload is manual; we'll preview with photoUrl
