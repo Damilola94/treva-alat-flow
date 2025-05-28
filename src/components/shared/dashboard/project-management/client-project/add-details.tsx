@@ -8,9 +8,10 @@ import { AnimatedModal, Pill, RenderIf } from '@/components/shared';
 import type { InitialStep1Values } from '@/app/creatives/dashboard/project-management/client-project/create/page';
 import { AddClient } from '../../../client-management';
 import { useClientManagement } from '@/hooks/Projects';
-import { useCreateProjectMutation } from '@/services';
+import { errorToast, successToast, useCreateProjectMutation } from '@/services';
 import { useAppDispatch, useAppSelector } from '@/store';
-import { storeValues } from '@/store/slices/project';
+import { storeValues, setCurrentStep } from '@/store/slices/project';
+import { getErrorMessage } from '@/utils';
 
 interface IProps {
   handleNext: (formData: InitialStep1Values) => void;
@@ -26,9 +27,10 @@ enum AccountType {
 export function ProjectDetails(props: IProps) {
   const { handleNext, setProjectId } = props;
   const dispatch = useAppDispatch();
-  const { title, description, expectedDeliveryDate, priority } = useAppSelector(
-    (state) => state?.project,
-  );
+  // const { title, description, expectedDeliveryDate, priority, clientUserId,currentStep } = useAppSelector(
+  //   (state) => state?.project,);
+    const projectValues = useAppSelector((state) => state.project.projectValues)
+    
 
   const validationSchema = Yup.object().shape({
     title: Yup.string().required('Please enter a project title'),
@@ -50,44 +52,48 @@ export function ProjectDetails(props: IProps) {
   });
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { myClientData, loading, refetch } = useClientManagement(params);
-  const [createProject] = useCreateProjectMutation();
+  const { myClientData, refetch } = useClientManagement(params);
+  const [createProject, { isLoading: isSubmitting }] =
+    useCreateProjectMutation();
 
   const clientData = useMemo(
     () => myClientData?.data || [],
     [myClientData?.data],
   );
-
-  // const [userType] = useState<ProjectType>(ProjectType.ClientProject);
   const [isAddClientModalOpen, setIsAddClientModalOpen] = useState(false);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selected, setSelected] = useState<string | null>(null);
 
   const initialValues = {
-    title: title,
-    description: description,
-    expectedDeliveryDate: expectedDeliveryDate,
-    priority: priority,
+    title: projectValues.title,
+    description: projectValues.description,
+    expectedDeliveryDate: projectValues.expectedDeliveryDate,
+    priority: projectValues.priority,
     type: 'Client',
-    clientUserId: '',
+    clientUserId: projectValues.clientUserId,
   };
 
   type InitialValues = ReturnType<() => typeof initialValues>;
 
   const onSubmit = async (_values: InitialValues) => {
-      console.log('Submitting values:', _values);
+    console.log('Submitting values:', _values);
     try {
       const response = await createProject(_values).unwrap();
       if (response?.data?.id) {
-        dispatch(storeValues(_values));
+        successToast(response?.message || 'Project created successfully');
+        // dispatch(storeValues({ ..._values, currentStep: 1 }))
+        dispatch(storeValues( _values ))
+
+        dispatch(setCurrentStep(2))   
         setProjectId(response.data.id);
         handleNext(_values);
       } else {
-        console.warn('Project ID not found. Cannot proceed to next step.');
+        errorToast(response?.message || 'Failed to create project');
       }
     } catch (error) {
-      console.error('Failed to create project:', error);
+      const message = getErrorMessage(error);
+      errorToast(message || 'Something went wrong');
     }
   };
 
@@ -111,6 +117,7 @@ export function ProjectDetails(props: IProps) {
             initialValues={initialValues}
             validationSchema={validationSchema}
             onSubmit={onSubmit}
+            enableReinitialize={true}
           >
             {({
               values,
@@ -245,7 +252,7 @@ export function ProjectDetails(props: IProps) {
                   <Button
                     type="submit"
                     size="md"
-                    // isLoading={isLoading}
+                    isLoading={isSubmitting}
                     backgroundColor="primary-blue-500"
                     className="w-1/2 app_auth_login__btn flex items-center justify-center gap-2"
                   >

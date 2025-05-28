@@ -18,7 +18,7 @@ export function AnimatedModal ({ isOpen, onClose, children, from, className = ''
 
   return (
     <div
-      className="fixed inset-0 bg-black/50 flex items-center justify-center z-[50]"
+      className="fixed inset-0 bg-black/50 flex items-center justify-center z-[1000]"
       onClick={() => onClose}
     >
       <div

@@ -41,6 +41,7 @@ export function TaskTable({
   onUpdateTask,
   deliverableId,
 }: TaskTableProps) {
+  
   const { id } = useParams();
   const projectId = Array.isArray(id) ? id[0] : id;
   const dispatch = useAppDispatch();

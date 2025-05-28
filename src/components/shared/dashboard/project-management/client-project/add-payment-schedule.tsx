@@ -1,308 +1,454 @@
-'use client';
-import React, { Fragment, useEffect, useState } from 'react';
-import { Button } from '@/components/ui/button';
-// import routes from '@/lib/routes';
+"use client"
+import { useEffect, useState } from "react"
+import { Button } from "@/components/ui/button"
+import { CalendarWithMark, CenterModal, Delete, EditIcon, Money4, PlusIcon, SideModal } from "@/components/shared"
+import type { InitialStep4Values } from "@/app/creatives/dashboard/project-management/client-project/create/page"
+import routes from "@/lib/routes"
+import { formatDate } from "@/lib/utils"
+import * as Yup from "yup"
+import { useAppDispatch, useAppSelector } from "@/store"
+import { useFormik } from "formik"
+import { storeValues, nextStep } from "@/store/slices/project"
 import {
-  AnimatedModal,
-  CalendarWithMark,
-  Delete,
-  EditIcon,
-  Money4,
-  PlusIcon,
-  RenderIf,
-} from '@/components/shared';
-import { Modal } from '@/components/shared/decisionModal';
-import queries from '@/services/queries/projects';
-import { type InitialStep4Values } from '@/app/creatives/dashboard/project-management/client-project/create/page';
-import AddPayment from '../../../project-management.tsx/add-payment';
-import routes from '@/lib/routes';
-import EditPayment from '@/components/shared/project-management.tsx/edit-payment';
-import { formatDate } from '@/lib/utils';
+  errorToast,
+  successToast,
+  useCreatePaymentScheduleMutation,
+  useGetAllPaymentScheduleQuery,
+  useUpdatePaymentScheduleMutation,
+} from "@/services"
+import { useDeletePaymentSchedule } from "@/hooks/Projects/useProjects"
+import { Input } from "@/components/ui/input"
+import { Loader2 } from "lucide-react"
 
 interface IProps {
   handleNext: (formData: InitialStep4Values) => void
   projectId: string
+  paymentScheduleId?: string
 }
 
 interface PaymentSchedule {
-  paymentId: string
-  amountPercentage: string
+  paymentScheduleId: string
   dueDate: string
-  totalDueDate?: string
-  installments?: string
-  totalPaymentAmount?: string
   amount: string
 }
 
-export function ProjectPaymentSchedule (props: IProps) {
-  const { handleNext, projectId } = props;
-  const [editForm, setEditForm] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isDecisionModalOpen, setIsDecisionModalOpen] = useState(false);
-  const [payment, setPayment] = useState<PaymentSchedule[]>([]);
-  const [paymentId, setPaymentId] = useState<string>('');
-  const [selectedPayment, setSelectedPayment] = useState<PaymentSchedule | null>(null);
+const validationSchema = Yup.object({
+  amount: Yup.string().required("Amount is required"),
+  dueDate: Yup.string().required("Due date is required"),
+})
 
-  const { data, refetch } = queries.readPayment(
-    { projectId },
-    {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      onSuccess: (newData: any) => {
-        if (Array.isArray(newData)) {
-          const validPayment = newData.map((item) => {
-            return {
-              ...item,
-              deliverableId: item.deliverableId || item.id || '',
-            };
-          });
-          setPayment(validPayment);
-        } else {
-          setPayment([]);
-        }
-      },
+export function ProjectPaymentSchedule(props: IProps) {
+  const { handleNext, projectId } = props
+  const dispatch = useAppDispatch()
+
+  // Get values from Redux store
+  const { amount, dueDate } = useAppSelector((state) => state?.project)
+
+  const [createPaymentSchedule, { isLoading }] = useCreatePaymentScheduleMutation()
+  const { data: paymentScheduleData, refetch } = useGetAllPaymentScheduleQuery(projectId)
+  const [updatedPaymentSchedule] = useUpdatePaymentScheduleMutation()
+  const { deletePaymentSchedule } = useDeletePaymentSchedule()
+
+  const [editPaymentSchedule, setEditPaymentSchedule] = useState(false)
+  const [addPaymentSchedule, setAddPaymentSchedule] = useState(false)
+  const [isDecisionModalOpen, setIsDecisionModalOpen] = useState(false)
+  const [paymentSchedule, setPaymentSchedule] = useState<PaymentSchedule[]>([])
+
+  const [selectedPaymentSchedule, setSelectedPaymentSchedule] = useState<PaymentSchedule | null>(null)
+  const [paymentScheduleToDelete, setPaymentScheduleToDelete] = useState<string | null>(null)
+
+  // Form for adding payments schedule
+  const addFormik = useFormik({
+    initialValues: {
+      dueDate: dueDate || "",
+      amount: amount || "",
     },
-  );
+    validationSchema,
+    enableReinitialize: true,
+    onSubmit: async (values, { resetForm }) => {
+      try {
+        await createPaymentSchedule({
+          projectId,
+          ...values,
+        }).unwrap()
+        successToast("Payment schedule created successfully")
+        resetForm()
+        setAddPaymentSchedule(false)
 
-  const { mutate: deletePayment } = queries.deletePayment(
-    {},
-    {
-      onSuccess: () => {
-        void refetch();
-      },
-    },
-  );
+        // Store in Redux
+        dispatch(
+          storeValues({
+            amount: values.amount,
+            dueDate: values.dueDate,
+          }),
+        )
 
-  useEffect(() => {
-    if (data) {
-      if (Array.isArray(data)) {
-        const validPayment = data.map((item) => ({
-          ...item,
-          paymentId: item.paymentId || item.id || '',
-        }));
-        setPayment(validPayment);
+        refetch()
+      } catch (error) {
+        errorToast("Failed to create payment schedule")
       }
+    },
+  })
+
+  // Form for editing payments schedule
+  const editFormik = useFormik({
+    initialValues: {
+      amount: "",
+      dueDate: "",
+    },
+    validationSchema,
+    onSubmit: async (values) => {
+      if (!selectedPaymentSchedule) return
+
+      try {
+        const response = await updatedPaymentSchedule({
+          projectId,
+          paymentScheduleId: selectedPaymentSchedule.paymentScheduleId,
+          ...values,
+        }).unwrap()
+        const updated = response?.data
+        if (updated?.id) {
+          setPaymentSchedule((prev) => {
+            const updatedSchedules = prev.map((p) =>
+              p.paymentScheduleId === updated.id ? { ...p, ...values, paymentScheduleId: updated.id } : p,
+            )
+
+            // Store in Redux
+            dispatch(
+              storeValues({
+                paymentSchedule: updatedSchedules.map((p) => ({
+                  amount: p.amount,
+                  dueDate: p.dueDate,
+                })),
+              }),
+            )
+
+            return updatedSchedules
+          })
+          successToast(response?.message || "Payment updated successfully")
+          setEditPaymentSchedule(false)
+          setSelectedPaymentSchedule(null)
+          refetch()
+        } else {
+          errorToast(response?.message || "Something went wrong")
+        }
+      } catch (error) {
+        errorToast("Failed to update payment")
+      }
+    },
+  })
+
+  // Store form values in Redux on input change
+  useEffect(() => {
+    dispatch(
+      storeValues({
+        amount: addFormik.values.amount,
+        dueDate: addFormik.values.dueDate,
+      }),
+    )
+  }, [addFormik.values, dispatch])
+
+  const handleEditClick = (paymentItem: PaymentSchedule) => {
+    setSelectedPaymentSchedule(paymentItem)
+    editFormik.setValues({
+      amount: String(paymentItem.amount || ""),
+      dueDate: paymentItem.dueDate || "",
+    })
+    setEditPaymentSchedule(true)
+  }
+
+  const handleDeleteClick = (paymentId: string) => {
+    setPaymentScheduleToDelete(paymentId)
+    setIsDecisionModalOpen(true)
+  }
+
+  const handleDelete = async () => {
+    if (!paymentScheduleToDelete) return
+
+    try {
+      await deletePaymentSchedule({
+        extraCostId: paymentScheduleToDelete,
+        projectId,
+      }).unwrap()
+      successToast("Payment deleted successfully")
+      setIsDecisionModalOpen(false)
+      setPaymentScheduleToDelete(null)
+      refetch()
+    } catch (error) {
+      errorToast("Failed to delete payment")
     }
-  }, [data]);
-
-  const handleCloseModal = () => {
-    setIsDecisionModalOpen(false);
-  };
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
-
-  const handleAddPayment = (newPayment: PaymentSchedule) => {
-    const paymentWithId = {
-      ...newPayment,
-      paymentId: newPayment.paymentId || '',
-    };
-    setPayment((prev) => [...prev, paymentWithId]);
-    void refetch();
-  };
-
-  const handleDelete = () => {
-    setPayment((prev) => prev.filter((d) => d.paymentId !== paymentId));
-    deletePayment({
-      projectId,
-      // eslint-disable-next-line object-shorthand
-      paymentId: paymentId,
-    });
-    setIsDecisionModalOpen(false);
-  };
-
-  const onEdit = (id: string) => {
-    const paymentToEdit = payment.find((d) => d.paymentId === id);
-    if (!paymentToEdit) {
-      console.error('Cannot find deliverable with ID:', id);
-      return;
-    }
-    setPaymentId(id);
-    setSelectedPayment(paymentToEdit);
-    setEditForm(false);
-  };
+  }
 
   const handleSkip = () => {
-    window.location.href = routes.creatives.dashboard.projectManagement.path;
-  };
+    // Store current step and move to next
+    dispatch(nextStep())
+    window.location.href = routes.creatives.dashboard.projectManagement.path
+  }
 
   const handleNextStep = () => {
     const step4Data = {
-      paymentSchedule: payment.map((d) => ({
+      paymentSchedule: paymentSchedule.map((d) => ({
         amount: d.amount,
         dueDate: d.dueDate,
       })),
-    };
-    handleNext(step4Data);
-  };
+    }
+
+    // Store in Redux and move to next step
+    dispatch(storeValues(step4Data))
+    dispatch(nextStep())
+
+    handleNext(step4Data)
+  }
+
+  useEffect(() => {
+    if (Array.isArray(paymentScheduleData?.data)) {
+      const mappedSchedules = paymentScheduleData.data.map((item) => ({
+        paymentScheduleId: item.id ?? "",
+        dueDate: item.dueDate ?? "",
+        amount: item.amount ?? "",
+      }))
+
+      setPaymentSchedule(mappedSchedules)
+
+      dispatch(
+        storeValues({
+          paymentSchedule: mappedSchedules.map((p) => ({
+            amount: p.amount,
+            dueDate: p.dueDate,
+          })),
+        }),
+      )
+    } else {
+      setPaymentSchedule([])
+    }
+  }, [paymentScheduleData, dispatch])
 
   return (
     <div className="app_get_started_professional_details py-6 px-4 flex flex-col gap-14">
-      <AnimatedModal
-        {...{
-          isOpen: isModalOpen,
-          from: 'right',
-          onClose: closeModal,
-          className:
-            'lg:absolute lg:bottom-0 lg:right-0 h-[calc(100vh-20px)] w-full sm:w-[350px] bg-white p-0 flex flex-col lg:mb-2 lg:mr-2 mx-7',
+      <SideModal
+        isOpen={addPaymentSchedule}
+        onClose={() => {
+          setAddPaymentSchedule(false)
+          addFormik.resetForm()
         }}
-      >
-        {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
-        <AddPayment
-          onClose={closeModal}
-          projectId={projectId}
-          onAddPayment={handleAddPayment}
-          setPaymentId={setPaymentId}
-        />
-      </AnimatedModal>
-
-      <RenderIf condition={!editForm}>
-        <Fragment>
-          <AnimatedModal
-            {...{
-              isOpen: true,
-              from: 'right',
-              onClose: onEdit,
-              className:
-                'lg:absolute lg:bottom-0 lg:right-0 h-[calc(100vh-20px)] w-full sm:w-[350px] bg-white p-0 flex flex-col lg:mb-2 lg:mr-2 mx-7',
-            }}
-          >
-            <EditPayment
-              onClose={() => {
-                setEditForm(true);
-                setSelectedPayment(null);
+        title="Add payment schedule"
+        showFooter
+        usebg
+        footerChildren={
+          <div className="w-full flex items-center gap-5 mt-24">
+            <button
+              className="border p-5 rounded-full w-full border-[#F1F1F1] text-[#7B37F0]"
+              onClick={() => {
+                setAddPaymentSchedule(false)
+                addFormik.resetForm()
               }}
-              projectId={projectId}
-              paymentId={paymentId}
-              payment={selectedPayment}
-              onEditPayment={(updatedPayment) => {
-                setPayment((prev) =>
-                  prev.map((d) =>
-                    d.paymentId === updatedPayment.deliverableId
-                      ? updatedPayment
-                      : d,
-                  ),
-                );
-                void refetch();
-              }}
-            />
-          </AnimatedModal>
-        </Fragment>
-      </RenderIf>
-
-      <div className="app_get_started_professional_details__form flex flex-col gap-10 !overflow-y-auto">
-        <Modal
-          {...{ open: isDecisionModalOpen, handleClose: handleCloseModal }}
-        >
-          <div className="app_modal__ctt__mid">
-            <h2 className="app_modal__ctt__mid__h2">
-              Are you sure you want to delete this payment?
-            </h2>
-            <p className="text-[#888888]">
-              Payment will be deleted Permanently
-            </p>
+            >
+              Close
+            </button>
+            <button
+              className="border p-5 bg-[#7B37F0] rounded-full w-full border-[#F1F1F1] text-[#fff] disabled:opacity-50"
+              onClick={() => addFormik.handleSubmit()}
+              disabled={isLoading}
+            >
+              {isLoading ? <Loader2 size={18} className="animate-spin mx-auto" /> : "Add"}
+            </button>
           </div>
+        }
+      >
+        <form onSubmit={addFormik.handleSubmit} className="space-y-5 relative">
+          <div>
+            <Input
+              placeholder="Amount"
+              name="amount"
+              value={addFormik.values.amount}
+              onChange={(e) => {
+                addFormik.handleChange(e)
+                dispatch(storeValues({ amount: e.target.value }))
+              }}
+              onBlur={addFormik.handleBlur}
+            />
+            {addFormik.touched.amount && addFormik.errors.amount && (
+              <p className="text-red-500 text-sm mt-1">{addFormik.errors.amount}</p>
+            )}
+          </div>
+          <div>
+            <label htmlFor="">Due date</label>
+            <Input
+              placeholder="Due date"
+              type="date"
+              name="dueDate"
+              value={addFormik.values.dueDate}
+              onChange={(e) => {
+                addFormik.handleChange(e)
+                dispatch(storeValues({ dueDate: e.target.value }))
+              }}
+              onBlur={addFormik.handleBlur}
+            />
+            {addFormik.touched.dueDate && addFormik.errors.dueDate && (
+              <p className="text-red-500 text-sm mt-1">{addFormik.errors.dueDate}</p>
+            )}
+          </div>
+        </form>
+      </SideModal>
 
-          <div className="app_modal__ctt__btm flex gap-4">
-            <Button
-              backgroundColor="transparent"
-              size="xl"
-              color="treva-purple-500"
-              className="w-full border border-[#F1F1F1]"
-              onClick={handleCloseModal}
+      <SideModal
+        isOpen={editPaymentSchedule}
+        onClose={() => {
+          setEditPaymentSchedule(false)
+          setSelectedPaymentSchedule(null)
+          editFormik.resetForm()
+        }}
+        title="Edit payment schedule"
+        showFooter
+        usebg
+        footerChildren={
+          <div className="w-full flex items-center gap-5">
+            <button
+              className="border p-5 rounded-full w-full border-[#F1F1F1] text-[#7B37F0]"
+              onClick={() => {
+                setEditPaymentSchedule(false)
+                setSelectedPaymentSchedule(null)
+                editFormik.resetForm()
+              }}
+            >
+              Close
+            </button>
+            <button
+              className="border p-5 bg-[#7B37F0] rounded-full w-full border-[#F1F1F1] text-[#fff] disabled:opacity-50"
+              onClick={() => editFormik.handleSubmit()}
+              disabled={isLoading}
+              type="submit"
+            >
+              {isLoading ? <Loader2 size={18} className="animate-spin mx-auto" /> : "Update"}
+            </button>
+          </div>
+        }
+      >
+        <form onSubmit={editFormik.handleSubmit} className="space-y-5 relative">
+          <div>
+            <Input
+              placeholder="Amount"
+              name="amount"
+              value={editFormik.values.amount}
+              onChange={editFormik.handleChange}
+              onBlur={editFormik.handleBlur}
+            />
+            {editFormik.touched.amount && editFormik.errors.amount && (
+              <p className="text-red-500 text-sm mt-1">{editFormik.errors.amount}</p>
+            )}
+          </div>
+          <div>
+            <Input
+              placeholder="Due date"
+              name="dueDate"
+              value={editFormik.values.dueDate}
+              onChange={editFormik.handleChange}
+              onBlur={editFormik.handleBlur}
+            />
+            {editFormik.touched.dueDate && editFormik.errors.dueDate && (
+              <p className="text-red-500 text-sm mt-1">{editFormik.errors.dueDate}</p>
+            )}
+          </div>
+        </form>
+      </SideModal>
+
+      <CenterModal
+        headerImageType={3}
+        isOpen={isDecisionModalOpen}
+        onClose={() => {
+          setIsDecisionModalOpen(false)
+          setPaymentScheduleToDelete(null)
+        }}
+        showFooter
+        footerChildren={
+          <div className="w-full flex items-center gap-5">
+            <button
+              className="border p-3 rounded-full w-full border-[#F1F1F1] text-[#7B37F0]"
+              onClick={() => {
+                setIsDecisionModalOpen(false)
+                setPaymentScheduleToDelete(null)
+              }}
             >
               Cancel
-            </Button>
-            <Button
-              backgroundColor="error-500"
-              color="white"
-              size="xl"
-              className="w-full"
-              // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+            </button>
+            <button
+              className="border p-3 bg-[#F9403A] rounded-full w-full border-[#F1F1F1] text-[#fff] disabled:opacity-50"
               onClick={handleDelete}
+              disabled={isLoading}
+              type="submit"
             >
-              Delete
-            </Button>
+              {isLoading ? <Loader2 size={18} className="animate-spin mx-auto" /> : "Delete"}
+            </button>
           </div>
-        </Modal>
+        }
+      >
+        <div className="flex flex-col items-center justify-center gap-4">
+          <p className="font-semibold">Are you sure you want to delete payment?</p>
+          <p>Payment will be deleted permanently</p>
+        </div>
+      </CenterModal>
 
+      <div className="app_get_started_professional_details__form flex flex-col gap-10 !overflow-y-auto">
         <h3 className="app_get_started_professional_details__form__title">
-          Payment <br />
-          <span className="text-[#6D6D6D] text-sm">
-            Setup how you want to be paid.
-          </span>
+          Billing Schedule <br />
+          <span className="text-[#6D6D6D] text-sm">Setup how you want to be paid.</span>
         </h3>
         <div className="">
           <button
             className="flex gap-3 text-[#7D6CE8]"
             onClick={() => {
-              setIsModalOpen(true);
+              setAddPaymentSchedule(true)
             }}
           >
             <PlusIcon fill="var(--treva-purple-500)" />
-            {payment.length > 0 ? 'Add another payment' : 'Add payment'}
+            {paymentSchedule.length > 0 ? "Add another payment" : "Add payment"}
           </button>
         </div>
         <div>
-          {payment.map((item, index) => (
-            <>
+          {isLoading ? (
+            <div className="text-center flex justify-center items-center">
+              <Loader2 size={18} className="animate-spin" />
+            </div>
+          ) : paymentSchedule.length > 0 ? (
+            paymentSchedule.map((item) => (
               <div
-                key={index}
-                className="border p-4 rounded-md shadow mb-4 flex justify-between items-center bg-[#E7E7E7] "
+                key={item.paymentScheduleId}
+                className="border p-4 rounded-md mb-4 
+                flex justify-between items-center bg-[#E7E7E7]"
               >
-                <div>
-                  <div className="flex items-center gap-44 lg:gap-60">
+                <div className="w-full">
+                  <div className="flex items-center justify-between">
                     <h4 className="font-semibold mb-3 flex gap-4">
-                      <p className="text-[#7D6CE8]">%</p>
-                      {item.amountPercentage}
+                      <Money4 stroke="#7D6CE8" />
+                      {item.amount}
                     </h4>
                     <div className="flex gap-4">
-                      <EditIcon
-                        className="cursor-pointer"
-                        fill="#888888"
-                        onClick={() => {
-                          if (item.paymentId) {
-                            onEdit(item.paymentId);
-                          }
-                        }}
-                      />
-                      <button
-                        onClick={() => {
-                          setPaymentId(item.paymentId);
-                          setIsDecisionModalOpen(true);
-                        }}
-                      >
+                      <EditIcon className="cursor-pointer " fill="#888888" onClick={() => handleEditClick(item)} />
+                      <button onClick={() => handleDeleteClick(item.paymentScheduleId)}>
                         <Delete className="cursor-pointer" />
                       </button>
                     </div>
                   </div>
-                  <p className="flex gap-4 mb-3">
-                    <CalendarWithMark fill="#6E50DB" />
-                    {formatDate(item.dueDate)}
-                  </p>
-                  <p className="flex gap-4">
-                    <Money4 stroke="#6E50DB" /> {item.amount}
-                  </p>
+                  <div className="flex justify-between items-center">
+                    <p className="flex items-center gap-4">
+                      <CalendarWithMark fill="#6E50DB" />
+                      Due date
+                    </p>
+                    <p className="font-bold">{formatDate(item.dueDate)}</p>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <p className="flex items-center gap-4">
+                      <Money4 stroke="#6E50DB" />
+                      Amount
+                    </p>
+                    <p className="font-bold">NGN{item.amount}.00</p>
+                  </div>
                 </div>
               </div>
-            </>
-          ))}
-          {payment.length > 0 && (
-            <div className="mt-10 text-[#262626]">
-              <p className="flex justify-between mb-2">
-                No. of Instalment: <span>{payment[0].installments}</span>
-              </p>
-              <p className="flex justify-between mb-2">
-                Total payment due date: <span>{payment[0].totalDueDate}</span>
-              </p>
-              <p className="flex justify-between mb-2">
-                Sub Total: <span>{payment[0].totalPaymentAmount}</span>
-              </p>
-              <p className="flex justify-between">
-                Total{' '}
-                <span className="font-bold">
-                  {payment[0].totalPaymentAmount}
-                </span>
-              </p>
+            ))
+          ) : (
+            <div className="text-center">
+              <p className="text-gray-500">No payment schedule added yet.</p>
             </div>
           )}
         </div>
@@ -323,12 +469,11 @@ export function ProjectPaymentSchedule (props: IProps) {
             backgroundColor="primary-blue-500"
             className="w-1/2 py-3 px-12"
             onClick={handleNextStep}
-            disabled={payment.length === 0}
           >
             Save and continue
           </Button>
         </div>
       </div>
     </div>
-  );
+  )
 }

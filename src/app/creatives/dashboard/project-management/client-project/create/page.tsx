@@ -1,62 +1,65 @@
-'use client'
-import React, { Fragment, Suspense, useEffect, useState } from 'react'
-import { RenderIf } from '@/components/shared'
-import { ProgressStatus } from '@/components/shared/dashboard/get-started/progress-status copy'
-import { ProjectDetails } from '@/components/shared/dashboard/project-management/client-project/add-details'
-import { ProjectDeliverables } from '@/components/shared/dashboard/project-management/client-project/add-deliverables'
-import { ProjectPaymentSchedule } from '@/components/shared/dashboard/project-management/client-project/add-payment-schedule'
-import { ProjectAgreement } from '@/components/shared/dashboard/project-management/client-project/add-agreement'
-import { ProjectReview } from '@/components/shared/dashboard/project-management/client-project/review'
-import { useSearchParams } from 'next/navigation'
-import { ArrowLeft } from 'lucide-react'
-import ProjectPayment from '@/components/shared/dashboard/project-management/client-project/payment'
+"use client"
+import { Fragment, Suspense, useEffect, useState } from "react"
+import { RenderIf } from "@/components/shared"
+import { ProgressStatus } from "@/components/shared/dashboard/get-started/progress-status copy"
+import { ProjectDetails } from "@/components/shared/dashboard/project-management/client-project/add-details"
+import { ProjectDeliverables } from "@/components/shared/dashboard/project-management/client-project/add-deliverables"
+import { ProjectPaymentSchedule } from "@/components/shared/dashboard/project-management/client-project/add-payment-schedule"
+import { ProjectAgreement } from "@/components/shared/dashboard/project-management/client-project/add-agreement"
+import { ProjectReview } from "@/components/shared/dashboard/project-management/client-project/review"
+import { useSearchParams } from "next/navigation"
+import { ArrowLeft } from "lucide-react"
+import ProjectPayment from "@/components/shared/dashboard/project-management/client-project/payment"
+import { useAppDispatch, useAppSelector } from "@/store"
+import { setCurrentStep, storeValues, previousStep, clearValues } from "@/store/slices/project"
 
 const step1Values = {
-  title: '',
-  description: '',
-  expectedDeliveryDate: '',
-  priority: '',
-  type: 'Client'
+  title: "",
+  description: "",
+  expectedDeliveryDate: "",
+  priority: "",
+  type: "Client",
 }
 
 const step2Values = {
   deliverables: [
     {
-      name: '',
-      description: '',
-      startDate: '',
-      endDate: '',
-      unitAmount: '',
-      unit:''
-    }
-  ]
-};
+      name: "",
+      description: "",
+      startDate: "",
+      endDate: "",
+      unitAmount: "",
+      unit: "",
+    },
+  ],
+}
 
 const step3Values = {
   extraCost: [
     {
-      title: '',
-      description: '',
-      amount: ''
-    }
-  ]
+      name: "",
+      description: "",
+      amount: "",
+    },
+  ],
 }
 
 const step4Values = {
   paymentSchedule: [
     {
-      amount: '',
-      dueDate: '',
-    }
-  ]
+      amount: "",
+      dueDate: "",
+    },
+  ],
 }
 
 const step5Values = {
-  agreement: [{
-    projectId: '',
-    projectAgreementUrl: ''
-  }
-  ]
+  agreement: [
+    {
+      // projectId: "",
+      documentUrl: "",
+    },
+  ],
 }
 
 const defaultValues = {
@@ -64,7 +67,7 @@ const defaultValues = {
   step2Values,
   step3Values,
   step4Values,
-  step5Values
+  step5Values,
 }
 
 interface FormDataType {
@@ -76,8 +79,8 @@ interface FormDataType {
 }
 
 export type DefaultValues = ReturnType<() => typeof defaultValues>
-
 export type InitialStep1Values = ReturnType<() => typeof step1Values>
+
 export interface InitialStep2Values {
   deliverables: Array<{
     name: string
@@ -88,13 +91,15 @@ export interface InitialStep2Values {
     unit: string
   }>
 }
+
 export interface InitialStep3Values {
   extraCost: Array<{
-    title: string
+    name: string
     description: string
     amount: string
   }>
 }
+
 export interface InitialStep4Values {
   paymentSchedule: Array<{
     amount: string
@@ -104,8 +109,8 @@ export interface InitialStep4Values {
 
 export interface InitialStep5Values {
   agreement: Array<{
-    projectId: string
-    projectAgreementUrl: string
+    // projectId: string
+    documentUrl: string
   }>
 }
 
@@ -113,74 +118,115 @@ export interface InitialStep6Values {
   review: Array<{
     projectId: string
     termsAndConditions: false
-
   }>
 }
 
-function ClientProject () {
-  const searchParams = useSearchParams();
-  const paramsProjectId = searchParams.get('projectId');
+function ClientProject() {
+  const searchParams = useSearchParams()
+  const paramsProjectId = searchParams.get("projectId")
 
-  const [currentStep, setCurrentStep] = useState(1);
-  const [projectId, setProjectId] = useState<string>('');
+  const dispatch = useAppDispatch()
+  const currentStep = useAppSelector((state) => state.project.currentStep)
+  // const projectValues = useAppSelector((state) => state.project.projectValues)
+// console.log(projectValues, 'projectValues');
 
-  const [formData, setFormData] = useState<FormDataType>(defaultValues);
+  const [projectId, setProjectId] = useState<string>("")
+  const [, setFormData] = useState<FormDataType>(defaultValues)
 
   useEffect(() => {
     if (paramsProjectId) {
-      setProjectId(paramsProjectId);
-      setCurrentStep(3);
+      setProjectId(paramsProjectId)
     }
-  }, [paramsProjectId]);
+  }, [paramsProjectId])
 
   const handleNext = (step: 1 | 2 | 3 | 4 | 5 | 6, data: Partial<FormDataType[keyof FormDataType]>) => {
     setFormData((prevData) => ({
       ...prevData,
       [`step${step}Values`]: {
         ...prevData[`step${step}Values` as keyof FormDataType],
-        ...data
-      }
-    }));
-    setCurrentStep(step + 1);
-  };
+        ...data,
+      },
+    }))
+
+    // Store form data in Redux
+    dispatch(storeValues(data))
+    const nextStepNumber = step + 1
+    dispatch(setCurrentStep(nextStepNumber))
+  }
+
+  const handlePrevious = () => {
+    dispatch(previousStep())
+  }
+
+  const handleStepClick = (stepNumber: number) => {
+    // Allow navigation to completed steps or current step
+    if (stepNumber <= currentStep) {
+      dispatch(setCurrentStep(stepNumber))
+    }
+    dispatch(clearValues())
+  }
 
   return (
     <Fragment>
       {/* Mobile Step Indicator */}
-      <div className="lg:hidden flex items-center justify-between my-4 mx-4 ">
+      <div className="lg:hidden flex items-center justify-between my-4 mx-4">
         {currentStep > 1 && (
-          <button onClick={() => { setCurrentStep((prev) => prev - 1); }} className="p-2 text-black">
-            <ArrowLeft/>
+          <button onClick={handlePrevious} className="p-2 text-black">
+            <ArrowLeft />
           </button>
         )}
 
-        <p className="text-sm font-medium bg-[#7B37F00D] text-[#7B37F0] rounded px-3 py-1 w-fit">
-          {currentStep} of 6
-        </p>
+        <p className="text-sm font-medium bg-[#7B37F00D] text-[#7B37F0] rounded px-3 py-1 w-fit">{currentStep} of 6</p>
       </div>
 
       <RenderIf condition={true}>
         <div className="mt-7">
           <div className="lg:flex lg:justify-center lg:items-center lg:gap-4 hidden">
-            <ProgressStatus label="Project details" checked={currentStep >= 1} />
-            <ProgressStatus label="Deliverables" checked={currentStep >= 2} />
-            <ProgressStatus label="Payment" checked={currentStep >= 3} />
-            <ProgressStatus label="Billing schedule" checked={currentStep >= 4} />
-            <ProgressStatus label="Agreement" checked={currentStep >= 5} />
-            <ProgressStatus label="Review" checked={currentStep >= 6} />
-
+            <ProgressStatus
+              label="Project details"
+              checked={currentStep >= 1}
+              onClick={() => handleStepClick(1)}
+              className={currentStep >= 1 ? "cursor-pointer" : "cursor-not-allowed opacity-50"}
+            />
+            <ProgressStatus
+              label="Deliverables"
+              checked={currentStep >= 2}
+              onClick={() => handleStepClick(2)}
+              className={currentStep >= 2 ? "cursor-pointer" : "cursor-not-allowed opacity-50"}
+            />
+            <ProgressStatus
+              label="Payment"
+              checked={currentStep >= 3}
+              onClick={() => handleStepClick(3)}
+              className={currentStep >= 3 ? "cursor-pointer" : "cursor-not-allowed opacity-50"}
+            />
+            <ProgressStatus
+              label="Billing schedule"
+              checked={currentStep >= 4}
+              onClick={() => handleStepClick(4)}
+              className={currentStep >= 4 ? "cursor-pointer" : "cursor-not-allowed opacity-50"}
+            />
+            <ProgressStatus
+              label="Agreement"
+              checked={currentStep >= 5}
+              onClick={() => handleStepClick(5)}
+              className={currentStep >= 5 ? "cursor-pointer" : "cursor-not-allowed opacity-50"}
+            />
+            <ProgressStatus
+              label="Review"
+              checked={currentStep >= 6}
+              onClick={() => handleStepClick(6)}
+              className={currentStep >= 6 ? "cursor-pointer" : "cursor-not-allowed opacity-50"}
+            />
           </div>
         </div>
 
         <RenderIf condition={currentStep === 1}>
           <ProjectDetails
             setProjectId={setProjectId}
-            handleNext={(val) => {
-              setFormData({
-                ...formData,
-                step1Values: { ...formData.step1Values, ...val }
-              })
-              setCurrentStep(2)
+            handleNext={(data) => {
+              handleNext(1, data)
+              dispatch(storeValues(data))
             }}
           />
         </RenderIf>
@@ -189,24 +235,33 @@ function ClientProject () {
           <ProjectDeliverables
             projectId={projectId}
             key={projectId}
-            handleNext={(data) => { handleNext(2, data); }}
+            handleNext={(data) => {
+              handleNext(2, data)
+              dispatch(storeValues(data))
+            }}
           />
         </RenderIf>
 
-         <RenderIf condition={currentStep === 3}>
+        <RenderIf condition={currentStep === 3}>
           <ProjectPayment
             projectId={projectId}
             key={projectId}
-            handleNext={(data) => { handleNext(3, data); }}
+            handleNext={(data) => {
+              handleNext(3, data)
+              dispatch(storeValues(data))
+            }}
+            deliverables={[]}
           />
-          </RenderIf>
+        </RenderIf>
 
         <RenderIf condition={currentStep === 4}>
           <ProjectPaymentSchedule
             projectId={projectId}
             key={projectId}
-            handleNext={(data) => { handleNext(4, data); }}
-
+            handleNext={(data) => {
+              handleNext(4, data)
+              dispatch(storeValues(data))
+            }}
           />
         </RenderIf>
 
@@ -214,22 +269,22 @@ function ClientProject () {
           <ProjectAgreement
             projectId={projectId}
             key={projectId}
-            handleNext={(data) => { handleNext(5, data); }}
+            handleNext={(data) => {
+              handleNext(5, data)
+              dispatch(storeValues(data))
+            }}
           />
         </RenderIf>
 
         <RenderIf condition={currentStep === 6}>
-          <ProjectReview
-            projectId={projectId}
-            key={projectId}
-          />
+          <ProjectReview projectId={projectId} key={projectId} />
         </RenderIf>
       </RenderIf>
     </Fragment>
   )
 }
 
-export default function Page () {
+export default function Page() {
   return (
     <Suspense>
       <ClientProject />

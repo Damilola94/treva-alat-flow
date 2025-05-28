@@ -1,4 +1,4 @@
-import { useDeleteDeliverableMutation, useDeleteDeliverableTaskMutation, useDeleteProjectMutation, useGetAllProjectsQuery, useGetDeliverableByIdQuery, useGetDeliverablesQuery, useGetDeliverableTaskByIdQuery, useGetDeliverableTasksQuery, useUpdateDeliverableMutation, useUpdateDeliverableTaskMutation, useUpdateProjectMutation } from '@/services';
+import { useDeleteDeliverableMutation, useDeleteDeliverableTaskMutation, useDeleteExtraCostMutation, useDeleteProjectMutation, useGetAllExtraCostsQuery, useGetAllPaymentScheduleQuery, useGetAllProjectsQuery, useGetDeliverableByIdQuery, useGetDeliverablesQuery, useGetDeliverableTaskByIdQuery, useGetDeliverableTasksQuery, useGetExtraCostByIdQuery, useUpdateDeliverableMutation, useUpdateDeliverableTaskMutation, useUpdateExtraCostMutation, useUpdateProjectMutation } from '@/services';
 import { useGetCommentsQuery } from '@/services/projectService/comment';
 import { useAppSelector } from '@/store';
 
@@ -263,3 +263,121 @@ export const useDeleteTask = () => {
   };
 }
 
+export const usePayment = (projectId?: string) => {
+  const { loggedIn } = useAppSelector((state) => state?.auth);
+
+  const {
+    data: allPaymentsData,
+    isFetching: fetchingAllPayments,
+    isLoading: loadingAllPayments,
+    refetch: refetchAllPayments,
+    error: allPaymentError,
+  } = useGetAllExtraCostsQuery(
+    projectId ?? '',
+    {
+      refetchOnMountOrArgChange: true,
+      skip: !loggedIn || !projectId,
+    }
+  );
+
+  return {
+    allPaymentsData,
+    loading: fetchingAllPayments || loadingAllPayments,
+    refetchAllPayments,
+    allPaymentError,
+  };
+}
+
+export const useDeletePayment = () => {
+  const [deletePayment, { data, isLoading, error }] = useDeleteExtraCostMutation();
+
+  return {
+    deletePayment,
+    data,
+    loading: isLoading,
+    error,
+  };
+}
+
+export const useUpdatePayment = () => {
+  const [updatePayment, { data, isLoading, error }] = useUpdateExtraCostMutation();
+
+  return {
+    updatePayment,
+    data,
+    loading: isLoading,
+    error,
+  };
+}
+
+export const usePaymentById = (projectId?: string, extraCostId?: string) => {
+  const { loggedIn } = useAppSelector((state) => state?.auth);
+
+  const {
+    data: allPaymentByIdData,
+    isFetching: fetchingAllPayments,
+    isLoading: loadingAllPayments,
+    refetch: refetchAllPayments,
+    error: allPaymentError,
+  } = useGetExtraCostByIdQuery(
+    { projectId: projectId ?? '', extraCostId: extraCostId ?? '' },
+    {
+      refetchOnMountOrArgChange: true,
+      skip: !loggedIn || !projectId || !extraCostId,
+    }
+  );
+
+  return {
+    allPaymentByIdData,
+    loading: fetchingAllPayments || loadingAllPayments,
+    refetchAllPayments,
+    allPaymentError,
+  };
+}
+
+export const useDeletePaymentSchedule = () => {
+  const [deletePaymentSchedule, { data, isLoading, error }] = useDeleteExtraCostMutation();
+
+  return {
+    deletePaymentSchedule,
+    data,
+    loading: isLoading,
+    error,
+  };
+}
+
+export const usePaymentSchedule = (projectId?: string) => {
+  const { loggedIn } = useAppSelector((state) => state?.auth);
+
+  const {
+    data: allPaymentScheduleData,
+    isFetching: fetchingAllPaymentSchedule,
+    isLoading: loadingAllPaymentSchedule,
+    refetch: refetchAllPaymentSchedule,
+    error: aallPaymentScheduleError,
+  } = useGetAllPaymentScheduleQuery(
+    projectId ?? '',
+    {
+      refetchOnMountOrArgChange: true,
+      skip: !loggedIn || !projectId,
+    }
+  );
+
+  return {
+    allPaymentScheduleData,
+    loading: fetchingAllPaymentSchedule|| loadingAllPaymentSchedule,
+    refetchAllPaymentSchedule,
+    aallPaymentScheduleError,
+  };
+};
+
+export const useDeleteAgreement = () => { 
+  const [deleteAgreement, { data, isLoading, error }] = useDeleteExtraCostMutation();
+
+  return {
+    deleteAgreement,
+    data,
+    loading: isLoading,
+    error,
+  };
+}

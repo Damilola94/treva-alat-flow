@@ -4,7 +4,7 @@ import { ITrevaProjectService } from '@/types';
 
 export const paymentScheduleService = projectServiceApiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getPaymentSchedule: builder.query({
+    getAllPaymentSchedule: builder.query({
       query: (projectId: string) => ({
         url: endpoints.paymentSchedules.getPaymentSchedules(projectId),
         method: REQUEST_METHODS.GET,
@@ -24,6 +24,21 @@ export const paymentScheduleService = projectServiceApiSlice.injectEndpoints({
         response: ITrevaProjectService['schemas']['PaymentScheduleModelBaseResponse'],
       ) => response,
     }),
+
+    updatePaymentSchedule: builder.mutation({
+      query: ({ projectId, paymentScheduleId, ...values }) => ({
+        url: endpoints.paymentSchedules.updatePaymentSchedules(
+          projectId,
+          paymentScheduleId,
+        ),
+        method: REQUEST_METHODS.PUT,
+        body: values,
+      }),
+      transformResponse: (
+        response: ITrevaProjectService['schemas']['PaymentScheduleModelBaseResponse'],
+      ) => response,
+    }), 
+
     getPaymentScheduleById: builder.query({
       query: ({ projectId, paymentScheduleId }) => ({
         url: endpoints.paymentSchedules.getPaymentScheduleById(
@@ -64,8 +79,9 @@ export const paymentScheduleService = projectServiceApiSlice.injectEndpoints({
     }),
 })
  export const {
-    useGetPaymentScheduleQuery,
+    useGetAllPaymentScheduleQuery,
     useCreatePaymentScheduleMutation,
+    useUpdatePaymentScheduleMutation,
     useGetPaymentScheduleByIdQuery,
     useUpdatePaymentScheduleByIdMutation,
     useDeletePaymentScheduleByIdMutation,

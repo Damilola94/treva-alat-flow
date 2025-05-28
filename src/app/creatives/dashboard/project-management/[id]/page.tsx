@@ -119,7 +119,7 @@ export default function Page() {
   };
 
   const tabs: TabType[] = ['deliverables', 'task'];
-  if (project?.type === 'Client') {
+  if (Number(project?.type) === 2) {
     tabs.push('payment');
   }
 
@@ -364,26 +364,6 @@ export default function Page() {
                 />
               </div>
             </div>
-            {/* <div className="md:w-1/4">
-                <div className="app_progress-bar__label">
-                  Progress{' '}
-                  {allProjectsByIdData?.data?.metrics?.progressPercent ?? 0}%{' '}
-                  <span className="app_progress-bar__label__days-left">
-                    {allProjectsByIdData?.data?.metrics?.daysLeftDisplay ??
-                      'Days left'}
-                  </span>
-                </div>
-                <div className="app_progress-bar-track">
-                  <div
-                    className="app_progress-bar-track-fill"
-                    style={{
-                      width: `${
-                        allProjectsByIdData?.data?.metrics?.progressPercent ?? 0
-                      }%`,
-                    }}
-                  />
-                </div>
-              </div> */}
             <ProjectProgressBar
               percent={allProjectsByIdData?.data?.metrics?.progressPercent ?? 0}
               daysLeft={
