@@ -7,14 +7,15 @@ interface IProps {
   checked?: boolean
   active?: boolean
   onClick?: () => void
+  className?: string
 }
 
 export function ProgressStatus (props: IProps) {
-  const { label, active = false, checked = false, onClick } = props
+  const { label, active = false, checked = false, onClick, className } = props
 
   return (
     <div className="app_get_started_progress_status flex gap-1 items-center cursor-pointer" onClick={onClick}>
-      <div className="app_get_started_progress_status__icon">
+      <div className={`app_get_started_progress_status__icon ${className}`}>
         <RenderIf condition={checked}>
           <CheckCircle />
         </RenderIf>

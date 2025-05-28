@@ -6,8 +6,8 @@ import {
   PersonalProjectDetails,
 } from '@/components/shared/project-management';
 import { ProgressStatus } from '@/components/shared/dashboard/get-started/progress-status copy';
-import { useAppDispatch } from '@/store';
-import { clearValues } from '@/store/slices/project';
+// import { useAppDispatch } from '@/store';
+// import { clearValues } from '@/store/slices/project';
 
 const step1Values = {
   title: '',
@@ -37,9 +37,9 @@ function PersonalProject() {
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState(defaultValues);
   const [projectId, setProjectId] = useState<string>('');
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
 
-  dispatch(clearValues());
+  // dispatch(clearValues());
 
   return (
     <Fragment>

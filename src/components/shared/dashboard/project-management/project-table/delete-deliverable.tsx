@@ -1,6 +1,7 @@
 import React from 'react'
 import { BinWithBG } from '@/components/shared/svgs'
 import { useDeleteDeliverable } from '@/hooks/Projects/useProjects'
+import { successToast } from '@/services'
 
 interface IProps {
   projectId: string
@@ -35,6 +36,7 @@ export function DeleteDeliverable (props: IProps) {
       if (refetchAllDeliverables) {
         refetchAllDeliverables();
       }
+      successToast('Deliverable deleted successfully');
       onClose()
   } catch (e) {
       console.error('Error deleting deliverable:', e);
