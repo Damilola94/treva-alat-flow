@@ -57,7 +57,7 @@ export const projectService = projectServiceApiSlice.injectEndpoints({
       ) => response,
     }),
     
-    rateProject: builder.mutation({
+    createRateProject: builder.mutation({
       query: ({ projectId, ...values }) => ({
         url: endpoints.projects.rateProject(projectId),
         method: REQUEST_METHODS.POST,
@@ -71,4 +71,4 @@ export const projectService = projectServiceApiSlice.injectEndpoints({
 
 })
 
-export const { useGetAllProjectsQuery, useCreateProjectMutation, useGetProjectByIdQuery, useUpdateProjectMutation,useDeleteProjectMutation, useRateProjectMutation } = projectService;
+export const { useGetAllProjectsQuery, useCreateProjectMutation, useGetProjectByIdQuery, useUpdateProjectMutation,useDeleteProjectMutation, useCreateRateProjectMutation } = projectService;

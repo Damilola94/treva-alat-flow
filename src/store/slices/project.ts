@@ -39,6 +39,8 @@ interface ProjectState {
   amount: string;
   paymentDescription?: string;
   currentStep: number;
+  review: string
+  rating: number
   projectValues: projectIS
 }
 
@@ -66,6 +68,8 @@ const initialState: ProjectState = {
   clientUserId: "",
   deliverableId: "",
   currentStep: 1,
+  review: '',
+  rating: 1,
   paymentAmount: "",
   projectValues: {
     title: '',
@@ -83,15 +87,15 @@ export const projectSlice = createSlice({
   reducers: {
     storeValues: (state, action) => {
       const { payload } = action;
-      state.projectValues = payload
+      // state.projectValues =
       // {
       //   ...state,
       //   ...payload,
       // }
-      // return {
-      //   ...state,
-      //   ...payload,
-      // };
+      return {
+        ...state,
+        ...payload,
+      };
     },
     setCurrentStep: (state, action: PayloadAction<number>) => {
       state.currentStep = action.payload;

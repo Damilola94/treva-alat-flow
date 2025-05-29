@@ -62,7 +62,7 @@ export const invoiceTabs = [
   { label: 'All Invoice', value: 'All Invoice' },
   { label: 'Pending Invoice', value: 'Pending Invoice' },
   { label: 'Closed Invoice', value: 'Closed Invoice' },
-  { label: 'Drafts', value: 'Drafts' },
+  { label: 'Due Invoice', value: 'Due Invoice'},
 ];
 
 export const popoverItems = [
