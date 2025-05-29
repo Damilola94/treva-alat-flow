@@ -6,6 +6,7 @@ import {
   CenterModal,
   Label,
   SideModal,
+  Check,
 } from '@/components/shared';
 import { Loader2, Send, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -19,24 +20,32 @@ import { useEffect, useState } from 'react';
 import { Avatar } from '@/components/shared/avatar';
 import { useComment } from '@/hooks/Projects/useProjects';
 import { useCreateCommentMutation } from '@/services/projectService/comment';
-// import { useRateProject } from '@/services';
+import {
+  errorToast,
+  successToast,
+  useCreateRateProjectMutation,
+} from '@/services';
+import { getErrorMessage } from '@/utils';
 
 export default function Page() {
   const { id } = useParams();
   const projectId = Array.isArray(id) ? id[0] : id;
 
+  // const {  }
+
   const { allProjectsByIdData, loading } = useProjectById(projectId);
   const { allCommentsData, refetchAllComments } = useComment(projectId);
   const [triggerComment, { isLoading: loadingComment }] =
     useCreateCommentMutation();
-  // const [createRating] = useRateProject(projectId);
+  const [createRating, { isLoading }] = useCreateRateProjectMutation();
 
+  const [showModal, setShowModal] = useState(false);
   const [showRatingModal, setShowRatingModal] = useState(false);
-  const [showReviewModal, setShowReviewModal] = useState(false);
   const [commentModal, setCommentModal] = useState(false);
   const [rating, setRating] = useState(0);
   const [hoveredRating, setHoveredRating] = useState(0);
   const [content, setContent] = useState('');
+  const [review, setReview] = useState('');
 
   const project = allProjectsByIdData?.data;
   const commentDetails = allCommentsData?.data;
@@ -44,30 +53,33 @@ export default function Page() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!content.trim()) return;
-
     try {
       await triggerComment({ content, projectId });
       setContent('');
       refetchAllComments();
     } catch (error) {
-      console.error('Failed to create comment:', error);
+      errorToast('Failed to create comment:');
     }
   };
 
-  // const handleRateProject = async (star: number) => {
-  //   loading
-  //   try {
-  //     await createRating({ rating: star });
-  //     setRating(star);
-  //     setShowRatingModal(false);
-  //     setShowReviewModal(true);
-  //   } catch (error) {
-  //     console.error('Failed to rate project:', error);
-  //   }
-  //   finally {
-  //     // loading = false;
-  //   }
-  // }
+  const handleRatingSubmit = async () => {
+    if (rating === 0) {
+      return errorToast('Something went wrong');
+    }
+    try {
+      const response = await createRating({
+        rating,
+        review,
+        projectId,
+        ProjectId: projectId,
+      });
+      successToast(response?.data?.message || 'Project rated');
+      setShowRatingModal(false);
+    } catch (error) {
+      const message = getErrorMessage(error);
+      errorToast(message || 'Something went wrong');
+    }
+  };
 
   useEffect(() => {
     const progress = allProjectsByIdData?.data?.metrics?.progressPercent;
@@ -78,24 +90,24 @@ export default function Page() {
 
   return (
     <div className="app_dashboard_page app_dashboard_home">
+      {/* Combined Rating + Review Modal */}
       <CenterModal
         headerImageType={2}
         title=""
         isOpen={showRatingModal}
-        onClose={() => {
-          setShowRatingModal(false);
-        }}
+        onClose={() => setShowRatingModal(false)}
       >
         <div className="flex flex-col items-center justify-center p-6">
           <div className="mb-6 mt-2 text-center">
-            <h2 className="text-[21px] text-[#262626] font-bold">
-              Kindly share your experience with this creative
+            <h2 className="text-[21px] mb-4 text-[#262626] font-bold">
+              Project Completed
             </h2>
+            <p>The project <strong>&apos;{project?.title}&apos;</strong> has been successfully completed.</p>
           </div>
 
-          <div className="mb-8 -ml-12 -mr-12">
-            <p className="mb-2 text-[#262626] font-bold ">Rate</p>
-            <div className="flex items-center justify-between space-x-2 gap-8">
+          {/* Rating */}
+          <div className="my-6 w-full">
+            <div className="flex items-center justify-center space-x-2">
               {[1, 2, 3, 4, 5].map((star) => (
                 <Star
                   key={star}
@@ -104,84 +116,38 @@ export default function Page() {
                       ? 'fill-current text-[#7B37F0]'
                       : 'fill-none text-[#262626]'
                   }`}
-                  onMouseEnter={() => {
-                    setHoveredRating(star);
-                  }}
-                  onMouseLeave={() => {
-                    setHoveredRating(0);
-                  }}
-                  onClick={() => {
-                    setRating(star);
-                  }}
+                  onMouseEnter={() => setHoveredRating(star)}
+                  onMouseLeave={() => setHoveredRating(0)}
+                  onClick={() => setRating(star)}
                 />
               ))}
             </div>
           </div>
 
-          <div className="w-full space-y-3">
-            <Button
-              backgroundColor="treva-purple"
-              size="xl"
-              color="white"
-              className="w-full mb-4"
-              onClick={() => {
-                setShowRatingModal(false);
-                setShowReviewModal(true);
-              }}
-            >
-              Next
-            </Button>
-            <Button
-              backgroundColor="transparent"
-              color="treva-purple"
-              size="xl"
-              className="w-full border border-[#F1F1F1]"
-              // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-              onClick={() => {
-                setShowRatingModal(false);
-              }}
-            >
-              Cancel
-            </Button>
-          </div>
-        </div>
-      </CenterModal>
-
-      {/* Review Modal - Second Modal */}
-      <CenterModal
-        headerImageType={2}
-        title=""
-        isOpen={showReviewModal}
-        onClose={() => {
-          setShowReviewModal(false);
-        }}
-      >
-        <div className="flex flex-col p-6">
-          <div className="mb-6 text-center">
-            <h2 className="text-[21px] font-bold text-[#262626]">
-              Kindly share your experience with this creative
-            </h2>
-          </div>
-
-          <div className="mb-6">
+          {/* Review */}
+          <div className="w-full my-6">
             <p className="mb-2 text-sm text-gray-500">
               Leave a review (Optional)
             </p>
             <Textarea
               placeholder="Share your experience..."
-              className="min-h-[120px] w-full rounded-md border border-gray-200 p-3 focus:border-[#7C3AED] focus:ring-1 focus:ring-[#7C3AED]"
+              value={review}
+              onChange={(e) => setReview(e.target.value)}
+              className="min-h-[] w-full rounded-md border border-gray-200 p-3 focus:border-[#7C3AED] focus:ring-1 focus:ring-[#7C3AED]"
             />
           </div>
 
-          <div className="w-full space-y-3">
+          {/* Submit */}
+          <div className="w-full flex items-center gap-5">
             <Button
               backgroundColor="treva-purple"
               size="xl"
               color="white"
-              className="w-full mb-4"
+              className="w-full"
               onClick={() => {
-                setShowReviewModal(false);
+                handleRatingSubmit();
               }}
+              isLoading={isLoading}
             >
               Submit
             </Button>
@@ -189,11 +155,8 @@ export default function Page() {
               backgroundColor="transparent"
               color="treva-purple"
               size="xl"
-              className="w-full border border-[#F1F1F1] cursor-pointer"
-              // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-              onClick={() => {
-                setShowReviewModal(false);
-              }}
+              className="w-full border border-[#F1F1F1]"
+              onClick={() => setShowRatingModal(false)}
             >
               Cancel
             </Button>
@@ -227,7 +190,7 @@ export default function Page() {
             />
             <Button
               size="md"
-             className="bg-[#7C3AED] hover:bg-[#7C3AED] focus:bg-[#7C3AED] active:bg-[#7C3AED] absolute right-3 top-8 -translate-y-1/2"
+              className="bg-[#7C3AED] hover:bg-[#7C3AED] focus:bg-[#7C3AED] active:bg-[#7C3AED] absolute right-3 top-8 -translate-y-1/2"
               type="submit"
               disabled={loading || !content.trim()}
               onClick={handleSubmit}
@@ -293,6 +256,55 @@ export default function Page() {
           </div>
         )}
       </SideModal>
+
+      {/* project completion modal */}
+      <CenterModal
+        headerImageType={4}
+        title=""
+        isOpen={showModal}
+        onClose={() => {
+          setShowModal(false);
+        }}
+      >
+        <div className="flex flex-col items-center justify-center p-6">
+          <div className="mb-6 text-center">
+            <h2 className="text-[21px] font-bold text-[#262626] mb-4">
+              Confirm Project Completion
+            </h2>
+            <p>
+              By confirming, you acknowledge that the creative has completed the
+              project to your satisfaction.
+            </p>
+          </div>
+
+          <div className="w-full flex items-center gap-5 ">
+            <Button
+              backgroundColor="transparent"
+              size="xl"
+              color="treva-purple"
+              className=" border border-[#F1F1F1]"
+              onClick={() => {
+                setShowModal(false);
+              }}
+            >
+              Request Revision
+            </Button>
+            <Button
+              backgroundColor="treva-purple"
+              color="white"
+              size="xl"
+              className=""
+              // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+              onClick={() => {
+                setShowRatingModal(true);
+                setShowModal(false);
+              }}
+            >
+              Confirm Completion
+            </Button>
+          </div>
+        </div>
+      </CenterModal>
 
       {loading ? (
         <div className="text-center flex justify-center items-center">
@@ -404,6 +416,20 @@ export default function Page() {
               </div>
             </div>
             <DeliverableTable />
+            {/* {project?.status === 'Completed' && ( */}
+            <div className="flex justify-center">
+              <Button
+                size="xl"
+                isLoading={loading}
+                // backgroundColor="primary-blue-500"
+                className="border border-[#7B37F0] text-[#7B37F0] "
+                onClick={() => setShowModal(true)}
+              >
+                <Check />
+                Mark Project Completed
+              </Button>
+            </div>
+            {/* )} */}
           </div>
         )
       )}

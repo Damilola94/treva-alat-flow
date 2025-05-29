@@ -136,4 +136,8 @@ export const endpoints = {
     updateClient: `/clientmanagement/update-client`,
     deleteClient: `/clientmanagement/delete-client`,
   },
+  invoices: {
+    getInvoice: '/invoices',
+    getMyInvoice:(invoiceId: string) => `/invoices/${invoiceId}`,
+  }
 };

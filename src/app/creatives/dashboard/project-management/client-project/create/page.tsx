@@ -1,66 +1,70 @@
-"use client"
-import { Fragment, Suspense, useEffect, useState } from "react"
-import { RenderIf } from "@/components/shared"
-import { ProgressStatus } from "@/components/shared/dashboard/get-started/progress-status copy"
-import { ProjectDetails } from "@/components/shared/dashboard/project-management/client-project/add-details"
-import { ProjectDeliverables } from "@/components/shared/dashboard/project-management/client-project/add-deliverables"
-import { ProjectPaymentSchedule } from "@/components/shared/dashboard/project-management/client-project/add-payment-schedule"
-import { ProjectAgreement } from "@/components/shared/dashboard/project-management/client-project/add-agreement"
-import { ProjectReview } from "@/components/shared/dashboard/project-management/client-project/review"
-import { useSearchParams } from "next/navigation"
-import { ArrowLeft } from "lucide-react"
-import ProjectPayment from "@/components/shared/dashboard/project-management/client-project/payment"
-import { useAppDispatch, useAppSelector } from "@/store"
-import { setCurrentStep, storeValues, previousStep, clearValues } from "@/store/slices/project"
+'use client';
+import { Fragment, Suspense, useEffect, useState } from 'react';
+import { RenderIf } from '@/components/shared';
+import { ProgressStatus } from '@/components/shared/dashboard/get-started/progress-status copy';
+import { ProjectDetails } from '@/components/shared/dashboard/project-management/client-project/add-details';
+import { ProjectDeliverables } from '@/components/shared/dashboard/project-management/client-project/add-deliverables';
+import { ProjectPaymentSchedule } from '@/components/shared/dashboard/project-management/client-project/add-payment-schedule';
+import { ProjectAgreement } from '@/components/shared/dashboard/project-management/client-project/add-agreement';
+import { ProjectReview } from '@/components/shared/dashboard/project-management/client-project/review';
+import { useSearchParams } from 'next/navigation';
+import { ArrowLeft } from 'lucide-react';
+import ProjectPayment from '@/components/shared/dashboard/project-management/client-project/payment';
+import { useAppDispatch, useAppSelector } from '@/store';
+import {
+  setCurrentStep,
+  storeValues,
+  previousStep,
+} from '@/store/slices/project';
 
 const step1Values = {
-  title: "",
-  description: "",
-  expectedDeliveryDate: "",
-  priority: "",
-  type: "Client",
-}
+  title: '',
+  description: '',
+  expectedDeliveryDate: '',
+  priority: '',
+  type: 'Client',
+};
 
 const step2Values = {
   deliverables: [
     {
-      name: "",
-      description: "",
-      startDate: "",
-      endDate: "",
-      unitAmount: "",
-      unit: "",
+      name: '',
+      description: '',
+      startDate: '',
+      endDate: '',
+      unitAmount: '',
+      unit: '',
     },
   ],
-}
+};
 
 const step3Values = {
   extraCost: [
     {
-      name: "",
-      description: "",
-      amount: "",
+      name: '',
+      description: '',
+      amount: '',
     },
   ],
-}
+};
 
 const step4Values = {
   paymentSchedule: [
     {
-      amount: "",
-      dueDate: "",
+      amount: '',
+      dueDate: '',
     },
   ],
-}
+};
 
 const step5Values = {
   agreement: [
     {
       // projectId: "",
-      documentUrl: "",
+      documentUrl: '',
     },
   ],
-}
+};
 
 const defaultValues = {
   step1Values,
@@ -68,103 +72,131 @@ const defaultValues = {
   step3Values,
   step4Values,
   step5Values,
-}
+};
 
 interface FormDataType {
-  step1Values: typeof step1Values
-  step2Values: typeof step2Values
-  step3Values: typeof step3Values
-  step4Values: typeof step4Values
-  step5Values: typeof step5Values
+  step1Values: typeof step1Values;
+  step2Values: typeof step2Values;
+  step3Values: typeof step3Values;
+  step4Values: typeof step4Values;
+  step5Values: typeof step5Values;
 }
 
-export type DefaultValues = ReturnType<() => typeof defaultValues>
-export type InitialStep1Values = ReturnType<() => typeof step1Values>
+export type DefaultValues = ReturnType<() => typeof defaultValues>;
+export type InitialStep1Values = ReturnType<() => typeof step1Values>;
 
 export interface InitialStep2Values {
   deliverables: Array<{
-    name: string
-    description: string
-    startDate: string
-    endDate: string
-    unitAmount: string
-    unit: string
-  }>
+    name: string;
+    description: string;
+    startDate: string;
+    endDate: string;
+    unitAmount: string;
+    unit: string;
+  }>;
 }
 
 export interface InitialStep3Values {
   extraCost: Array<{
-    name: string
-    description: string
-    amount: string
-  }>
+    name: string;
+    description: string;
+    amount: string;
+  }>;
 }
 
 export interface InitialStep4Values {
   paymentSchedule: Array<{
-    amount: string
-    dueDate: string
-  }>
+    amount: string;
+    dueDate: string;
+  }>;
 }
 
 export interface InitialStep5Values {
   agreement: Array<{
     // projectId: string
-    documentUrl: string
-  }>
+    documentUrl: string;
+  }>;
 }
 
 export interface InitialStep6Values {
   review: Array<{
-    projectId: string
-    termsAndConditions: false
-  }>
+    projectId: string;
+    termsAndConditions: false;
+  }>;
 }
 
 function ClientProject() {
-  const searchParams = useSearchParams()
-  const paramsProjectId = searchParams.get("projectId")
+  const searchParams = useSearchParams();
+  const paramsProjectId = searchParams.get('projectId');
 
-  const dispatch = useAppDispatch()
-  const currentStep = useAppSelector((state) => state.project.currentStep)
+  const dispatch = useAppDispatch();
+  const currentStep = useAppSelector((state) => state.project.currentStep);
   // const projectValues = useAppSelector((state) => state.project.projectValues)
-// console.log(projectValues, 'projectValues');
+  // console.log(projectValues, 'projectValues');
 
-  const [projectId, setProjectId] = useState<string>("")
-  const [, setFormData] = useState<FormDataType>(defaultValues)
+  const [projectId, setProjectId] = useState<string>('');
+  const [, setFormData] = useState<FormDataType>(defaultValues);
 
   useEffect(() => {
     if (paramsProjectId) {
-      setProjectId(paramsProjectId)
+      setProjectId(paramsProjectId);
     }
-  }, [paramsProjectId])
+  }, [paramsProjectId]);
 
-  const handleNext = (step: 1 | 2 | 3 | 4 | 5 | 6, data: Partial<FormDataType[keyof FormDataType]>) => {
+  const handleNext = (
+    step: 1 | 2 | 3 | 4 | 5 | 6,
+    data: Partial<FormDataType[keyof FormDataType]>,
+  ) => {
     setFormData((prevData) => ({
       ...prevData,
       [`step${step}Values`]: {
         ...prevData[`step${step}Values` as keyof FormDataType],
         ...data,
       },
-    }))
-
-    // Store form data in Redux
-    dispatch(storeValues(data))
-    const nextStepNumber = step + 1
-    dispatch(setCurrentStep(nextStepNumber))
-  }
+    }));
+    dispatch(storeValues(data));
+    const nextStepNumber = step + 1;
+    dispatch(setCurrentStep(nextStepNumber));
+  };
 
   const handlePrevious = () => {
-    dispatch(previousStep())
-  }
+    dispatch(previousStep());
+  };
 
   const handleStepClick = (stepNumber: number) => {
-    // Allow navigation to completed steps or current step
     if (stepNumber <= currentStep) {
-      dispatch(setCurrentStep(stepNumber))
+      dispatch(setCurrentStep(stepNumber));
     }
-    dispatch(clearValues())
-  }
+
+  };
+
+  const steps = [
+    {
+      label: 'Project details',
+      Component: ProjectDetails,
+    },
+    {
+      label: 'Deliverables',
+      Component: ProjectDeliverables,
+    },
+    {
+      label: 'Payment',
+      Component: ProjectPayment,
+    },
+    {
+      label: 'Billing schedule',
+      Component: ProjectPaymentSchedule,
+    },
+    {
+      label: 'Agreement',
+      Component: ProjectAgreement,
+    },
+    {
+      label: 'Review',
+      Component: ProjectReview,
+    },
+  ];
+  
 
   return (
     <Fragment>
@@ -176,48 +208,27 @@ function ClientProject() {
           </button>
         )}
 
-        <p className="text-sm font-medium bg-[#7B37F00D] text-[#7B37F0] rounded px-3 py-1 w-fit">{currentStep} of 6</p>
+        <p className="text-sm font-medium bg-[#7B37F00D] text-[#7B37F0] rounded px-3 py-1 w-fit">
+          {currentStep} of 6
+        </p>
       </div>
 
       <RenderIf condition={true}>
         <div className="mt-7">
           <div className="lg:flex lg:justify-center lg:items-center lg:gap-4 hidden">
-            <ProgressStatus
-              label="Project details"
-              checked={currentStep >= 1}
-              onClick={() => handleStepClick(1)}
-              className={currentStep >= 1 ? "cursor-pointer" : "cursor-not-allowed opacity-50"}
-            />
-            <ProgressStatus
-              label="Deliverables"
-              checked={currentStep >= 2}
-              onClick={() => handleStepClick(2)}
-              className={currentStep >= 2 ? "cursor-pointer" : "cursor-not-allowed opacity-50"}
-            />
-            <ProgressStatus
-              label="Payment"
-              checked={currentStep >= 3}
-              onClick={() => handleStepClick(3)}
-              className={currentStep >= 3 ? "cursor-pointer" : "cursor-not-allowed opacity-50"}
-            />
-            <ProgressStatus
-              label="Billing schedule"
-              checked={currentStep >= 4}
-              onClick={() => handleStepClick(4)}
-              className={currentStep >= 4 ? "cursor-pointer" : "cursor-not-allowed opacity-50"}
-            />
-            <ProgressStatus
-              label="Agreement"
-              checked={currentStep >= 5}
-              onClick={() => handleStepClick(5)}
-              className={currentStep >= 5 ? "cursor-pointer" : "cursor-not-allowed opacity-50"}
-            />
-            <ProgressStatus
-              label="Review"
-              checked={currentStep >= 6}
-              onClick={() => handleStepClick(6)}
-              className={currentStep >= 6 ? "cursor-pointer" : "cursor-not-allowed opacity-50"}
-            />
+            {steps.map((step, index) => (
+              <ProgressStatus
+                key={step.label}
+                label={step.label}
+                checked={currentStep >= index + 1}
+                onClick={() => handleStepClick(index + 1)}
+                className={
+                  currentStep >= index + 1
+                    ? 'cursor-pointer'
+                    : 'cursor-not-allowed opacity-50'
+                }
+              />
+            ))}
           </div>
         </div>
 
@@ -225,8 +236,8 @@ function ClientProject() {
           <ProjectDetails
             setProjectId={setProjectId}
             handleNext={(data) => {
-              handleNext(1, data)
-              dispatch(storeValues(data))
+              handleNext(1, data);
+              dispatch(storeValues(data));
             }}
           />
         </RenderIf>
@@ -236,8 +247,8 @@ function ClientProject() {
             projectId={projectId}
             key={projectId}
             handleNext={(data) => {
-              handleNext(2, data)
-              dispatch(storeValues(data))
+              handleNext(2, data);
+              dispatch(storeValues(data));
             }}
           />
         </RenderIf>
@@ -247,8 +258,8 @@ function ClientProject() {
             projectId={projectId}
             key={projectId}
             handleNext={(data) => {
-              handleNext(3, data)
-              dispatch(storeValues(data))
+              handleNext(3, data);
+              dispatch(storeValues(data));
             }}
             deliverables={[]}
           />
@@ -259,8 +270,8 @@ function ClientProject() {
             projectId={projectId}
             key={projectId}
             handleNext={(data) => {
-              handleNext(4, data)
-              dispatch(storeValues(data))
+              handleNext(4, data);
+              dispatch(storeValues(data));
             }}
           />
         </RenderIf>
@@ -270,8 +281,8 @@ function ClientProject() {
             projectId={projectId}
             key={projectId}
             handleNext={(data) => {
-              handleNext(5, data)
-              dispatch(storeValues(data))
+              handleNext(5, data);
+              dispatch(storeValues(data));
             }}
           />
         </RenderIf>
@@ -281,7 +292,7 @@ function ClientProject() {
         </RenderIf>
       </RenderIf>
     </Fragment>
-  )
+  );
 }
 
 export default function Page() {
@@ -289,5 +300,5 @@ export default function Page() {
     <Suspense>
       <ClientProject />
     </Suspense>
-  )
+  );
 }

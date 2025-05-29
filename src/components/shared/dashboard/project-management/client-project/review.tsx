@@ -7,7 +7,6 @@ import { useGetProjectByIdQuery } from '@/services';
 import { Loader2 } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
 import { useDeliverable, usePaymentSchedule } from '@/hooks/Projects/useProjects';
-// Import your RTK Query hook
 
 interface IProps {
   projectId: string;
@@ -32,7 +31,6 @@ export function ProjectReview(props: IProps) {
     const { allDeliverablesData } =
       useDeliverable(projectId);
 
-  // You may need to adapt this mutation to RTK Query as well
   // const [createInvoice] = useCreateInvoiceMutation();
 
   const [isDecisionModalOpen, setIsDecisionModalOpen] = useState(false);
@@ -129,13 +127,8 @@ export function ProjectReview(props: IProps) {
     ? `${project?.data?.clientUser.firstName} ${project?.data?.clientUser.lastName}`
     : '';
   const projectName = project?.data?.title;
-  // const clientEmail = project?.data?.clientUser?.email || '';
-  // const clientPhoneNumber = project?.data?.clientUser?.phoneNumber || '';
   const startDate = project?.data?.startDate?.slice(0, 10);
   const endDate = project?.data?.expectedDeliveryDate?.slice(0, 10);
-  // const deliverables = project?.data?.deliverables || [];
-  // const subtotal = project?.data?.actualCost || 0;
-  // const totalAmount = subtotal + platformFee;
 
   return (
     <div className="app_get_started_professional_details py-6 px-4 flex flex-col gap-14">
@@ -221,14 +214,6 @@ export function ProjectReview(props: IProps) {
                 <span className=" text-[#6B7280]">Client name:</span>{' '}
                 {clientName}
               </p>
-              {/* <p>
-                <span className=" text-[#6B7280]">Client email:</span>{' '}
-                {clientEmail}
-              </p> */}
-              {/* <p>
-                <span className=" text-[#6B7280]">Client phone number:</span>{' '}
-                {clientPhoneNumber}
-              </p> */}
               <p>
                 <span className=" text-[#6B7280]">Start date:</span> {startDate}
               </p>

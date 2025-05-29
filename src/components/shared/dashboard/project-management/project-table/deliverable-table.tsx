@@ -29,7 +29,7 @@ export function DeliverableTable({
     pageSize: 4,
   });
 
-  const [showModal, setShowModal] = useState(false)
+  const [showModal, setShowModal] = useState(false);
 
   const headers = [
     {
@@ -138,7 +138,7 @@ export function DeliverableTable({
       </div>
       {/* )} */}
 
-         <CenterModal
+      <CenterModal
         headerImageType={4}
         title=""
         isOpen={showModal}
@@ -149,9 +149,12 @@ export function DeliverableTable({
         <div className="flex flex-col p-6">
           <div className="mb-6 text-center">
             <h2 className="text-[21px] font-bold text-[#262626] mb-4">
-             Are you sure you want to mark this project as completed ?
+              Are you sure you want to mark this project as completed ?
             </h2>
-            <p>The client will be notified to review and confirm project completion</p>
+            <p>
+              The client will be notified to review and confirm project
+              completion
+            </p>
           </div>
 
           <div className="w-full flex gap-5 ">
@@ -172,7 +175,20 @@ export function DeliverableTable({
               size="xl"
               className="w-full cursor-pointer"
               // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-              onClick={() => {
+              onClick={async () => {
+                const deliverables = allDeliverablesData?.data || [];
+                await Promise.all(
+                  deliverables.map((deliverable: any) =>
+                    updatedDeliverable({
+                      projectId,
+                      updatedDeliverable: deliverable.id,
+                      ...deliverables,
+                      status: 4,
+                    }),
+                  ),
+                );
+                if (refetchAllDeliverables) refetchAllDeliverables();
+                if (refetchProject) refetchProject();
                 setShowModal(false);
               }}
             >
@@ -181,7 +197,6 @@ export function DeliverableTable({
           </div>
         </div>
       </CenterModal>
-
     </div>
   );
 }

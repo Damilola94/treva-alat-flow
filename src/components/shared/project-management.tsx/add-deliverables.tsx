@@ -12,7 +12,7 @@ import {
   useCreateDeliverableMutation,
 } from '@/services';
 import { useAppDispatch, useAppSelector } from '@/store';
-import { clearValues, storeValues } from '@/store/slices/project';
+import { storeValues } from '@/store/slices/project';
 import { getErrorMessage } from '@/utils';
 
 interface IProps {
@@ -72,7 +72,7 @@ export function AddDeliverables(props: IProps) {
           total: (Number(values.unitAmount) || 0) * (Number(values.unit) || 0),
         });
         successToast(response?.message || 'Deliverable created successfully');
-        dispatch(clearValues());
+        // dispatch(clearValues());
         onClose();
       } else {
         errorToast(response?.message || 'Something went wrong');

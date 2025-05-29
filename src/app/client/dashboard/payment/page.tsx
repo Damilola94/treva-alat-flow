@@ -5,6 +5,7 @@ import {
   CenterModal,
   EditIcon,
   Label,
+  Pill,
   PlusBlack,
   SideModal,
   Table,
@@ -12,38 +13,78 @@ import {
 import { Avatar } from '@/components/shared/avatar';
 import { Select } from '@/components/shared/select';
 import { Input } from '@/components/ui/input';
-import { mockInvoices, mockTransactions } from '@/constants';
+import SearchInput from '@/components/ui/SearchInput';
+import { invoiceTabs, mockInvoices, mockTransactions } from '@/constants';
+import { useInvoices } from '@/hooks/Projects/useProjects';
 import projectManagement from '@/lib/assets/project-management';
+import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { Fragment, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 
 type TransactionTab = 'All' | 'Credit' | 'Debit';
 type ViewTab = 'Transaction History' | 'Invoice';
-type InvoiceTab = 'All' | 'Pending Invoice' | 'Closed Invoice' | 'Drafts';
+interface InvoiceParams {
+  status?: string;
+  pageNumber?: number;
+  pageSize?: number;
+  searchKey?: string;
+}
 
 export default function Page() {
   const router = useRouter();
+
+  const [params, setParams] = useState<InvoiceParams>({
+    // type: '2',
+    // status: '2',
+    // priority: '3',
+    pageNumber: 1,
+    pageSize: 50,
+    searchKey: '',
+  });
+
+  const { allInvoicesData, loading } = useInvoices(params);
+
   const [withdraw, toggleWithdraw] = useState(false);
   const [addFunds, toggleAddFunds] = useState(false);
   const [editAccount, toggleEditAccount] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   const [activeViewTab, setActiveViewTab] = useState<ViewTab>(
     'Transaction History',
   );
   const [activeTransactionTab, setActiveTransactionTab] =
     useState<TransactionTab>('All');
-  const [activeInvoiceTab, setActiveInvoiceTab] = useState<InvoiceTab>('All');
+
   const [pagination, setPagination] = useState({
     pageIndex: 0,
-    pageSize: 2,
+    pageSize: 50,
   });
+
+  useEffect(() => {
+    setParams((prev) => ({
+      ...prev,
+      pageNumber: pagination?.pageIndex + 1,
+      pageSize: pagination?.pageSize,
+    }));
+  }, [pagination]);
+
+  const handleParamChange = (param: Partial<InvoiceParams>) => {
+    setParams((prev) => ({
+      ...prev,
+      ...param,
+    }));
+  };
 
   const activeClass = 'bg-[#26A17B] text-white';
   const inactiveClass = 'bg-white text-[#262626] hover:bg-[#f2f2f4]';
-  const handleRowClick = (id: string) => {
-    // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
-    void router.push(`/client/dashboard/payment/${id}`);
-  };
+
+  const invoiceData = allInvoicesData?.data?.[0];
+
+  // const tableBody = useMemo(() => {
+  //   return allInvoicesData?.isSuccess && allInvoicesData.data
+  //     ? allInvoicesData.data
+  //     : [];
+  // }, [allInvoicesData?.isSuccess, allInvoicesData?.data]);
 
   const tractionHeaders = [
     {
@@ -90,7 +131,13 @@ export default function Page() {
         const value = row.original.client;
         return (
           <div className="flex items-center gap-2">
-            <Avatar src={projectManagement.female} size="sm" />
+            <Avatar
+              src={
+                invoiceData?.creativeUser?.profilePicture ||
+                projectManagement.female
+              }
+              size="sm"
+            />
             <span>{value}</span>
           </div>
         );
@@ -220,8 +267,8 @@ export default function Page() {
             </div>
             <Table
               columns={tractionHeaders}
-              emptyTitle="No Task Yet"
-              emptyMessage="Click “add new request” button to get started"
+              emptyTitle="No invoice Yet"
+              emptyMessage="Invoice will be added here"
               data={mockTransactions}
               pagination={pagination}
               setPagination={setPagination}
@@ -229,62 +276,49 @@ export default function Page() {
           </Fragment>
         ) : (
           <Fragment>
-            <div className="mb-6 flex flex-wrap gap-2">
-              <button
-                className={`px-4 py-2 text-sm font-medium rounded-full ${
-                  activeInvoiceTab === 'All' ? activeClass : inactiveClass
-                }`}
-                onClick={() => {
-                  setActiveInvoiceTab('All');
+            <div className="app_dashboard_home__task__hdr flex-wrap gap-2">
+              <div className="mb-6 flex flex-wrap gap-2">
+                {invoiceTabs.map((item) => (
+                  <Pill
+                    key={item.value}
+                    size="md"
+                    active={selectedCategory === item.value}
+                    onClick={() => {
+                      setSelectedCategory(item.value);
+                      handleParamChange({
+                        status: item?.value === 'All' ? undefined : item?.value,
+                      });
+                    }}
+                  >
+                    {item.label}
+                  </Pill>
+                ))}
+              </div>
+              <SearchInput
+                placeholder="Search for a Project"
+                onChange={(e) => {
+                  handleParamChange({ searchKey: e.target.value });
                 }}
-              >
-                All <span className="ml-1">10</span>
-              </button>
-              <button
-                className={`px-4 py-2 text-sm font-medium rounded-full ${
-                  activeInvoiceTab === 'Pending Invoice'
-                    ? activeClass
-                    : inactiveClass
-                }`}
-                onClick={() => {
-                  setActiveInvoiceTab('Pending Invoice');
-                }}
-              >
-                Pending Invoice <span className="ml-1">10</span>
-              </button>
-              <button
-                className={`px-4 py-2 text-sm font-medium rounded-full ${
-                  activeInvoiceTab === 'Closed Invoice'
-                    ? activeClass
-                    : inactiveClass
-                }`}
-                onClick={() => {
-                  setActiveInvoiceTab('Closed Invoice');
-                }}
-              >
-                Closed Invoice <span className="ml-1">10</span>
-              </button>
-              <button
-                className={`px-4 py-2 text-sm font-medium rounded-full ${
-                  activeInvoiceTab === 'Drafts' ? activeClass : inactiveClass
-                }`}
-                onClick={() => {
-                  setActiveInvoiceTab('Drafts');
-                }}
-              >
-                Drafts <span className="ml-1">10</span>
-              </button>
+              />
             </div>
-
-            <Table
-              columns={invoiceHeaders}
-              emptyTitle="No Invoices Yet"
-              emptyMessage=""
-              data={mockInvoices}
-              pagination={pagination}
-              setPagination={setPagination}
-              onRowClick={handleRowClick}
-            />
+            {loading ? (
+              <div className="text-center flex justify-center items-center">
+                <Loader2 size={18} className="animate-spin" />
+              </div>
+            ) : (
+              <Table
+                columns={invoiceHeaders}
+                emptyTitle="No Invoices Yet"
+                emptyMessage="You can see all invoices here"
+                // data={tableBody}
+                data={mockInvoices}
+                pagination={pagination}
+                setPagination={setPagination}
+                onRowClick={(row) =>
+                  router.push(`/client/dashboard/payment/${row.id}`)
+                }
+              />
+            )}
           </Fragment>
         )}
       </div>
