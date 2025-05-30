@@ -218,6 +218,9 @@ const routes = {
       payment: {
         path: '/creatives/dashboard/payment',
       },
+      chat: {
+        path: '/creatives/dashboard/chat',
+      },
       notifications: {
         path: '/creatives/dashboard/notifications',
       },

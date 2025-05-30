@@ -1,12 +1,73 @@
 'use client';
 import { ChatSideModal, Tab } from '@/components/shared';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { ChatWindow, NotificationsList } from './components';
-import { messageNotifications, notificationsList } from '@/constants';
+import { useMessages, useNotifications } from '@/hooks/Chat';
+import { NotificationTypeEnums } from '@/types';
+
+export interface INotification {
+  id?: string;
+  createdDate?: string;
+  createdBy?: string | null;
+  modifiedDate?: string | null;
+  modifiedBy?: string | null;
+  isDeleted?: boolean;
+  deletedDate?: string | null;
+  deletedBy?: string | null;
+  sourceName?: string | null;
+  sourceAvatar?: string | null;
+  title: string | null;
+  type?: number | string | null;
+  objectId?: string | null;
+  objectSlug?: string | null;
+  objectIdentifier?: string | null;
+  isRead?: boolean;
+}
 
 const Notifications = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [messageModal, toggleMessageModal] = useState(false);
+  const [selectedNotification, setSelectedNotification] =
+    useState<INotification | null>(null);
+
+  const [params] = useState({
+    searchKey: '',
+    pageNumber: 1,
+    pageSize: 50,
+  });
+
+  const { allNotifications, loading, refetch } = useNotifications(params);
+  const { chatByIdData, refetch: refetchChat } = useMessages({
+    chatId: selectedNotification?.objectId || '',
+  });
+
+  console.log(chatByIdData);
+
+  const notificationsList = useMemo(
+    () => allNotifications?.data || [],
+    [allNotifications?.data],
+  );
+
+  const chatsFetchedById = useMemo(
+    () => chatByIdData?.data || null,
+    [chatByIdData?.data],
+  );
+
+  const selectedNotificationItem = useMemo(
+    () => notificationsList?.find((x) => x?.id === selectedNotification?.id),
+    [selectedNotification, notificationsList],
+  );
+
+  const filteredMessageNotification = useMemo(() => {
+    if (!Array.isArray(notificationsList)) return [];
+    return notificationsList.filter(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (notification: any) =>
+        notification?.type === NotificationTypeEnums.Message,
+    );
+  }, [notificationsList]);
+
+  console.log(notificationsList);
 
   const tabs = [
     {
@@ -16,7 +77,9 @@ const Notifications = () => {
         <>
           <NotificationsList
             toggleMessageModal={toggleMessageModal}
-            notifications={notificationsList}
+            notifications={notificationsList || []}
+            setSelectedNotification={setSelectedNotification}
+            refetch={refetch}
           />
         </>
       ),
@@ -28,12 +91,30 @@ const Notifications = () => {
         <>
           <NotificationsList
             toggleMessageModal={toggleMessageModal}
-            notifications={messageNotifications}
+            notifications={filteredMessageNotification}
+            setSelectedNotification={setSelectedNotification}
+            refetch={refetch}
           />
         </>
       ),
     },
   ];
+
+  if (loading) {
+    return (
+      <div className="w-full h-full flex items-center justify-center">
+        <div className="flex  gap-12">
+          <div
+            className="flex justify-center items-center"
+            style={{ minHeight: 200 }}
+          >
+            <span className="txxx_loader" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
       <div className="p-6">
@@ -55,12 +136,16 @@ const Notifications = () => {
         onClose={() => {
           toggleMessageModal(false);
         }}
-        title={"{{Creative's Name}}"}
-        projName="{{Project Name}}"
+        title={selectedNotificationItem?.sourceName || ''}
+        projName={selectedNotificationItem?.title || ''}
         usebg={false}
       >
         <div className="space-y-10">
-          <ChatWindow />
+          <ChatWindow
+            chats={chatsFetchedById || []}
+            chatId={selectedNotification?.objectId}
+            refetch={refetchChat}
+          />
         </div>
       </ChatSideModal>
     </>

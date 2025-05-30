@@ -1,28 +1,36 @@
-import Image, { type StaticImageData } from 'next/image'
+import Image, { type StaticImageData } from 'next/image';
 
 export interface IProps {
-  className?: string
-  src: StaticImageData | string
-  size?: number | 'sm' | 'md' | 'lg' | 'xl'
+  className?: string;
+  src: StaticImageData | string;
+  size?: number | 'sm' | 'md' | 'lg' | 'xl' | 'mds';
 }
 
 const sizeMap = {
   sm: { value: 32 },
+  mds: { value: 40 },
   md: { value: 48 },
   lg: { value: 64 },
-  xl: { value: 80 }
-}
+  xl: { value: 80 },
+};
 
-export function Avatar (props: IProps) {
-  const { className, src, size = 'sm' } = props
+export function Avatar(props: IProps) {
+  const { className, src, size = 'sm' } = props;
 
-  const sizeValue = typeof size === 'string' ? (sizeMap[size]?.value || 32) : size
+  const sizeValue =
+    typeof size === 'string' ? sizeMap[size]?.value || 32 : size;
 
-  const sizeClassName = `app_user_avi--${sizeValue}`
+  const sizeClassName = `app_user_avi--${sizeValue}`;
 
   return (
     <div className={['app_user_avi', sizeClassName, className].join(' ')}>
-      <Image height={sizeValue} width={sizeValue} src={src} alt="" unoptimized />
+      <Image
+        height={sizeValue}
+        width={sizeValue}
+        src={src}
+        alt=""
+        unoptimized
+      />
 
       <style type="text/css">{`
         .app_user_avi.${sizeClassName} {
@@ -30,5 +38,5 @@ export function Avatar (props: IProps) {
         }
       `}</style>
     </div>
-  )
+  );
 }

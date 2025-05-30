@@ -20,7 +20,7 @@ import {
   Payment,
   Users,
 } from '@/components/shared';
-import { Notifications } from '@/app/assets/svgs';
+import { ChatIcon, Notifications } from '@/app/assets/svgs';
 import { useProfile } from '@/hooks/Users';
 
 const inter = Inter({
@@ -54,6 +54,11 @@ function Main({ children }: { children: React.ReactNode }) {
       label: 'Project Management',
       href: routes.creatives.dashboard.projectManagement.path,
       icon: <Column />,
+    },
+    {
+      label: 'Chat',
+      href: routes.creatives.dashboard.chat.path,
+      icon: <ChatIcon />,
     },
     {
       label: 'Payment',

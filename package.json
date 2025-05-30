@@ -11,7 +11,11 @@
     "typegen:trevauserservice": "openapi-typescript https://treva-api.wemabank.com/treva-user-service/swagger/v1/swagger.json --output ./src/types/trevaUserService.ts",
     "typegen:trevauserservice-mac": "NODE_TLS_REJECT_UNAUTHORIZED=0 openapi-typescript https://treva-api.wemabank.com/treva-user-service/swagger/v1/swagger.json --output ./src/types/trevaUserService.ts",
     "typegen:trevaprojectservice": "openapi-typescript https://treva-api.wemabank.com/treva-project-service/swagger/v1/swagger.json --output ./src/types/trevaProjectService.ts",
-    "typegen:trevaprojectservice-mac": "NODE_TLS_REJECT_UNAUTHORIZED=0 openapi-typescript https://treva-api.wemabank.com/treva-project-service/swagger/v1/swagger.json --output ./src/types/trevaProjectService.ts"
+    "typegen:trevaprojectservice-mac": "NODE_TLS_REJECT_UNAUTHORIZED=0 openapi-typescript https://treva-api.wemabank.com/treva-project-service/swagger/v1/swagger.json --output ./src/types/trevaProjectService.ts",
+    "typegen:trevachatservice": "openapi-typescript https://treva-api.wemabank.com/treva-chat-service/swagger/v1/swagger.json --output ./src/types/trevaChatService.ts",
+    "typegen:trevachatservice-mac": "NODE_TLS_REJECT_UNAUTHORIZED=0 openapi-typescript https://treva-api.wemabank.com/treva-chat-service/swagger/v1/swagger.json --output ./src/types/trevaChatService.ts",
+    "typegen:trevapaymentservice": "openapi-typescript https://treva-api.wemabank.com/treva-payment-service/swagger/v1/swagger.json --output ./src/types/trevaPaymentService.ts",
+    "typegen:trevapaymentservice-mac": "NODE_TLS_REJECT_UNAUTHORIZED=0 openapi-typescript https://treva-api.wemabank.com/treva-payment-service/swagger/v1/swagger.json --output ./src/types/trevaPaymentService.ts"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.3",
