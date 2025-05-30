@@ -1502,7 +1502,7 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
-        AgreementModel: {
+        AgreementModel: {             
             /** Format: uuid */
             id?: string;
             /** Format: date-time */

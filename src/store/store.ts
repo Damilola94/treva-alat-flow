@@ -19,6 +19,8 @@ import { encryptTransform } from 'redux-persist-transform-encrypt';
 import localforage from 'localforage';
 import {
   authSlice,
+  chatServiceApiSlice,
+  paymentServiceApiSlice,
   projectServiceApiSlice,
   registerSlice,
   userServiceApiSlice,
@@ -54,10 +56,11 @@ const persistConfig = {
 const rootReducer = combineReducers({
   [userServiceApiSlice.reducerPath]: userServiceApiSlice.reducer,
   [projectServiceApiSlice.reducerPath]: projectServiceApiSlice.reducer,
+  [chatServiceApiSlice.reducerPath]: chatServiceApiSlice.reducer,
+  [paymentServiceApiSlice.reducerPath]: paymentServiceApiSlice.reducer,
   [authSlice.reducerPath]: authSlice.reducer,
   [registerSlice.reducerPath]: registerSlice.reducer,
   [projectSlice.reducerPath]: projectSlice.reducer,
-
 });
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -77,6 +80,8 @@ export const store = configureStore({
     }).concat([
       userServiceApiSlice.middleware,
       projectServiceApiSlice.middleware,
+      chatServiceApiSlice.middleware,
+      paymentServiceApiSlice.middleware,
     ]),
 });
 

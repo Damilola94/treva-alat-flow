@@ -2,6 +2,10 @@ export const USER_SERVICE_BASE_API_URL =
   process.env.NEXT_PUBLIC_USER_SERVICE_API_URL;
 export const PROJECT_SERVICE_BASE_API_URL =
   process.env.NEXT_PUBLIC_PROJECT_SERVICE_API_URL;
+export const CHAT_SERVICE_BASE_API_URL =
+  process.env.NEXT_PUBLIC_CHAT_SERVICE_API_URL;
+  export const PAYMENT_SERVICE_BASE_API_URL =
+  process.env.NEXT_PUBLIC_PAYMENT_SERVICE_API_URL;
 
 export const REQUEST_METHODS = {
   GET: 'GET',
@@ -139,5 +143,18 @@ export const endpoints = {
   invoices: {
     getInvoice: '/invoices',
     getMyInvoice:(invoiceId: string) => `/invoices/${invoiceId}`,
-  }
+  },
+  notifications: {
+    getNotifications: '/notifications',
+    getNotificationCount: '/notifications/unread-count',
+    readNotification: (notificationId: number) =>
+      `/notifications/${notificationId}/read`,
+  },
+  messages: {
+    getMessageByChatId: (chatId: number) => `/chats/${chatId}/messages`,
+    postMessageByChatId: (chatId: number) => `/chats/${chatId}/messages`,
+  },
+  chats: {
+    getAllChats: `/chats`,
+  },
 };
