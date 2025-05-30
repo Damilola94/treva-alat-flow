@@ -14,7 +14,7 @@ import { useUpdateDeliverableTaskMutation } from '@/services';
 import { Button } from '@/components/ui/button';
 import { useAppDispatch } from '@/store';
 import { clearValues } from '@/store/slices/project';
-import { Plus } from '@/components/shared/svgs';
+import { BinGray, EditPencilGray, Plus } from '@/components/shared/svgs';
 
 interface TaskTableProps {
   viewType?: string;
@@ -22,6 +22,8 @@ interface TaskTableProps {
   taskId?: string;
   onAddTask: () => void;
   deliverableId?: string;
+  onUpdateTask: (taskId: string) => void;
+  onDeleteTask: (taskId: string) => void;
 }
 interface Task {
   id: string;
@@ -32,7 +34,14 @@ interface Task {
   status: number | string;
 }
 
-export function TaskTable({ viewType, onAddTask, deliverableId,}: TaskTableProps) {
+export function TaskTable({
+  viewType,
+  onAddTask,
+  onDeleteTask,
+  onUpdateTask,
+  deliverableId,
+}: TaskTableProps) {
+  
   const { id } = useParams();
   const projectId = Array.isArray(id) ? id[0] : id;
   const dispatch = useAppDispatch();
@@ -40,7 +49,10 @@ export function TaskTable({ viewType, onAddTask, deliverableId,}: TaskTableProps
 
   const [activeTab, setActiveTab] = useState<'todo' | 'completed'>('todo');
 
-  const { allTasksData, loading, refetchAllTasks } = useTasks( projectId, deliverableId,);
+  const { allTasksData, loading, refetchAllTasks } = useTasks(
+    projectId,
+    deliverableId,
+  );
   const [updateTask] = useUpdateDeliverableTaskMutation();
 
   const tableBody: Task[] = useMemo(() => {
@@ -110,7 +122,7 @@ export function TaskTable({ viewType, onAddTask, deliverableId,}: TaskTableProps
       cell: ({ row }: any) => {
         const task = row.original;
         const isCompleted = task.status === 4;
-         const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
           const newStatus = e.target.checked ? 4 : 2;
           await updateTask({
             projectId,
@@ -129,6 +141,32 @@ export function TaskTable({ viewType, onAddTask, deliverableId,}: TaskTableProps
               onChange={handleChange}
             />
             <label>Mark as {isCompleted ? 'Incomplete' : 'Completed'}</label>
+          </div>
+        );
+      },
+    },
+    {
+      header: '',
+      accessorKey: 'actions',
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      cell: ({ row }: any) => {
+        const task = row.original;
+        return (
+          <div className="app_table__tbody__td__ctt flex gap-2">
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={(e) => {
+                e.stopPropagation();
+                onDeleteTask(task.id);
+              }}
+            >
+              <BinGray className="h-4 w-4" />
+            </Button >
+                <Button variant="outline" size="icon"  onClick={() => onUpdateTask(task.id)}>
+                  <EditPencilGray className="h-4 w-4" />
+                </Button>
+             
           </div>
         );
       },
@@ -206,9 +244,11 @@ export function TaskTable({ viewType, onAddTask, deliverableId,}: TaskTableProps
                 </div>
               </div>
             ) : (
-              <TaskGirdView onAddTask={function (): void {
+              <TaskGirdView
+                onAddTask={function (): void {
                   throw new Error('Function not implemented.');
-                } } />
+                }}
+              />
             )}
           </TabsContent>
 
@@ -233,9 +273,11 @@ export function TaskTable({ viewType, onAddTask, deliverableId,}: TaskTableProps
                 </div>
               </div>
             ) : (
-              <TaskGirdView onAddTask={function (): void {
+              <TaskGirdView
+                onAddTask={function (): void {
                   throw new Error('Function not implemented.');
-                } } />
+                }}
+              />
             )}
           </TabsContent>
         </Tabs>

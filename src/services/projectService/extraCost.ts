@@ -32,6 +32,25 @@ export const extraCostService = projectServiceApiSlice.injectEndpoints({
         response: ITrevaProjectService["schemas"]["ExtraCostModelBaseResponse"]
       ) => response,
     }),
+    updateExtraCost: builder.mutation({
+      query: ({ projectId, extraCostId, ...values }) => ({
+        url: endpoints.extraCosts.updateExtraCosts(projectId, extraCostId),
+        method: REQUEST_METHODS.PUT,
+        body: values,
+      }),
+      transformResponse: (
+        response: ITrevaProjectService["schemas"]["ExtraCostModelBaseResponse"]
+      ) => response,
+    }),
+    deleteExtraCost: builder.mutation({
+      query: ({ projectId, extraCostId }) => ({
+        url: endpoints.extraCosts.deleteExtraCosts(projectId, extraCostId),
+        method: REQUEST_METHODS.DELETE,
+      }),
+      transformResponse: (
+        response: ITrevaProjectService["schemas"]["ExtraCostModelBaseResponse"]
+      ) => response,
+    }),
     updateExtraCostById: builder.mutation({
       query: ({ projectId, extraCostId, ...values }) => ({
         url: endpoints.extraCosts.updateExtraCosts(projectId, extraCostId),
@@ -56,6 +75,8 @@ export const extraCostService = projectServiceApiSlice.injectEndpoints({
 export const {
   useGetAllExtraCostsQuery,
   useCreateExtraCostMutation,
+  useUpdateExtraCostMutation,
+  useDeleteExtraCostMutation,
   useGetExtraCostByIdQuery,
   useUpdateExtraCostByIdMutation,
   useDeleteExtraCostByIdMutation,

@@ -28,7 +28,7 @@ const CenterModal: React.FC<ModalProps> = ({
     headerImageType === 1
       ? 'url(/media/images/projectmanagement/top-image-create-project.png)'
       : headerImageType === 2
-      ? 'url(/media/images/projectmanagement/top-image-project.png)'
+      ? 'url(/media/images/projectmanagement/header.png)'
       : headerImageType === 3
       ? 'url(/media/images/projectmanagement/deleteImage.png)'
       : headerImageType === 4
@@ -38,7 +38,7 @@ const CenterModal: React.FC<ModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4 font-spaceGrotesk">
       {/* Overlay that closes modal when clicked outside content */}
-      <div className="absolute inset-0" onClick={onClose} />
+      <div className="absolute inset-0 " onClick={onClose} />
 
       {/* Modal Content */}
       <div
@@ -55,18 +55,19 @@ const CenterModal: React.FC<ModalProps> = ({
               headerImageType === 1
                 ? '110%'
                 : headerImageType === 2
-                ? '83%'
+                ? '100%'
                 : 'contain',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
             backgroundColor: '#fff',
              marginTop:
-              headerImageType === 3 || headerImageType === 4 ? '50px' : '16px',
+              headerImageType === 2 ? '-10px' : headerImageType === 3 || headerImageType === 4 ? '50px' : '16px',
             paddingTop:
               headerImageType === 3 || headerImageType === 4 ? '40px' : '16px',
             paddingBottom:
               headerImageType === 3 || headerImageType === 4 ? '20px' : '16px',
-            display: 'flex',
+             minHeight: headerImageType === 2 ? '120px' : 'auto',
+              display: 'flex',
             flexDirection: 'column',
             alignItems:
               headerImageType === 3 || headerImageType === 4
@@ -76,11 +77,7 @@ const CenterModal: React.FC<ModalProps> = ({
           className="w-full p-4"
         >
           <div
-            className={`flex ${
-              headerImageType === 3 || headerImageType === 4
-                ? 'w-full justify-end absolute top-2'
-                : 'justify-end'
-            }`}
+            className='absolute right-2 top-2 z-10'
           >
             <button
               onClick={onClose}

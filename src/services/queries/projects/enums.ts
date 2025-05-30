@@ -1,6 +1,7 @@
 export enum ProjectType {
-  PersonalProject = 'PersonalProject',
-  ClientProject = 'ClientProject'
+  Personal = 'Personal',
+  Client = 'Client',
+  PersonalProject = "PersonalProject"
 
 }
 

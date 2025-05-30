@@ -78,7 +78,6 @@ export default function Dashboard() {
   const { userOnboardingData } = useUsers();
   const { allProjectsData, loading } = useProjects(params);
 
-  console.log(userOnboardingData);
 
   const kpis = [
     { label: 'Active Project', value: '0' },

@@ -1,11 +1,11 @@
 import React from 'react'
 import { BinWithBG } from '@/components/shared/svgs'
-import { useDeleteDeliverable } from '@/hooks/Projects/useProjects'
-import { successToast } from '@/services'
+import { useDeleteTask } from '@/hooks/Projects/useProjects'
 
 interface IProps {
   projectId: string
   deliverableId: string
+  taskId: string
   onClose: () => void
   item: {
     title: string
@@ -22,24 +22,23 @@ interface IProps {
   }
   handleClick?: () => void
   showSteps?: boolean
-  refetchAllDeliverables?: () => void
+  refetchAllTasks?: () => void
 }
 
-export function DeleteDeliverable (props: IProps) {
-  const { projectId, deliverableId, item, handleClick, onClose, refetchAllDeliverables } = props;
+export function DeleteTask (props: IProps) {
+  const { projectId, deliverableId, taskId, item, handleClick, onClose, refetchAllTasks } = props;
 
-    const {deleteDeliverable, loading } = useDeleteDeliverable();
+    const {deleteTask, loading } = useDeleteTask();
   
   const handleDelete = async () => {
     try {
-      await deleteDeliverable({ projectId, deliverableId }).unwrap();
-      if (refetchAllDeliverables) {
-        refetchAllDeliverables();
+      await deleteTask({ projectId, deliverableId, taskId }).unwrap();
+      if (refetchAllTasks) {
+        refetchAllTasks();
       }
-      successToast('Deliverable deleted successfully');
       onClose()
   } catch (e) {
-      console.error('Error deleting deliverable:', e);
+      console.error('Error deleting project:', e);
     }
   }
   return (

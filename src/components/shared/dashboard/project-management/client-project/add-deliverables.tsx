@@ -1,155 +1,205 @@
-'use client';
-import React, { Fragment, useEffect, useState } from 'react';
-import { Button } from '@/components/ui/button';
-// import routes from '@/lib/routes';
+"use client"
+import { Fragment, useEffect, useState } from "react"
+import { Button } from "@/components/ui/button"
 import {
   AnimatedModal,
   CalendarWithMark,
+  CenterModal,
   Delete,
   EditIcon,
   Money4,
   PlusIcon,
   RenderIf,
-} from '@/components/shared';
-import { Modal } from '@/components/shared/decisionModal';
-import { AddDeliverables } from '@/components/shared/project-management.tsx/add-deliverables';
-import { EditDeliverables } from '@/components/shared/project-management.tsx/edit-deliverables';
-import queries from '@/services/queries/projects';
-import { type InitialStep2Values } from '@/app/creatives/dashboard/project-management/client-project/create/page';
-import { formatDate } from '@/lib/utils';
+} from "@/components/shared"
+import { AddDeliverables } from "@/components/shared/project-management.tsx/add-deliverables"
+import { EditDeliverables } from "@/components/shared/project-management.tsx/edit-deliverables"
+import type { InitialStep2Values } from "@/app/creatives/dashboard/project-management/client-project/create/page"
+import { formatDate } from "@/lib/utils"
+import { Loader2 } from "lucide-react"
+import { errorToast, successToast, useGetDeliverablesQuery } from "@/services"
+import { getErrorMessage } from "@/utils"
+import { useDeleteDeliverable } from "@/hooks/Projects/useProjects"
+import { useAppDispatch } from "@/store"
+import { storeValues, nextStep } from "@/store/slices/project"
 
 interface IProps {
-  handleNext: (formData: InitialStep2Values) => void;
-  projectId: string;
+  handleNext: (formData: InitialStep2Values) => void
+  projectId: string
 }
 
-interface Deliverable {
-  deliverableId: string;
-  deliverableName: string;
-  deliverableDescription: string;
-  startDate: string;
-  dueDate: string;
-  deliverableAmount: string;
-  timeline?: string;
-  totalAmount?: string;
+export interface Deliverable {
+  deliverableId: string
+  name: string
+  description: string
+  startDate: string
+  endDate: string
+  unitAmount: string
+  unit: string
+  total?: string
 }
 
 export function ProjectDeliverables(props: IProps) {
-  const { handleNext, projectId } = props;
-  const [editForm, setEditForm] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isDecisionModalOpen, setIsDecisionModalOpen] = useState(false);
-  const [deliverables, setDeliverables] = useState<Deliverable[]>([]);
-  const [deliverableId, setDeliverableId] = useState<string>('');
+  const { handleNext, projectId } = props
+  const dispatch = useAppDispatch()
+
+  // Get current step from Redux
+  // const currentStep = useAppSelector((state) => state.project.currentStep)
+
+  const parseNumber = (value: string | undefined) => (value ? Number.parseFloat(value) || 0 : 0)
+
+  const [editForm, setEditForm] = useState(true)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isDecisionModalOpen, setIsDecisionModalOpen] = useState(false)
+  const [deliverables, setDeliverables] = useState<Deliverable[]>([])
+  const [deliverableId, setDeliverableId] = useState<string>("")
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [selectedDeliverable, setSelectedDeliverable] =
-    useState<Deliverable | null>(null);
+  const [selectedDeliverable, setSelectedDeliverable] = useState<Deliverable | null>(null)
+  const [deliverableToDelete, setDeliverableToDelete] = useState<string | null>(null)
 
-  const { data, refetch } = queries.readDeliverables(
-    { projectId },
-    {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      onSuccess: (newData: any) => {
-        if (Array.isArray(newData)) {
-          const validDeliverables = newData.map((item) => {
-            return {
-              ...item,
-              deliverableId: item.deliverableId || item.id || '',
-            };
-          });
-          setDeliverables(validDeliverables);
-        } else {
-          setDeliverables([]);
-        }
-      },
-    },
-  );
+  const { deleteDeliverable, loading } = useDeleteDeliverable()
 
-  const { mutate: deleteDeliverables } = queries.deleteDeliverables(
-    {},
-    {
-      onSuccess: () => {
-        void refetch();
-      },
-    },
-  );
+  const {
+    data: deliverablesData,
+    isLoading,
+    refetch,
+  } = useGetDeliverablesQuery({ projectId }, { refetchOnMountOrArgChange: true })
 
   useEffect(() => {
-    if (data) {
-      if (Array.isArray(data)) {
-        const validDeliverables = data.map((item) => ({
-          ...item,
-          deliverableId: item.deliverableId || item.id || '',
-        }));
-        setDeliverables(validDeliverables);
-      }
-    }
-  }, [data]);
+    if (deliverablesData?.data) {
+      const mappedDeliverables = deliverablesData.data.map((item) => ({
+        deliverableId: item.id ?? "",
+        name: item.name ?? "",
+        description: item.description ?? "",
+        startDate: item.startDate ?? "",
+        endDate: item.endDate ?? "",
+        unitAmount: item.unitAmount !== undefined && item.unitAmount !== null ? String(item.unitAmount) : "",
+        unit: item.unit !== undefined && item.unit !== null ? String(item.unit) : "",
+        total: item.total !== undefined && item.total !== null ? String(item.total) : "",
+      }))
 
-  const handleCloseModal = () => {
-    setIsDecisionModalOpen(false);
-  };
+      setDeliverables(mappedDeliverables)
+
+      // Store deliverables in Redux for persistence
+      dispatch(
+        storeValues({
+          deliverables: mappedDeliverables.map((d) => ({
+            name: d.name,
+            description: d.description,
+            startDate: d.startDate,
+            endDate: d.endDate,
+            unitAmount: d.unitAmount,
+            unit: d.unit,
+          })),
+        }),
+      )
+    }
+  }, [deliverablesData, dispatch])
+
   const closeModal = () => {
-    setIsModalOpen(false);
-  };
+    setIsModalOpen(false)
+  }
 
   const handleAddDeliverables = (newDeliverable: Deliverable) => {
     const deliverableWithId = {
       ...newDeliverable,
-      deliverableId: newDeliverable.deliverableId || '',
-    };
-    setDeliverables((prev) => [...prev, deliverableWithId]);
-    void refetch();
-  };
-
-  const handleDelete = () => {
-    if (!deliverableId) {
-      console.error('Deliverable ID is undefined. Cannot delete.');
-      return;
+      deliverableId: newDeliverable.deliverableId || "",
     }
-    setDeliverables((prev) =>
-      prev.filter((d) => d.deliverableId !== deliverableId),
-    );
-    deleteDeliverables({ projectId, deliverableId });
-    setIsDecisionModalOpen(false);
-  };
+    setDeliverables((prev) => {
+      const updated = [...prev, deliverableWithId]
+
+      // Store in Redux
+      dispatch(
+        storeValues({
+          deliverables: updated.map((d) => ({
+            name: d.name,
+            description: d.description,
+            startDate: d.startDate,
+            endDate: d.endDate,
+            unitAmount: d.unitAmount,
+            unit: d.unit,
+          })),
+        }),
+      )
+
+      return updated
+    })
+    void refetch()
+  }
+
+  const handleDelete = async () => {
+    if (!deliverableToDelete) return
+    try {
+      await deleteDeliverable({
+        deliverableId: deliverableToDelete,
+        projectId,
+      }).unwrap()
+
+      successToast("Deliverable deleted successfully")
+      setIsDecisionModalOpen(false)
+      setDeliverableToDelete(null)
+      refetch()
+    } catch (error) {
+      console.error("Delete error:", error)
+      errorToast("Failed to delete deliverable")
+    }
+  }
+
+  const handleDeleteClick = (paymentId: string) => {
+    setDeliverableToDelete(paymentId)
+    setIsDecisionModalOpen(true)
+  }
 
   const onEdit = (id: string) => {
-    const deliverableToEdit = deliverables.find((d) => d.deliverableId === id);
+    const deliverableToEdit = deliverables.find((d) => d.deliverableId === id)
     if (!deliverableToEdit) {
-      console.error('Cannot find deliverable with ID:', id);
-      return;
+      const message = getErrorMessage(!deliverableId)
+      errorToast(message || "Something went wrong")
+      return
     }
-    setDeliverableId(id);
-    setSelectedDeliverable(deliverableToEdit);
-    setEditForm(false);
-  };
+    setDeliverableId(id)
+    setSelectedDeliverable(deliverableToEdit)
+    setEditForm(false)
+  }
 
   const handleNextStep = () => {
     const step2Data = {
       deliverables: deliverables.map((d) => ({
-        deliverableName: d.deliverableName,
-        description: d.deliverableDescription,
+        name: d.name,
+        description: d.description,
         startDate: d.startDate,
-        dueDate: d.dueDate,
-        amount: d.deliverableAmount,
+        endDate: d.endDate,
+        unitAmount: d.unitAmount,
+        unit: d.unit,
       })),
-    };
-    handleNext(step2Data);
-  };
+    }
+
+    // Store in Redux and move to next step
+    dispatch(storeValues(step2Data))
+    dispatch(nextStep())
+
+    handleNext(step2Data)
+  }
+
+  const total = deliverables.reduce((sum, d) => sum + (parseNumber(d.total) || parseNumber(d.unitAmount)), 0)
+
+  const startDates = deliverables.map((d) => new Date(d.startDate))
+  const endDates = deliverables.map((d) => new Date(d.endDate))
+  const minStart = startDates.length ? new Date(Math.min(...startDates.map((d) => d.getTime()))) : null
+  const maxEnd = endDates.length ? new Date(Math.max(...endDates.map((d) => d.getTime()))) : null
+  const timeline =
+    minStart && maxEnd ? `${formatDate(minStart.toISOString())} - ${formatDate(maxEnd.toISOString())}` : ""
 
   return (
     <div className="app_get_started_professional_details py-6 px-4 flex flex-col gap-14">
       <AnimatedModal
         {...{
           isOpen: isModalOpen,
-          from: 'right',
+          from: "right",
           onClose: closeModal,
           className:
-            'lg:absolute lg:bottom-0 lg:right-0 h-[calc(100vh-20px)] w-full sm:w-[350px] bg-white p-0 flex flex-col lg:mb-2 lg:mr-2 mx-7',
+            "lg:absolute lg:bottom-0 lg:right-0 h-[calc(100vh-20px)] w-full sm:w-[350px] bg-white p-0 flex flex-col lg:mb-2 lg:mr-2 mx-7",
         }}
       >
-        {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
         <AddDeliverables
           onClose={closeModal}
           projectId={projectId}
@@ -163,29 +213,42 @@ export function ProjectDeliverables(props: IProps) {
           <AnimatedModal
             {...{
               isOpen: true,
-              from: 'right',
+              from: "right",
               onClose: onEdit,
               className:
-                'lg:absolute lg:bottom-0 lg:right-0 h-[calc(100vh-20px)] w-full sm:w-[350px] bg-white p-0 flex flex-col lg:mb-2 lg:mr-2 mx-7',
+                "lg:absolute lg:bottom-0 lg:right-0 h-[calc(100vh-20px)] w-full sm:w-[350px] bg-white p-0 flex flex-col lg:mb-2 lg:mr-2 mx-7",
             }}
           >
             <EditDeliverables
               onClose={() => {
-                setEditForm(true);
-                setSelectedDeliverable(null);
+                setEditForm(true)
+                setSelectedDeliverable(null)
               }}
               projectId={projectId}
               deliverableId={deliverableId}
-              // deliverable={selectedDeliverable}
               onEditDeliverable={(updatedDeliverable) => {
-                setDeliverables((prev) =>
-                  prev.map((d) =>
-                    d.deliverableId === updatedDeliverable.deliverableId
-                      ? updatedDeliverable
-                      : d,
-                  ),
-                );
-                void refetch();
+                setDeliverables((prev) => {
+                  const updated = prev.map((d) =>
+                    d.deliverableId === updatedDeliverable.deliverableId ? updatedDeliverable : d,
+                  )
+
+                  // Store in Redux
+                  dispatch(
+                    storeValues({
+                      deliverables: updated.map((d) => ({
+                        name: d.name,
+                        description: d.description,
+                        startDate: d.startDate,
+                        endDate: d.endDate,
+                        unitAmount: d.unitAmount,
+                        unit: d.unit,
+                      })),
+                    }),
+                  )
+
+                  return updated
+                })
+                void refetch()
               }}
             />
           </AnimatedModal>
@@ -193,144 +256,152 @@ export function ProjectDeliverables(props: IProps) {
       </RenderIf>
 
       <div className="app_get_started_professional_details__form flex flex-col gap-10 !overflow-y-auto">
-        <Modal
-          {...{ open: isDecisionModalOpen, handleClose: handleCloseModal }}
+        <CenterModal
+          headerImageType={3}
+          isOpen={isDecisionModalOpen}
+          onClose={() => {
+            setIsDecisionModalOpen(false)
+            setDeliverableToDelete(null)
+          }}
+          showFooter
+          footerChildren={
+            <div className="w-full flex items-center gap-5">
+              <button
+                className="border p-3 rounded-full w-full border-[#F1F1F1] text-[#7B37F0]"
+                onClick={() => {
+                  setIsDecisionModalOpen(false)
+                  setDeliverableToDelete(null)
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                className="border p-3 bg-[#F9403A] rounded-full w-full border-[#F1F1F1] text-[#fff] disabled:opacity-50"
+                onClick={() => {
+                  handleDelete()
+                }}
+                disabled={loading}
+                type="button"
+              >
+                {loading ? <Loader2 size={18} className="animate-spin mx-auto" /> : "Delete"}
+              </button>
+            </div>
+          }
         >
-          <div className="app_modal__ctt__mid">
-            <h2 className="app_modal__ctt__mid__h2">
-              Are you sure you want to delete this deliverable?
-            </h2>
-            <p className="text-[#888888]">
-              Deliverable will be deleted Permanently
-            </p>
+          <div className="flex flex-col items-center justify-center gap-4">
+            <p className="font-semibold">Are you sure you want to delete deliverable?</p>
+            <p>Deliverable will be deleted permanently</p>
           </div>
-
-          <div className="app_modal__ctt__btm flex gap-4">
-            <Button
-              backgroundColor="transparent"
-              size="xl"
-              color="treva-purple-500"
-              className="w-full border border-[#F1F1F1]"
-              onClick={handleCloseModal}
-            >
-              Cancel
-            </Button>
-            <Button
-              backgroundColor="error-500"
-              color="white"
-              size="xl"
-              className="w-full"
-              // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-              // onClick={() => { handleDelete(); }}
-              onClick={handleDelete}
-            >
-              Delete
-            </Button>
-          </div>
-        </Modal>
+        </CenterModal>
 
         <h3 className="app_get_started_professional_details__form__title">
           Deliverables <br />
-          <span className="text-[#6D6D6D]">
-            Add all deliverables for this project.
-          </span>
+          <span className="text-[#6D6D6D]">Add all deliverables for this project.</span>
         </h3>
         <div className="">
           <button
             className="flex gap-3 text-[#7D6CE8]"
             onClick={() => {
-              setIsModalOpen(true);
+              setIsModalOpen(true)
             }}
           >
             <PlusIcon fill="var(--treva-purple-500)" />
-            {deliverables.length > 0
-              ? 'Add another deliverable'
-              : 'Add deliverable'}
+            {deliverables.length > 0 ? "Add another deliverable" : "Add deliverable"}
           </button>
         </div>
         <div>
-          {deliverables.map((item, index) => (
-            <>
-              <div
-                key={index}
-                className="border p-4 rounded-md shadow mb-4 flex justify-between items-center bg-[#E7E7E7] "
-              >
-                <div>
-                  <div className="flex items-center gap-24 lg:gap-60">
-                    <h4 className="font-semibold mb-3">
-                      {item.deliverableName}
-                    </h4>
-                    <div className="flex gap-4">
-                      <EditIcon
-                        className="cursor-pointer"
-                        fill="#888888"
-                        onClick={() => {
-                          if (item.deliverableId) {
-                            onEdit(item.deliverableId);
-                          }
-                        }}
-                      />
-                      <button
-                        onClick={() => {
-                          if (item.deliverableId) {
-                            setDeliverableId(item.deliverableId);
-                            setIsDecisionModalOpen(true);
-                          }
-                        }}
-                      >
-                        <Delete className="cursor-pointer" />
-                      </button>
+          <div>
+            {isLoading ? (
+              <div className="text-center flex justify-center items-center">
+                <Loader2 size={18} className="animate-spin" />
+              </div>
+            ) : deliverables.length > 0 ? (
+              deliverables.map((deliverable) => (
+                <div
+                  key={deliverable.deliverableId}
+                  className="border p-4 rounded-md shadow mb-4 flex justify-between items-center bg-[#E7E7E7]"
+                >
+                  <div className="w-full">
+                    <div className="flex items-center justify-between">
+                      <h4 className="font-semibold mb-3">{deliverable.name}</h4>
+                      <div className="flex gap-4">
+                        <EditIcon
+                          className="cursor-pointer"
+                          fill="#888888"
+                          onClick={() => onEdit(deliverable.deliverableId)}
+                        />
+                        <button onClick={() => handleDeleteClick(deliverable.deliverableId)}>
+                          <Delete className="cursor-pointer" />
+                        </button>
+                      </div>
+                    </div>
+                    <p className="mb-2">{deliverable.description}</p>
+                    <p className="flex gap-4 mb-3">
+                      <CalendarWithMark fill="#6E50DB" />
+                      {formatDate(deliverable.startDate)}
+                    </p>
+                    <p className="flex gap-4 mb-3">
+                      <CalendarWithMark fill="#6E50DB" />
+                      {formatDate(deliverable.endDate)}
+                    </p>
+                    <div className="flex gap-4 mb-3">
+                      <div className="flex items-center gap-2">
+                        <Money4 />
+                        <p className="font-bold">Unit:</p>
+                      </div>
+                      {deliverable.unit}
+                    </div>
+                    <div className="flex gap-4 mb-3">
+                      <div className="flex items-center gap-2">
+                        <Money4 />
+                        <p className="font-bold">Unit Amount:</p>
+                      </div>
+                      {deliverable.unitAmount}
+                    </div>
+                    <div className="flex gap-4 mb-3">
+                      <div className="flex items-center gap-2">
+                        <Money4 />
+                        <p className="font-bold">Total:</p>
+                      </div>
+                      {deliverable.total}
                     </div>
                   </div>
-                  <p className="mb-2">{item.deliverableDescription}</p>
-                  <p className="flex gap-4 mb-3 ">
-                    <CalendarWithMark fill="#6E50DB" />
-                    {formatDate(item.startDate)}
-                  </p>
-                  <p className="flex gap-4 mb-3">
-                    <CalendarWithMark fill="#6E50DB" />
-                    {formatDate(item.dueDate)}
-                  </p>
-                  <p className="flex gap-4">
-                    <Money4 stroke="#6E50DB" /> {item.deliverableAmount}
-                  </p>
                 </div>
-              </div>
-            </>
-          ))}
-          {deliverables.length > 0 && (
-            <div className="mt-10 text-[#262626]">
-              <p className="flex justify-between mb-2">
-                Total deliverables: <span>{deliverables.length}</span>
-              </p>
-              <p className="flex justify-between mb-2">
-                Timeline <span>{deliverables[0].timeline}</span>
-              </p>
-              <p className="flex justify-between mb-2">
-                Sub Total: <span>NGN {deliverables[0].totalAmount}</span>
-              </p>
-              <p className="flex justify-between">
-                Total{' '}
-                <span className="font-bold">
-                  NGN {deliverables[0].totalAmount}
-                </span>
-              </p>
-            </div>
-          )}
+              ))
+            ) : (
+              <p className="text-gray-500">No deliverables added yet.</p>
+            )}
+          </div>
         </div>
-        <div className="pt-4 flex gap-5 text-right">
+        {deliverables.length > 0 && (
+          <div className="mt-10 text-[#262626]">
+            <p className="flex justify-between mb-2">
+              Total deliverables: <span>{deliverables.length}</span>
+            </p>
+            <p className="flex justify-between mb-2">
+              Timeline <span>{timeline}</span>
+            </p>
+            <p className="flex justify-between mb-2">
+              Sub Total: <span>NGN {total.toLocaleString()}</span>
+            </p>
+            <p className="flex justify-between font-bold">
+              Total <span className="font-bold">NGN {total.toLocaleString()}</span>
+            </p>
+          </div>
+        )}
+        <div className="py-8 flex gap-5 text-right">
           <Button
             type="button"
             size="xl"
             backgroundColor="primary-blue-500"
             className="w-full py-3 px-12 "
             onClick={handleNextStep}
-            // onClick={handleSkip}
+            disabled={deliverables.length === 0 || isLoading}
           >
             Save and continue
           </Button>
         </div>
       </div>
     </div>
-  );
+  )
 }

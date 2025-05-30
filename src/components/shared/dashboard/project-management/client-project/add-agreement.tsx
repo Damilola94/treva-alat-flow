@@ -1,11 +1,14 @@
-'use client'
-import React, { useState } from 'react'
-import { Button } from '@/components/ui/button'
-import { CenterModal, Delete, Upload } from '@/components/shared'
-import Image from 'next/image'
-import { type InitialStep5Values } from '@/app/creatives/dashboard/project-management/client-project/create/page'
-import queries from '@/services/queries/projects'
-import { toast } from 'react-toastify'
+"use client"
+import type React from "react"
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
+import { CenterModal, Delete, Upload } from "@/components/shared"
+import Image from "next/image"
+import type { InitialStep5Values } from "@/app/creatives/dashboard/project-management/client-project/create/page"
+import { toast } from "react-toastify"
+import { successToast, useCreateAgreementMutation, useDeleteAgreementMutation } from "@/services"
+import { useAppDispatch } from "@/store"
+import { storeValues, nextStep } from "@/store/slices/project"
 
 interface IProps {
   handleNext: (formData: InitialStep5Values) => void
@@ -13,55 +16,44 @@ interface IProps {
 }
 
 interface Agreement {
-  projectAgreementUrl: string;
-  projectId: string;
+  documentUrl: string
+  // projectId: string
+  agreementId: string
 }
 
 export function ProjectAgreement(props: IProps) {
-  const { handleNext, projectId } = props;
+  const { handleNext, projectId } = props
+  const dispatch = useAppDispatch()
+
+  // Debug log to check projectId
+  console.log("ProjectAgreement - projectId:", projectId)
+
+  // Get current step from Redux
+  // const currentStep = useAppSelector((state) => state.project.currentStep)
+
+  const [createAgreement, { isLoading }] = useCreateAgreementMutation()
+  const [deleteAgreement] = useDeleteAgreementMutation()
 
   const [isDecisionModalOpen, setIsDecisionModalOpen] = useState(false)
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
-  const [imagePreview, setImagePreview] = useState<string>('')
-  const [agreement, setAgreement] = useState<Agreement[]>([])
-  const [, setAgreementId] = useState<string>('')
+  const [imagePreview, setImagePreview] = useState<string>("")
+  const [, setAgreement] = useState<Agreement[]>([])
+  // const [agreementToDelete, setAgreementToDelete] = useState<string | null>(null)
 
-  const { mutate: createAgreement } = queries.updateAgreement({
-    onSuccess: (response) => {
-      if (response?.data?.id) {
-        setAgreementId(response.data.id)
-      } else {
-        console.warn('Project ID not found. Polling...')
-      }
-    },
-  })
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { data, refetch } = queries.readDeliverables(
-    { projectId },
-    {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      onSuccess: (newData: any) => {
-        setAgreement(newData)
-      },
-    },
-  )
-
-  const { mutate: deleteAgreement } = queries.deleteAgreement(
-    { projectId },
-    {
-      onSuccess: () => {
-        setAgreement((prev) => prev.filter((d) => d.projectId !== projectId))
-
-        setSelectedFile(null)
-        setImagePreview('')
-
-        void refetch()
-
-        setIsDecisionModalOpen(false)
-      },
-    },
-  )
+  const handleDelete = async () => {
+    setAgreement((prev) => prev.filter((d) => d.agreementId !== projectId))
+    try {
+      await deleteAgreement({
+        projectId,
+        agreementId: "",
+      }).unwrap()
+      toast.success("Agreement deleted successfully")
+      handleRemoveFile()
+    } catch (error) {
+      toast.error("Failed to delete agreement")
+    }
+    setIsDecisionModalOpen(false)
+  }
 
   const handleCloseModal = () => {
     setIsDecisionModalOpen(false)
@@ -70,24 +62,30 @@ export function ProjectAgreement(props: IProps) {
   const handleFileChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    setFieldValue: (field: string, value: any) => void,
+    setFieldValue?: (field: string, value: any) => void,
   ) => {
     const file = e.target.files?.[0]
 
     if (file) {
-      const allowedTypes = [
-        'image/jpeg',
-        'image/png',
-        'image/jpg',
-        'application/pdf',
-      ]
+      const allowedTypes = ["image/jpeg", "image/png", "image/jpg", "application/pdf"]
 
       if (allowedTypes.includes(file.type)) {
         setSelectedFile(file)
-        setFieldValue('projectAgreementUrl', file)
 
-        if (file.type === 'application/pdf') {
-          setImagePreview('')
+        // Store file info in Redux
+        dispatch(
+          storeValues({
+            agreementFile: file.name,
+            agreementType: file.type,
+          }),
+        )
+
+        if (setFieldValue) {
+          setFieldValue("documentUrl", file)
+        }
+
+        if (file.type === "application/pdf") {
+          setImagePreview("")
         } else {
           const reader = new FileReader()
           reader.onload = () => {
@@ -96,131 +94,153 @@ export function ProjectAgreement(props: IProps) {
           reader.readAsDataURL(file)
         }
       } else {
-        toast.error(
-          'Unsupported file type. Please upload a PDF, JPEG, PNG, or JPG file.',
-        )
+        toast.error("Unsupported file type. Please upload a PDF, JPEG, PNG, or JPG file.")
         setSelectedFile(null)
-        setFieldValue('projectAgreementUrl', null)
+        if (setFieldValue) {
+          setFieldValue("documentUrl", null)
+        }
 
         if (e.target) {
-          e.target.value = ''
+          e.target.value = ""
         }
       }
     } else {
       setSelectedFile(null)
-      setFieldValue('projectAgreementUrl', null)
+      if (setFieldValue) {
+        setFieldValue("documentUrl", null)
+      }
     }
   }
 
   const handleRemoveFile = () => {
     setSelectedFile(null)
-    setImagePreview('')
+    setImagePreview("")
+
+    // Clear from Redux
+    dispatch(
+      storeValues({
+        agreementFile: "",
+        agreementType: "",
+      }),
+    )
   }
 
-  const handleDelete = () => {
-    setAgreement((prev) => prev.filter((d) => d.projectId !== projectId))
-    deleteAgreement({ projectId })
-    setIsDecisionModalOpen(false)
-  }
-
-  const initialValues = {
-    projectId,
-    projectAgreementUrl: null as File | null,
-  }
-
-  type InitialValues = ReturnType<() => typeof initialValues>
-  const onSubmit = (_values: InitialValues) => {
-    createAgreement({
-      ..._values,
-      projectAgreementUrl: _values.projectAgreementUrl,
-    })
-  }
-
-  const handleNextStep = () => {
-    // if (!selectedFile) {
-    //   toast.error('Please upload an agreement file before continuing.')
-    //   return
+  const onSubmit = async (values: { document: File | null }) => {
+    // Validate projectId first
+    // if (!values.projectId || values.projectId.trim() === "") {
+    //   toast.error("Project ID is missing. Please go back to step 1.")
+    //   return false
     // }
-    const step5Values = {
-      agreement: agreement.map((d) => ({
-        projectId: d.projectId,
-        projectAgreementUrl: d.projectAgreementUrl,
-      })),
+
+    if (!values.document) {
+      toast.error("Please upload a valid file")
+      return false
     }
-    // const formData = new FormData()
-    // formData.append('ProjectId', projectId)
-    // formData.append('AgreementFile', selectedFile)
 
-    // console.log(formData, 'formData')
+    try {
+      const response = await createAgreement({
+        projectId,
+        document: values.document,
+      }).unwrap()
+      // Store in Redux
+      dispatch(
+        storeValues({
+          agreementUploaded: true,
+          // agreementProjectId: values.projectId,
+        }),
+      )
 
-    onSubmit({ projectId, projectAgreementUrl: selectedFile })
+      setAgreement([
+        {
+          documentUrl: URL.createObjectURL(values.document),
+          agreementId: ""
+        },
+      ])
+
+      successToast(response?.message || "Agreement uploaded successfully")
+      return true
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.error("Agreement upload error:", error)
+
+      // Handle different types of errors
+      if (error?.status === 405) {
+        toast.error("Method not allowed. Please check the API endpoint.")
+      } else if (error?.status === 404) {
+        toast.error("Project not found. Please verify the project ID.")
+      } else if (error?.data?.message) {
+        toast.error(error.data.message)
+      } else {
+        toast.error("Failed to upload agreement. Please try again.")
+      }
+      return false
+    }
+  }
+
+  const handleNextStep = async () => {
+    // Validate projectId first
+    if (!projectId || projectId.trim() === "") {
+      toast.error("Project ID is missing. Please go back to step 1 to create a project first.")
+      return
+    }
+
+    if (!selectedFile) {
+      toast.error("Please upload an agreement before continuing.")
+      return
+    }
+
+    // Only proceed if upload is successful
+    const uploadResult = await onSubmit({ document: selectedFile })
+
+    // If uploadResult is false or undefined, do not proceed
+    if (uploadResult !== true) return
+
+    const step5Values: InitialStep5Values = {
+      agreement: [
+        {
+          documentUrl: imagePreview || (selectedFile ? URL.createObjectURL(selectedFile) : ""),
+        },
+      ],
+    }
+
+    // Store in Redux and move to next step
+    dispatch(storeValues(step5Values))
+    dispatch(nextStep())
+
     handleNext(step5Values)
   }
 
   return (
     <div className="app_get_started_professional_details py-6 px-4 flex flex-col gap-14">
       <div className="app_get_started_professional_details__form flex flex-col gap-10 !overflow-y-auto">
-        {/* <Modal
-          {...{ open: isDecisionModalOpen, handleClose: handleCloseModal }}
-        >
-          <div className="app_modal__ctt__mid">
-            <h2 className="app_modal__ctt__mid__h2">
-              Are you sure you want to delete this agreement?
-            </h2>
-            <p className="text-[#888888]">
-              Agreement will be deleted permanently.
-            </p>
-          </div>
-
-          <div className="app_modal__ctt__btm flex gap-4">
-            <Button
-              backgroundColor="transparent"
-              size="xl"
-              color="treva-purple-500"
-              className="w-full border border-[#F1F1F1]"
-              onClick={handleCloseModal}
-            >
-              Cancel
-            </Button>
-            <Button
-              backgroundColor="error-500"
-              color="white"
-              size="xl"
-              className="w-full"
-              onClick={() => {
-                handleDelete()
-              }}
-            >
-              Delete
-            </Button>
-          </div>
-        </Modal> */}
-
+        {/* Delete Confirmation Modal */}
         <CenterModal
-        headerImageType={3}
-        isOpen={isDecisionModalOpen}
-        onClose={() => {
-          setIsDecisionModalOpen(false)
-        }}
-        showFooter
-        footerChildren={
-          <div className="w-full flex items-center gap-5">
-            <button className="border p-3 rounded-full w-full border-[#F1F1F1] text-[#7B37F0]" onClick={handleCloseModal}>
-              Cancel
-            </button>
-            <button className="border p-3 bg-[#F9403A] rounded-full w-full border-[#F1F1F1] text-[#fff]" onClick={() => {
-                handleDelete()
-              }}>
-              Delete
-            </button>
+          headerImageType={3}
+          isOpen={isDecisionModalOpen}
+          onClose={handleCloseModal}
+          showFooter
+          footerChildren={
+            <div className="w-full flex items-center gap-5">
+              <button
+                className="border p-3 rounded-full w-full border-[#F1F1F1] text-[#7B37F0]"
+                onClick={handleCloseModal}
+              >
+                Cancel
+              </button>
+              <button
+                className="border p-3 bg-[#F9403A] rounded-full w-full border-[#F1F1F1] text-white"
+                onClick={handleDelete}
+              >
+                Delete
+              </button>
+            </div>
+          }
+        >
+          <div className="flex flex-col items-center justify-center gap-4">
+            <p className="font-semibold">Are you sure you want to delete this agreement?</p>
+            <p>It will be permanently removed.</p>
           </div>
-        }
-      >
-        <div className="flex flex-col items-center justify-center gap-4">
-          <p className='font-semibold'>Are you sure you want to delete payment?</p>
-          <p>Payment will be deleted Permanently</p>
-        </div>
-      </CenterModal>
+        </CenterModal>
 
         <h3 className="font-bold">Agreement</h3>
         <p className="text-gray-500 -mt-9">Please upload your agreement.</p>
@@ -229,11 +249,11 @@ export function ProjectAgreement(props: IProps) {
           {selectedFile ? (
             <div className="flex items-center justify-between">
               <div className="flex items-center">
-                {selectedFile.type === 'application/pdf' ? (
-                  <span className="w-6 h-6 mr-3">📄</span> // Use an icon for PDFs
+                {selectedFile.type === "application/pdf" ? (
+                  <span className="w-6 h-6 mr-3">📄</span>
                 ) : (
                   <Image
-                    src={imagePreview}
+                    src={imagePreview || "/placeholder.svg"}
                     alt="Preview"
                     className="w-12 h-12 rounded-md"
                     width={48}
@@ -242,18 +262,10 @@ export function ProjectAgreement(props: IProps) {
                 )}
                 <div>
                   <p className="text-sm font-medium">{selectedFile.name}</p>
-                  <p className="text-xs text-gray-500">
-                    {(selectedFile.size / 1024 / 1024).toFixed(1)} MB
-                  </p>
+                  <p className="text-xs text-gray-500">{(selectedFile.size / 1024 / 1024).toFixed(1)} MB</p>
                 </div>
               </div>
-              <button
-                onClick={() => {
-                  setIsDecisionModalOpen(true)
-                }}
-              >
-                <Delete className="cursor-pointer" onClick={handleRemoveFile} />
-              </button>
+              <Delete className="cursor-pointer" onClick={() => setIsDecisionModalOpen(true)} />
             </div>
           ) : (
             <label className="cursor-pointer hover:underline">
@@ -261,20 +273,17 @@ export function ProjectAgreement(props: IProps) {
                 type="file"
                 accept=".pdf,.png,.jpg,.jpeg"
                 className="hidden"
-                onChange={(e) => {
-                  handleFileChange(e, () => {})
-                }}
+                onChange={(e) => handleFileChange(e)}
               />
               <div className="flex flex-col items-center">
                 <Upload />
                 <p className="mt-2 font-bold">Upload your agreement</p>
-                <p className="text-xs text-gray-500">
-                  PDF, PNG, JPG | 10MB max.
-                </p>
+                <p className="text-xs text-gray-500">PDF, PNG, JPG | 10MB max.</p>
               </div>
             </label>
           )}
         </div>
+
         <div className="flex gap-5">
           <Button
             type="submit"
@@ -282,19 +291,10 @@ export function ProjectAgreement(props: IProps) {
             backgroundColor="primary-blue-500"
             className="w-full py-3 px-12"
             onClick={handleNextStep}
+            disabled={isLoading}
           >
-            Save & Continue
+            {isLoading ? "Uploading..." : "Save & Continue"}
           </Button>
-          {/* <Button
-                    type="button"
-                    size="xl"
-                    backgroundColor="primary-blue-500"
-                    className="w-full py-3 px-12"
-                    onClick={handleSkip}
-
-                >
-                    Close
-                </Button> */}
         </div>
       </div>
     </div>

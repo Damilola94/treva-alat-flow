@@ -8,6 +8,7 @@ import {
   Label,
   Comment,
   SideModal,
+  RenderIf,
 } from '@/components/shared';
 import { Button } from '@/components/ui/button';
 import React, { useEffect, useState } from 'react';
@@ -27,6 +28,8 @@ import { Avatar } from '@/components/shared/avatar';
 import { Textarea } from '@/components/ui/textarea';
 import clientManagement from '@/lib/assets/client-management';
 import { ProjectProgressBar } from '@/components/shared/dashboard/progressbar';
+import { EditTaskCard } from '@/components/shared/dashboard/project-management/personal-project/edit-task';
+import { DeleteTask } from '@/components/shared/dashboard/project-management/project-table/delete-task';
 
 type TabType = 'task' | 'deliverables' | 'payment';
 
@@ -35,6 +38,14 @@ const options = [
   { value: 'grid', label: 'Grid' },
 ];
 
+const deleteTask = {
+  img: projectManagement.topImage,
+  title: 'Are you sure you want to delete this task',
+  details: 'Task record will be deleted Permanently',
+  btnText1: 'Cancel',
+  btnText2: 'Delete',
+};
+
 export default function Page() {
   const { id } = useParams();
   const projectId = Array.isArray(id) ? id[0] : id;
@@ -42,10 +53,13 @@ export default function Page() {
   const [activeTab, setActiveTab] = useState<TabType>('deliverables');
   const [viewType, setViewType] = useState('table');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalType, setModalType] = useState<'create' | 'edit'>('create');
   const [selectedDeliverableId, setSelectedDeliverableId] =
     useState<string>('');
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [deliverableId, setDeliverableId] = useState<string>('');
+  const [selectedTaskId, setSelectedTaskId] = useState<string>('');
+  const [deleteForm, setDeleteForm] = useState(false);
   const [content, setContent] = useState('');
   const [commentModal, setCommentModal] = useState(false);
 
@@ -59,8 +73,26 @@ export default function Page() {
   const commentDetails = allCommentsData?.data;
 
   const handleAddTask = () => {
+    setModalType('create');
+    setIsModalOpen(true);
+    setSelectedTaskId('');
+  };
+
+  const handleEditTask = (taskId: string) => {
+    setModalType('edit');
+    setSelectedTaskId(taskId);
     setIsModalOpen(true);
   };
+
+  const handleDeleteTask = () => {
+    setDeleteForm(!deleteForm);
+  };
+
+    const onDelete = (id: string) => {
+    setSelectedTaskId(id);
+    setDeleteForm(!deleteForm);
+  };
+  
 
   const closeModal = () => {
     setIsModalOpen(false);
@@ -87,7 +119,7 @@ export default function Page() {
   };
 
   const tabs: TabType[] = ['deliverables', 'task'];
-  if (project?.type === 'Client') {
+  if (Number(project?.type) === 2) {
     tabs.push('payment');
   }
 
@@ -120,12 +152,45 @@ export default function Page() {
         onClose={closeModal}
         className="absolute bottom-0 right-0 h-[calc(100vh-20px)] w-full sm:w-[350px] bg-white p-0 flex flex-col mb-2 mr-2"
       >
-        <CreateTaskCard
-          onClose={closeModal}
-          projectId={projectId}
-          setDeliverableId={setDeliverableId}
-        />
+        {modalType === 'create' ? (
+          <CreateTaskCard
+            onClose={closeModal}
+            projectId={projectId}
+            setDeliverableId={setDeliverableId}
+          />
+        ) : (
+          <EditTaskCard
+            onClose={closeModal}
+            projectId={projectId}
+            setDeliverableId={setDeliverableId}
+            deliverableId={selectedDeliverableId}
+            taskId={selectedTaskId}
+          />
+        )}
       </AnimatedModal>
+
+      <RenderIf condition={deleteForm}>
+        <AnimatedModal
+          isOpen={true}
+          from="middle"
+          onClose={onDelete}
+          className="sm:max-w-[450px] h-[300px] p-0 mx-7 lg:mx-0"
+        >
+          {selectedTaskId && (
+            <DeleteTask
+              projectId={projectId}
+              deliverableId={deliverableId}
+              taskId={selectedTaskId}
+              item={deleteTask}
+              handleClick={() => {
+                setDeleteForm(false);
+              }}
+              onClose={handleDeleteTask}
+              refetchAllTasks={refetchAllProjectsById}
+            />
+          )}
+        </AnimatedModal>
+      </RenderIf>
 
       <SideModal
         usebg
@@ -299,26 +364,6 @@ export default function Page() {
                 />
               </div>
             </div>
-            {/* <div className="md:w-1/4">
-                <div className="app_progress-bar__label">
-                  Progress{' '}
-                  {allProjectsByIdData?.data?.metrics?.progressPercent ?? 0}%{' '}
-                  <span className="app_progress-bar__label__days-left">
-                    {allProjectsByIdData?.data?.metrics?.daysLeftDisplay ??
-                      'Days left'}
-                  </span>
-                </div>
-                <div className="app_progress-bar-track">
-                  <div
-                    className="app_progress-bar-track-fill"
-                    style={{
-                      width: `${
-                        allProjectsByIdData?.data?.metrics?.progressPercent ?? 0
-                      }%`,
-                    }}
-                  />
-                </div>
-              </div> */}
             <ProjectProgressBar
               percent={allProjectsByIdData?.data?.metrics?.progressPercent ?? 0}
               daysLeft={
@@ -365,6 +410,8 @@ export default function Page() {
             viewType={viewType}
             onAddTask={handleAddTask}
             deliverableId={selectedDeliverableId}
+            onUpdateTask={handleEditTask}
+            onDeleteTask={handleDeleteTask}
           />
         )}
         {activeTab === 'deliverables' && (

@@ -6,9 +6,14 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import projectManagement from '@/lib/assets/project-management';
 import Image from 'next/image';
-import { useCreateDeliverableMutation } from '@/services';
+import {
+  errorToast,
+  successToast,
+  useCreateDeliverableMutation,
+} from '@/services';
 import { useAppDispatch, useAppSelector } from '@/store';
-import { clearValues, storeValues } from '@/store/slices/project';
+import { storeValues } from '@/store/slices/project';
+import { getErrorMessage } from '@/utils';
 
 interface IProps {
   onClose: () => void;
@@ -22,21 +27,31 @@ export function AddDeliverables(props: IProps) {
   const dispatch = useAppDispatch();
   const { onClose, projectId, setDeliverableId, onAddDeliverable } = props;
   const [createDeliverables, { isLoading }] = useCreateDeliverableMutation();
-  const { name, deliverableDescription, startDate, endDate } = useAppSelector((state) => state?.project)
- 
+  const {
+    name,
+    deliverableDescription,
+    startDate,
+    endDate,
+    unitAmount,
+    unit,
+  } = useAppSelector((state) => state?.project);
+
   const initialValues = {
     name: name,
     description: deliverableDescription,
     startDate: startDate,
     endDate: endDate,
+      unitAmount: unitAmount,
+      unit: unit,
   };
   const validationSchema = Yup.object().shape({
     name: Yup.string().required('Please enter a deliverable name'),
     description: Yup.string().required('Please enter a description'),
     startDate: Yup.date().required('Please select a start date'),
     endDate: Yup.date().required('Please select a due date'),
+    unitAmount: Yup.number().required('Please enter unit amount'),
+    unit: Yup.number().required('Please enter unit'),
   });
-
 
   const onSubmit = async (values: typeof initialValues) => {
     try {
@@ -47,19 +62,24 @@ export function AddDeliverables(props: IProps) {
       }).unwrap();
       const deliverable = response?.data;
       if (deliverable?.id) {
-        dispatch(storeValues(values))
+        dispatch(storeValues(values));
         setDeliverableId(deliverable.id);
         onAddDeliverable({
           ...deliverable,
           deliverableId: deliverable.id,
+          unitAmount: values.unitAmount,
+          unit: values.unit,
+          total: (Number(values.unitAmount) || 0) * (Number(values.unit) || 0),
         });
-        dispatch(clearValues())
+        successToast(response?.message || 'Deliverable created successfully');
+        // dispatch(clearValues());
         onClose();
       } else {
-        console.warn('Deliverable ID not found in response.');
+        errorToast(response?.message || 'Something went wrong');
       }
     } catch (error) {
-      console.error('Failed to create deliverable:', error);
+      const message = getErrorMessage(error);
+      errorToast(message || 'Something went wrong');
     }
   };
 
@@ -140,6 +160,39 @@ export function AddDeliverables(props: IProps) {
                       touched={touched}
                     />
                   </div>
+
+                  <div className="flex gap-5">
+                    <Input
+                      name="unitAmount"
+                      type="number"
+                      placeholder="Unit Amount"
+                      size="xl"
+                      value={values.unitAmount}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      errors={errors}
+                      touched={touched}
+                    />
+
+                    <Input
+                      name="unit"
+                      type="number"
+                      placeholder="Unit"
+                      size="xl"
+                      value={values.unit}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      errors={errors}
+                      touched={touched}
+                    />
+                  </div>
+                  <p className="font-bold text-lg mt-2">
+                    Total Amount:{' '}
+                    <span>
+                      {(Number(values.unitAmount) || 0) *
+                        (Number(values.unit) || 0)}
+                    </span>
+                  </p>
 
                   <div className="flex justify-between space-x-10 absolute bottom-0 w-full -left-5 mb-5">
                     <Button

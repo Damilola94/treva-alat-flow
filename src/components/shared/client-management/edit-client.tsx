@@ -117,6 +117,7 @@ export function EditClient({ id, onClose, item }: IProps) {
       onClose();
       refetch && refetch();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addClientResponse]);
 
   return (
