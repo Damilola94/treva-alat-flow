@@ -71,7 +71,7 @@ export function ProjectReview(props: IProps) {
       accessorKey: 'dueDate',
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       cell: ({ row }: any) => {
-        const date = row.original.endDate;
+        const date = row.original.dueDate;
         return formatDate(date);
       },
     },

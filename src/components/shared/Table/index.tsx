@@ -88,10 +88,6 @@ const Table = <T,>({
     },
   });
 
-  console.log('Table data length:', data.length);
-console.log('RowModel rows:', table.getRowModel().rows.length);
-
-
   useEffect(() => {
     table.setGlobalFilter(searchFilter);
   }, [searchFilter, table]);
@@ -185,6 +181,7 @@ console.log('RowModel rows:', table.getRowModel().rows.length);
                         {row.getVisibleCells().map((cell) => {
                           return (
                             <td key={cell.id}>
+                              <div className="whitespace-normal break-words max-w-[200px]">
                               {cell.column.id.includes('name')
                                 ? (cell.getValue() as string)
                                 : cell.column.id.includes('date')
@@ -201,6 +198,8 @@ console.log('RowModel rows:', table.getRowModel().rows.length);
                                     cell.column.columnDef.cell,
                                     cell.getContext(),
                                   )}
+
+                              </div>
                             </td>
                           );
                         })}

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 import { Fragment, Suspense, useEffect, useState } from 'react';
 import { RenderIf } from '@/components/shared';
@@ -131,15 +132,18 @@ function ClientProject() {
 
   const dispatch = useAppDispatch();
   const currentStep = useAppSelector((state) => state.project.currentStep);
-  // const projectValues = useAppSelector((state) => state.project.projectValues)
-  // console.log(projectValues, 'projectValues');
-
+  const { projectId: projectIdStore} = useAppSelector((state) => state?.project);
+  
   const [projectId, setProjectId] = useState<string>('');
   const [, setFormData] = useState<FormDataType>(defaultValues);
 
   useEffect(() => {
     if (paramsProjectId) {
       setProjectId(paramsProjectId);
+    }
+     const savedStep = localStorage.getItem(`project-${paramsProjectId}-step`);
+    if (savedStep) {
+      dispatch(setCurrentStep(Number(savedStep)));
     }
   }, [paramsProjectId]);
 
@@ -154,9 +158,11 @@ function ClientProject() {
         ...data,
       },
     }));
-    dispatch(storeValues(data));
+    dispatch(storeValues({...data, projectId}));
     const nextStepNumber = step + 1;
     dispatch(setCurrentStep(nextStepNumber));
+
+  localStorage.setItem(`project-${projectId}-step`, nextStepNumber.toString());
   };
 
   const handlePrevious = () => {
@@ -166,9 +172,12 @@ function ClientProject() {
   const handleStepClick = (stepNumber: number) => {
     if (stepNumber <= currentStep) {
       dispatch(setCurrentStep(stepNumber));
+    }else {
+     dispatch(setCurrentStep(stepNumber));
     }
-
   };
+
+
 
   const steps = [
     {
@@ -196,9 +205,8 @@ function ClientProject() {
       Component: ProjectReview,
     },
   ];
-  
 
-  return (
+    return (
     <Fragment>
       {/* Mobile Step Indicator */}
       <div className="lg:hidden flex items-center justify-between my-4 mx-4">
@@ -217,17 +225,30 @@ function ClientProject() {
         <div className="mt-7">
           <div className="lg:flex lg:justify-center lg:items-center lg:gap-4 hidden">
             {steps.map((step, index) => (
-              <ProgressStatus
-                key={step.label}
-                label={step.label}
-                checked={currentStep >= index + 1}
-                onClick={() => handleStepClick(index + 1)}
-                className={
-                  currentStep >= index + 1
-                    ? 'cursor-pointer'
-                    : 'cursor-not-allowed opacity-50'
-                }
-              />
+              <>
+              {
+                projectIdStore ?
+                <ProgressStatus
+                  key={step.label}
+                  label={step.label}
+                  checked={currentStep >= index + 1}
+                  onClick={() => handleStepClick(index + 1)}
+                  className='cursor-pointer'
+                />  
+                : 
+                <ProgressStatus
+                  key={step.label}
+                  label={step.label}
+                  checked={currentStep >= index + 1}
+                  onClick={() => handleStepClick(index + 1)}
+                  className={
+                    currentStep >= index + 1
+                      ? 'cursor-pointer'
+                      : 'cursor-not-allowed opacity-50'
+                  }
+                /> 
+              }
+              </>
             ))}
           </div>
         </div>

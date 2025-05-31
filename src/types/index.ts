@@ -17,6 +17,6 @@ export {
 export {
   type paths as ITrevaPaymentServicePaths,
   type components as ITrevaPaymentService,
-} from './trevaChatService';
+} from './trevaPaymentService';
 
 export * from './notificationType';

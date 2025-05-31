@@ -6,7 +6,7 @@ import { CenterModal, Delete, Upload } from "@/components/shared"
 import Image from "next/image"
 import type { InitialStep5Values } from "@/app/creatives/dashboard/project-management/client-project/create/page"
 import { toast } from "react-toastify"
-import { successToast, useCreateAgreementMutation, useDeleteAgreementMutation } from "@/services"
+import { errorToast, successToast, useCreateAgreementMutation, useDeleteAgreementMutation } from "@/services"
 import { useAppDispatch } from "@/store"
 import { storeValues, nextStep } from "@/store/slices/project"
 
@@ -25,12 +25,6 @@ export function ProjectAgreement(props: IProps) {
   const { handleNext, projectId } = props
   const dispatch = useAppDispatch()
 
-  // Debug log to check projectId
-  console.log("ProjectAgreement - projectId:", projectId)
-
-  // Get current step from Redux
-  // const currentStep = useAppSelector((state) => state.project.currentStep)
-
   const [createAgreement, { isLoading }] = useCreateAgreementMutation()
   const [deleteAgreement] = useDeleteAgreementMutation()
 
@@ -38,7 +32,6 @@ export function ProjectAgreement(props: IProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string>("")
   const [, setAgreement] = useState<Agreement[]>([])
-  // const [agreementToDelete, setAgreementToDelete] = useState<string | null>(null)
 
   const handleDelete = async () => {
     setAgreement((prev) => prev.filter((d) => d.agreementId !== projectId))
@@ -125,90 +118,62 @@ export function ProjectAgreement(props: IProps) {
     )
   }
 
-  const onSubmit = async (values: { document: File | null }) => {
-    // Validate projectId first
-    // if (!values.projectId || values.projectId.trim() === "") {
-    //   toast.error("Project ID is missing. Please go back to step 1.")
-    //   return false
-    // }
-
-    if (!values.document) {
-      toast.error("Please upload a valid file")
-      return false
-    }
-
-    try {
-      const response = await createAgreement({
-        projectId,
-        document: values.document,
-      }).unwrap()
-      // Store in Redux
-      dispatch(
-        storeValues({
-          agreementUploaded: true,
-          // agreementProjectId: values.projectId,
-        }),
-      )
-
-      setAgreement([
-        {
-          documentUrl: URL.createObjectURL(values.document),
-          agreementId: ""
-        },
-      ])
-
-      successToast(response?.message || "Agreement uploaded successfully")
-      return true
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      console.error("Agreement upload error:", error)
-
-      // Handle different types of errors
-      if (error?.status === 405) {
-        toast.error("Method not allowed. Please check the API endpoint.")
-      } else if (error?.status === 404) {
-        toast.error("Project not found. Please verify the project ID.")
-      } else if (error?.data?.message) {
-        toast.error(error.data.message)
-      } else {
-        toast.error("Failed to upload agreement. Please try again.")
-      }
-      return false
-    }
+ const onSubmit = async (values: { document: File | null }) => {
+  if (!values.document) {
+    toast.error("Please upload a valid file")
+    return false
   }
 
-  const handleNextStep = async () => {
-    // Validate projectId first
-    if (!projectId || projectId.trim() === "") {
-      toast.error("Project ID is missing. Please go back to step 1 to create a project first.")
-      return
-    }
+  try {
+    const response = await createAgreement({ projectId, document: values.document,}).unwrap()
+    dispatch( storeValues({agreementUploaded: true,}))
+    setAgreement([
+      {
+        documentUrl: URL.createObjectURL(values.document),
+        agreementId: "",
+      },
+    ])
 
-    if (!selectedFile) {
-      toast.error("Please upload an agreement before continuing.")
-      return
-    }
-
-    // Only proceed if upload is successful
-    const uploadResult = await onSubmit({ document: selectedFile })
-
-    // If uploadResult is false or undefined, do not proceed
-    if (uploadResult !== true) return
-
-    const step5Values: InitialStep5Values = {
-      agreement: [
-        {
-          documentUrl: imagePreview || (selectedFile ? URL.createObjectURL(selectedFile) : ""),
-        },
-      ],
-    }
-
-    // Store in Redux and move to next step
-    dispatch(storeValues(step5Values))
-    dispatch(nextStep())
-
-    handleNext(step5Values)
+    successToast(response?.message || "Agreement uploaded successfully")
+    return true
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    errorToast(error?.data?.message || "Something went wrong")
+    return false
   }
+}
+
+const handleNextStep = async () => {
+  if (!projectId || projectId.trim() === "") {
+    toast.error("Project ID is missing. Please go back to step 1 to create a project first.")
+    return
+  }
+
+  if (!selectedFile) {
+    toast.error("Please upload an agreement before continuing.")
+    return
+  }
+
+  const values = {
+    document: selectedFile,
+  }
+
+  await onSubmit(values)
+
+  const step5Values: InitialStep5Values = {
+    agreement: [
+      {
+        documentUrl: imagePreview || URL.createObjectURL(selectedFile),
+      },
+    ],
+  }
+
+  dispatch(storeValues(step5Values))
+  dispatch(nextStep())
+
+  handleNext(step5Values)
+}
+
 
   return (
     <div className="app_get_started_professional_details py-6 px-4 flex flex-col gap-14">

@@ -157,4 +157,18 @@ export const endpoints = {
   chats: {
     getAllChats: `/chats`,
   },
+
+  // payment service
+  wallets: {
+    getMyWallets: `/wallets/my-wallet`,
+    getWalletById: (walletId: string) => `wallets/${walletId}/transactions`
+  },
+  beneficiaryManagement: {
+    getBeneficiarymanagement: `/beneficiarymanagement/all`,
+    addBeneficiary: `/beneficiarymanagement/create`,
+    deleteBeneficiary:(accountNumber: string) => `/beneficiarymanagement/delete/${accountNumber}`,
+  },
+  common: {
+    getBanks: `/common/banks`,
+  },
 };

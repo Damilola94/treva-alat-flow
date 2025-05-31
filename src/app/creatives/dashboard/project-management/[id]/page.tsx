@@ -88,11 +88,10 @@ export default function Page() {
     setDeleteForm(!deleteForm);
   };
 
-    const onDelete = (id: string) => {
+  const onDelete = (id: string) => {
     setSelectedTaskId(id);
     setDeleteForm(!deleteForm);
   };
-  
 
   const closeModal = () => {
     setIsModalOpen(false);
@@ -241,7 +240,7 @@ export default function Page() {
                   className={`flex gap-3 rounded-lg p-3 ${
                     comment.user.id === project?.creativeUser?.id
                       ? 'bg-[#EEE4FF] border border-[#EEE4FF]'
-                      : 'bg-[#CCFFFF] border border-[#CCFFFF]'
+                      : 'bg-white border border-gray-200'
                   }`}
                 >
                   <Avatar

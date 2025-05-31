@@ -42,10 +42,11 @@ export function ProjectPaymentSchedule(props: IProps) {
   const dispatch = useAppDispatch()
 
   // Get values from Redux store
-  const { amount, dueDate } = useAppSelector((state) => state?.project)
+  const { amount, dueDate, projectId: projectIdStore, } = useAppSelector((state) => state?.project)
+    const projectIdAPI: string = projectIdStore ? projectIdStore : projectId
 
   const [createPaymentSchedule, { isLoading }] = useCreatePaymentScheduleMutation()
-  const { data: paymentScheduleData, refetch } = useGetAllPaymentScheduleQuery(projectId)
+  const { data: paymentScheduleData, refetch } = useGetAllPaymentScheduleQuery(projectIdAPI)
   const [updatedPaymentSchedule] = useUpdatePaymentScheduleMutation()
   const { deletePaymentSchedule } = useDeletePaymentSchedule()
 
@@ -180,8 +181,7 @@ export function ProjectPaymentSchedule(props: IProps) {
   }
 
   const handleSkip = () => {
-    // Store current step and move to next
-    dispatch(nextStep())
+   localStorage.setItem(`project-${projectId}-step`, '4');
     window.location.href = routes.creatives.dashboard.projectManagement.path
   }
 

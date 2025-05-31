@@ -27,10 +27,16 @@ enum AccountType {
 export function ProjectDetails(props: IProps) {
   const { handleNext, setProjectId } = props;
   const dispatch = useAppDispatch();
-  const { title, description, expectedDeliveryDate, priority, clientUserId,...rest } = useAppSelector(
-    (state) => state?.project);
-    // const projectValues = useAppSelector((state) => state.project.projectValues)
-    console.log(rest, 'rest')
+  const {
+    title,
+    description,
+    expectedDeliveryDate,
+    priority,
+    clientUserId,
+    ...rest
+  } = useAppSelector((state) => state?.project);
+  // const projectValues = useAppSelector((state) => state.project.projectValues)
+  console.log(rest, 'rest');
 
   const validationSchema = Yup.object().shape({
     title: Yup.string().required('Please enter a project title'),
@@ -69,27 +75,22 @@ export function ProjectDetails(props: IProps) {
     title: title,
     description: description,
     expectedDeliveryDate: expectedDeliveryDate,
-    priority:priority,
+    priority: priority,
     type: 'Client',
     clientUserId: clientUserId,
   };
 
-  console.log(title, description, expectedDeliveryDate, priority, clientUserId)
 
   type InitialValues = ReturnType<() => typeof initialValues>;
 
-  console.log(storeValues, 'store values')
+  console.log(storeValues, 'store values');
   const onSubmit = async (_values: InitialValues) => {
-    console.log('Submitting values:', _values);
     try {
       const response = await createProject(_values).unwrap();
       if (response?.data?.id) {
         successToast(response?.message || 'Project created successfully');
-        // dispatch(storeValues({ ..._values, currentStep: 1 }))
-        dispatch(storeValues( _values ))
-        
-        
-        dispatch(setCurrentStep(2))   
+        dispatch(storeValues(_values));
+        dispatch(setCurrentStep(2));
         setProjectId(response.data.id);
         handleNext(_values);
       } else {

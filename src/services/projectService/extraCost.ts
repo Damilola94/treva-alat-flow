@@ -17,7 +17,10 @@ export const extraCostService = projectServiceApiSlice.injectEndpoints({
       query: ({ projectId, ...values }) => ({
         url: endpoints.extraCosts.createExtraCosts(projectId),
         method: REQUEST_METHODS.POST,
-        body: values,
+        body: {
+          ...values,
+          projectId
+        }
       }),
       transformResponse: (
         response: ITrevaProjectService["schemas"]["ExtraCostModelBaseResponse"]

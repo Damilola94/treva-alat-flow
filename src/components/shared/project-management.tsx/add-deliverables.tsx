@@ -34,6 +34,7 @@ export function AddDeliverables(props: IProps) {
     endDate,
     unitAmount,
     unit,
+    projectId: projectIdStore,
   } = useAppSelector((state) => state?.project);
 
   const initialValues = {
@@ -41,8 +42,8 @@ export function AddDeliverables(props: IProps) {
     description: deliverableDescription,
     startDate: startDate,
     endDate: endDate,
-      unitAmount: unitAmount,
-      unit: unit,
+    unitAmount: unitAmount,
+    unit: unit,
   };
   const validationSchema = Yup.object().shape({
     name: Yup.string().required('Please enter a deliverable name'),
@@ -52,11 +53,12 @@ export function AddDeliverables(props: IProps) {
     unitAmount: Yup.number().required('Please enter unit amount'),
     unit: Yup.number().required('Please enter unit'),
   });
-
+  
   const onSubmit = async (values: typeof initialValues) => {
+    const projectIdAPI: string = projectIdStore ? projectIdStore : projectId
     try {
       const response = await createDeliverables({
-        projectId,
+        projectId: projectIdAPI,
         ...values,
         description: values.description,
       }).unwrap();
@@ -72,7 +74,6 @@ export function AddDeliverables(props: IProps) {
           total: (Number(values.unitAmount) || 0) * (Number(values.unit) || 0),
         });
         successToast(response?.message || 'Deliverable created successfully');
-        // dispatch(clearValues());
         onClose();
       } else {
         errorToast(response?.message || 'Something went wrong');
