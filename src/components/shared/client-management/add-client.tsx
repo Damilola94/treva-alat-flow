@@ -120,7 +120,7 @@ export function AddClient({ onClose }: IProps) {
 
             <form
               onSubmit={(e) => {
-                e.preventDefault(); // Prevents form from refreshing the page
+                e.preventDefault();
                 handleSubmit(e);
               }}
               className="flex flex-col gap-8"
@@ -306,7 +306,7 @@ export function AddClient({ onClose }: IProps) {
                   </div>
                 )}
 
-              <div className="flex gap-4 w-fu`">
+              <div className="flex gap-4 w-full">
                 {/* flex justify-between space-x-10 absolute bottom-0 w-full -left-5 mb-5 m */}
                 <Button
                   size="md"

@@ -12,6 +12,7 @@ interface LabelProps {
   className?: string
   showIcon?: boolean
   size?: 'sm' | 'md' | 'lg'
+  mapOverride?: Record<number, LabelType>
 }
 
 const priorityMap: Record<number, PriorityLevel> = {
@@ -32,12 +33,15 @@ const statusMap: Record<number, StatusType> = {
   4: 'Completed',
 };
 
+
+
 const Label: React.FC<LabelProps> = ({
   type,
   value,
   className = '',
   showIcon = false,
-  size = 'md'
+  size = 'md',
+  mapOverride
 }) => {
   const sizeClasses: Record<NonNullable<LabelProps['size']>, string> = {
     sm: 'px-2 py-0.5 text-xs',
@@ -88,9 +92,13 @@ const Label: React.FC<LabelProps> = ({
   if (type === 'priority' && typeof value === 'number') {
     displayValue = priorityMap[value] || value;
   }
-  if (type === 'status' && typeof value === 'number') {
-    displayValue = statusMap[value] || value;
+ if (typeof value === 'number') {
+  if (type === 'priority') {
+    displayValue = priorityMap[value] || value;
+  } else if (type === 'status') {
+    displayValue = mapOverride?.[value] || statusMap[value] || value;
   }
+}
 
   const isPriority = type === 'priority';
   const isStatus = type === 'status';

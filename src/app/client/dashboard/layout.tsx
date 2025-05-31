@@ -15,16 +15,15 @@ const inter = Inter({
   weight: ['400', '500', '600', '700'],
 });
 
-const showBackArrowRoutes = [
-  '/client/dashboard/project-management/',
-  '/client/dashboard/hiring-management/',
-];
 
 function Main({ children }: { children: React.ReactNode }) {
   const pt = usePathname();
-  const shouldShowBackArrow = showBackArrowRoutes.some((prefix) =>
-    pt.startsWith(prefix),
-  );
+  
+  const shouldShowBackArrow =
+  pt.startsWith('/client/dashboard/project-management/') ||
+  pt.startsWith('/client/dashboard/hiring-management/') ||
+  /^\/client\/dashboard\/payment\/[^/]+$/.test(pt);
+
   const [mounted, setMounted] = useState(false);
   // const { data } = queries.read();
   const { data } = useProfile();

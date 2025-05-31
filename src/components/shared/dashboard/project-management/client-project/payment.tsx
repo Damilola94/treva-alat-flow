@@ -38,18 +38,18 @@ interface PaymentSchedule {
 const validationSchema = Yup.object({
   name: Yup.string().required("Title is required"),
   amount: Yup.string().required("Amount is required"),
-  description: Yup.string().optional(),
+  description: Yup.string().required("Description is required"),
 })
 
 export default function ProjectPayment(props: IProps) {
   const { handleNext, projectId, deliverables: initialDeliverables } = props
   const dispatch = useAppDispatch()
 
-  // Get values from Redux store
-  const { paymentTitle, paymentAmount, paymentDescription } = useAppSelector((state) => state?.project)
+  const { paymentTitle, paymentAmount, paymentDescription, projectId: projectIdStore, } = useAppSelector((state) => state?.project)
+  const projectIdAPI = projectIdStore ? projectIdStore : projectId
 
   const [createPayment, { isLoading }] = useCreateExtraCostMutation()
-  const { data: paymentData, refetch } = useGetAllExtraCostsQuery(projectId)
+const { data: paymentData, refetch } = useGetAllExtraCostsQuery(projectIdAPI)
   const [updatedPayment] = useUpdateExtraCostMutation()
   const { deletePayment } = useDeletePayment()
 
@@ -144,7 +144,6 @@ export default function ProjectPayment(props: IProps) {
     },
   })
 
-  // Store form values in Redux on input change
   useEffect(() => {
     dispatch(
       storeValues({
@@ -188,8 +187,7 @@ export default function ProjectPayment(props: IProps) {
   }
 
   const handleSkip = () => {
-    // Store current step and move to next
-    dispatch(nextStep())
+    localStorage.setItem(`project-${projectId}-step`, '3');
     window.location.href = routes.creatives.dashboard.projectManagement.path
   }
 
@@ -201,8 +199,6 @@ export default function ProjectPayment(props: IProps) {
         description: d.description,
       })),
     }
-
-    // Store in Redux and move to next step
     dispatch(storeValues(step3Data))
     dispatch(nextStep())
 
@@ -220,7 +216,6 @@ export default function ProjectPayment(props: IProps) {
 
       setPayment(mappedPayments)
 
-      // Store in Redux
       dispatch(
         storeValues({
           extraCost: mappedPayments.map((p) => ({
@@ -318,7 +313,7 @@ export default function ProjectPayment(props: IProps) {
           </div>
           <div>
             <Input
-              placeholder="Description (optional)"
+              placeholder="Description"
               name="description"
               value={addFormik.values.description}
               onChange={(e) => {

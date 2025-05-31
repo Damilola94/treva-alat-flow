@@ -17,7 +17,10 @@ export const deliverableService = projectServiceApiSlice.injectEndpoints({
         query: ({projectId, ...values}) => ({
             url: endpoints.deliverables.createDeliverable(projectId),
             method: REQUEST_METHODS.POST,
-            body: values,
+            body: {
+                ...values,
+                projectId,
+            },
         }),
         transformResponse: (
             response: ITrevaProjectService["schemas"]["DeliverableModelBaseResponse"]

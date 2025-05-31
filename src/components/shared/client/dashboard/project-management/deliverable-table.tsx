@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMemo, useState } from 'react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Label } from '@/components/shared/Label';
@@ -6,6 +7,7 @@ import { Loader2 } from 'lucide-react';
 import { Table } from '@/components/shared/Table';
 import { useDeliverable } from '@/hooks/Projects';
 import { formatDate } from '@/lib/utils';
+import { numberFormat } from '@/lib/numbers';
 
 export function DeliverableTable() {
   const { id } = useParams();
@@ -42,10 +44,16 @@ export function DeliverableTable() {
     {
       header: 'Unit Amount',
       accessorKey: 'unitAmount',
+       cell: ({ row }: any) => (
+              <span>{numberFormat(row.original.unitAmount)}</span>
+            ),
     },
     {
       header: 'Total Amount',
       accessorKey: 'total',
+       cell: ({ row }: any) => (
+              <span>{numberFormat(row.original.total)}</span>
+            ),
     },
     {
       header: 'Status',

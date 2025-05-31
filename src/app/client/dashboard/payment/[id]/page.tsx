@@ -11,14 +11,6 @@ interface IProps {
     id: string;
   };
 }
-// interface BillingSchedule {
-//   id?: string;
-//   amount?: number;
-//   dueDate?: string;
-//   status?: "Pending" | "Due" | "Cancelled" | "Failed" | "Overdue" | "Paid" | "PartiallyPaid" | "Refunded";
-//   paidAmount?: number;
-//   remainingAmount?: number;
-// };
 
 export default function Page({params}: IProps) {
   const  projectId  = params.id;

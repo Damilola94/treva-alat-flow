@@ -1,8 +1,18 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import {
+  ArrowDownLeft,
+  Ellicon,
+  Plus,
+  SmallAvatar,
+  SmallHome,
+} from '@/app/assets/svgs';
+import {
   AnimatedModal,
+  CenterModal,
   ClientIcon,
+  Delete,
   EmptyStatus,
   Label,
   PersonalIcon,
@@ -10,30 +20,44 @@ import {
   PlusIcon,
   projectTypeMap,
   RenderIf,
+  SideModal,
   Table,
 } from '@/components/shared';
 import { Avatar } from '@/components/shared/avatar';
-// import { ProjectsTable } from '@/components/shared/dashboard';
 import { EmptyState } from '@/components/shared/dashboard/empty-state';
 import {
   AddProject,
   CreateProjectCard,
 } from '@/components/shared/project-management';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
 import SearchInput from '@/components/ui/SearchInput';
 import { clientDashboardTasks } from '@/constants';
-import { useProjects } from '@/hooks/Projects';
+import {
+  useBeneficiaryManagement,
+  useCommon,
+  usePaymentService,
+  useProjects,
+} from '@/hooks/Projects';
 import { useProfile, useUsers } from '@/hooks/Users';
 import dashboard from '@/lib/assets/dashboard';
 import projectManagement from '@/lib/assets/project-management';
 import { numberFormat } from '@/lib/numbers';
 import routes from '@/lib/routes';
 import { formatDate, getAvatar, getFullName } from '@/lib/utils';
-import { Loader2 } from 'lucide-react';
+import { errorToast, successToast } from '@/services';
+import { useDeleteBeneficiaryMutation } from '@/services/paymentService';
+import { useFormik } from 'formik';
+import { Copy, Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React, { Fragment, useEffect, useMemo, useState } from 'react';
-// import { createAProject } from './project-management/page';
+import * as Yup from 'yup';
 
 const createAProject = {
   img: projectManagement.topImageProject,
@@ -52,96 +76,212 @@ const createAProject = {
   ],
   btnText1: 'Proceed',
 };
-
 interface ProjectQueryParams {
   type?: string;
   status?: string;
   priority?: string;
-  currency?: string;
+  currency: string;
   pageNumber?: number;
   pageSize?: number;
   searchKey?: string;
+  accountNumber: number;
+  availableBalance: number;
+  bankName: string;
+  walletId: string;
+  bankCode: number;
+  name: string;
 }
+
+const validationSchema = Yup.object({
+  name: Yup.string().required('Name is required'),
+  accountNumber: Yup.string()
+    .matches(/^\d+$/, 'Must be a number')
+    .length(10, 'Account number must be exactly 10 digits')
+    .required('Account number is required'),
+  bankCode: Yup.string().required('Bank code is required'),
+  // bankName: Yup.string().required('Bank name is required'),
+});
 
 enum Tasks {
   'Due Task' = 'Due Task',
   'Ongoing Task' = 'Ongoing Task',
 }
 
-function EllIcon() {
-  return (
-    <svg
-      width="28"
-      height="28"
-      viewBox="0 0 28 28"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <g filter="url(#filter0_b_87_5448)">
-        <circle cx="14" cy="14" r="14" fill="#262626" />
-      </g>
-      <circle cx="8" cy="14" r="2" fill="#F6F6F6" />
-      <circle cx="14" cy="14" r="2" fill="#F6F6F6" />
-      <circle cx="20" cy="14" r="2" fill="#F6F6F6" />
-      <defs>
-        <filter
-          id="filter0_b_87_5448"
-          x="-10"
-          y="-10"
-          width="48"
-          height="48"
-          filterUnits="userSpaceOnUse"
-          colorInterpolationFilters="sRGB"
-        >
-          <feFlood floodOpacity="0" result="BackgroundImageFix" />
-          <feGaussianBlur in="BackgroundImageFix" stdDeviation="5" />
-          <feComposite
-            in2="SourceAlpha"
-            operator="in"
-            result="effect1_backgroundBlur_87_5448"
-          />
-          <feBlend
-            mode="normal"
-            in="SourceGraphic"
-            in2="effect1_backgroundBlur_87_5448"
-            result="shape"
-          />
-        </filter>
-      </defs>
-    </svg>
-  );
-}
-
-const kpis = [
-  { label: 'Active Project', value: '0' },
-  { label: 'Completed Project', value: '0' },
-  { label: 'To-do Task', value: '0' },
-  {
-    label: (
-      <>
-        Wallet balance <EllIcon />
-      </>
-    ),
-    value: numberFormat(0),
-  },
-];
-
 export default function Page() {
   const router = useRouter();
 
   const [params, setParams] = useState<ProjectQueryParams>({
-    // type: '2',
-    // status: '2',
-    // priority: '3',
     pageNumber: 1,
     pageSize: 50,
     currency: 'NGN',
     searchKey: '',
+    walletId: '',
+    accountNumber: 0,
+    availableBalance: 0,
+    bankName: '',
+    bankCode: 0,
+    name: '',
   });
+
+  //   const wallletParamsId = {
+  //    ...params,
+  //    walletId: params.accountNumber.toString(),
+  //  };
+
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [accountToDelete, setAccountToDelete] = useState<string | null>(null);
+  const [isDecisionModalOpen, setIsDecisionModalOpen] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [selected, setSelected] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
+  const [popOver, togglePopOver] = useState(false);
+  const [withdraw, toggleWithdraw] = useState(false);
+  const [addFunds, toggleAddFunds] = useState(false);
+  const [addAccount, toggleAddAccount] = useState(false);
 
   const [addProject, setAddProject] = useState(true);
   const { allProjectsData, loading } = useProjects(params);
+  const [addProjectForm, setAddProjectForm] = useState(true);
+  const { data } = useProfile();
+  const userData = useMemo(() => data?.data || null, [data]);
+  const { creativeOnboardingData } = useUsers();
+  const { myWalletData } = usePaymentService(params);
+  // const { myWalletByIdData } = usePaymentService(wallletParamsId);
+  const { myCommonData } = useCommon();
+  const { beneficiaryData, refetch } = useBeneficiaryManagement(params);
+  const { addBeneficiary, addBeneficiaryResponse } = useBeneficiaryManagement();
+  const [triggerDelete, { isLoading }] = useDeleteBeneficiaryMutation();
+  // const walletData = useMemo(
+  //   () => (Array.isArray(myWalletByIdData?.data) ? myWalletByIdData.data : []),
+  //   [myWalletByIdData?.data],
+  // );
+  const wallet = myWalletData?.data;
+
+  const handleCopy = () => {
+    if (!myWalletData?.data?.accountNumber) return;
+    navigator.clipboard
+      .writeText(myWalletData?.data?.accountNumber)
+      .then(() => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      });
+  };
+
+  const openDeleteModal = (accountNumber: string) => {
+    setAccountToDelete(accountNumber);
+    setIsDecisionModalOpen(true);
+  };
+
+  const handleDelete = async () => {
+    if (!accountToDelete) return;
+    try {
+      const response = await triggerDelete(accountToDelete).unwrap();
+      if (response?.isSuccess) {
+        successToast(response?.message || 'Account deleted successfully');
+        await refetch();
+      } else {
+        errorToast(response?.message || 'Something went wrong');
+      }
+    } catch (error) {
+      errorToast('Something went wrong');
+    }
+    setIsDecisionModalOpen(false);
+    setAccountToDelete(null);
+  };
+
+  const initialValues = {
+    name: '',
+    accountNumber: '',
+    bankCode: '',
+    // bankName: '',
+  };
+
+  const formik = useFormik({
+    initialValues,
+    onSubmit: async (values) => {
+      const payload = {
+        name: values?.name,
+        bankCode: values?.bankCode,
+        accountNumber: values?.accountNumber,
+      };
+      addBeneficiary(payload);
+    },
+    validationSchema,
+  });
+
+  const {
+    setFieldValue,
+    values,
+    errors,
+    handleChange,
+    handleBlur,
+    handleSubmit,
+    touched,
+    dirty,
+    isValid,
+  } = formik;
+
+  useEffect(() => {
+    if (addBeneficiaryResponse?.isSuccess) {
+      toggleAddAccount(false);
+      refetch && refetch();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [addBeneficiaryResponse]);
+
+  const kpis = [
+    { label: 'Active Project', value: '0' },
+    { label: 'Completed Project', value: '0' },
+    { label: 'To-do Task', value: '0' },
+    {
+      label: (
+        <div className="relative w-full font-spaceGrotesk">
+          <div className="flex justify-between">
+            <span>Wallet balance</span>
+            <span className="relative">
+              <Popover open={popOver} onOpenChange={togglePopOver}>
+                <PopoverTrigger>
+                  <Ellicon />
+                </PopoverTrigger>
+                <PopoverContent>
+                  <button
+                    onClick={() => {
+                      toggleAddFunds(true);
+                      togglePopOver(false);
+                    }}
+                    className="app_popover__content__item"
+                  >
+                    <div className="flex gap-3 text-[#7B37F0] items-center">
+                      <span>
+                        <Plus />
+                      </span>
+                      Add funds
+                    </div>
+                  </button>
+                  <button
+                    onClick={() => {
+                      toggleWithdraw(true);
+                      togglePopOver(false);
+                    }}
+                    className="app_popover__content__item"
+                  >
+                    <div className="flex gap-3 text-[#7B37F0] items-center">
+                      <span>
+                        <ArrowDownLeft />
+                      </span>
+                      Withdraw funds
+                    </div>
+                  </button>
+                </PopoverContent>
+              </Popover>
+            </span>
+          </div>
+        </div>
+      ),
+      value: numberFormat(wallet?.availableBalance ?? 0),
+    },
+  ];
 
   const [pagination, setPagination] = useState({
     pageIndex: 0,
@@ -169,14 +309,6 @@ export default function Page() {
     }));
   };
 
-  const [addProjectForm, setAddProjectForm] = useState(true);
-  // const { data } = queries.read();
-
-  const { data } = useProfile();
-  const userData = useMemo(() => data?.data || null, [data]);
-
-  const { creativeOnboardingData } = useUsers();
-
   const handleAddProjectClick = () => {
     setAddProject(!addProject);
   };
@@ -199,6 +331,16 @@ export default function Page() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [creativeOnboardingData]);
+
+  const handleAccountNumberChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const input = e.target.value;
+    // Allow only digits and max 10 characters
+    if (/^\d{0,10}$/.test(input)) {
+      handleChange(e); // Call Formik's handler if input is valid
+    }
+  };
 
   const columns = [
     {
@@ -250,6 +392,7 @@ export default function Page() {
       },
     },
   ];
+
   return (
     <div className="app_dashboard_page app_dashboard_home">
       <RenderIf condition={!addProject}>
@@ -418,6 +561,251 @@ export default function Page() {
             />
           )}
         </div>
+        <CenterModal
+          headerImageType={1}
+          title="Add Funds"
+          isOpen={addFunds}
+          onClose={() => {
+            toggleAddFunds(false);
+          }}
+          showFooter
+        >
+          <div className="space-y-5 text-lg">
+            <div className="flex justify-between items-center">
+              <span className="text-[#808080]">Account Number</span>
+              <div className="flex items-center gap-2">
+                <span className="font-semibold">
+                  {myWalletData?.data?.accountNumber}
+                </span>
+                <Copy
+                  className="w-4 h-4 cursor-pointer hover:text-primary"
+                  onClick={handleCopy}
+                />
+                {copied && (
+                  <span className="text-sm text-green-500">Copied!</span>
+                )}
+              </div>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-[#808080]">Bank</span>
+              <span className="font-semibold">
+                {myWalletData?.data?.bankName}{' '}
+              </span>
+            </div>
+            {/* <div className="flex justify-between items-center">
+                    <span className="text-[#808080]">Account Name</span>
+                    <span className="font-semibold"></span>
+                  </div> */}
+          </div>
+        </CenterModal>
+        {/* add account number */}
+        <SideModal
+          isOpen={addAccount}
+          onClose={() => {
+            toggleAddAccount(false);
+          }}
+          title="Add Account"
+          showFooter
+          usebg
+        >
+          <div className="">
+            <form onSubmit={handleSubmit}>
+              <div className="space-y-5">
+                <Input
+                  name="accountNumber"
+                  type="text"
+                  id="accountNumber"
+                  placeholder="Enter your Account Number"
+                  value={values.accountNumber}
+                  // onChange={handleChange}
+                  onChange={handleAccountNumberChange}
+                  onBlur={handleBlur}
+                  errors={errors}
+                  touched={touched}
+                  maxLength={10}
+                  inputMode="numeric"
+                  pattern="\d*"
+                />
+                <select
+                  name="bankCode"
+                  value={values.bankCode ?? ''}
+                  onChange={(e) => {
+                    const { value } = e.target;
+                    setSelected(value);
+                    setFieldValue('bankCode', value);
+                  }}
+                  className="mt-10 w-full border-b-[#d1d5db] p-2 focus:ring-1 focus:ring-[#7B37F0] bg-white text-left"
+                >
+                  {(myCommonData?.data || []).map((item) => (
+                    <option key={item.code ?? ''} value={item.code ?? ''}>
+                      {item.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <Input
+                  name="name"
+                  type="text"
+                  id="name"
+                  value={values.name}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  errors={errors}
+                  touched={touched}
+                  placeholder="Enter account name"
+                  className="mt-10"
+                />
+              </div>
+
+              <div className="flex gap-4 w-full mt-32">
+                <Button
+                  size="md"
+                  type="button"
+                  backgroundColor="transparent"
+                  color="primary-blue-500"
+                  className="w-full hover:bg-transparent app_auth_login__btn border border-[#F1F1F1]"
+                  onClick={() => toggleAddAccount(false)}
+                >
+                  Close
+                </Button>
+                <Button
+                  size="md"
+                  isLoading={loading}
+                  type="submit"
+                  backgroundColor="primary-blue-500"
+                  className="w-full app_auth_login__btn"
+                  disabled={!(isValid && dirty)}
+                >
+                  Add
+                </Button>
+              </div>
+            </form>
+          </div>
+        </SideModal>
+
+        {/* withdraw funds side modal */}
+        <SideModal
+          isOpen={withdraw}
+          onClose={() => {
+            toggleWithdraw(false);
+          }}
+          title="Withdraw Funds"
+          showFooter
+          usebg
+          footerChildren={
+            <div className="w-full gap-5">
+              <button className="border p-5 bg-[#7B37F0] rounded-full w-full border-[#F1F1F1] text-[#fff]">
+                Withdraw
+              </button>
+            </div>
+          }
+        >
+          <div className="space-y-10">
+            <div>
+              <Input placeholder="Withdrawal Amount" />
+              <div>
+                <p className="font-semibold mt-3">
+                  {numberFormat(myWalletData?.data?.availableBalance)}
+                </p>
+              </div>
+            </div>
+            <div className="space-y-5">
+              <div className="flex items-center justify-between">
+                <p className="font-semibold ">Select Bank Account</p>
+                <button
+                  className="flex items-center rounded-2xl p-2 gap-1 border border-black"
+                  onClick={() => {
+                    toggleWithdraw(false);
+                    toggleAddAccount(true);
+                  }}
+                >
+                  <Plus className="w-5 h-5" />
+                  <p>Add Account</p>
+                </button>
+              </div>
+              {Array.isArray(beneficiaryData?.data) &&
+                beneficiaryData.data.map((item: any) => (
+                  <div
+                    className="border p-4 rounded-lg border-[#888888]"
+                    key={item?.id || item?.accountNumber}
+                  >
+                    <div className="flex items-center justify-between">
+                      <p className="font-semibold text-xl text-[#333333]">
+                        {item?.accountNumber}
+                      </p>
+                      <button
+                       
+                        onClick={() => openDeleteModal(item.accountNumber)}
+                        disabled={isLoading}
+                        type="button"
+                        className="cursor-pointer"
+                      >
+                        <Delete />
+                      </button>
+                    </div>
+                    <div className="text-[#262626] space-y-3 mt-5">
+                      <p className="flex items-center gap-3">
+                        <span>
+                          <SmallHome />
+                        </span>
+                        {item?.bankName}
+                      </p>
+                      <p className="flex items-center gap-3">
+                        <SmallAvatar />
+                        {item?.name}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+            </div>
+          </div>
+        </SideModal>
+
+        {/* delete modal */}
+        <CenterModal
+          headerImageType={3}
+          isOpen={isDecisionModalOpen}
+          onClose={() => {
+            setIsDecisionModalOpen(false);
+            setAccountToDelete(null);
+          }}
+          showFooter
+          footerChildren={
+            <div className="w-full flex items-center gap-5">
+              <button
+                className="border p-3 rounded-full w-full border-[#F1F1F1] text-[#7B37F0]"
+                onClick={() => {
+                  setIsDecisionModalOpen(false);
+                  setAccountToDelete(null);
+                }}
+              >
+                Cancel
+              </button>
+
+              <button
+                className="border p-3 bg-[#F9403A] rounded-full w-full border-[#F1F1F1] text-[#fff]"
+                onClick={handleDelete}
+                disabled={isLoading || !accountToDelete}
+                type="button"
+              >
+                {isLoading ? (
+                  <Loader2 size={18} className="animate-spin mx-auto" />
+                ) : (
+                  'Delete'
+                )}
+              </button>
+            </div>
+          }
+        >
+          <div className="flex flex-col items-center justify-center gap-4">
+            <p className="font-semibold">
+              Are you sure you want to delete account?
+            </p>
+            <p>Account will be deleted permanently</p>
+          </div>
+        </CenterModal>
       </div>
     </div>
   );
