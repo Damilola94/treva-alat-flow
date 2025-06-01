@@ -19,7 +19,7 @@ import { Loader2 } from "lucide-react"
 import { errorToast, successToast, useGetDeliverablesQuery } from "@/services"
 import { getErrorMessage } from "@/utils"
 import { useDeleteDeliverable } from "@/hooks/Projects/useProjects"
-import { useAppDispatch } from "@/store"
+import { useAppDispatch, useAppSelector } from "@/store"
 import { storeValues, nextStep } from "@/store/slices/project"
 
 interface IProps {
@@ -42,6 +42,7 @@ export function ProjectDeliverables(props: IProps) {
   const { handleNext, projectId } = props
   const dispatch = useAppDispatch()
 
+   const { projectId: projectIdStore} = useAppSelector((state) => state?.project);
   // Get current step from Redux
   // const currentStep = useAppSelector((state) => state.project.currentStep)
 
@@ -57,12 +58,13 @@ export function ProjectDeliverables(props: IProps) {
   const [deliverableToDelete, setDeliverableToDelete] = useState<string | null>(null)
 
   const { deleteDeliverable, loading } = useDeleteDeliverable()
+    const projectIdAPI: string = projectIdStore ? projectIdStore : projectId
 
   const {
     data: deliverablesData,
     isLoading,
     refetch,
-  } = useGetDeliverablesQuery({ projectId }, { refetchOnMountOrArgChange: true })
+  } = useGetDeliverablesQuery({ projectId: projectIdAPI }, { refetchOnMountOrArgChange: true })
 
   useEffect(() => {
     if (deliverablesData?.data) {
@@ -78,8 +80,6 @@ export function ProjectDeliverables(props: IProps) {
       }))
 
       setDeliverables(mappedDeliverables)
-
-      // Store deliverables in Redux for persistence
       dispatch(
         storeValues({
           deliverables: mappedDeliverables.map((d) => ({
@@ -106,8 +106,6 @@ export function ProjectDeliverables(props: IProps) {
     }
     setDeliverables((prev) => {
       const updated = [...prev, deliverableWithId]
-
-      // Store in Redux
       dispatch(
         storeValues({
           deliverables: updated.map((d) => ({

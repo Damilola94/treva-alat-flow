@@ -18,6 +18,7 @@ import {
   Grid,
   Like,
   Payment,
+  Settings,
   Users,
 } from '@/components/shared';
 import { ChatIcon, Notifications } from '@/app/assets/svgs';
@@ -70,6 +71,11 @@ function Main({ children }: { children: React.ReactNode }) {
       label: 'Reminders and Notification',
       href: routes.creatives.dashboard.notifications.path,
       icon: <Notifications />,
+    },
+    {
+      label: 'Settings',
+      href: routes.creatives.dashboard.settings.profile.path,
+      icon: <Settings/>
     },
     { label: 'Reviews and Feedback', href: '#', icon: <Like /> },
   ].filter((item) => item.href !== '#');

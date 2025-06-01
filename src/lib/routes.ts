@@ -224,6 +224,21 @@ const routes = {
       notifications: {
         path: '/creatives/dashboard/notifications',
       },
+      settings: {
+        path: '/creatives/dashboard/settings',
+
+        profile: {
+          path: '/creatives/dashboard/settings/profile',
+        },
+
+        security: {
+          path: '/creatives/dashboard/settings/security',
+        },
+
+        notifications: {
+          path: '/creatives/dashboard/settings/notifications',
+        }
+      }
     },
   },
 };

@@ -65,6 +65,12 @@ export const invoiceTabs = [
   { label: 'Due Invoice', value: 'Due Invoice'},
 ];
 
+export const transactionTabs = [
+  { label: 'All', value: 'All' },
+  { label: 'Credit', value: 'Credit' },
+  { label: 'Debit', value: 'Debit' },
+];
+
 export const popoverItems = [
   { label: 'All Project', value: '' },
   { label: 'Personal Project', value: 'Personal' },

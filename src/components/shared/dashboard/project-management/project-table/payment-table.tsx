@@ -138,7 +138,41 @@ export function PaymentTable() {
     return [];
   }, [allDeliverablesData?.isSuccess, allDeliverablesData?.data]);
 
-  if (tableBody.length === 0) {
+  const latestDueDate = useMemo(() => {
+    if (
+      allPaymentScheduleData?.isSuccess &&
+      Array.isArray(allPaymentScheduleData.data)
+    ) {
+      const sorted = [...allPaymentScheduleData.data].sort(
+        (a, b) => new Date(b.dueDate).getTime() - new Date(a.dueDate).getTime(),
+      );
+      return sorted[0]?.dueDate ?? null;
+    }
+    return null;
+  }, [allPaymentScheduleData]);
+
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const { totalPaid, totalRemaining } = useMemo(() => {
+    if (
+      allPaymentScheduleData?.isSuccess &&
+      Array.isArray(allPaymentScheduleData.data)
+    ) {
+      const totalPaid = allPaymentScheduleData.data.reduce(
+        (sum, item) => sum + (item.paidAmount ?? 0),
+        0,
+      );
+      const totalRemaining = allPaymentScheduleData.data.reduce(
+        (sum, item) => sum + (item.remainingAmount ?? 0),
+        0,
+      );
+      return { totalPaid, totalRemaining };
+    }
+    return { totalPaid: 0, totalRemaining: 0 };
+  }, [allPaymentScheduleData]);
+
+  const totalAmount = totalPaid + totalRemaining;
+
+   if (tableBody.length === 0) {
     return (
       <div className="app_dashboard_home__task__ctt app_dashboard_home__task__ctt--empty">
         <EmptyStatus />
@@ -163,41 +197,6 @@ export function PaymentTable() {
     );
   }
 
-// eslint-disable-next-line react-hooks/rules-of-hooks
-const latestDueDate = useMemo(() => {
-  if (
-    allPaymentScheduleData?.isSuccess &&
-    Array.isArray(allPaymentScheduleData.data)
-  ) {
-    const sorted = [...allPaymentScheduleData.data].sort(
-      (a, b) =>
-        new Date(b.dueDate).getTime() - new Date(a.dueDate).getTime()
-    );
-    return sorted[0]?.dueDate ?? null;
-  }
-  return null;
-}, [allPaymentScheduleData]);
-
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const { totalPaid, totalRemaining } = useMemo(() => {
-    if (
-      allPaymentScheduleData?.isSuccess &&
-      Array.isArray(allPaymentScheduleData.data)
-    ) {
-      const totalPaid = allPaymentScheduleData.data.reduce(
-        (sum, item) => sum + (item.paidAmount ?? 0),
-        0,
-      );
-      const totalRemaining = allPaymentScheduleData.data.reduce(
-        (sum, item) => sum + (item.remainingAmount ?? 0),
-        0,
-      );
-      return { totalPaid, totalRemaining };
-    }
-    return { totalPaid: 0, totalRemaining: 0 };
-  }, [allPaymentScheduleData]);
-
-  const totalAmount = totalPaid + totalRemaining;
 
   return (
     <div className="app_dashboard_home__task__cct">

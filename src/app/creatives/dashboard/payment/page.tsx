@@ -1,36 +1,75 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { Label, Pill, Table } from '@/components/shared';
 import { Avatar } from '@/components/shared/avatar';
 import SearchInput from '@/components/ui/SearchInput';
-import { invoiceTabs, mockInvoices } from '@/constants';
+import { invoiceTabs } from '@/constants';
+import { useInvoices } from '@/hooks/Projects/useProjects';
 import projectManagement from '@/lib/assets/project-management';
-import { useState } from 'react';
+import { numberFormat } from '@/lib/numbers';
+import { formatDate } from '@/lib/utils';
+import { Loader2 } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
-// type InvoiceTab = 'All' | 'Pending Invoice' | 'Closed Invoice' | 'Drafts'
+interface InvoiceParams {
+  status?: string;
+  pageNumber?: number;
+  pageSize?: number;
+  searchKey?: string;
+}
 
 export default function Page() {
+  const [params, setParams] = useState<InvoiceParams>({
+    pageNumber: 1,
+    pageSize: 50,
+    searchKey: '',
+  });
+  const { allInvoicesData, loading } = useInvoices(params);
+
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 2,
   });
 
+  useEffect(() => {
+    setParams((prev) => ({
+      ...prev,
+      pageNumber: pagination?.pageIndex + 1,
+      pageSize: pagination?.pageSize,
+    }));
+  }, [pagination]);
+
+  const handleParamChange = (param: Partial<InvoiceParams>) => {
+    setParams((prev) => ({
+      ...prev,
+      ...param,
+    }));
+  };
+
   const invoiceHeaders = [
     {
       header: 'Project name',
-      accessorKey: 'projectName',
+      accessorKey: 'title',
+      cell: ({ row }: any) => (
+        <span>{row.original.paymentSchedule?.project?.title}</span>
+      ),
     },
     {
       header: 'Client',
       accessorKey: 'client',
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       cell: ({ row }: any) => {
-        const value = row.original.client;
+        const image = row.original.clientUser?.profilePicture;
+        const firstName = row.original.clientUser?.firstName;
+        const lastName = row.original.clientUser?.lastName;
         return (
           <div className="flex items-center gap-2">
-            <Avatar src={projectManagement.female} size="sm" />
-            <span>{value}</span>
+            <Avatar src={image || projectManagement.female} size="sm" />
+            <span>
+              {firstName} {lastName}
+            </span>
           </div>
         );
       },
@@ -38,23 +77,29 @@ export default function Page() {
     {
       header: 'Amount',
       accessorKey: 'amount',
+      cell: ({ row }: any) => (
+        <span>{numberFormat(row.original.paymentSchedule?.amount)}</span>
+      ),
     },
     {
       header: 'Due Date',
       accessorKey: 'dueDate',
+      cell: ({ row }: any) => (
+        <span>{formatDate(row.original.paymentSchedule?.dueDate)}</span>
+      ),
     },
-    {
+     {
       header: 'Status',
       accessorKey: 'status',
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      cell: ({ row }: any) => {
-        const value = row.original.status;
-        return (
-          <div className="">
-            <Label type="status" value={value} />
-          </div>
-        );
-      },
+      cell: ({ row }: any) => (
+        <Label
+          type="status"
+          value={row.original.status}
+          mapOverride={{
+            1: 'Pending',
+          }}
+        />
+      ),
     },
   ];
 
@@ -69,6 +114,9 @@ export default function Page() {
               active={selectedCategory === item.value}
               onClick={() => {
                 setSelectedCategory(item.value);
+                handleParamChange({
+                  status: item?.value === 'All' ? undefined : item?.value,
+                });
               }}
             >
               {item.label}
@@ -76,16 +124,27 @@ export default function Page() {
           ))}
         </div>
 
-        <SearchInput placeholder="Search for Invoice" />
+        <SearchInput
+          placeholder="Search for Invoice"
+          onChange={(e) => {
+            handleParamChange({ searchKey: e.target.value });
+          }}
+        />
       </div>
-      <Table
-        columns={invoiceHeaders}
-        emptyTitle="No Invoices Yet"
-        emptyMessage=""
-        data={mockInvoices}
-        pagination={pagination}
-        setPagination={setPagination}
-      />
+      {loading ? (
+        <div className="text-center flex justify-center items-center">
+          <Loader2 size={18} className="animate-spin" />
+        </div>
+      ) : (
+        <Table
+          columns={invoiceHeaders}
+          emptyTitle="No Invoices Yet"
+          emptyMessage="Invoices will be added here"
+          data={allInvoicesData?.data || []}
+          pagination={pagination}
+          setPagination={setPagination}
+        />
+      )}
     </div>
   );
 }

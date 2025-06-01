@@ -102,7 +102,10 @@ export default function Page() {
             <h2 className="text-[21px] mb-4 text-[#262626] font-bold">
               Project Completed
             </h2>
-            <p>The project <strong>&apos;{project?.title}&apos;</strong> has been successfully completed.</p>
+            <p>
+              The project <strong>&apos;{project?.title}&apos;</strong> has been
+              successfully completed.
+            </p>
           </div>
 
           {/* Rating */}
@@ -212,7 +215,7 @@ export default function Page() {
                 <div
                   key={comment.id}
                   className={`flex gap-3 rounded-lg p-3 ${
-                    comment.user.id === project?.creativeUser?.id
+                    comment.user.id === project?.clientUser?.id
                       ? 'bg-[#EEE4FF] border border-[#EEE4FF]'
                       : 'bg-[#CCFFFF] border border-[#CCFFFF]'
                   }`}
@@ -244,9 +247,12 @@ export default function Page() {
                           : ''}
                       </span>
                     </div>
-                    <p className="mt-1 text-sm text-gray-700">
-                      {comment.content}
-                    </p>
+                    <p
+                      className="mt-1 text-sm text-gray-700"
+                      dangerouslySetInnerHTML={{
+                        __html: comment.content.replace(/\n/g, '<br />'),
+                      }}
+                    />
                   </div>
                 </div>
               ))

@@ -5,6 +5,7 @@ import SearchInput from '@/components/ui/SearchInput';
 import { clientDashboardTasks } from '@/constants';
 import { useProjects } from '@/hooks/Projects';
 import clientManagement from '@/lib/assets/client-management';
+import { numberFormat } from '@/lib/numbers';
 import { formatDate } from '@/lib/utils';
 import { Loader2 } from 'lucide-react';
 import Image from 'next/image';
@@ -58,6 +59,8 @@ export default function Page() {
               src={creative.profilePicture || clientManagement.femaleClient}
               alt={creative.firstName}
               className="w-6 h-6 rounded-full"
+              width={100}
+              height={100}
             />
             <span>
               {creative.firstName} {creative.lastName}
@@ -69,6 +72,9 @@ export default function Page() {
     {
       header: 'Amount (NGN)',
       accessorKey: 'actualCost',
+      cell: ({ row }: any) => (
+        <span>{numberFormat(row.original.actualCost)}</span>
+      ),
     },
     {
       header: 'Start date',

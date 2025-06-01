@@ -49,14 +49,14 @@ type User = {
 interface ISidebarItem {
   label: string;
   href: string;
-  icon: JSX.Element;
+  icon?: JSX.Element;
 }
 
 interface SidebarProps {
   menuItems: ISidebarItem[];
   logoHref: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  userData: User | any;
+  userData?: User | any;
 }
 
 const SidebarItem = ({
