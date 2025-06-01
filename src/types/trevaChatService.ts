@@ -363,6 +363,7 @@ export interface components {
             receiver?: components["schemas"]["UserDto"];
             /** Format: date-time */
             lastMessageTime?: string | null;
+            lastMessagePreview?: string | null;
         };
         ChatModelBaseResponse: {
             isSuccess?: boolean;

@@ -6,7 +6,7 @@ import {
   Header,
   Sidebar,
   SubscribeToPlan,
-  SubscribeToPlanLeft,
+  // SubscribeToPlanLeft,
 } from '@/components/shared/dashboard';
 import { Inter } from 'next/font/google';
 import routes from '@/lib/routes';
@@ -93,8 +93,10 @@ function Main({ children }: { children: React.ReactNode }) {
         <div className="app_dash_main__ctt">
           {pathname === '/dashboard/get-started' ? (
             <SubscribeToPlan />
+            // <></>
           ) : (
-            <SubscribeToPlanLeft />
+            // <SubscribeToPlanLeft />
+            <></>
           )}
           <Header
             showBackArrow={pathname.startsWith(
