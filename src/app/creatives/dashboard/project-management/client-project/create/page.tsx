@@ -33,8 +33,8 @@ const step2Values = {
       description: '',
       startDate: '',
       endDate: '',
-      unitAmount: '',
-      unit: '',
+      unitAmount: 0,
+      unit: 0,
     },
   ],
 };
@@ -44,7 +44,7 @@ const step3Values = {
     {
       name: '',
       description: '',
-      amount: '',
+      amount: 0,
     },
   ],
 };
@@ -52,7 +52,7 @@ const step3Values = {
 const step4Values = {
   paymentSchedule: [
     {
-      amount: '',
+      amount: 0,
       dueDate: '',
     },
   ],
@@ -92,8 +92,8 @@ export interface InitialStep2Values {
     description: string;
     startDate: string;
     endDate: string;
-    unitAmount: string;
-    unit: string;
+    unitAmount: number;
+    unit: number;
   }>;
 }
 
@@ -101,13 +101,13 @@ export interface InitialStep3Values {
   extraCost: Array<{
     name: string;
     description: string;
-    amount: string;
+    amount: number;
   }>;
 }
 
 export interface InitialStep4Values {
   paymentSchedule: Array<{
-    amount: string;
+    amount: number;
     dueDate: string;
   }>;
 }

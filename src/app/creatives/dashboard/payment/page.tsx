@@ -12,6 +12,7 @@ import { formatDate } from '@/lib/utils';
 import { Loader2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+
 interface InvoiceParams {
   status?: string;
   pageNumber?: number;
@@ -30,7 +31,7 @@ export default function Page() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [pagination, setPagination] = useState({
     pageIndex: 0,
-    pageSize: 2,
+    pageSize: 50,
   });
 
   useEffect(() => {

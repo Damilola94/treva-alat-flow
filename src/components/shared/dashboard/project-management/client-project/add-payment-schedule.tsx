@@ -19,6 +19,7 @@ import {
 import { useDeletePaymentSchedule } from "@/hooks/Projects/useProjects"
 import { Input } from "@/components/ui/input"
 import { Loader2 } from "lucide-react"
+import { numberFormat } from "@/lib/numbers"
 
 interface IProps {
   handleNext: (formData: InitialStep4Values) => void
@@ -29,7 +30,7 @@ interface IProps {
 interface PaymentSchedule {
   paymentScheduleId: string
   dueDate: string
-  amount: string
+  amount: number
 }
 
 const validationSchema = Yup.object({
@@ -62,7 +63,7 @@ export function ProjectPaymentSchedule(props: IProps) {
   const addFormik = useFormik({
     initialValues: {
       dueDate: dueDate || "",
-      amount: amount || "",
+      amount: amount || 0,
     },
     validationSchema,
     enableReinitialize: true,
@@ -94,7 +95,7 @@ export function ProjectPaymentSchedule(props: IProps) {
   // Form for editing payments schedule
   const editFormik = useFormik({
     initialValues: {
-      amount: "",
+      amount: 0,
       dueDate: "",
     },
     validationSchema,
@@ -152,7 +153,7 @@ export function ProjectPaymentSchedule(props: IProps) {
   const handleEditClick = (paymentItem: PaymentSchedule) => {
     setSelectedPaymentSchedule(paymentItem)
     editFormik.setValues({
-      amount: String(paymentItem.amount || ""),
+      amount: paymentItem.amount || 0,
       dueDate: paymentItem.dueDate || "",
     })
     setEditPaymentSchedule(true)
@@ -205,7 +206,7 @@ export function ProjectPaymentSchedule(props: IProps) {
       const mappedSchedules = paymentScheduleData.data.map((item) => ({
         paymentScheduleId: item.id ?? "",
         dueDate: item.dueDate ?? "",
-        amount: item.amount ?? "",
+        amount: item.amount ?? 0,
       }))
 
       setPaymentSchedule(mappedSchedules)
@@ -441,7 +442,7 @@ export function ProjectPaymentSchedule(props: IProps) {
                       <Money4 stroke="#6E50DB" />
                       Amount
                     </p>
-                    <p className="font-bold">NGN{item.amount}.00</p>
+                    <p className="font-bold">{numberFormat(item.amount)}.00</p>
                   </div>
                 </div>
               </div>

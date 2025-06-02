@@ -28,9 +28,13 @@ import { useBeneficiaryManagement, useCommon } from '@/hooks/Projects';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
 import { Button } from '@/components/ui/button';
-import { useDeleteBeneficiaryMutation } from '@/services/paymentService';
+import {
+  useDeleteBeneficiaryMutation,
+  useGetTransactionsQuery,
+} from '@/services/paymentService';
 import { errorToast, successToast } from '@/services';
 import { getErrorMessage } from '@/utils';
+import Select from 'react-select';
 
 type TransactionTab = 'All' | 'Credit' | 'Debit';
 type ViewTab = 'Transaction History' | 'Invoice';
@@ -52,6 +56,7 @@ const validationSchema = Yup.object({
   name: Yup.string().required('Name is required'),
   accountNumber: Yup.string()
     .matches(/^\d+$/, 'Must be a number')
+    .length(10, 'Account number must be exactly 10 digits')
     .required('Account number is required'),
   bankCode: Yup.string().required('Bank code is required'),
   // bankName: Yup.string().required('Bank name is required'),
@@ -73,6 +78,8 @@ export default function Page() {
   const [, setSelected] = useState<string | null>(null);
   const [isDecisionModalOpen, setIsDecisionModalOpen] = useState(false);
   const [, setAccountToDelete] = useState<string | null>(null);
+  const [withdrawAmount, setWithdrawAmount] = useState('');
+  const [selectedBeneficiary, setSelectedBeneficiary] = useState<any>(null);
 
   const [pagination, setPagination] = useState({
     pageIndex: 0,
@@ -97,26 +104,69 @@ export default function Page() {
     searchKey: '',
     bankCode: 0,
     name: '',
+    beneficiaryAccountNumber: '',
+    amount: 0,
   });
-
-  const wallletParamsId = {
-    ...params,
-    walletId: params.accountNumber.toString(),
-  };
 
   const { allInvoicesData } = useInvoices(params);
   const { myWalletData } = usePaymentService(params);
-  const { myWalletByIdData } = usePaymentService(wallletParamsId);
+  const {
+    addWithdrawFunds,
+    addWithdrawResponse,
+    loading: withdrawing,
+  } = usePaymentService(params);
   const { myCommonData } = useCommon();
   const { beneficiaryData, refetch } = useBeneficiaryManagement(params);
   const { addBeneficiary, addBeneficiaryResponse, loading } =
     useBeneficiaryManagement();
   const [triggerDelete, { isLoading }] = useDeleteBeneficiaryMutation();
-  const walletData = useMemo(
-    () => (Array.isArray(myWalletByIdData?.data) ? myWalletByIdData.data : []),
-    [myWalletByIdData?.data],
+  const walletId = myWalletData?.data?.accountNumber ?? '';
+
+  // const { myTransactions } = usePaymentService(params);
+  const { data: myTransactions } = useGetTransactionsQuery(walletId);
+
+  const transactionData = useMemo(
+    () => (Array.isArray(myTransactions?.data) ? myTransactions.data : []),
+    [myTransactions?.data],
   );
   const data = myWalletData?.data;
+  console.log(myTransactions, 'wallet data by id');
+
+  const bankOptions = [
+    { label: 'Bank', value: '', isDisabled: true },
+    ...(myCommonData?.data || []).map((item) => ({
+      label: item.name,
+      value: item.code,
+    })),
+  ];
+
+  const customFilter = (option: any, inputValue: any) => {
+    const label = option.label.toLowerCase();
+    const value = option.value.toLowerCase();
+    const input = inputValue.toLowerCase();
+
+    return label.includes(input) || value.includes(input);
+  };
+
+  const handleWithdrawFunds = async () => {
+    const walletId = myWalletData?.data?.accountNumber;
+    const payload = {
+      beneficiaryAccountNumber: selectedBeneficiary.accountNumber,
+      amount: Number(withdrawAmount),
+      walletId: walletId,
+    };
+    addWithdrawFunds(payload);
+  };
+
+  const handleAccountNumberChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const input = e.target.value;
+    // Allow only digits and max 10 characters
+    if (/^\d{0,10}$/.test(input)) {
+      handleChange(e); // Call Formik's handler if input is valid
+    }
+  };
 
   const handleCopy = () => {
     if (!myWalletData?.data?.accountNumber) return;
@@ -149,9 +199,10 @@ export default function Page() {
   };
 
   const filteredCounts = {
-    All: walletData.length,
-    Credit: walletData.filter((d) => d.type === 'Credit').length,
-    Debit: walletData.filter((d) => d.type === 'Debit').length,
+    All: transactionData.length,
+    Credit: transactionData.filter((d) => d.transactionType === 'Credit')
+      .length,
+    Debit: transactionData.filter((d) => d.transactionType === 'Debit').length,
   };
 
   const formik = useFormik({
@@ -163,7 +214,6 @@ export default function Page() {
         accountNumber: values?.accountNumber,
       };
       addBeneficiary(payload);
-      console.log('button clicked');
     },
     validationSchema,
   });
@@ -184,9 +234,17 @@ export default function Page() {
     if (addBeneficiaryResponse?.isSuccess) {
       toggleAddAccount(false);
       refetch && refetch();
+      formik.resetForm();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addBeneficiaryResponse]);
+  useEffect(() => {
+    if (addWithdrawResponse?.isSuccess) {
+      refetch && refetch();
+      //  formik.resetForm();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [addWithdrawResponse]);
 
   useEffect(() => {
     setParams((prev) => ({
@@ -211,17 +269,22 @@ export default function Page() {
     },
     {
       header: 'Recipient',
-      accessorKey: 'recipient',
+      accessorKey: 'narration',
     },
     {
       header: 'Date',
-      accessorKey: 'date',
+      accessorKey: 'transactionDate',
+      cell: ({ row }: any) => (
+        <span>{formatDate(row.original.transactionDate)}</span>
+      ),
     },
     {
       header: 'Transaction Type',
-      accessorKey: 'type',
+      accessorKey: 'transactionType',
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      cell: ({ row }: any) => <Label type="type" value={row.original.type} />,
+      cell: ({ row }: any) => (
+        <Label type="type" value={row.original.transactionType} />
+      ),
     },
   ];
 
@@ -341,16 +404,16 @@ export default function Page() {
               activeClass="bg-[#26A17B] text-white"
               inactiveClass="bg-white text-[#262626]"
             />
-
             <Table
               columns={tractionHeaders}
               emptyTitle="No transaction Yet"
               emptyMessage="Transactions will be added here"
-              data={walletData.filter((d) =>
+              data={transactionData.filter((d) =>
                 activeTransactionTab === 'All'
                   ? true
-                  : d.type === activeTransactionTab,
+                  : d.transactionType === activeTransactionTab,
               )}
+              // data={transactionData}
               pagination={pagination}
               setPagination={setPagination}
             />
@@ -435,6 +498,7 @@ export default function Page() {
           </div> */}
         </div>
       </CenterModal>
+
       {/* add account number */}
       <SideModal
         isOpen={addAccount}
@@ -450,31 +514,33 @@ export default function Page() {
             <div className="space-y-5">
               <Input
                 name="accountNumber"
-                type="number"
+                type="text"
                 id="accountNumber"
                 placeholder="Enter your Account Number"
                 value={values.accountNumber}
-                onChange={handleChange}
+                onChange={handleAccountNumberChange}
                 onBlur={handleBlur}
                 errors={errors}
                 touched={touched}
               />
-              <select
+              <Select
                 name="bankCode"
-                value={values.bankCode ?? ''}
-                onChange={(e) => {
-                  const { value } = e.target;
-                  setSelected(value);
-                  setFieldValue('bankCode', value);
+                options={bankOptions}
+                isSearchable={true}
+                placeholder="Bank"
+                value={
+                  bankOptions.find((opt) => opt.value === values.bankCode) ||
+                  null
+                }
+                onChange={(selected) => {
+                  setFieldValue('bankCode', selected?.value || '');
+                  setSelected(selected?.value || '');
                 }}
-                className="mt-10 w-full border-b-[#d1d5db] p-2 focus:ring-1 focus:ring-[#7B37F0] bg-white text-left"
-              >
-                {(myCommonData?.data || []).map((item) => (
-                  <option key={item.code ?? ''} value={item.code ?? ''}>
-                    {item.name}
-                  </option>
-                ))}
-              </select>
+                className="mt-10"
+                classNamePrefix="react-select"
+                filterOption={customFilter}
+                noOptionsMessage={() => 'No match found'}
+              />
             </div>
 
             <div>
@@ -529,15 +595,37 @@ export default function Page() {
         usebg
         footerChildren={
           <div className="w-full gap-5">
-            <button className="border p-5 bg-[#7B37F0] rounded-full w-full border-[#F1F1F1] text-[#fff]">
-              Withdraw
+            <button
+              disabled={
+                !selectedBeneficiary ||
+                !withdrawAmount ||
+                !Number(withdrawAmount)
+              }
+              className={`border p-5 rounded-full w-full ${
+                selectedBeneficiary && withdrawAmount
+                  ? 'bg-[#7B37F0] text-white'
+                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              }`}
+              onClick={handleWithdrawFunds}
+            >
+              {withdrawing ? 'Processing...' : 'Withdraw'}
             </button>
           </div>
         }
       >
         <div className="space-y-10">
           <div>
-            <Input placeholder="Withdrawal Amount" />
+            {/* <Input placeholder="Withdrawal Amount" /> */}
+            <Input
+              placeholder="Withdrawal Amount"
+              type="number"
+              value={withdrawAmount}
+              onChange={(e) => {
+                console.log(setWithdrawAmount, 'withdraw amount');
+                console.log(e.target.value, 'value');
+                setWithdrawAmount(e.target.value);
+              }}
+            />
             <div>
               <p className="font-semibold mt-3">
                 {numberFormat(myWalletData?.data?.availableBalance)}
@@ -561,15 +649,25 @@ export default function Page() {
             {Array.isArray(beneficiaryData?.data) &&
               beneficiaryData.data.map((item: any) => (
                 <div
-                  className="border p-4 rounded-lg border-[#888888]"
+                  // className="border p-4 rounded-lg border-[#888888]"
                   key={item?.id || item?.accountNumber}
+                  onClick={() => {
+                    console.log('Selected:', item);
+                    setSelectedBeneficiary(item);
+                  }}
+                  className={`p-4 border rounded cursor-pointer ${
+                    selectedBeneficiary?.accountNumber === item.accountNumber
+                      ? 'border-blue-500 bg-blue-50'
+                      : 'border-gray-300'
+                  }`}
                 >
                   <div className="flex items-center justify-between">
                     <p className="font-semibold text-xl text-[#333333]">
                       {item?.accountNumber}
                     </p>
                     <div
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.stopPropagation();
                         setIsDecisionModalOpen(true);
                       }}
                       className="cursor-pointer"

@@ -56,13 +56,14 @@ export const clientDashboardTasks = [
   { label: 'All Project', value: 'All' },
   { label: 'Pending Project', value: 'Pending' },
   { label: 'Completed Project', value: 'Completed' },
+  { label: 'Awaiting Confirmation', value: 'AwaitingClientConfirmation'}
 ];
 
 export const invoiceTabs = [
-  { label: 'All Invoice', value: 'All Invoice' },
-  { label: 'Pending Invoice', value: 'Pending Invoice' },
-  { label: 'Closed Invoice', value: 'Closed Invoice' },
-  { label: 'Due Invoice', value: 'Due Invoice'},
+  { label: 'All Invoice', value: 'All' },
+  { label: 'Pending Invoice', value: 'Pending' },
+  { label: 'Closed Invoice', value: 'Closed' },
+  { label: 'Due Invoice', value: 'Due'},
 ];
 
 export const transactionTabs = [
@@ -95,6 +96,20 @@ export const priorityItems = [
     { label: 'All', value: 'All' },
     { label: 'Completed', value: 'Completed' },
   ]
+
+  export const statusEnum: { [key: number]: string } = {
+  1: 'Active',
+  2: 'Pending',
+  3: 'InProgress',
+  4: 'Completed',
+  5: 'OnHold',
+  6: 'Cancelled',
+  7: 'Archieved',
+  8: 'Due',
+  9: 'AwaitingClientConfirmation',
+  10: 'RequestingRevision'
+
+};
 
 export const mockProjects = [
   {
