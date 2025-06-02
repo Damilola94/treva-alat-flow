@@ -9,6 +9,7 @@ import {
   Comment,
   SideModal,
   RenderIf,
+  CenterModal,
 } from '@/components/shared';
 import { Button } from '@/components/ui/button';
 import React, { useEffect, useState } from 'react';
@@ -30,6 +31,9 @@ import clientManagement from '@/lib/assets/client-management';
 import { ProjectProgressBar } from '@/components/shared/dashboard/progressbar';
 import { EditTaskCard } from '@/components/shared/dashboard/project-management/personal-project/edit-task';
 import { DeleteTask } from '@/components/shared/dashboard/project-management/project-table/delete-task';
+import { statusEnum } from '@/constants';
+import { errorToast, successToast, useUpdateProjectMutation } from '@/services';
+import { getErrorMessage } from '@/utils';
 
 type TabType = 'task' | 'deliverables' | 'payment';
 
@@ -53,6 +57,7 @@ export default function Page() {
   const [activeTab, setActiveTab] = useState<TabType>('deliverables');
   const [viewType, setViewType] = useState('table');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showAssesmentModal, setShowAssementModal] = useState(false);
   const [modalType, setModalType] = useState<'create' | 'edit'>('create');
   const [selectedDeliverableId, setSelectedDeliverableId] =
     useState<string>('');
@@ -68,6 +73,7 @@ export default function Page() {
   const { allCommentsData, refetchAllComments } = useComment(projectId);
   const [triggerComment, { isLoading: loadingComment }] =
     useCreateCommentMutation();
+  const [updateProject, { isLoading }] = useUpdateProjectMutation();
 
   const project = allProjectsByIdData?.data;
   const commentDetails = allCommentsData?.data;
@@ -76,6 +82,28 @@ export default function Page() {
     setModalType('create');
     setIsModalOpen(true);
     setSelectedTaskId('');
+  };
+
+  const handleUpdateProject = async () => {
+    try {
+      const response = await updateProject({
+        projectId,
+        body: { status: 9 },
+      }).unwrap();
+      refetchAllProjectsById();
+      setShowAssementModal(false)
+      if (response?.data?.id || projectId) {
+        // successToast(response?.message || 'Updated Successfully');
+        successToast( 'Updated Successfully');
+      } else {
+        errorToast(
+          response?.message ||
+            'Project ID not found. Cannot proceed to next step.',
+        );
+      }
+    } catch (error) {
+      errorToast(getErrorMessage(error) || 'Something wrong');
+    }
   };
 
   const handleEditTask = (taskId: string) => {
@@ -122,10 +150,11 @@ export default function Page() {
     tabs.push('payment');
   }
 
+  const progress = allProjectsByIdData?.data?.metrics?.progressPercent;
   useEffect(() => {
-    const progress = allProjectsByIdData?.data?.metrics?.progressPercent;
     if (progress === 100) {
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allProjectsByIdData?.data?.metrics?.progressPercent]);
 
   if (loading) {
@@ -366,8 +395,17 @@ export default function Page() {
             <ProjectProgressBar
               percent={allProjectsByIdData?.data?.metrics?.progressPercent ?? 0}
               daysLeft={
-                allProjectsByIdData?.data?.metrics?.daysLeftDisplay ??
-                'Days left'
+                statusEnum[Number(project?.status)] === 
+                'AwaitingClientConfirmation' || 'Completed'
+                  ? allProjectsByIdData?.data?.metrics?.daysLeftDisplay ??
+                    'Days left'
+                  : undefined
+              }
+              text={
+                statusEnum[Number(project?.status)] ===
+                'AwaitingClientConfirmation' || 'Completed'
+                  ? 'Awaiting Client Confirmation'
+                  : undefined
               }
             />
           </div>
@@ -424,6 +462,66 @@ export default function Page() {
         )}
         {activeTab === 'payment' && <PaymentTable />}
       </div>
+      {/* completed project */}
+      {progress === 100 && (
+        <div className="flex justify-center">
+          <Button
+            size="xl"
+            // isLoading={isLoading}
+            // backgroundColor="primary-blue-500"
+            className="border border-[#7B37F0] text-[#7B37F0] "
+            onClick={() => setShowAssementModal(true)}
+          >
+            <Send />
+            Send to client for revision
+          </Button>
+        </div>
+      )}
+
+      <CenterModal
+        headerImageType={4}
+        title=""
+        isOpen={showAssesmentModal}
+        onClose={() => {
+          setShowAssementModal(false);
+        }}
+      >
+        <div className="flex flex-col p-6">
+          <div className="mb-6 text-center">
+            <h2 className="text-[21px] font-bold text-[#262626] mb-4">
+              Are you sure you want to send this project to the client ?
+            </h2>
+            <p>
+              The client will be notified to review and confirm project
+              completion
+            </p>
+          </div>
+
+          <div className="w-full flex gap-5 ">
+            <Button
+              backgroundColor="transparent"
+              size="xl"
+              color="treva-purple"
+              className="w-full mb-4 border border-[#F1F1F1]"
+              onClick={() => {
+                setShowAssementModal(false);
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              backgroundColor="treva-purple"
+              color="white"
+              size="xl"
+              className="w-full cursor-pointer"
+              onClick={() => handleUpdateProject()}
+              isLoading={isLoading}
+            >
+              Send to Client
+            </Button>
+          </div>
+        </div>
+      </CenterModal>
     </div>
   );
 }

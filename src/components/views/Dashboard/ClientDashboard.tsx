@@ -49,6 +49,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useMemo, useState } from 'react';
 import * as Yup from 'yup';
+import Select from 'react-select';
 
 interface ProjectQueryParams {
   type?: string;
@@ -87,7 +88,9 @@ export default function Dashboard() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [accountToDelete, setAccountToDelete] = useState<string | null>(null);
   const [isDecisionModalOpen, setIsDecisionModalOpen] = useState(false);
-  const [selected, setSelected] = useState<string | null>(null);
+  const [, setSelected] = useState<string | null>(null);
+  const [withdrawAmount, setWithdrawAmount] = useState('');
+  const [selectedBeneficiary, setSelectedBeneficiary] = useState<any>(null);
 
   const { data } = useProfile();
   const userData = useMemo(() => data?.data || null, [data]);
@@ -120,16 +123,32 @@ export default function Dashboard() {
   const { userOnboardingData } = useUsers();
   const { allProjectsData, loading } = useProjects(params);
   const { myWalletData } = usePaymentService(params);
-  const { myWalletByIdData } = usePaymentService(wallletParamsId);
   const { myCommonData } = useCommon();
   const { beneficiaryData, refetch } = useBeneficiaryManagement(params);
   const { addBeneficiary, addBeneficiaryResponse } = useBeneficiaryManagement();
   const [triggerDelete, { isLoading }] = useDeleteBeneficiaryMutation();
-  const walletData = useMemo(
-    () => (Array.isArray(myWalletByIdData?.data) ? myWalletByIdData.data : []),
-    [myWalletByIdData?.data],
-  );
+  const {
+    addWithdrawFunds,
+    addWithdrawResponse,
+    loading: withdrawing,
+  } = usePaymentService(params);
   const wallet = myWalletData?.data;
+
+  const bankOptions = [
+    { label: 'Bank', value: '', isDisabled: true }, // <-- non-selectable
+    ...(myCommonData?.data || []).map((item) => ({
+      label: item.name,
+      value: item.code,
+    })),
+  ];
+
+  const customFilter = (option: any, inputValue: any) => {
+    const label = option.label.toLowerCase();
+    const value = option.value.toLowerCase();
+    const input = inputValue.toLowerCase();
+
+    return label.includes(input) || value.includes(input);
+  };
 
   const handleCopy = () => {
     if (!myWalletData?.data?.accountNumber) return;
@@ -141,7 +160,7 @@ export default function Dashboard() {
       });
   };
 
-    const openDeleteModal = (accountNumber: string) => {
+  const openDeleteModal = (accountNumber: string) => {
     setAccountToDelete(accountNumber);
     setIsDecisionModalOpen(true);
   };
@@ -165,6 +184,14 @@ export default function Dashboard() {
       errorToast(message || 'Something went wrong');
     }
   };
+
+  useEffect(() => {
+        if (addWithdrawResponse?.isSuccess) {
+          refetch && refetch();
+          //  formik.resetForm();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+      }, [addWithdrawResponse]);
 
   const formik = useFormik({
     initialValues,
@@ -253,7 +280,6 @@ export default function Dashboard() {
     },
   ];
 
-  // to handle pagination
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 4,
@@ -343,6 +369,16 @@ export default function Dashboard() {
       ...prev,
       ...param,
     }));
+  };
+
+    const handleWithdrawFunds = async () => {
+    const walletId = myWalletData?.data?.accountNumber;
+    const payload = {
+      beneficiaryAccountNumber: selectedBeneficiary.accountNumber,
+      amount: Number(withdrawAmount),
+      walletId: walletId,
+    };
+    addWithdrawFunds(payload);
   };
 
   useEffect(() => {
@@ -510,22 +546,24 @@ export default function Dashboard() {
                   errors={errors}
                   touched={touched}
                 />
-                <select
+                <Select
                   name="bankCode"
-                  value={values.bankCode ?? ''}
-                  onChange={(e) => {
-                    const { value } = e.target;
-                    setSelected(value);
-                    setFieldValue('bankCode', value);
+                  options={bankOptions}
+                  isSearchable={true}
+                  placeholder="Bank"
+                  value={
+                    bankOptions.find((opt) => opt.value === values.bankCode) ||
+                    null
+                  }
+                  onChange={(selected) => {
+                    setFieldValue('bankCode', selected?.value || '');
+                    setSelected(selected?.value || '');
                   }}
-                  className="mt-10 w-full border-b-[#d1d5db] p-2 focus:ring-1 focus:ring-[#7B37F0] bg-white text-left"
-                >
-                  {(myCommonData?.data || []).map((item) => (
-                    <option key={item.code ?? ''} value={item.code ?? ''}>
-                      {item.name}
-                    </option>
-                  ))}
-                </select>
+                  className="mt-10"
+                  classNamePrefix="react-select"
+                  filterOption={customFilter}
+                  noOptionsMessage={() => 'No match found'}
+                />
               </div>
 
               <div>
@@ -570,81 +608,113 @@ export default function Dashboard() {
         </SideModal>
 
         {/* withdraw funds side modal */}
-        <SideModal
-          isOpen={withdraw}
-          onClose={() => {
-            toggleWithdraw(false);
-          }}
-          title="Withdraw Funds"
-          showFooter
-          usebg
-          footerChildren={
-            <div className="w-full gap-5">
-              <button className="border p-5 bg-[#7B37F0] rounded-full w-full border-[#F1F1F1] text-[#fff]">
-                Withdraw
-              </button>
-            </div>
-          }
-        >
-          <div className="space-y-10">
-            <div>
-              <Input placeholder="Withdrawal Amount" />
-              <div>
-                <p className="font-semibold mt-3">
-                  {numberFormat(myWalletData?.data?.availableBalance)}
-                </p>
-              </div>
-            </div>
-            <div className="space-y-5">
-              <div className="flex items-center justify-between">
-                <p className="font-semibold ">Select Bank Account</p>
-                <button
-                  className="flex items-center rounded-2xl p-2 gap-1 border border-black"
-                  onClick={() => {
-                    toggleWithdraw(false);
-                    toggleAddAccount(true);
-                  }}
-                >
-                  <Plus className="w-5 h-5" />
-                  <p>Add Account</p>
-                </button>
-              </div>
-              {Array.isArray(beneficiaryData?.data) &&
-                beneficiaryData.data.map((item: any) => (
-                  <div
-                    className="border p-4 rounded-lg border-[#888888]"
-                    key={item?.id || item?.accountNumber}
-                  >
-                    <div className="flex items-center justify-between">
-                      <p className="font-semibold text-xl text-[#333333]">
-                        {item?.accountNumber}
-                      </p>
-                      <button
-                        onClick={() => openDeleteModal(item.accountNumber)}
-                        disabled={isLoading}
-                        type="button"
-                        className="cursor-pointer"
-                      >
-                        <Delete />
-                      </button>
-                    </div>
-                    <div className="text-[#262626] space-y-3 mt-5">
-                      <p className="flex items-center gap-3">
-                        <span>
-                          <SmallHome />
-                        </span>
-                        {item?.bankName}
-                      </p>
-                      <p className="flex items-center gap-3">
-                        <SmallAvatar />
-                        {item?.name}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-            </div>
-          </div>
-        </SideModal>
+         <SideModal
+                 isOpen={withdraw}
+                 onClose={() => {
+                   toggleWithdraw(false);
+                 }}
+                 title="Withdraw Funds"
+                 showFooter
+                 usebg
+                 footerChildren={
+                   <div className="w-full gap-5">
+                     <button
+                       disabled={
+                         !selectedBeneficiary ||
+                         !withdrawAmount ||
+                         !Number(withdrawAmount)
+                       }
+                       className={`border p-5 rounded-full w-full ${
+                         selectedBeneficiary && withdrawAmount
+                           ? 'bg-[#7B37F0] text-white'
+                           : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                       }`}
+                       onClick={handleWithdrawFunds}
+                     >
+                       {withdrawing ? 'Processing...' : 'Withdraw'}
+                     </button>
+                   </div>
+                 }
+               >
+                 <div className="space-y-10">
+                   <div>
+                     {/* <Input placeholder="Withdrawal Amount" /> */}
+                     <Input
+                       placeholder="Withdrawal Amount"
+                       type="number"
+                       value={withdrawAmount}
+                       onChange={(e) => {
+                         console.log(setWithdrawAmount, 'withdraw amount');
+                         console.log(e.target.value, 'value');
+                         setWithdrawAmount(e.target.value);
+                       }}
+                     />
+                     <div>
+                       <p className="font-semibold mt-3">
+                         {numberFormat(myWalletData?.data?.availableBalance)}
+                       </p>
+                     </div>
+                   </div>
+                   <div className="space-y-5">
+                     <div className="flex items-center justify-between">
+                       <p className="font-semibold ">Select Bank Account</p>
+                       <button
+                         className="flex items-center rounded-2xl p-2 gap-1 border border-black"
+                         onClick={() => {
+                           toggleWithdraw(false);
+                           toggleAddAccount(true);
+                         }}
+                       >
+                         <Plus className="w-5 h-5" />
+                         <p>Add Account</p>
+                       </button>
+                     </div>
+                     {Array.isArray(beneficiaryData?.data) &&
+                       beneficiaryData.data.map((item: any) => (
+                         <div
+                           // className="border p-4 rounded-lg border-[#888888]"
+                           key={item?.id || item?.accountNumber}
+                           onClick={() => {
+                             console.log('Selected:', item);
+                             setSelectedBeneficiary(item);
+                           }}
+                           className={`p-4 border rounded cursor-pointer ${
+                             selectedBeneficiary?.accountNumber === item.accountNumber
+                               ? 'border-blue-500 bg-blue-50'
+                               : 'border-gray-300'
+                           }`}
+                         >
+                           <div className="flex items-center justify-between">
+                             <p className="font-semibold text-xl text-[#333333]">
+                               {item?.accountNumber}
+                             </p>
+                             <div
+                               onClick={(e) => {
+                                 e.stopPropagation();
+                                 setIsDecisionModalOpen(true);
+                               }}
+                               className="cursor-pointer"
+                             >
+                               <Delete />
+                             </div>
+                           </div>
+                           <div className="text-[#262626] space-y-3 mt-5">
+                             <p className="flex items-center gap-3">
+                               <span>
+                                 <SmallHome />
+                               </span>
+                               {item?.bankName}
+                             </p>
+                             <p className="flex items-center gap-3">
+                               <SmallAvatar />
+                               {item?.name}
+                             </p>
+                           </div>
+                         </div>
+                       ))}
+                   </div>
+                 </div>
+               </SideModal>
 
         {/* delete modal */}
         <CenterModal

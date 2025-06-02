@@ -5,10 +5,11 @@ import * as Yup from 'yup';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Pill } from '@/components/shared';
-import { useUpdateProjectMutation } from '@/services';
+import { errorToast, successToast, useUpdateProjectMutation } from '@/services';
 import { useAppDispatch } from '@/store';
 import { storeValues } from '@/store/slices/project';
 import { useProjectById } from '@/hooks/Projects/useProjects';
+import { getErrorMessage } from '@/utils';
 
 interface IProps {
   projectId: string;
@@ -65,12 +66,12 @@ export function EditProjectDetails(props: IProps) {
       if (response?.data?.id || projectId) {
         dispatch(storeValues(values));
         handleNext();
-        console.log('Submitting update with:', { ...values, id: projectId });
+        successToast(response?.message || 'Update successfully')
       } else {
-        console.warn('Project ID not found. Cannot proceed to next step.');
+        errorToast(response?.message || 'Project ID not found. Cannot proceed to next step.');
       }
     } catch (error) {
-      console.error('Failed to create project:', error);
+      errorToast((getErrorMessage(error)) || 'Something wrong');
     }
   };
 

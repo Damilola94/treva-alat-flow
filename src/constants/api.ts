@@ -162,7 +162,8 @@ export const endpoints = {
   // payment service
   wallets: {
     getMyWallets: `/wallets/my-wallet`,
-    getWalletById: (walletId: string) => `wallets/${walletId}/transactions`,
+    getTransactions: (walletId: string) => `wallets/${walletId}/transactions`,
+    addWithdrawFunds: (walletId: string) => `wallets/${walletId}/withdraw-fund`
   },
   beneficiaryManagement: {
     getBeneficiarymanagement: `/beneficiarymanagement/all`,

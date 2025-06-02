@@ -14,6 +14,7 @@ import {
 import { useAppDispatch, useAppSelector } from '@/store';
 import { storeValues } from '@/store/slices/project';
 import { getErrorMessage } from '@/utils';
+import { numberFormat } from '@/lib/numbers';
 
 interface IProps {
   onClose: () => void;
@@ -190,8 +191,8 @@ export function AddDeliverables(props: IProps) {
                   <p className="font-bold text-lg mt-2">
                     Total Amount:{' '}
                     <span>
-                      {(Number(values.unitAmount) || 0) *
-                        (Number(values.unit) || 0)}
+                      {numberFormat((Number(values.unitAmount) || 0) *
+                        (Number(values.unit) || 0))}
                     </span>
                   </p>
 

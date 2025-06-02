@@ -2,7 +2,7 @@ import { HighStatus, LowStatus, MediumStatus } from '@/app/assets/svgs';
 import React from 'react';
 
 type PriorityLevel = 'High' | 'Medium' | 'Low'
-type StatusType = 'Pending' | 'Due' | 'Completed' | 'ToDo'
+type StatusType = 'Pending' | 'Due' | 'Completed' | 'ToDo' | 'AwaitingClientConfirmation' | 'RequestingRevision'
 type TransactionType = 'Credit' | 'Debit'
 type LabelType = PriorityLevel | StatusType | TransactionType
 
@@ -21,6 +21,13 @@ const priorityMap: Record<number, PriorityLevel> = {
   3: 'High',
 };
 
+export const transactionMap: Record<number, TransactionType> = {
+  1: 'Debit',
+  2: 'Credit'
+
+}
+
+
 export const projectTypeMap: Record<number, string> = {
   1: 'Personal',
   2: 'Client',
@@ -31,6 +38,8 @@ const statusMap: Record<number, StatusType> = {
   2: 'Pending',
   8: 'Due',
   4: 'Completed',
+  9: 'AwaitingClientConfirmation',
+  10: 'RequestingRevision',
 };
 
 
@@ -77,6 +86,12 @@ const Label: React.FC<LabelProps> = ({
     Completed: {
       style: 'bg-[#E7F6EC] text-[#036B26]',
     },
+    AwaitingClientConfirmation: {
+      style: 'bg-[#E76F51] text-[#3C3C3C]'
+    },
+    RequestingRevision: {
+      style: 'bg-[#E76E51] text-[#3C3C3C]'
+    },
   };
 
   const transactionConfig = {
@@ -97,6 +112,9 @@ const Label: React.FC<LabelProps> = ({
     displayValue = priorityMap[value] || value;
   } else if (type === 'status') {
     displayValue = mapOverride?.[value] || statusMap[value] || value;
+  }
+  else if (type === 'type') {
+    displayValue = mapOverride?.[value] || transactionMap[value] || value;
   }
 }
 

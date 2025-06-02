@@ -1,179 +1,161 @@
-"use client"
-import type React from "react"
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { CenterModal, Delete, Upload } from "@/components/shared"
-import Image from "next/image"
-import type { InitialStep5Values } from "@/app/creatives/dashboard/project-management/client-project/create/page"
-import { toast } from "react-toastify"
-import { errorToast, successToast, useCreateAgreementMutation, useDeleteAgreementMutation } from "@/services"
-import { useAppDispatch } from "@/store"
-import { storeValues, nextStep } from "@/store/slices/project"
+/* eslint-disable @typescript-eslint/no-explicit-any */
+'use client';
+
+import React, { useRef, useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { CenterModal, Delete, Upload } from '@/components/shared';
+import Image from 'next/image';
+import type { InitialStep5Values } from '@/app/creatives/dashboard/project-management/client-project/create/page';
+import { toast } from 'react-toastify';
+import {
+  errorToast,
+  successToast,
+  useCreateAgreementMutation,
+  useDeleteAgreementMutation,
+} from '@/services';
+import { useAppDispatch, useAppSelector } from '@/store';
+import { storeValues, nextStep } from '@/store/slices/project';
 
 interface IProps {
-  handleNext: (formData: InitialStep5Values) => void
-  projectId: string
+  handleNext: (formData: InitialStep5Values) => void;
+  projectId: string;
 }
 
 interface Agreement {
-  documentUrl: string
-  // projectId: string
-  agreementId: string
+  documentUrl: string;
+  agreementId: string;
 }
 
-export function ProjectAgreement(props: IProps) {
-  const { handleNext, projectId } = props
-  const dispatch = useAppDispatch()
+export function ProjectAgreement({ handleNext, projectId }: IProps) {
+  const dispatch = useAppDispatch();
+  const documentUrl = useAppSelector((state) => state.project.documentUrl);
 
-  const [createAgreement, { isLoading }] = useCreateAgreementMutation()
-  const [deleteAgreement] = useDeleteAgreementMutation()
+  const [createAgreement, { isLoading }] = useCreateAgreementMutation();
+  const [deleteAgreement] = useDeleteAgreementMutation();
 
-  const [isDecisionModalOpen, setIsDecisionModalOpen] = useState(false)
-  const [selectedFile, setSelectedFile] = useState<File | null>(null)
-  const [imagePreview, setImagePreview] = useState<string>("")
-  const [, setAgreement] = useState<Agreement[]>([])
+  const [isDecisionModalOpen, setIsDecisionModalOpen] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string>('');
+  const [agreements, setAgreements] = useState<Agreement[]>([]);
+
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const handleDelete = async () => {
-    setAgreement((prev) => prev.filter((d) => d.agreementId !== projectId))
+    if (!agreements.length) return;
+
+    const agreementToDelete = agreements.find((a) => a.agreementId);
+    if (!agreementToDelete) return;
+
     try {
       await deleteAgreement({
         projectId,
-        agreementId: "",
-      }).unwrap()
-      toast.success("Agreement deleted successfully")
-      handleRemoveFile()
+        agreementId: agreementToDelete.agreementId,
+      }).unwrap();
+
+      setAgreements((prev) =>
+        prev.filter((a) => a.agreementId !== agreementToDelete.agreementId),
+      );
+
+      handleRemoveFile();
+      toast.success('Agreement deleted successfully');
     } catch (error) {
-      toast.error("Failed to delete agreement")
+      toast.error('Failed to delete agreement');
     }
-    setIsDecisionModalOpen(false)
-  }
+
+    setIsDecisionModalOpen(false);
+  };
 
   const handleCloseModal = () => {
-    setIsDecisionModalOpen(false)
-  }
+    setIsDecisionModalOpen(false);
+  };
 
-  const handleFileChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    setFieldValue?: (field: string, value: any) => void,
-  ) => {
-    const file = e.target.files?.[0]
+  const handleFileChange = (e: React.FormEvent<HTMLInputElement>) => {
+    const input = e.target as HTMLInputElement;
+    if (!input.files || input.files.length === 0) return;
 
-    if (file) {
-      const allowedTypes = ["image/jpeg", "image/png", "image/jpg", "application/pdf"]
+    const file = input.files[0];
+    setSelectedFile(file);
 
-      if (allowedTypes.includes(file.type)) {
-        setSelectedFile(file)
+    const reader = new FileReader();
+    reader.onload = () => {
+      setImagePreview(reader.result as string);
+    };
 
-        // Store file info in Redux
-        dispatch(
-          storeValues({
-            agreementFile: file.name,
-            agreementType: file.type,
-          }),
-        )
-
-        if (setFieldValue) {
-          setFieldValue("documentUrl", file)
-        }
-
-        if (file.type === "application/pdf") {
-          setImagePreview("")
-        } else {
-          const reader = new FileReader()
-          reader.onload = () => {
-            setImagePreview(reader.result as string)
-          }
-          reader.readAsDataURL(file)
-        }
-      } else {
-        toast.error("Unsupported file type. Please upload a PDF, JPEG, PNG, or JPG file.")
-        setSelectedFile(null)
-        if (setFieldValue) {
-          setFieldValue("documentUrl", null)
-        }
-
-        if (e.target) {
-          e.target.value = ""
-        }
-      }
+    // Use base64 if image, fallback to just showing name if PDF
+    if (file.type.startsWith('image/')) {
+      reader.readAsDataURL(file);
     } else {
-      setSelectedFile(null)
-      if (setFieldValue) {
-        setFieldValue("documentUrl", null)
-      }
+      reader.readAsArrayBuffer(file); // For PDFs, not previewed
     }
-  }
+  };
 
   const handleRemoveFile = () => {
-    setSelectedFile(null)
-    setImagePreview("")
+    setSelectedFile(null);
+    setImagePreview('');
 
-    // Clear from Redux
     dispatch(
       storeValues({
-        agreementFile: "",
-        agreementType: "",
+        agreementFile: '',
+        agreementType: '',
       }),
-    )
-  }
+    );
+  };
 
- const onSubmit = async (values: { document: File | null }) => {
-  if (!values.document) {
-    toast.error("Please upload a valid file")
-    return false
-  }
+  const onSubmit = async (values: { document: File }) => {
+    try {
+      const response = await createAgreement({
+        projectId,
+        document: values.document,
+      }).unwrap();
 
-  try {
-    const response = await createAgreement({ projectId, document: values.document,}).unwrap()
-    dispatch( storeValues({agreementUploaded: true,}))
-    setAgreement([
-      {
-        documentUrl: URL.createObjectURL(values.document),
-        agreementId: "",
-      },
-    ])
+      const uploadedAgreement: Agreement = {
+        documentUrl: response.data?.documentUrl ?? '',
+        agreementId: response.data?.id ?? '',
+      };
 
-    successToast(response?.message || "Agreement uploaded successfully")
-    return true
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
-    errorToast(error?.data?.message || "Something went wrong")
-    return false
-  }
-}
+      setAgreements([uploadedAgreement]);
 
-const handleNextStep = async () => {
-  if (!projectId || projectId.trim() === "") {
-    toast.error("Project ID is missing. Please go back to step 1 to create a project first.")
-    return
-  }
+      dispatch(
+        storeValues(documentUrl),
+      );
 
-  if (!selectedFile) {
-    toast.error("Please upload an agreement before continuing.")
-    return
-  }
+      successToast(response.message || 'Agreement uploaded successfully');
+      return true;
+    } catch (error: any) {
+      errorToast(error?.data?.message || 'Something went wrong');
+      return false;
+    }
+  };
 
-  const values = {
-    document: selectedFile,
-  }
+  const handleNextStep = async () => {
+    if (!projectId.trim()) {
+      toast.error(
+        'Project ID is missing. Please go back to step 1 to create a project first.',
+      );
+      return;
+    }
 
-  await onSubmit(values)
+    if (!selectedFile) {
+      toast.error('Please upload an agreement before continuing.');
+      return;
+    }
 
-  const step5Values: InitialStep5Values = {
-    agreement: [
-      {
-        documentUrl: imagePreview || URL.createObjectURL(selectedFile),
-      },
-    ],
-  }
+    const values = { document: selectedFile };
+    const success = await onSubmit(values);
+    if (!success) return;
 
-  dispatch(storeValues(step5Values))
-  dispatch(nextStep())
+    const step5Values: InitialStep5Values = {
+      agreement: [
+        {
+          documentUrl: imagePreview || URL.createObjectURL(selectedFile),
+        },
+      ],
+    };
 
-  handleNext(step5Values)
-}
-
+    dispatch(storeValues(step5Values));
+    dispatch(nextStep());
+    handleNext(step5Values);
+  };
 
   return (
     <div className="app_get_started_professional_details py-6 px-4 flex flex-col gap-14">
@@ -202,7 +184,9 @@ const handleNextStep = async () => {
           }
         >
           <div className="flex flex-col items-center justify-center gap-4">
-            <p className="font-semibold">Are you sure you want to delete this agreement?</p>
+            <p className="font-semibold">
+              Are you sure you want to delete this agreement?
+            </p>
             <p>It will be permanently removed.</p>
           </div>
         </CenterModal>
@@ -214,11 +198,11 @@ const handleNextStep = async () => {
           {selectedFile ? (
             <div className="flex items-center justify-between">
               <div className="flex items-center">
-                {selectedFile.type === "application/pdf" ? (
+                {selectedFile.type === 'application/pdf' ? (
                   <span className="w-6 h-6 mr-3">📄</span>
                 ) : (
                   <Image
-                    src={imagePreview || "/placeholder.svg"}
+                    src={imagePreview || '/placeholder.svg'}
                     alt="Preview"
                     className="w-12 h-12 rounded-md"
                     width={48}
@@ -227,10 +211,15 @@ const handleNextStep = async () => {
                 )}
                 <div>
                   <p className="text-sm font-medium">{selectedFile.name}</p>
-                  <p className="text-xs text-gray-500">{(selectedFile.size / 1024 / 1024).toFixed(1)} MB</p>
+                  <p className="text-xs text-gray-500">
+                    {(selectedFile.size / 1024 / 1024).toFixed(1)} MB
+                  </p>
                 </div>
               </div>
-              <Delete className="cursor-pointer" onClick={() => setIsDecisionModalOpen(true)} />
+              <Delete
+                className="cursor-pointer"
+                onClick={() => setIsDecisionModalOpen(true)}
+              />
             </div>
           ) : (
             <label className="cursor-pointer hover:underline">
@@ -238,12 +227,15 @@ const handleNextStep = async () => {
                 type="file"
                 accept=".pdf,.png,.jpg,.jpeg"
                 className="hidden"
-                onChange={(e) => handleFileChange(e)}
+                ref={fileInputRef}
+                onChange={handleFileChange}
               />
               <div className="flex flex-col items-center">
                 <Upload />
                 <p className="mt-2 font-bold">Upload your agreement</p>
-                <p className="text-xs text-gray-500">PDF, PNG, JPG | 10MB max.</p>
+                <p className="text-xs text-gray-500">
+                  PDF, PNG, JPG | 10MB max.
+                </p>
               </div>
             </label>
           )}
@@ -258,10 +250,10 @@ const handleNextStep = async () => {
             onClick={handleNextStep}
             disabled={isLoading}
           >
-            {isLoading ? "Uploading..." : "Save & Continue"}
+            {isLoading ? 'Uploading...' : 'Save & Continue'}
           </Button>
         </div>
       </div>
     </div>
-  )
+  );
 }

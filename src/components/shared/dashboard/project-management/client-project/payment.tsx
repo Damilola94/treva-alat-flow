@@ -20,6 +20,7 @@ import { useFormik } from "formik"
 import { useDeletePayment } from "@/hooks/Projects/useProjects"
 import type { Deliverable } from "./add-deliverables"
 import { formatDate } from "@/lib/utils"
+import { numberFormat } from "@/lib/numbers"
 
 interface IProps {
   handleNext: (formData: InitialStep3Values) => void
@@ -31,7 +32,7 @@ interface IProps {
 interface PaymentSchedule {
   extraCostId: string
   name: string
-  amount: string
+  amount: number
   description: string
 }
 
@@ -65,7 +66,7 @@ const { data: paymentData, refetch } = useGetAllExtraCostsQuery(projectIdAPI)
   const addFormik = useFormik({
     initialValues: {
       name: paymentTitle || "",
-      amount: paymentAmount || "",
+      amount: paymentAmount || 0,
       description: paymentDescription || "",
     },
     validationSchema,
@@ -99,7 +100,7 @@ const { data: paymentData, refetch } = useGetAllExtraCostsQuery(projectIdAPI)
   const editFormik = useFormik({
     initialValues: {
       name: "",
-      amount: "",
+      amount: 0,
       description: "",
     },
     validationSchema,
@@ -158,7 +159,7 @@ const { data: paymentData, refetch } = useGetAllExtraCostsQuery(projectIdAPI)
     setSelectedPayment(paymentItem)
     editFormik.setValues({
       name: paymentItem.name || "",
-      amount: String(paymentItem.amount || ""),
+      amount: paymentItem.amount || 0,
       description: paymentItem.description || "",
     })
     setEditExpenses(true)
@@ -210,7 +211,7 @@ const { data: paymentData, refetch } = useGetAllExtraCostsQuery(projectIdAPI)
       const mappedPayments = paymentData.data.map((item) => ({
         extraCostId: item.id ?? "",
         name: item.name ?? "",
-        amount: item.amount ?? "",
+        amount: item.amount ?? 0,
         description: item.description ?? "",
       }))
 
@@ -236,9 +237,7 @@ const { data: paymentData, refetch } = useGetAllExtraCostsQuery(projectIdAPI)
     }
   }, [initialDeliverables])
 
-  const parseNumber = (value: string | undefined) => (value ? Number.parseFloat(value) || 0 : 0)
-
-  const total = deliverables.reduce((sum, d) => sum + (parseNumber(d.total) || parseNumber(d.unitAmount)), 0)
+  const total = deliverables.reduce((sum, d) => sum +( d.total || d.unitAmount), 0)
 
   const startDates = deliverables.map((d) => new Date(d.startDate))
   const endDates = deliverables.map((d) => new Date(d.endDate))
@@ -448,11 +447,8 @@ const { data: paymentData, refetch } = useGetAllExtraCostsQuery(projectIdAPI)
             <p className="flex justify-between mb-2">
               Timeline <span>{timeline}</span>
             </p>
-            <p className="flex justify-between mb-2">
-              Sub Total: <span>NGN {total.toLocaleString()}</span>
-            </p>
             <p className="flex justify-between font-bold">
-              Total <span className="font-bold">NGN {total.toLocaleString()}</span>
+              Total <span className="font-bold">{numberFormat(total)}</span>
             </p>
           </div>
         )}
@@ -482,7 +478,7 @@ const { data: paymentData, refetch } = useGetAllExtraCostsQuery(projectIdAPI)
                     {item.description && <p className="my-2">{item.description}</p>}
                     <p className="flex gap-2 items-center mb-">
                       <Money4 stroke="#6E50DB" />
-                      <span>NGN {item.amount}</span>
+                      <span> {numberFormat(item.amount)}</span>
                     </p>
                   </div>
                 </div>

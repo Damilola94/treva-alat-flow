@@ -21,6 +21,7 @@ import { getErrorMessage } from "@/utils"
 import { useDeleteDeliverable } from "@/hooks/Projects/useProjects"
 import { useAppDispatch, useAppSelector } from "@/store"
 import { storeValues, nextStep } from "@/store/slices/project"
+import { numberFormat } from "@/lib/numbers"
 
 interface IProps {
   handleNext: (formData: InitialStep2Values) => void
@@ -33,9 +34,9 @@ export interface Deliverable {
   description: string
   startDate: string
   endDate: string
-  unitAmount: string
-  unit: string
-  total?: string
+  unitAmount: number
+  unit: number
+  total?: number
 }
 
 export function ProjectDeliverables(props: IProps) {
@@ -45,8 +46,6 @@ export function ProjectDeliverables(props: IProps) {
    const { projectId: projectIdStore} = useAppSelector((state) => state?.project);
   // Get current step from Redux
   // const currentStep = useAppSelector((state) => state.project.currentStep)
-
-  const parseNumber = (value: string | undefined) => (value ? Number.parseFloat(value) || 0 : 0)
 
   const [editForm, setEditForm] = useState(true)
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -74,9 +73,9 @@ export function ProjectDeliverables(props: IProps) {
         description: item.description ?? "",
         startDate: item.startDate ?? "",
         endDate: item.endDate ?? "",
-        unitAmount: item.unitAmount !== undefined && item.unitAmount !== null ? String(item.unitAmount) : "",
-        unit: item.unit !== undefined && item.unit !== null ? String(item.unit) : "",
-        total: item.total !== undefined && item.total !== null ? String(item.total) : "",
+        unitAmount: item.unitAmount !== undefined && item.unitAmount !== null ? Number(item.unitAmount) : 0,
+        unit: item.unit !== undefined && item.unit !== null ? Number(item.unit) : 0,
+        total: item.total !== undefined && item.total !== null ? Number(item.total) : 0,
       }))
 
       setDeliverables(mappedDeliverables)
@@ -178,7 +177,7 @@ export function ProjectDeliverables(props: IProps) {
     handleNext(step2Data)
   }
 
-  const total = deliverables.reduce((sum, d) => sum + (parseNumber(d.total) || parseNumber(d.unitAmount)), 0)
+  const total = deliverables.reduce((sum, d) => sum + (d.total || d.unitAmount), 0)
 
   const startDates = deliverables.map((d) => new Date(d.startDate))
   const endDates = deliverables.map((d) => new Date(d.endDate))
@@ -354,14 +353,14 @@ export function ProjectDeliverables(props: IProps) {
                         <Money4 />
                         <p className="font-bold">Unit Amount:</p>
                       </div>
-                      {deliverable.unitAmount}
+                      {numberFormat(deliverable.unitAmount)}
                     </div>
                     <div className="flex gap-4 mb-3">
                       <div className="flex items-center gap-2">
                         <Money4 />
                         <p className="font-bold">Total:</p>
                       </div>
-                      {deliverable.total}
+                      {numberFormat(deliverable.total)}
                     </div>
                   </div>
                 </div>
@@ -379,11 +378,11 @@ export function ProjectDeliverables(props: IProps) {
             <p className="flex justify-between mb-2">
               Timeline <span>{timeline}</span>
             </p>
-            <p className="flex justify-between mb-2">
+            {/* <p className="flex justify-between mb-2">
               Sub Total: <span>NGN {total.toLocaleString()}</span>
-            </p>
+            </p> */}
             <p className="flex justify-between font-bold">
-              Total <span className="font-bold">NGN {total.toLocaleString()}</span>
+              Total <span className="font-bold">NGN {numberFormat(total)}</span>
             </p>
           </div>
         )}

@@ -24,8 +24,11 @@ import {
   errorToast,
   successToast,
   useCreateRateProjectMutation,
+  useUpdateProjectMutation,
 } from '@/services';
 import { getErrorMessage } from '@/utils';
+import { ProjectProgressBar } from '@/components/shared/dashboard/progressbar';
+import { statusEnum } from '@/constants';
 
 export default function Page() {
   const { id } = useParams();
@@ -33,19 +36,24 @@ export default function Page() {
 
   // const {  }
 
-  const { allProjectsByIdData, loading } = useProjectById(projectId);
+  const { allProjectsByIdData, loading, refetchAllProjectsById } =
+    useProjectById(projectId);
   const { allCommentsData, refetchAllComments } = useComment(projectId);
   const [triggerComment, { isLoading: loadingComment }] =
     useCreateCommentMutation();
   const [createRating, { isLoading }] = useCreateRateProjectMutation();
+  const [updateProject, { isLoading: sending }] = useUpdateProjectMutation();
 
   const [showModal, setShowModal] = useState(false);
+  const [showRevisionModal, setShowRevisionModal] = useState(false);
   const [showRatingModal, setShowRatingModal] = useState(false);
   const [commentModal, setCommentModal] = useState(false);
   const [rating, setRating] = useState(0);
   const [hoveredRating, setHoveredRating] = useState(0);
   const [content, setContent] = useState('');
   const [review, setReview] = useState('');
+  const [revisionRequestDescription, setRevisionRequestDescription] =
+    useState('');
 
   const project = allProjectsByIdData?.data;
   const commentDetails = allCommentsData?.data;
@@ -59,6 +67,56 @@ export default function Page() {
       refetchAllComments();
     } catch (error) {
       errorToast('Failed to create comment:');
+    }
+  };
+
+  const handleProjectConfirmation = async () => {
+    try {
+      const response = await updateProject({
+        projectId,
+        body: {
+          status: 4,
+        },
+      }).unwrap();
+      setShowRatingModal(true);
+      setShowModal(false);
+      refetchAllProjectsById();
+
+      // if (response?.isSuccess && response?.data?.status === 4) {
+      if (response?.isSuccess && response?.data?.status === statusEnum[4]) {
+        successToast('Project completed');
+      } else {
+        errorToast(response?.message || 'Failed to update status to revision');
+      }
+    } catch (error) {
+      errorToast(getErrorMessage(error) || 'Something went wrong');
+    }
+  };
+
+  const handleProjectRevision = async () => {
+    try {
+      const response = await updateProject({
+        projectId,
+        body: {
+          status: 10,
+          revisionRequestDescription: revisionRequestDescription.trim(),
+        },
+      }).unwrap();
+
+      console.log('Update response:', response);
+
+      setShowRevisionModal(false);
+      setShowModal(false);
+      refetchAllProjectsById();
+
+      // if (response?.isSuccess && response?.data?.status === 10) {
+      if (response?.isSuccess && response?.data?.status === statusEnum[10]) {
+        successToast('Revision sent Successfully');
+      } else {
+        errorToast(response?.message || 'Failed to update status to revision');
+      }
+    } catch (error) {
+      errorToast(getErrorMessage(error) || 'Something went wrong');
     }
   };
 
@@ -84,7 +142,6 @@ export default function Page() {
   useEffect(() => {
     const progress = allProjectsByIdData?.data?.metrics?.progressPercent;
     if (progress === 100) {
-      setShowRatingModal(true);
     }
   }, [allProjectsByIdData?.data?.metrics?.progressPercent]);
 
@@ -290,7 +347,7 @@ export default function Page() {
               color="treva-purple"
               className=" border border-[#F1F1F1]"
               onClick={() => {
-                setShowModal(false);
+                setShowRevisionModal(true);
               }}
             >
               Request Revision
@@ -300,10 +357,10 @@ export default function Page() {
               color="white"
               size="xl"
               className=""
+              isLoading={sending}
               // eslint-disable-next-line @typescript-eslint/no-unused-expressions
               onClick={() => {
-                setShowRatingModal(true);
-                setShowModal(false);
+                handleProjectConfirmation();
               }}
             >
               Confirm Completion
@@ -312,6 +369,65 @@ export default function Page() {
         </div>
       </CenterModal>
 
+      {/* project revision */}
+      <CenterModal
+        headerImageType={2}
+        title=""
+        isOpen={showRevisionModal}
+        onClose={() => {
+          setShowRevisionModal(false);
+        }}
+      >
+        <div className="flex flex-col items-center justify-center p-6">
+          <div className="mb-6 text-center">
+            <h2 className="text-[21px] font-bold text-[#262626] mb-4">
+              Request Revision
+            </h2>
+            <p>Tell the creative what needs to be changed.</p>
+            {/* <Textarea
+              placeholder="Enter revision notes (optional)"
+              value={revisionRequestDescription}
+              onChange={(e) => setRevisionRequestDescription(e.target.value)}
+              className="mt-4 w-full border border-gray-200 p-3 focus:border-[#7C3AED] focus:ring-1 focus:ring-[#7C3AED]"
+            /> */}
+            <Textarea
+              placeholder="Explain what needs to be revised..."
+              value={revisionRequestDescription}
+              onChange={(e) => setRevisionRequestDescription(e.target.value)}
+            />
+          </div>
+
+          <div className="w-full flex items-center ">
+            <Button
+              backgroundColor="transparent"
+              size="xl"
+              color="treva-purple"
+              className="w-full border border-[#F1F1F1]"
+              onClick={() => {
+                setShowModal(true);
+                setShowRevisionModal(false);
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              backgroundColor="treva-purple"
+              color="white"
+              size="xl"
+              className="w-full"
+              isLoading={sending}
+              // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+              onClick={() => {
+                handleProjectRevision();
+                // setShowRevisionModal(false);
+                // setShowModal(false);
+              }}
+            >
+              Request Revision
+            </Button>
+          </div>
+        </div>
+      </CenterModal>
       {loading ? (
         <div className="text-center flex justify-center items-center">
           <Loader2 size={18} className="animate-spin" />
@@ -394,26 +510,22 @@ export default function Page() {
                   />
                 </div>
               </div>
-              <div className="md:w-1/4">
-                <div className="app_progress-bar__label">
-                  Progress{' '}
-                  {allProjectsByIdData?.data?.metrics?.progressPercent ?? 0}%{' '}
-                  <span className="app_progress-bar__label__days-left">
-                    {allProjectsByIdData?.data?.metrics?.daysLeftDisplay ??
-                      'Days left'}
-                  </span>
-                </div>
-                <div className="app_progress-bar-track">
-                  <div
-                    className="app_progress-bar-track-fill"
-                    style={{
-                      width: `${
-                        allProjectsByIdData?.data?.metrics?.progressPercent ?? 0
-                      }%`,
-                    }}
-                  />
-                </div>
-              </div>
+              <ProjectProgressBar
+                percent={
+                  allProjectsByIdData?.data?.metrics?.progressPercent ?? 0
+                }
+                daysLeft={
+                  statusEnum[Number(project?.status)] !== 'Completed'
+                    ? allProjectsByIdData?.data?.metrics?.daysLeftDisplay ??
+                      'Days left'
+                    : undefined
+                }
+                text={
+                  statusEnum[Number(project?.status)] === 'Completed'
+                    ? 'Completed'
+                    : 'undefined'
+                }
+              />
             </div>
 
             <div className="app_dashboard_home__task__hdr flex-wrap gap-2 mt-4 border-[#E7E7E7] border-t border-b">
@@ -422,7 +534,6 @@ export default function Page() {
               </div>
             </div>
             <DeliverableTable />
-            {/* {project?.status === 'Completed' && ( */}
             <div className="flex justify-center">
               <Button
                 size="xl"
