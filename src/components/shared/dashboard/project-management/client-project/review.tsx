@@ -6,7 +6,12 @@ import routes from '@/lib/routes';
 import { useGetProjectByIdQuery } from '@/services';
 import { Loader2 } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
-import { useDeliverable, usePaymentSchedule } from '@/hooks/Projects/useProjects';
+import {
+  useDeliverable,
+  usePaymentSchedule,
+} from '@/hooks/Projects/useProjects';
+import { resetProject } from '@/store/slices/project';
+import { useAppDispatch } from '@/store';
 
 interface IProps {
   projectId: string;
@@ -18,25 +23,32 @@ interface BillingSchedule {
   id?: string;
   amount?: number;
   dueDate?: string;
-  status?: "Pending" | "Due" | "Cancelled" | "Failed" | "Overdue" | "Paid" | "PartiallyPaid" | "Refunded";
+  status?:
+    | 'Pending'
+    | 'Due'
+    | 'Cancelled'
+    | 'Failed'
+    | 'Overdue'
+    | 'Paid'
+    | 'PartiallyPaid'
+    | 'Refunded';
   paidAmount?: number;
   remainingAmount?: number;
-};
-
+}
 
 export function ProjectReview(props: IProps) {
+  const dispatch = useAppDispatch();
   const { projectId } = props;
   const { data, isLoading } = useGetProjectByIdQuery(projectId);
   const { allPaymentScheduleData, loading } = usePaymentSchedule(projectId);
-    const { allDeliverablesData } =
-      useDeliverable(projectId);
+  const { allDeliverablesData } = useDeliverable(projectId);
 
   // const [createInvoice] = useCreateInvoiceMutation();
 
   const [isDecisionModalOpen, setIsDecisionModalOpen] = useState(false);
   const [isDeleteModal, setIsDeleteModal] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
- const [pagination, setPagination] = useState({
+  const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 4,
   });
@@ -52,6 +64,7 @@ export function ProjectReview(props: IProps) {
   };
 
   const handleDone = () => {
+    dispatch(resetProject());
     window.location.href = routes.creatives.dashboard.projectManagement.path;
   };
 
@@ -77,7 +90,7 @@ export function ProjectReview(props: IProps) {
     },
   ];
 
-   const deliverableHeaders = [
+  const deliverableHeaders = [
     {
       header: 'Deliverable',
       accessorKey: 'name',
@@ -87,29 +100,31 @@ export function ProjectReview(props: IProps) {
       header: 'Unit Price',
       accessorKey: 'unitAmount',
     },
-     {
+    {
       header: 'Unit',
       accessorKey: 'unit',
     },
-      {
+    {
       header: 'Amount',
       accessorKey: 'total',
     },
   ];
 
   const tableBody: BillingSchedule[] = useMemo(() => {
-      if (allPaymentScheduleData?.isSuccess && Array.isArray(allPaymentScheduleData.data)) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return allPaymentScheduleData.data.map((billing: any) => ({
-          id: billing.id,
-          amount: billing.amount,
-          duedate: billing.dueDate,
-        }))
-      }
-      return []
-  
-    }, [allPaymentScheduleData?.isSuccess, allPaymentScheduleData?.data]);
-  
+    if (
+      allPaymentScheduleData?.isSuccess &&
+      Array.isArray(allPaymentScheduleData.data)
+    ) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      return allPaymentScheduleData.data.map((billing: any) => ({
+        id: billing.id,
+        amount: billing.amount,
+        duedate: billing.dueDate,
+      }));
+    }
+    return [];
+  }, [allPaymentScheduleData?.isSuccess, allPaymentScheduleData?.data]);
+
   const tableDeliverableBody = useMemo(() => {
     return allDeliverablesData?.isSuccess && allDeliverablesData.data
       ? allDeliverablesData.data
@@ -258,7 +273,7 @@ export function ProjectReview(props: IProps) {
                   />
                 )}
               </div>
-           
+
               <hr className="bg-[#E5E5E5] mt-6" />
             </div>
           </div>
