@@ -4,7 +4,7 @@ import { useAppSelector } from '@/store';
 const useProfile = () => {
   const { loggedIn } = useAppSelector((state) => state?.auth);
 
-  const { data, isLoading, error, isFetching, isError } =
+  const { data, isLoading, error, isFetching, isError, refetch } =
     useGetUserProfileQuery(undefined, {
       refetchOnMountOrArgChange: true,
       refetchOnReconnect: true,
@@ -16,6 +16,7 @@ const useProfile = () => {
     loading: isFetching || isLoading,
     error,
     isError,
+    refetch,
   };
 };
 

@@ -239,8 +239,10 @@ export default function CreativeProfile() {
                     <h3 className="text-lg font-medium mb-4">Social Media</h3>
                     <div className="flex flex-wrap gap-6">
                       {creativeData?.userSocialMedias?.map((socials, index) => {
-                        const name = socials?.socialMediaType?.name;
-                        const iconUrl = socials?.socialMediaType?.iconUrl;
+                        if (!socials?.username) return null;
+
+                        const name = socials?.socialMediaTypeName;
+                        const iconUrl = socials?.socialMediaTypeIcon;
 
                         let IconComponent = null;
 
@@ -295,11 +297,6 @@ export default function CreativeProfile() {
                           </div>
                         );
                       })}
-
-                      {/* <div className="flex items-center gap-2">
-                        <Instagram className="h-5 w-5 text-gray-700" />
-                        <span>{creative.portfolio.social.instagram}</span>
-                      </div> */}
                     </div>
                   </div>
                 )}

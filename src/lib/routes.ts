@@ -94,6 +94,21 @@ const routes = {
       notifications: {
         path: '/client/dashboard/notifications',
       },
+      settings: {
+        path: '/client/dashboard/settings',
+
+        profile: {
+          path: '/client/dashboard/settings/profile',
+        },
+
+        security: {
+          path: '/client/dashboard/settings/security',
+        },
+
+        notifications: {
+          path: '/client/dashboard/settings/notifications',
+        },
+      },
     },
   },
 
@@ -237,8 +252,8 @@ const routes = {
 
         notifications: {
           path: '/creatives/dashboard/settings/notifications',
-        }
-      }
+        },
+      },
     },
   },
 };

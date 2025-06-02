@@ -5,6 +5,7 @@ import {
   useGetCreativeOnboardingQuery,
   useSaveClientOnboardingMutation,
   useSaveCreativeOnboardingMutation,
+  useUpdateUserProfileMutation,
 } from '@/services';
 import { useAppSelector } from '@/store';
 import { getErrorMessage } from '@/utils';
@@ -46,11 +47,23 @@ interface ISaveOnboardingResponse {
   metaData?: unknown;
 }
 
+interface IUpdateUserProfile {
+  firstName?: string;
+  lastName?: string;
+  middleName?: string;
+  phoneNumber?: string;
+  bio?: string;
+  portfolioLink?: string;
+  websiteUrl?: string;
+  picture?: string;
+}
+
 const useUsers = () => {
   const { loggedIn, role } = useAppSelector((state) => state?.auth);
   const [saveOnboardingResponse, setSaveOnboardingResponse] = useState<
     ISaveOnboardingResponse | undefined
   >(undefined);
+  const [updateResponse, setUpdateResponse] = useState('');
 
   const {
     data: userOnboardingData,
@@ -78,6 +91,8 @@ const useUsers = () => {
     triggerSaveCreativeOnboarding,
     { isLoading: creativeOnboardingLoading },
   ] = useSaveCreativeOnboardingMutation();
+  const [triggerUpdateProfile, { isLoading: updateProfileLoading }] =
+    useUpdateUserProfileMutation();
 
   const saveClientOnboarding = async (payload: ISaveClientOnboaring) => {
     try {
@@ -137,6 +152,42 @@ const useUsers = () => {
     }
   };
 
+  const updateProfileDetails = async (payload: IUpdateUserProfile) => {
+    try {
+      setUpdateResponse('');
+      const formData = new FormData();
+
+      Object.entries(payload).forEach(([key, value]) => {
+        const isFile = value instanceof Blob;
+
+        if (
+          (typeof value === 'string' && value.trim() !== '') ||
+          typeof value === 'number' ||
+          isFile
+        ) {
+          formData.append(
+            key,
+            typeof value === 'number' ? value.toString() : value,
+          );
+        }
+      });
+
+      const response = await triggerUpdateProfile(formData).unwrap();
+
+      if (response?.isSuccess) {
+        successToast(response?.message || 'Details Saved Successfully');
+        setUpdateResponse('success');
+      } else {
+        errorToast(response?.message || 'Something went wrong');
+        setUpdateResponse('');
+      }
+    } catch (error) {
+      const message = getErrorMessage(error);
+      errorToast(message || 'Something went wrong');
+      setUpdateResponse('');
+    }
+  };
+
   return {
     userOnboardingData,
     creativeOnboardingData,
@@ -147,10 +198,13 @@ const useUsers = () => {
       isLoading ||
       creativeOnboardingLoading ||
       creativeLoading ||
+      updateProfileLoading ||
       creativeOnboardingFetching,
     refetchUserOnboardingData,
     saveClientOnboarding,
     saveCreativeOnboarding,
+    updateProfileDetails,
+    updateResponse,
   };
 };
 

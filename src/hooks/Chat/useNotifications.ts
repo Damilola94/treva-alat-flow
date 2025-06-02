@@ -1,4 +1,7 @@
-import { useGetNotificationsQuery } from '@/services';
+import {
+  useGetNotificationsQuery,
+  useGetUnreadNotificationCountQuery,
+} from '@/services';
 import { useAppSelector } from '@/store';
 
 interface IParams {
@@ -8,7 +11,7 @@ interface IParams {
   searchKey?: string;
 }
 
-const useNotifications = (params: IParams) => {
+const useNotifications = (params?: IParams) => {
   const { loggedIn } = useAppSelector((state) => state.auth);
 
   const {
@@ -17,18 +20,27 @@ const useNotifications = (params: IParams) => {
     isFetching,
     error,
     isError,
-    refetch,   
+    refetch,
   } = useGetNotificationsQuery(params, {
     refetchOnMountOrArgChange: true,
     refetchOnReconnect: true,
     skip: !loggedIn,
   });
 
+  const { data: notificationCount, isError: notificationCountHasError } =
+    useGetUnreadNotificationCountQuery(undefined, {
+      refetchOnFocus: true,
+      refetchOnMountOrArgChange: true,
+      refetchOnReconnect: true,
+    });
+
   return {
+    notificationCount,
     allNotifications,
     loading: isLoading || isFetching,
     refetch,
     error,
+    notificationCountHasError,
     isError,
   };
 };

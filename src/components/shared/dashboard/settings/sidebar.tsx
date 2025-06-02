@@ -1,33 +1,46 @@
 import routes from '@/lib/routes';
+import { useAppSelector } from '@/store';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-
-const menuItems = [
-  {
-    label: 'Profile',
-    href: routes.creatives.dashboard.settings.profile.path,
-  },
-  {
-    label: 'Security',
-    href: routes.creatives.dashboard.settings.security.path,
-  },
-  {
-    label: 'Notifications',
-    href: routes.creatives.dashboard.settings.notifications.path,
-  },
-].filter((item) => !!item.href);
+import { useMemo } from 'react';
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const { role } = useAppSelector((state) => state?.auth);
+  const isCreative = useMemo(
+    () => Array.isArray(role) && role.includes('Creative'),
+    [role],
+  );
   // const { isActive } = useIsActive();
+
+  const menuItems = [
+    {
+      label: 'Profile',
+      href: isCreative
+        ? routes.creatives.dashboard.settings.profile.path
+        : routes.client.dashboard.settings.profile.path,
+    },
+    {
+      label: 'Security',
+      href: isCreative
+        ? routes.creatives.dashboard.settings.security.path
+        : routes.client.dashboard.settings.security.path,
+    },
+    {
+      label: 'Notifications',
+      href: isCreative
+        ? routes.creatives.dashboard.settings.notifications.path
+        : routes.client.dashboard.settings.notifications.path,
+    },
+  ].filter((item) => !!item.href);
 
   return (
     <div className="w-60 mb-24 min-h-[calc(100vh-4rem)] overflow-auto shrink-0 p-6 border-r border-gray-200 bg-white rounded-l-xl shadow-sm relative">
-      <ul>
+      <ul className="space-y-5">
         {menuItems.map((item) => {
-        //   const activeCN = isActive(item?.href, item.label === 'Settings')
-        //     ? 'active'
-        //     : '';
+          //   const activeCN = isActive(item?.href, item.label === 'Settings')
+          //     ? 'active'
+          //     : '';
           const isActive = pathname === item.href;
           return (
             <li key={item.label}>

@@ -96,6 +96,17 @@ export const usersService = userServiceApiSlice.injectEndpoints({
         response: ITrevaUserService['schemas']['UserRatingModelBaseResponse'],
       ) => response,
     }),
+
+    updateUserProfile: builder.mutation({
+      query: (values) => ({
+        url: endpoints.users.updateUserProfile,
+        method: REQUEST_METHODS.PUT,
+        body: values,
+      }),
+      transformResponse: (
+        response: ITrevaUserService['schemas']['UserModelBaseResponse'],
+      ) => response,
+    }),
   }),
 });
 
@@ -109,4 +120,5 @@ export const {
   useGetUserRatingsQuery,
   useSaveCreativeOnboardingMutation,
   useGetCreativeOnboardingQuery,
+  useUpdateUserProfileMutation,
 } = usersService;

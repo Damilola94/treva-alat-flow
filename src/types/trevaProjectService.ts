@@ -254,6 +254,8 @@ export interface paths {
                         PhoneNumber?: string;
                         /** Format: int32 */
                         Birthday?: number;
+                        /** Format: binary */
+                        Avatar?: string;
                         BirthMonth?: components["schemas"]["MonthEnums"];
                         ClientUserId?: string;
                     };
@@ -1112,6 +1114,46 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/invoices/{invoiceId}/pay": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Pay invoice by id */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    invoiceId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["BooleanBaseResponse"];
+                        "application/json": components["schemas"]["BooleanBaseResponse"];
+                        "text/json": components["schemas"]["BooleanBaseResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/projects/{projectId}/payment-schedules": {
         parameters: {
             query?: never;
@@ -1502,7 +1544,7 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
-        AgreementModel: {             
+        AgreementModel: {
             /** Format: uuid */
             id?: string;
             /** Format: date-time */
@@ -1533,6 +1575,13 @@ export interface components {
             statusCode?: string | null;
             message?: string | null;
             data?: components["schemas"]["AgreementModel"][] | null;
+            metaData?: unknown;
+        };
+        BooleanBaseResponse: {
+            isSuccess?: boolean;
+            statusCode?: string | null;
+            message?: string | null;
+            data?: boolean;
             metaData?: unknown;
         };
         CommentMentionModel: {
@@ -1588,9 +1637,9 @@ export interface components {
             /** Format: date-time */
             endDate?: string;
             /** Format: double */
-            unitAmount?: number;
+            unitAmount?: number | null;
             /** Format: int32 */
-            unit?: number;
+            unit?: number | null;
         };
         CreateDeliverableTaskCommand: {
             name: string | null;
@@ -1891,6 +1940,7 @@ export interface components {
             type?: components["schemas"]["ProjectTypeEnums"];
             status?: components["schemas"]["StatusEnums"];
             priority?: components["schemas"]["ProjectPriorityEnums"];
+            revisionRequestDescription?: string | null;
             /** Format: double */
             actualCost?: number | null;
             creativeUser?: components["schemas"]["UserDto"];
@@ -1920,7 +1970,7 @@ export interface components {
             review?: string | null;
         };
         /** @enum {string} */
-        StatusEnums: "Archived" | "Cancelled" | "Completed" | "Due" | "InProgress" | "OnHold" | "Pending" | "ToDo";
+        StatusEnums: "Archived" | "AwaitingClientConfirmation" | "Cancelled" | "Completed" | "Due" | "InProgress" | "OnHold" | "Pending" | "RequestingRevision" | "ToDo";
         Unit: Record<string, never>;
         UnitBaseResponse: {
             isSuccess?: boolean;
@@ -1957,9 +2007,9 @@ export interface components {
             id?: string;
             name?: string | null;
             /** Format: date-time */
-            startDate?: string;
+            startDate?: string | null;
             /** Format: date-time */
-            endDate?: string;
+            endDate?: string | null;
             priority?: components["schemas"]["ProjectPriorityEnums"];
             status?: components["schemas"]["StatusEnums"];
             /** Format: uuid */
@@ -1973,7 +2023,7 @@ export interface components {
             name: string | null;
             description?: string | null;
             /** Format: double */
-            amount?: number;
+            amount?: number | null;
             /** Format: uuid */
             projectId?: string | null;
         };
@@ -1996,10 +2046,9 @@ export interface components {
             startDate?: string | null;
             /** Format: date-time */
             expectedDeliveryDate?: string | null;
-            /** Format: date-time */
-            actualDeliveryDate?: string | null;
             status?: components["schemas"]["StatusEnums"];
             priority?: components["schemas"]["ProjectPriorityEnums"];
+            revisionRequestDescription?: string | null;
         };
         UserDto: {
             id: string | null;
