@@ -14,6 +14,7 @@ import Notifications from './notifications.svg';
 import NPayment from './notification-payment.svg';
 import ChatIcon from './Chat-fill.svg';
 import SendMessageButton from './sendmessagebutton.svg';
+import EditSmall from './editsmall.svg';
 
 export {
   SearchIcon,
@@ -32,4 +33,5 @@ export {
   NPayment,
   ChatIcon,
   SendMessageButton,
+  EditSmall,
 };

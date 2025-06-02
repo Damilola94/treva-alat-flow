@@ -364,6 +364,9 @@ export interface components {
             /** Format: date-time */
             lastMessageTime?: string | null;
             lastMessagePreview?: string | null;
+            hasUnreadMessages?: boolean;
+            /** Format: int32 */
+            unreadMessagesCount?: number;
         };
         ChatModelBaseResponse: {
             isSuccess?: boolean;
@@ -443,6 +446,10 @@ export interface components {
             objectSlug?: string | null;
             objectIdentifier?: string | null;
             isRead?: boolean;
+            content?: string | null;
+            /** Format: date-time */
+            readAt?: string | null;
+            userId?: string | null;
         };
         NotificationModelPagedListBaseResponse: {
             isSuccess?: boolean;
@@ -452,7 +459,7 @@ export interface components {
             metaData?: unknown;
         };
         /** @enum {string} */
-        NotificationTypeEnums: "Invoice" | "Message" | "ProjectUpdate" | "Reminder";
+        NotificationTypeEnums: "Message" | "ProjectComment";
         StartChatCommand: {
             receiverUserId?: string | null;
         };

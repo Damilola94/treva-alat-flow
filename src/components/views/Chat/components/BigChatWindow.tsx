@@ -31,7 +31,7 @@ const BigChatWindow = () => {
   const [, setSelectedChatId] = useState('');
   const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
 
-  const { chatData } = useChat(params);
+  const { chatData, refetch: refetchchatList } = useChat(params);
   const {
     chatByIdData,
     refetch,
@@ -84,6 +84,10 @@ const BigChatWindow = () => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messageList]);
 
+  useEffect(() => {
+    refetchchatList && refetchchatList();
+  }, [chatByIdData]);
+
   return (
     <div className="flex h-[calc(100vh-53px)] overflow-hidden">
       {/* Left chat list */}
@@ -103,7 +107,9 @@ const BigChatWindow = () => {
           {chatList.map((chat) => (
             <div
               key={chat?.sender?.id}
-              className="flex items-start gap-3 px-4 py-3 hover:bg-gray-50 cursor-pointer"
+              className={`flex items-start gap-3 px-4 py-3 hover:bg-gray-50 cursor-pointer ${
+                chat?.hasUnreadMessages ? 'bg-[#EDF4FB]' : 'bg-[#E7E7E7]'
+              }`}
               onClick={() => {
                 setSelectedChatId(chat?.sender?.id || '');
                 setSelectedChat(chat);
@@ -135,11 +141,21 @@ const BigChatWindow = () => {
                   {chat?.lastMessagePreview}
                 </p>
               </div>
-              <p className="text-[11px] text-gray-400">
-                {chat?.lastMessageTime
-                  ? dayJs(chat?.lastMessageTime).format('h:mm A')
-                  : '--'}
-              </p>
+              <div>
+                <p className="text-[11px] text-gray-400">
+                  {chat?.lastMessageTime
+                    ? dayJs(chat?.lastMessageTime).format('h:mm A')
+                    : '--'}
+                </p>
+                {chat?.hasUnreadMessages &&
+                  (chat?.unreadMessagesCount as number) > 0 && (
+                    <p className="text-[11px] text-right text-gray-400">
+                      <span className="p-1 rounded-full bg-[#C4E0FF]">
+                        {chat?.unreadMessagesCount}
+                      </span>
+                    </p>
+                  )}
+              </div>
             </div>
           ))}
         </div>

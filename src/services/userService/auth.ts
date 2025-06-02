@@ -77,9 +77,7 @@ export const authService = userServiceApiSlice.injectEndpoints({
     }),
 
     changePassword: builder.mutation({
-      query: (
-        values: ITrevaUserService['schemas']['ChangePasswordCommand'],
-      ) => ({
+      query: (values) => ({
         url: endpoints.auth.changePassword,
         method: REQUEST_METHODS.POST,
         body: values,
