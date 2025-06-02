@@ -4,7 +4,7 @@ export const PROJECT_SERVICE_BASE_API_URL =
   process.env.NEXT_PUBLIC_PROJECT_SERVICE_API_URL;
 export const CHAT_SERVICE_BASE_API_URL =
   process.env.NEXT_PUBLIC_CHAT_SERVICE_API_URL;
-  export const PAYMENT_SERVICE_BASE_API_URL =
+export const PAYMENT_SERVICE_BASE_API_URL =
   process.env.NEXT_PUBLIC_PAYMENT_SERVICE_API_URL;
 
 export const REQUEST_METHODS = {
@@ -55,6 +55,7 @@ export const endpoints = {
     getCreatives: '/users/creatives',
     getCreativesById: (userId: string) => `/users/creative-detail/${userId}`,
     getUserRatings: (userId: string) => `/users/${userId}/ratings`,
+    updateUserProfile: '/users/update-profile',
   },
 
   // project service
@@ -142,7 +143,7 @@ export const endpoints = {
   },
   invoices: {
     getInvoice: '/invoices',
-    getMyInvoice:(invoiceId: string) => `/invoices/${invoiceId}`,
+    getMyInvoice: (invoiceId: string) => `/invoices/${invoiceId}`,
   },
   notifications: {
     getNotifications: '/notifications',
@@ -167,7 +168,8 @@ export const endpoints = {
   beneficiaryManagement: {
     getBeneficiarymanagement: `/beneficiarymanagement/all`,
     addBeneficiary: `/beneficiarymanagement/create`,
-    deleteBeneficiary:(accountNumber: string) => `/beneficiarymanagement/delete/${accountNumber}`,
+    deleteBeneficiary: (accountNumber: string) =>
+      `/beneficiarymanagement/delete/${accountNumber}`,
   },
   common: {
     getBanks: `/common/banks`,

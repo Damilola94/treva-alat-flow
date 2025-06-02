@@ -1,63 +1,72 @@
 /* eslint-disable @typescript-eslint/comma-dangle */
 /* eslint-disable @typescript-eslint/semi */
-'use client'
+'use client';
 
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react';
 import {
   usePathname,
   useRouter,
   useSelectedLayoutSegments,
-} from 'next/navigation'
-import { ArrowLeft, ArrowRightToBracket, Bell, Logo } from '../svgs'
-import Link from 'next/link'
-import routes from '@/lib/routes'
+} from 'next/navigation';
+import { ArrowLeft, ArrowRightToBracket, Bell, Logo } from '../svgs';
+import Link from 'next/link';
+import routes from '@/lib/routes';
+import { useNotifications } from '@/hooks/Chat';
 
 interface HeaderProps {
-  showBackArrow?: boolean
+  showBackArrow?: boolean;
 }
 
-function capitalizeFirstLetter (text: string) {
+function capitalizeFirstLetter(text: string) {
   return text.replace(/\b\w/g, function (char) {
-    return char.toUpperCase()
-  })
+    return char.toUpperCase();
+  });
 }
 
 const useBreadcrumb = () => {
-  const segments = useSelectedLayoutSegments()
+  const segments = useSelectedLayoutSegments();
 
-  let title = 'Dashboard'
+  let title = 'Dashboard';
 
   if (segments.length) {
-    const sgt = segments[0]
+    const sgt = segments[0];
 
-    title = capitalizeFirstLetter(sgt).replace('-', ' ')
+    title = capitalizeFirstLetter(sgt).replace('-', ' ');
 
     if (title === 'Payment') {
-      title = 'Invoice & Payment'
+      title = 'Invoice & Payment';
     }
     if (title === 'Get Started') {
-      title = 'Complete Onboarding'
+      title = 'Complete Onboarding';
     }
 
-    return <span>{title}</span>
+    return <span>{title}</span>;
   }
 
-  return <span>{title}</span>
-}
+  return <span>{title}</span>;
+};
 
-export function Header ({ showBackArrow = false }: HeaderProps) {
-  const bread = useBreadcrumb()
-  const pt = usePathname()
-  const rt = useRouter()
+export function Header({ showBackArrow = false }: HeaderProps) {
+  const bread = useBreadcrumb();
+  const pt = usePathname();
+  const rt = useRouter();
 
-  const [, setOpen] = useState(false)
+  const [, setOpen] = useState(false);
+  const { notificationCount } = useNotifications();
+
+  const notificationCountData = useMemo(() => {
+    if (!notificationCount?.isSuccess) return null;
+    return notificationCount?.data ?? 0;
+  }, [notificationCount?.data]);
+
+  console.log(notificationCountData);
 
   // Show back arrow only for the specific route pattern
   // const showBackArrow = pt.startsWith('/client/dashboard/project-management/')
 
   useEffect(() => {
-    setOpen(false)
-  }, [pt])
+    setOpen(false);
+  }, [pt]);
 
   return (
     <header className="app_dash_main__hdr">
@@ -73,7 +82,9 @@ export function Header ({ showBackArrow = false }: HeaderProps) {
       <div className="app_dash_main__hdr__title flex space-x-5 justify-center items-center">
         {showBackArrow && (
           <button
-            onClick={() => { rt.back(); }}
+            onClick={() => {
+              rt.back();
+            }}
             className="flex items-center gap-2 text-primary hover:text-primary-dark"
           >
             <ArrowLeft />
@@ -92,5 +103,5 @@ export function Header ({ showBackArrow = false }: HeaderProps) {
         </div>
       </div>
     </header>
-  )
+  );
 }

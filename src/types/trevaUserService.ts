@@ -920,6 +920,58 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/users/update-profile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Update user profile */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "multipart/form-data": {
+                        FirstName?: string;
+                        LastName?: string;
+                        MiddleName?: string;
+                        PhoneNumber?: string;
+                        Bio?: string;
+                        PortfolioLink?: string;
+                        WebsiteUrl?: string;
+                        /** Format: binary */
+                        Picture?: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["UserModelBaseResponse"];
+                        "application/json": components["schemas"]["UserModelBaseResponse"];
+                        "text/json": components["schemas"]["UserModelBaseResponse"];
+                    };
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -928,8 +980,6 @@ export interface components {
         AccountTypeEnums: "Company" | "Individual";
         /** @enum {string} */
         ActorTypeEnums: "Client" | "Creative";
-        /** @enum {string} */
-        AddressTypeEnums: "Home" | "Office" | "Other";
         ChangePasswordCommand: {
             currentPassword: string | null;
             newPassword: string | null;
@@ -949,13 +999,6 @@ export interface components {
         };
         /** @enum {string} */
         CompanySizeEnums: "ElevenToFifty" | "FiftyOneToTwoHundred" | "FiveHundredOneToThousand" | "NotSet" | "OneToTen" | "ThousandOneToTwoThousand" | "TwoHundredOneToFiveHundred" | "TwoThousandPlus";
-        CountryModel: {
-            /** Format: uuid */
-            id?: string;
-            name: string | null;
-            code?: string | null;
-            flagUrl?: string | null;
-        };
         ForgotPasswordCommand: {
             email: string | null;
         };
@@ -1039,12 +1082,6 @@ export interface components {
             email: string | null;
             newPassword: string | null;
             token: string | null;
-        };
-        SocialMediaTypeModel: {
-            /** Format: uuid */
-            id?: string | null;
-            name: string | null;
-            iconUrl?: string | null;
         };
         StateModel: {
             /** Format: uuid */
@@ -1160,15 +1197,12 @@ export interface components {
             metaData?: unknown;
         };
         UserAddressModel: {
-            /** Format: uuid */
-            id?: string | null;
-            addressType?: components["schemas"]["AddressTypeEnums"];
+            addressType?: string | null;
             houseNumber?: string | null;
             street?: string | null;
-            city?: components["schemas"]["CityModel"];
-            state?: components["schemas"]["StateModel"];
-            country?: components["schemas"]["CountryModel"];
-            userId: string | null;
+            city?: string | null;
+            state?: string | null;
+            country?: string | null;
         };
         UserCreativeDetailModel: {
             id?: string | null;
@@ -1219,8 +1253,13 @@ export interface components {
             middleName?: string | null;
             lastName: string | null;
             profilePicture?: string | null;
+            email?: string | null;
             bio?: string | null;
             phoneNumber?: string | null;
+            portfolioLink?: string | null;
+            websiteUrl?: string | null;
+            profession?: string | null;
+            userSocialMedias?: components["schemas"]["UserSocialMediaModel"][] | null;
             userAddresses?: components["schemas"]["UserAddressModel"][] | null;
         };
         UserModelBaseResponse: {
@@ -1265,12 +1304,10 @@ export interface components {
             oneCount?: number;
         };
         UserSocialMediaModel: {
-            /** Format: uuid */
-            id?: string | null;
             url?: string | null;
             username?: string | null;
-            socialMediaType?: components["schemas"]["SocialMediaTypeModel"];
-            userId: string | null;
+            socialMediaTypeName?: string | null;
+            socialMediaTypeIcon?: string | null;
         };
         VerifyAccountCommand: {
             email: string | null;

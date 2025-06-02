@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useState } from 'react';
 import { Footer, Header, Sidebar } from '@/components/shared/dashboard';
 import { Inter } from 'next/font/google';
-import { Column, Users, GlobeAlt, Grid, Payment } from '@/components/shared';
+import { Column, Users, GlobeAlt, Grid, Payment, Settings } from '@/components/shared';
 import routes from '@/lib/routes';
 // import queries from '@/services/queries/profile';
 import { usePathname } from 'next/navigation';
@@ -63,6 +63,11 @@ function Main({ children }: { children: React.ReactNode }) {
       label: 'Reminders and Notification',
       href: routes.client.dashboard.notifications.path,
       icon: <Notifications />,
+    },
+    {
+      label: 'Settings',
+      href: routes.client.dashboard.settings.profile.path,
+      icon: <Settings/>
     },
   ];
 
