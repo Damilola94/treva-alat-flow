@@ -1,68 +1,89 @@
-"use client"
-import { useEffect, useState } from "react"
-import { Button } from "@/components/ui/button"
-import { CalendarWithMark, CenterModal, Delete, EditIcon, Money4, PlusIcon, SideModal } from "@/components/shared"
-import type { InitialStep4Values } from "@/app/creatives/dashboard/project-management/client-project/create/page"
-import routes from "@/lib/routes"
-import { formatDate } from "@/lib/utils"
-import * as Yup from "yup"
-import { useAppDispatch, useAppSelector } from "@/store"
-import { useFormik } from "formik"
-import { storeValues, nextStep } from "@/store/slices/project"
+'use client';
+import { useEffect, useState } from 'react';
+import { Button } from '@/components/ui/button';
+import {
+  CalendarWithMark,
+  CenterModal,
+  Delete,
+  EditIcon,
+  Money4,
+  PlusIcon,
+  SideModal,
+} from '@/components/shared';
+import type { InitialStep4Values } from '@/app/creatives/dashboard/project-management/client-project/create/page';
+import routes from '@/lib/routes';
+import { formatDate } from '@/lib/utils';
+import * as Yup from 'yup';
+import { useAppDispatch, useAppSelector } from '@/store';
+import { useFormik } from 'formik';
+import { storeValues, nextStep } from '@/store/slices/project';
 import {
   errorToast,
   successToast,
   useCreatePaymentScheduleMutation,
   useGetAllPaymentScheduleQuery,
   useUpdatePaymentScheduleMutation,
-} from "@/services"
-import { useDeletePaymentSchedule } from "@/hooks/Projects/useProjects"
-import { Input } from "@/components/ui/input"
-import { Loader2 } from "lucide-react"
-import { numberFormat } from "@/lib/numbers"
+} from '@/services';
+import { useDeletePaymentSchedule } from '@/hooks/Projects/useProjects';
+import { Input } from '@/components/ui/input';
+import { Loader2 } from 'lucide-react';
+import { numberFormat } from '@/lib/numbers';
 
 interface IProps {
-  handleNext: (formData: InitialStep4Values) => void
-  projectId: string
-  paymentScheduleId?: string
+  handleNext: (formData: InitialStep4Values) => void;
+  projectId: string;
+  paymentScheduleId?: string;
 }
 
 interface PaymentSchedule {
-  paymentScheduleId: string
-  dueDate: string
-  amount: number
+  paymentScheduleId: string;
+  dueDate: string;
+  amount: number;
 }
 
 const validationSchema = Yup.object({
-  amount: Yup.string().required("Amount is required"),
-  dueDate: Yup.string().required("Due date is required"),
-})
+  amount: Yup.string().required('Amount is required'),
+  dueDate: Yup.string().required('Due date is required'),
+});
 
 export function ProjectPaymentSchedule(props: IProps) {
-  const { handleNext, projectId } = props
-  const dispatch = useAppDispatch()
+  const { handleNext, projectId } = props;
+  const dispatch = useAppDispatch();
 
   // Get values from Redux store
-  const { amount, dueDate, projectId: projectIdStore, } = useAppSelector((state) => state?.project)
-    const projectIdAPI: string = projectIdStore ? projectIdStore : projectId
+  const {
+    amount,
+    dueDate,
+    projectId: projectIdStore,
+  } = useAppSelector((state) => state?.project);
+  const projectIdAPI: string = projectIdStore ? projectIdStore : projectId;
 
-  const [createPaymentSchedule, { isLoading }] = useCreatePaymentScheduleMutation()
-  const { data: paymentScheduleData, refetch } = useGetAllPaymentScheduleQuery(projectIdAPI)
-  const [updatedPaymentSchedule] = useUpdatePaymentScheduleMutation()
-  const { deletePaymentSchedule } = useDeletePaymentSchedule()
+  console.log(projectIdAPI);
+  console.log(projectId);
+  console.log(projectIdStore);
 
-  const [editPaymentSchedule, setEditPaymentSchedule] = useState(false)
-  const [addPaymentSchedule, setAddPaymentSchedule] = useState(false)
-  const [isDecisionModalOpen, setIsDecisionModalOpen] = useState(false)
-  const [paymentSchedule, setPaymentSchedule] = useState<PaymentSchedule[]>([])
+  const [createPaymentSchedule, { isLoading }] =
+    useCreatePaymentScheduleMutation();
+  const { data: paymentScheduleData, refetch } =
+    useGetAllPaymentScheduleQuery(projectIdAPI);
+  const [updatedPaymentSchedule] = useUpdatePaymentScheduleMutation();
+  const { deletePaymentSchedule } = useDeletePaymentSchedule();
 
-  const [selectedPaymentSchedule, setSelectedPaymentSchedule] = useState<PaymentSchedule | null>(null)
-  const [paymentScheduleToDelete, setPaymentScheduleToDelete] = useState<string | null>(null)
+  const [editPaymentSchedule, setEditPaymentSchedule] = useState(false);
+  const [addPaymentSchedule, setAddPaymentSchedule] = useState(false);
+  const [isDecisionModalOpen, setIsDecisionModalOpen] = useState(false);
+  const [paymentSchedule, setPaymentSchedule] = useState<PaymentSchedule[]>([]);
+
+  const [selectedPaymentSchedule, setSelectedPaymentSchedule] =
+    useState<PaymentSchedule | null>(null);
+  const [paymentScheduleToDelete, setPaymentScheduleToDelete] = useState<
+    string | null
+  >(null);
 
   // Form for adding payments schedule
   const addFormik = useFormik({
     initialValues: {
-      dueDate: dueDate || "",
+      dueDate: dueDate || '',
       amount: amount || 0,
     },
     validationSchema,
@@ -72,10 +93,10 @@ export function ProjectPaymentSchedule(props: IProps) {
         await createPaymentSchedule({
           projectId,
           ...values,
-        }).unwrap()
-        successToast("Payment schedule created successfully")
-        resetForm()
-        setAddPaymentSchedule(false)
+        }).unwrap();
+        successToast('Payment schedule created successfully');
+        resetForm();
+        setAddPaymentSchedule(false);
 
         // Store in Redux
         dispatch(
@@ -83,37 +104,39 @@ export function ProjectPaymentSchedule(props: IProps) {
             amount: values.amount,
             dueDate: values.dueDate,
           }),
-        )
+        );
 
-        refetch()
+        refetch();
       } catch (error) {
-        errorToast("Failed to create payment schedule")
+        errorToast('Failed to create payment schedule');
       }
     },
-  })
+  });
 
   // Form for editing payments schedule
   const editFormik = useFormik({
     initialValues: {
       amount: 0,
-      dueDate: "",
+      dueDate: '',
     },
     validationSchema,
     onSubmit: async (values) => {
-      if (!selectedPaymentSchedule) return
+      if (!selectedPaymentSchedule) return;
 
       try {
         const response = await updatedPaymentSchedule({
           projectId,
           paymentScheduleId: selectedPaymentSchedule.paymentScheduleId,
           ...values,
-        }).unwrap()
-        const updated = response?.data
+        }).unwrap();
+        const updated = response?.data;
         if (updated?.id) {
           setPaymentSchedule((prev) => {
             const updatedSchedules = prev.map((p) =>
-              p.paymentScheduleId === updated.id ? { ...p, ...values, paymentScheduleId: updated.id } : p,
-            )
+              p.paymentScheduleId === updated.id
+                ? { ...p, ...values, paymentScheduleId: updated.id }
+                : p,
+            );
 
             // Store in Redux
             dispatch(
@@ -123,22 +146,22 @@ export function ProjectPaymentSchedule(props: IProps) {
                   dueDate: p.dueDate,
                 })),
               }),
-            )
+            );
 
-            return updatedSchedules
-          })
-          successToast(response?.message || "Payment updated successfully")
-          setEditPaymentSchedule(false)
-          setSelectedPaymentSchedule(null)
-          refetch()
+            return updatedSchedules;
+          });
+          successToast(response?.message || 'Payment updated successfully');
+          setEditPaymentSchedule(false);
+          setSelectedPaymentSchedule(null);
+          refetch();
         } else {
-          errorToast(response?.message || "Something went wrong")
+          errorToast(response?.message || 'Something went wrong');
         }
       } catch (error) {
-        errorToast("Failed to update payment")
+        errorToast('Failed to update payment');
       }
     },
-  })
+  });
 
   // Store form values in Redux on input change
   useEffect(() => {
@@ -147,44 +170,49 @@ export function ProjectPaymentSchedule(props: IProps) {
         amount: addFormik.values.amount,
         dueDate: addFormik.values.dueDate,
       }),
-    )
-  }, [addFormik.values, dispatch])
+    );
+  }, [addFormik.values, dispatch]);
 
   const handleEditClick = (paymentItem: PaymentSchedule) => {
-    setSelectedPaymentSchedule(paymentItem)
+    setSelectedPaymentSchedule(paymentItem);
     editFormik.setValues({
       amount: paymentItem.amount || 0,
-      dueDate: paymentItem.dueDate || "",
-    })
-    setEditPaymentSchedule(true)
-  }
+      dueDate: paymentItem.dueDate || '',
+    });
+    setEditPaymentSchedule(true);
+  };
 
   const handleDeleteClick = (paymentId: string) => {
-    setPaymentScheduleToDelete(paymentId)
-    setIsDecisionModalOpen(true)
-  }
+    setPaymentScheduleToDelete(paymentId);
+    setIsDecisionModalOpen(true);
+  };
 
   const handleDelete = async () => {
-    if (!paymentScheduleToDelete) return
+    if (!paymentScheduleToDelete) return;
 
     try {
-      await deletePaymentSchedule({
+      const response = await deletePaymentSchedule({
         extraCostId: paymentScheduleToDelete,
         projectId,
-      }).unwrap()
-      successToast("Payment deleted successfully")
-      setIsDecisionModalOpen(false)
-      setPaymentScheduleToDelete(null)
-      refetch()
+      }).unwrap();
+
+      if (response?.isSuccess) {
+        successToast('Payment deleted successfully');
+        setIsDecisionModalOpen(false);
+        setPaymentScheduleToDelete(null);
+        refetch();
+      } else {
+        errorToast(response?.message || 'Something went wrong');
+      }
     } catch (error) {
-      errorToast("Failed to delete payment")
+      errorToast('Failed to delete payment');
     }
-  }
+  };
 
   const handleSkip = () => {
-   localStorage.setItem(`project-${projectId}-step`, '4');
-    window.location.href = routes.creatives.dashboard.projectManagement.path
-  }
+    localStorage.setItem(`project-${projectId}-step`, '4');
+    window.location.href = routes.creatives.dashboard.projectManagement.path;
+  };
 
   const handleNextStep = () => {
     const step4Data = {
@@ -192,24 +220,24 @@ export function ProjectPaymentSchedule(props: IProps) {
         amount: d.amount,
         dueDate: d.dueDate,
       })),
-    }
+    };
 
     // Store in Redux and move to next step
-    dispatch(storeValues(step4Data))
-    dispatch(nextStep())
+    dispatch(storeValues(step4Data));
+    dispatch(nextStep());
 
-    handleNext(step4Data)
-  }
+    handleNext(step4Data);
+  };
 
   useEffect(() => {
     if (Array.isArray(paymentScheduleData?.data)) {
       const mappedSchedules = paymentScheduleData.data.map((item) => ({
-        paymentScheduleId: item.id ?? "",
-        dueDate: item.dueDate ?? "",
+        paymentScheduleId: item.id ?? '',
+        dueDate: item.dueDate ?? '',
         amount: item.amount ?? 0,
-      }))
+      }));
 
-      setPaymentSchedule(mappedSchedules)
+      setPaymentSchedule(mappedSchedules);
 
       dispatch(
         storeValues({
@@ -218,19 +246,19 @@ export function ProjectPaymentSchedule(props: IProps) {
             dueDate: p.dueDate,
           })),
         }),
-      )
+      );
     } else {
-      setPaymentSchedule([])
+      setPaymentSchedule([]);
     }
-  }, [paymentScheduleData, dispatch])
+  }, [paymentScheduleData, dispatch]);
 
   return (
     <div className="app_get_started_professional_details py-6 px-4 flex flex-col gap-14">
       <SideModal
         isOpen={addPaymentSchedule}
         onClose={() => {
-          setAddPaymentSchedule(false)
-          addFormik.resetForm()
+          setAddPaymentSchedule(false);
+          addFormik.resetForm();
         }}
         title="Add payment schedule"
         showFooter
@@ -240,8 +268,8 @@ export function ProjectPaymentSchedule(props: IProps) {
             <button
               className="border p-5 rounded-full w-full border-[#F1F1F1] text-[#7B37F0]"
               onClick={() => {
-                setAddPaymentSchedule(false)
-                addFormik.resetForm()
+                setAddPaymentSchedule(false);
+                addFormik.resetForm();
               }}
             >
               Close
@@ -251,7 +279,11 @@ export function ProjectPaymentSchedule(props: IProps) {
               onClick={() => addFormik.handleSubmit()}
               disabled={isLoading}
             >
-              {isLoading ? <Loader2 size={18} className="animate-spin mx-auto" /> : "Add"}
+              {isLoading ? (
+                <Loader2 size={18} className="animate-spin mx-auto" />
+              ) : (
+                'Add'
+              )}
             </button>
           </div>
         }
@@ -263,13 +295,15 @@ export function ProjectPaymentSchedule(props: IProps) {
               name="amount"
               value={addFormik.values.amount}
               onChange={(e) => {
-                addFormik.handleChange(e)
-                dispatch(storeValues({ amount: e.target.value }))
+                addFormik.handleChange(e);
+                dispatch(storeValues({ amount: e.target.value }));
               }}
               onBlur={addFormik.handleBlur}
             />
             {addFormik.touched.amount && addFormik.errors.amount && (
-              <p className="text-red-500 text-sm mt-1">{addFormik.errors.amount}</p>
+              <p className="text-red-500 text-sm mt-1">
+                {addFormik.errors.amount}
+              </p>
             )}
           </div>
           <div>
@@ -280,13 +314,15 @@ export function ProjectPaymentSchedule(props: IProps) {
               name="dueDate"
               value={addFormik.values.dueDate}
               onChange={(e) => {
-                addFormik.handleChange(e)
-                dispatch(storeValues({ dueDate: e.target.value }))
+                addFormik.handleChange(e);
+                dispatch(storeValues({ dueDate: e.target.value }));
               }}
               onBlur={addFormik.handleBlur}
             />
             {addFormik.touched.dueDate && addFormik.errors.dueDate && (
-              <p className="text-red-500 text-sm mt-1">{addFormik.errors.dueDate}</p>
+              <p className="text-red-500 text-sm mt-1">
+                {addFormik.errors.dueDate}
+              </p>
             )}
           </div>
         </form>
@@ -295,9 +331,9 @@ export function ProjectPaymentSchedule(props: IProps) {
       <SideModal
         isOpen={editPaymentSchedule}
         onClose={() => {
-          setEditPaymentSchedule(false)
-          setSelectedPaymentSchedule(null)
-          editFormik.resetForm()
+          setEditPaymentSchedule(false);
+          setSelectedPaymentSchedule(null);
+          editFormik.resetForm();
         }}
         title="Edit payment schedule"
         showFooter
@@ -307,9 +343,9 @@ export function ProjectPaymentSchedule(props: IProps) {
             <button
               className="border p-5 rounded-full w-full border-[#F1F1F1] text-[#7B37F0]"
               onClick={() => {
-                setEditPaymentSchedule(false)
-                setSelectedPaymentSchedule(null)
-                editFormik.resetForm()
+                setEditPaymentSchedule(false);
+                setSelectedPaymentSchedule(null);
+                editFormik.resetForm();
               }}
             >
               Close
@@ -320,7 +356,11 @@ export function ProjectPaymentSchedule(props: IProps) {
               disabled={isLoading}
               type="submit"
             >
-              {isLoading ? <Loader2 size={18} className="animate-spin mx-auto" /> : "Update"}
+              {isLoading ? (
+                <Loader2 size={18} className="animate-spin mx-auto" />
+              ) : (
+                'Update'
+              )}
             </button>
           </div>
         }
@@ -335,7 +375,9 @@ export function ProjectPaymentSchedule(props: IProps) {
               onBlur={editFormik.handleBlur}
             />
             {editFormik.touched.amount && editFormik.errors.amount && (
-              <p className="text-red-500 text-sm mt-1">{editFormik.errors.amount}</p>
+              <p className="text-red-500 text-sm mt-1">
+                {editFormik.errors.amount}
+              </p>
             )}
           </div>
           <div>
@@ -347,7 +389,9 @@ export function ProjectPaymentSchedule(props: IProps) {
               onBlur={editFormik.handleBlur}
             />
             {editFormik.touched.dueDate && editFormik.errors.dueDate && (
-              <p className="text-red-500 text-sm mt-1">{editFormik.errors.dueDate}</p>
+              <p className="text-red-500 text-sm mt-1">
+                {editFormik.errors.dueDate}
+              </p>
             )}
           </div>
         </form>
@@ -357,8 +401,8 @@ export function ProjectPaymentSchedule(props: IProps) {
         headerImageType={3}
         isOpen={isDecisionModalOpen}
         onClose={() => {
-          setIsDecisionModalOpen(false)
-          setPaymentScheduleToDelete(null)
+          setIsDecisionModalOpen(false);
+          setPaymentScheduleToDelete(null);
         }}
         showFooter
         footerChildren={
@@ -366,8 +410,8 @@ export function ProjectPaymentSchedule(props: IProps) {
             <button
               className="border p-3 rounded-full w-full border-[#F1F1F1] text-[#7B37F0]"
               onClick={() => {
-                setIsDecisionModalOpen(false)
-                setPaymentScheduleToDelete(null)
+                setIsDecisionModalOpen(false);
+                setPaymentScheduleToDelete(null);
               }}
             >
               Cancel
@@ -378,13 +422,19 @@ export function ProjectPaymentSchedule(props: IProps) {
               disabled={isLoading}
               type="submit"
             >
-              {isLoading ? <Loader2 size={18} className="animate-spin mx-auto" /> : "Delete"}
+              {isLoading ? (
+                <Loader2 size={18} className="animate-spin mx-auto" />
+              ) : (
+                'Delete'
+              )}
             </button>
           </div>
         }
       >
         <div className="flex flex-col items-center justify-center gap-4">
-          <p className="font-semibold">Are you sure you want to delete payment?</p>
+          <p className="font-semibold">
+            Are you sure you want to delete payment?
+          </p>
           <p>Payment will be deleted permanently</p>
         </div>
       </CenterModal>
@@ -392,17 +442,19 @@ export function ProjectPaymentSchedule(props: IProps) {
       <div className="app_get_started_professional_details__form flex flex-col gap-10 !overflow-y-auto">
         <h3 className="app_get_started_professional_details__form__title">
           Billing Schedule <br />
-          <span className="text-[#6D6D6D] text-sm">Setup how you want to be paid.</span>
+          <span className="text-[#6D6D6D] text-sm">
+            Setup how you want to be paid.
+          </span>
         </h3>
         <div className="">
           <button
             className="flex gap-3 text-[#7D6CE8]"
             onClick={() => {
-              setAddPaymentSchedule(true)
+              setAddPaymentSchedule(true);
             }}
           >
             <PlusIcon fill="var(--treva-purple-500)" />
-            {paymentSchedule.length > 0 ? "Add another payment" : "Add payment"}
+            {paymentSchedule.length > 0 ? 'Add another payment' : 'Add payment'}
           </button>
         </div>
         <div>
@@ -424,8 +476,16 @@ export function ProjectPaymentSchedule(props: IProps) {
                       {item.amount}
                     </h4>
                     <div className="flex gap-4">
-                      <EditIcon className="cursor-pointer " fill="#888888" onClick={() => handleEditClick(item)} />
-                      <button onClick={() => handleDeleteClick(item.paymentScheduleId)}>
+                      <EditIcon
+                        className="cursor-pointer "
+                        fill="#888888"
+                        onClick={() => handleEditClick(item)}
+                      />
+                      <button
+                        onClick={() =>
+                          handleDeleteClick(item.paymentScheduleId)
+                        }
+                      >
                         <Delete className="cursor-pointer" />
                       </button>
                     </div>
@@ -470,11 +530,12 @@ export function ProjectPaymentSchedule(props: IProps) {
             backgroundColor="primary-blue-500"
             className="w-1/2 py-3 px-12"
             onClick={handleNextStep}
+            disabled={paymentSchedule?.length < 1}
           >
             Save and continue
           </Button>
         </div>
       </div>
     </div>
-  )
+  );
 }

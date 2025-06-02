@@ -1,73 +1,86 @@
-"use client"
-import { useEffect, useState } from "react"
-import { Button } from "@/components/ui/button"
-import { CenterModal, Delete, EditIcon, Money4, PlusIcon, SideModal } from "@/components/shared"
-import type { InitialStep3Values } from "@/app/creatives/dashboard/project-management/client-project/create/page"
-import routes from "@/lib/routes"
-import { Input } from "@/components/ui/input"
-import { useAppDispatch, useAppSelector } from "@/store"
-import { storeValues, nextStep } from "@/store/slices/project"
-import * as Yup from "yup"
+'use client';
+import { useEffect, useState } from 'react';
+import { Button } from '@/components/ui/button';
+import {
+  CenterModal,
+  Delete,
+  EditIcon,
+  Money4,
+  PlusIcon,
+  SideModal,
+} from '@/components/shared';
+import type { InitialStep3Values } from '@/app/creatives/dashboard/project-management/client-project/create/page';
+import routes from '@/lib/routes';
+import { Input } from '@/components/ui/input';
+import { useAppDispatch, useAppSelector } from '@/store';
+import { storeValues, nextStep } from '@/store/slices/project';
+import * as Yup from 'yup';
 import {
   errorToast,
   successToast,
   useCreateExtraCostMutation,
   useGetAllExtraCostsQuery,
   useUpdateExtraCostMutation,
-} from "@/services"
-import { Loader2 } from "lucide-react"
-import { useFormik } from "formik"
-import { useDeletePayment } from "@/hooks/Projects/useProjects"
-import type { Deliverable } from "./add-deliverables"
-import { formatDate } from "@/lib/utils"
-import { numberFormat } from "@/lib/numbers"
+} from '@/services';
+import { Loader2 } from 'lucide-react';
+import { useFormik } from 'formik';
+import { useDeletePayment } from '@/hooks/Projects/useProjects';
+import type { Deliverable } from './add-deliverables';
+import { formatDate } from '@/lib/utils';
+import { numberFormat } from '@/lib/numbers';
 
 interface IProps {
-  handleNext: (formData: InitialStep3Values) => void
-  projectId: string
-  extraCostId?: string
-  deliverables: Deliverable[]
+  handleNext: (formData: InitialStep3Values) => void;
+  projectId: string;
+  extraCostId?: string;
+  deliverables: Deliverable[];
 }
 
 interface PaymentSchedule {
-  extraCostId: string
-  name: string
-  amount: number
-  description: string
+  extraCostId: string;
+  name: string;
+  amount: number;
+  description: string;
 }
 
 const validationSchema = Yup.object({
-  name: Yup.string().required("Title is required"),
-  amount: Yup.string().required("Amount is required"),
-  description: Yup.string().required("Description is required"),
-})
+  name: Yup.string().required('Title is required'),
+  amount: Yup.string().required('Amount is required'),
+  description: Yup.string().required('Description is required'),
+});
 
 export default function ProjectPayment(props: IProps) {
-  const { handleNext, projectId, deliverables: initialDeliverables } = props
-  const dispatch = useAppDispatch()
+  const { handleNext, projectId, deliverables: initialDeliverables } = props;
+  const dispatch = useAppDispatch();
 
-  const { paymentTitle, paymentAmount, paymentDescription, projectId: projectIdStore, } = useAppSelector((state) => state?.project)
-  const projectIdAPI = projectIdStore ? projectIdStore : projectId
+  const {
+    paymentTitle,
+    paymentAmount,
+    paymentDescription,
+    projectId: projectIdStore,
+  } = useAppSelector((state) => state?.project);
+  const projectIdAPI = projectIdStore ? projectIdStore : projectId;
 
-  const [createPayment, { isLoading }] = useCreateExtraCostMutation()
-const { data: paymentData, refetch } = useGetAllExtraCostsQuery(projectIdAPI)
-  const [updatedPayment] = useUpdateExtraCostMutation()
-  const { deletePayment } = useDeletePayment()
+  const [createPayment, { isLoading }] = useCreateExtraCostMutation();
+  const { data: paymentData, refetch } = useGetAllExtraCostsQuery(projectIdAPI);
+  const [updatedPayment] = useUpdateExtraCostMutation();
+  const { deletePayment } = useDeletePayment();
 
-  const [editExpenses, setEditExpenses] = useState(false)
-  const [addExpenses, setAddExpenses] = useState(false)
-  const [isDecisionModalOpen, setIsDecisionModalOpen] = useState(false)
-  const [payment, setPayment] = useState<PaymentSchedule[]>([])
-  const [selectedPayment, setSelectedPayment] = useState<PaymentSchedule | null>(null)
-  const [paymentToDelete, setPaymentToDelete] = useState<string | null>(null)
-  const [deliverables, setDeliverables] = useState<Deliverable[]>([])
+  const [editExpenses, setEditExpenses] = useState(false);
+  const [addExpenses, setAddExpenses] = useState(false);
+  const [isDecisionModalOpen, setIsDecisionModalOpen] = useState(false);
+  const [payment, setPayment] = useState<PaymentSchedule[]>([]);
+  const [selectedPayment, setSelectedPayment] =
+    useState<PaymentSchedule | null>(null);
+  const [paymentToDelete, setPaymentToDelete] = useState<string | null>(null);
+  const [deliverables, setDeliverables] = useState<Deliverable[]>([]);
 
   // Form for adding payments
   const addFormik = useFormik({
     initialValues: {
-      name: paymentTitle || "",
+      name: paymentTitle || '',
       amount: paymentAmount || 0,
-      description: paymentDescription || "",
+      description: paymentDescription || '',
     },
     validationSchema,
     enableReinitialize: true,
@@ -76,9 +89,9 @@ const { data: paymentData, refetch } = useGetAllExtraCostsQuery(projectIdAPI)
         await createPayment({
           projectId,
           ...values,
-        }).unwrap()
-        resetForm()
-        setAddExpenses(false)
+        }).unwrap();
+        resetForm();
+        setAddExpenses(false);
 
         // Store in Redux
         dispatch(
@@ -87,38 +100,40 @@ const { data: paymentData, refetch } = useGetAllExtraCostsQuery(projectIdAPI)
             amount: values.amount,
             paymentDescription: values.description,
           }),
-        )
+        );
 
-        refetch()
+        refetch();
       } catch (error) {
-        console.error("Failed to create payment:", error)
+        console.error('Failed to create payment:', error);
       }
     },
-  })
+  });
 
   // Form for editing payments
   const editFormik = useFormik({
     initialValues: {
-      name: "",
+      name: '',
       amount: 0,
-      description: "",
+      description: '',
     },
     validationSchema,
     onSubmit: async (values) => {
-      if (!selectedPayment) return
+      if (!selectedPayment) return;
 
       try {
         const response = await updatedPayment({
           projectId,
           extraCostId: selectedPayment.extraCostId,
           ...values,
-        }).unwrap()
-        const updated = response?.data
+        }).unwrap();
+        const updated = response?.data;
         if (updated?.id) {
           setPayment((prev) => {
             const updatedPayments = prev.map((p) =>
-              p.extraCostId === updated.id ? { ...p, ...values, extraCostId: updated.id } : p,
-            )
+              p.extraCostId === updated.id
+                ? { ...p, ...values, extraCostId: updated.id }
+                : p,
+            );
 
             // Store in Redux
             dispatch(
@@ -129,21 +144,21 @@ const { data: paymentData, refetch } = useGetAllExtraCostsQuery(projectIdAPI)
                   description: p.description,
                 })),
               }),
-            )
+            );
 
-            return updatedPayments
-          })
-          setEditExpenses(false)
-          setSelectedPayment(null)
-          refetch()
+            return updatedPayments;
+          });
+          setEditExpenses(false);
+          setSelectedPayment(null);
+          refetch();
         } else {
-          console.warn("Payment ID not found in response.")
+          console.warn('Payment ID not found in response.');
         }
       } catch (error) {
-        console.error("Failed to update payment:", error)
+        console.error('Failed to update payment:', error);
       }
     },
-  })
+  });
 
   useEffect(() => {
     dispatch(
@@ -152,45 +167,45 @@ const { data: paymentData, refetch } = useGetAllExtraCostsQuery(projectIdAPI)
         amount: addFormik.values.amount,
         paymentDescription: addFormik.values.description,
       }),
-    )
-  }, [addFormik.values, dispatch])
+    );
+  }, [addFormik.values, dispatch]);
 
   const handleEditClick = (paymentItem: PaymentSchedule) => {
-    setSelectedPayment(paymentItem)
+    setSelectedPayment(paymentItem);
     editFormik.setValues({
-      name: paymentItem.name || "",
+      name: paymentItem.name || '',
       amount: paymentItem.amount || 0,
-      description: paymentItem.description || "",
-    })
-    setEditExpenses(true)
-  }
+      description: paymentItem.description || '',
+    });
+    setEditExpenses(true);
+  };
 
   const handleDeleteClick = (paymentId: string) => {
-    setPaymentToDelete(paymentId)
-    setIsDecisionModalOpen(true)
-  }
+    setPaymentToDelete(paymentId);
+    setIsDecisionModalOpen(true);
+  };
 
   const handleDelete = async () => {
-    if (!paymentToDelete) return
+    if (!paymentToDelete) return;
 
     try {
       await deletePayment({
         extraCostId: paymentToDelete,
         projectId,
-      }).unwrap()
-      successToast("Payment deleted successfully")
-      setIsDecisionModalOpen(false)
-      setPaymentToDelete(null)
-      refetch()
+      }).unwrap();
+      successToast('Payment deleted successfully');
+      setIsDecisionModalOpen(false);
+      setPaymentToDelete(null);
+      refetch();
     } catch (error) {
-      errorToast("Failed to delete payment")
+      errorToast('Failed to delete payment');
     }
-  }
+  };
 
   const handleSkip = () => {
     localStorage.setItem(`project-${projectId}-step`, '3');
-    window.location.href = routes.creatives.dashboard.projectManagement.path
-  }
+    window.location.href = routes.creatives.dashboard.projectManagement.path;
+  };
 
   const handleNextStep = () => {
     const step3Data = {
@@ -199,23 +214,23 @@ const { data: paymentData, refetch } = useGetAllExtraCostsQuery(projectIdAPI)
         amount: d.amount,
         description: d.description,
       })),
-    }
-    dispatch(storeValues(step3Data))
-    dispatch(nextStep())
+    };
+    dispatch(storeValues(step3Data));
+    dispatch(nextStep());
 
-    handleNext(step3Data)
-  }
+    handleNext(step3Data);
+  };
 
   useEffect(() => {
     if (Array.isArray(paymentData?.data)) {
       const mappedPayments = paymentData.data.map((item) => ({
-        extraCostId: item.id ?? "",
-        name: item.name ?? "",
+        extraCostId: item.id ?? '',
+        name: item.name ?? '',
         amount: item.amount ?? 0,
-        description: item.description ?? "",
-      }))
+        description: item.description ?? '',
+      }));
 
-      setPayment(mappedPayments)
+      setPayment(mappedPayments);
 
       dispatch(
         storeValues({
@@ -225,26 +240,40 @@ const { data: paymentData, refetch } = useGetAllExtraCostsQuery(projectIdAPI)
             description: p.description,
           })),
         }),
-      )
+      );
     } else {
-      setPayment([])
+      setPayment([]);
     }
-  }, [paymentData, dispatch])
+  }, [paymentData, dispatch]);
 
   useEffect(() => {
     if (initialDeliverables && Array.isArray(initialDeliverables)) {
-      setDeliverables(initialDeliverables)
+      setDeliverables(initialDeliverables);
     }
-  }, [initialDeliverables])
+  }, [initialDeliverables]);
 
-  const total = deliverables.reduce((sum, d) => sum +( d.total || d.unitAmount), 0)
+  const total = deliverables.reduce(
+    (sum, d) => sum + (d.total || d.unitAmount),
+    0,
+  );
 
-  const startDates = deliverables.map((d) => new Date(d.startDate))
-  const endDates = deliverables.map((d) => new Date(d.endDate))
-  const minStart = startDates.length ? new Date(Math.min(...startDates.map((d) => d.getTime()))) : null
-  const maxEnd = endDates.length ? new Date(Math.max(...endDates.map((d) => d.getTime()))) : null
+  const startDates = deliverables.map((d) => new Date(d.startDate));
+  const endDates = deliverables.map((d) => new Date(d.endDate));
+  const minStart = startDates.length
+    ? new Date(Math.min(...startDates.map((d) => d.getTime())))
+    : null;
+  const maxEnd = endDates.length
+    ? new Date(Math.max(...endDates.map((d) => d.getTime())))
+    : null;
   const timeline =
-    minStart && maxEnd ? `${formatDate(minStart.toISOString())} - ${formatDate(maxEnd.toISOString())}` : ""
+    minStart && maxEnd
+      ? `${formatDate(minStart.toISOString())} - ${formatDate(
+          maxEnd.toISOString(),
+        )}`
+      : '';
+
+  console.log(addFormik?.errors);
+  console.log(editFormik?.errors);
 
   return (
     <div className="app_get_started_professional_details py-6 px-4 flex flex-col gap-14">
@@ -252,8 +281,8 @@ const { data: paymentData, refetch } = useGetAllExtraCostsQuery(projectIdAPI)
       <SideModal
         isOpen={addExpenses}
         onClose={() => {
-          setAddExpenses(false)
-          addFormik.resetForm()
+          setAddExpenses(false);
+          addFormik.resetForm();
         }}
         title="Add extra expenses"
         showFooter
@@ -263,8 +292,8 @@ const { data: paymentData, refetch } = useGetAllExtraCostsQuery(projectIdAPI)
             <button
               className="border p-5 rounded-full w-full border-[#F1F1F1] text-[#7B37F0]"
               onClick={() => {
-                setAddExpenses(false)
-                addFormik.resetForm()
+                setAddExpenses(false);
+                addFormik.resetForm();
               }}
             >
               Close
@@ -274,7 +303,11 @@ const { data: paymentData, refetch } = useGetAllExtraCostsQuery(projectIdAPI)
               onClick={() => addFormik.handleSubmit()}
               disabled={isLoading}
             >
-              {isLoading ? <Loader2 size={18} className="animate-spin mx-auto" /> : "Add"}
+              {isLoading ? (
+                <Loader2 size={18} className="animate-spin mx-auto" />
+              ) : (
+                'Add'
+              )}
             </button>
           </div>
         }
@@ -286,13 +319,15 @@ const { data: paymentData, refetch } = useGetAllExtraCostsQuery(projectIdAPI)
               name="name"
               value={addFormik.values.name}
               onChange={(e) => {
-                addFormik.handleChange(e)
-                dispatch(storeValues({ paymentTitle: e.target.value }))
+                addFormik.handleChange(e);
+                dispatch(storeValues({ paymentTitle: e.target.value }));
               }}
               onBlur={addFormik.handleBlur}
             />
             {addFormik.touched.name && addFormik.errors.name && (
-              <p className="text-red-500 text-sm mt-1">{addFormik.errors.name}</p>
+              <p className="text-red-500 text-sm mt-1">
+                {addFormik.errors.name}
+              </p>
             )}
           </div>
           <div>
@@ -301,13 +336,15 @@ const { data: paymentData, refetch } = useGetAllExtraCostsQuery(projectIdAPI)
               name="amount"
               value={addFormik.values.amount}
               onChange={(e) => {
-                addFormik.handleChange(e)
-                dispatch(storeValues({ amount: e.target.value }))
+                addFormik.handleChange(e);
+                dispatch(storeValues({ amount: e.target.value }));
               }}
               onBlur={addFormik.handleBlur}
             />
             {addFormik.touched.amount && addFormik.errors.amount && (
-              <p className="text-red-500 text-sm mt-1">{addFormik.errors.amount}</p>
+              <p className="text-red-500 text-sm mt-1">
+                {addFormik.errors.amount}
+              </p>
             )}
           </div>
           <div>
@@ -316,8 +353,8 @@ const { data: paymentData, refetch } = useGetAllExtraCostsQuery(projectIdAPI)
               name="description"
               value={addFormik.values.description}
               onChange={(e) => {
-                addFormik.handleChange(e)
-                dispatch(storeValues({ paymentDescription: e.target.value }))
+                addFormik.handleChange(e);
+                dispatch(storeValues({ paymentDescription: e.target.value }));
               }}
               onBlur={addFormik.handleBlur}
             />
@@ -329,9 +366,9 @@ const { data: paymentData, refetch } = useGetAllExtraCostsQuery(projectIdAPI)
       <SideModal
         isOpen={editExpenses}
         onClose={() => {
-          setEditExpenses(false)
-          setSelectedPayment(null)
-          editFormik.resetForm()
+          setEditExpenses(false);
+          setSelectedPayment(null);
+          editFormik.resetForm();
         }}
         title="Edit extra expenses"
         showFooter
@@ -341,9 +378,9 @@ const { data: paymentData, refetch } = useGetAllExtraCostsQuery(projectIdAPI)
             <button
               className="border p-5 rounded-full w-full border-[#F1F1F1] text-[#7B37F0]"
               onClick={() => {
-                setEditExpenses(false)
-                setSelectedPayment(null)
-                editFormik.resetForm()
+                setEditExpenses(false);
+                setSelectedPayment(null);
+                editFormik.resetForm();
               }}
             >
               Close
@@ -354,7 +391,11 @@ const { data: paymentData, refetch } = useGetAllExtraCostsQuery(projectIdAPI)
               disabled={isLoading}
               type="submit"
             >
-              {isLoading ? <Loader2 size={18} className="animate-spin mx-auto" /> : "Update"}
+              {isLoading ? (
+                <Loader2 size={18} className="animate-spin mx-auto" />
+              ) : (
+                'Update'
+              )}
             </button>
           </div>
         }
@@ -369,7 +410,9 @@ const { data: paymentData, refetch } = useGetAllExtraCostsQuery(projectIdAPI)
               onBlur={editFormik.handleBlur}
             />
             {editFormik.touched.name && editFormik.errors.name && (
-              <p className="text-red-500 text-sm mt-1">{editFormik.errors.name}</p>
+              <p className="text-red-500 text-sm mt-1">
+                {editFormik.errors.name}
+              </p>
             )}
           </div>
           <div>
@@ -381,7 +424,9 @@ const { data: paymentData, refetch } = useGetAllExtraCostsQuery(projectIdAPI)
               onBlur={editFormik.handleBlur}
             />
             {editFormik.touched.amount && editFormik.errors.amount && (
-              <p className="text-red-500 text-sm mt-1">{editFormik.errors.amount}</p>
+              <p className="text-red-500 text-sm mt-1">
+                {editFormik.errors.amount}
+              </p>
             )}
           </div>
           <div>
@@ -401,8 +446,8 @@ const { data: paymentData, refetch } = useGetAllExtraCostsQuery(projectIdAPI)
         headerImageType={3}
         isOpen={isDecisionModalOpen}
         onClose={() => {
-          setIsDecisionModalOpen(false)
-          setPaymentToDelete(null)
+          setIsDecisionModalOpen(false);
+          setPaymentToDelete(null);
         }}
         showFooter
         footerChildren={
@@ -410,8 +455,8 @@ const { data: paymentData, refetch } = useGetAllExtraCostsQuery(projectIdAPI)
             <button
               className="border p-3 rounded-full w-full border-[#F1F1F1] text-[#7B37F0]"
               onClick={() => {
-                setIsDecisionModalOpen(false)
-                setPaymentToDelete(null)
+                setIsDecisionModalOpen(false);
+                setPaymentToDelete(null);
               }}
             >
               Cancel
@@ -422,13 +467,19 @@ const { data: paymentData, refetch } = useGetAllExtraCostsQuery(projectIdAPI)
               disabled={isLoading}
               type="submit"
             >
-              {isLoading ? <Loader2 size={18} className="animate-spin mx-auto" /> : "Delete"}
+              {isLoading ? (
+                <Loader2 size={18} className="animate-spin mx-auto" />
+              ) : (
+                'Delete'
+              )}
             </button>
           </div>
         }
       >
         <div className="flex flex-col items-center justify-center gap-4">
-          <p className="font-semibold">Are you sure you want to delete payment?</p>
+          <p className="font-semibold">
+            Are you sure you want to delete payment?
+          </p>
           <p>Payment will be deleted permanently</p>
         </div>
       </CenterModal>
@@ -436,7 +487,9 @@ const { data: paymentData, refetch } = useGetAllExtraCostsQuery(projectIdAPI)
       <div className="app_get_started_professional_details__form flex flex-col gap-4 !overflow-y-auto">
         <h3 className="app_get_started_professional_details__form__title">
           Payment <br />
-          <span className="text-[#6D6D6D] text-sm">Setup how you want to be paid.</span>
+          <span className="text-[#6D6D6D] text-sm">
+            Setup how you want to be paid.
+          </span>
         </h3>
 
         {deliverables.length > 0 && (
@@ -469,13 +522,21 @@ const { data: paymentData, refetch } = useGetAllExtraCostsQuery(projectIdAPI)
                       <h4 className="font-semibold">{item.name}</h4>
 
                       <div className="flex gap-4 items-center">
-                        <EditIcon className="cursor-pointer " fill="#888888" onClick={() => handleEditClick(item)} />
-                        <button onClick={() => handleDeleteClick(item.extraCostId)}>
+                        <EditIcon
+                          className="cursor-pointer "
+                          fill="#888888"
+                          onClick={() => handleEditClick(item)}
+                        />
+                        <button
+                          onClick={() => handleDeleteClick(item.extraCostId)}
+                        >
                           <Delete className="cursor-pointer" />
                         </button>
                       </div>
                     </div>
-                    {item.description && <p className="my-2">{item.description}</p>}
+                    {item.description && (
+                      <p className="my-2">{item.description}</p>
+                    )}
                     <p className="flex gap-2 items-center mb-">
                       <Money4 stroke="#6E50DB" />
                       <span> {numberFormat(item.amount)}</span>
@@ -494,11 +555,11 @@ const { data: paymentData, refetch } = useGetAllExtraCostsQuery(projectIdAPI)
           <button
             className="flex gap-3 text-[#7D6CE8]"
             onClick={() => {
-              setAddExpenses(true)
+              setAddExpenses(true);
             }}
           >
             <PlusIcon fill="var(--treva-purple-500)" />
-            {payment.length > 0 ? "Add extra expenses" : "Add expenses"}
+            {payment.length > 0 ? 'Add extra expenses' : 'Add expenses'}
           </button>
         </div>
         <div className="pt-4 flex gap-4">
@@ -518,11 +579,12 @@ const { data: paymentData, refetch } = useGetAllExtraCostsQuery(projectIdAPI)
             backgroundColor="primary-blue-500"
             className="w-1/2 py-3 px-12"
             onClick={handleNextStep}
+            disabled={payment?.length < 1}
           >
             Save and continue
           </Button>
         </div>
       </div>
     </div>
-  )
+  );
 }
