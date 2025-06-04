@@ -692,6 +692,8 @@ export default function Dashboard() {
                         onClick={(e) => {
                           e.stopPropagation();
                           setIsDecisionModalOpen(true);
+                        setAccountToDelete(item?.accountNumber)
+
                         }}
                         className="cursor-pointer"
                       >
@@ -738,7 +740,7 @@ export default function Dashboard() {
               </button>
               <button
                 className="border p-3 bg-[#F9403A] rounded-full w-full border-[#F1F1F1] text-[#fff]"
-                onClick={() => handleDelete()}
+                onClick={() => handleDelete(accountToDelete)}
                 disabled={isLoading || !accountToDelete}
                 type="button"
               >

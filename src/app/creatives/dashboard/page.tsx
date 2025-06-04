@@ -534,7 +534,7 @@ export default function Page() {
       )}
 
       <div className="app_dashboard_home__task app_dashboard_page__px pt-4">
-        <div className="app_dashboard_home__task__hdr flex flex-col gap-4  ">
+        <div className="app_dashboard_home__task__hdr  flex-wrap gap-2 mt-4  ">
           <div className="grid grid-cols-2 gap-2 md:flex md:flex-wrap">
             {clientDashboardTasks.map((item) => (
               <Pill
@@ -795,6 +795,7 @@ export default function Page() {
                         onClick={(e) => {
                           e.stopPropagation();
                           setIsDecisionModalOpen(true);
+                        setAccountToDelete(item?.accountNumber)
                         }}
                         className="cursor-pointer"
                       >
@@ -842,7 +843,7 @@ export default function Page() {
 
               <button
                 className="border p-3 bg-[#F9403A] rounded-full w-full border-[#F1F1F1] text-[#fff]"
-                onClick={handleDelete}
+                onClick={() => handleDelete()}
                 disabled={isLoading || !accountToDelete}
                 type="button"
               >

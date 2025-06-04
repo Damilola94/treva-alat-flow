@@ -23,7 +23,7 @@ import { useRouter } from 'next/navigation';
 import { Fragment, useEffect, useMemo, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { SmallAvatar, SmallHome } from '@/app/assets/svgs';
-import { Copy, Loader2, Plus } from 'lucide-react';
+import { Copy, Plus } from 'lucide-react';
 import { useBeneficiaryManagement, useCommon } from '@/hooks/Projects';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
@@ -77,7 +77,7 @@ export default function Page() {
   );
   const [, setSelected] = useState<string | null>(null);
   const [isDecisionModalOpen, setIsDecisionModalOpen] = useState(false);
-  const [, setAccountToDelete] = useState<string | null>(null);
+  const [accountToDelete, setAccountToDelete] = useState<string | null>(null);
   const [withdrawAmount, setWithdrawAmount] = useState('');
   const [selectedBeneficiary, setSelectedBeneficiary] = useState<any>(null);
 
@@ -483,10 +483,6 @@ export default function Page() {
               {myWalletData?.data?.bankName}{' '}
             </span>
           </div>
-          {/* <div className="flex justify-between items-center">
-            <span className="text-[#808080]">Account Name</span>
-            <span className="font-semibold"></span>
-          </div> */}
         </div>
       </CenterModal>
 
@@ -666,6 +662,7 @@ export default function Page() {
                       onClick={(e) => {
                         e.stopPropagation();
                         setIsDecisionModalOpen(true);
+                        setAccountToDelete(item?.accountNumber)
                       }}
                       className="cursor-pointer"
                     >
@@ -713,17 +710,14 @@ export default function Page() {
             <button
               className="border p-3 bg-[#F9403A] rounded-full w-full border-[#F1F1F1] text-[#fff] disabled:opacity-50"
               onClick={() =>
-                handleDelete(beneficiaryData?.data?.[0].accountNumber ?? '')
+                handleDelete(accountToDelete)
               }
-              disabled={isLoading}
-              type="submit"
+              disabled={!accountToDelete || isLoading}
+              type="button"
             >
-              {isLoading ? (
-                <Loader2 size={18} className="animate-spin mx-auto" />
-              ) : (
-                'Delete'
-              )}
+              {isLoading ? 'Deleting...' : 'Delete'}
             </button>
+
           </div>
         }
       >
