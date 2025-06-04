@@ -412,6 +412,51 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/beneficiarymanagement/bank-name-enquiry": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Bank name enquiry */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json-patch+json": components["schemas"]["BankNameEnquiryQuery"];
+                    "application/json": components["schemas"]["BankNameEnquiryQuery"];
+                    "text/json": components["schemas"]["BankNameEnquiryQuery"];
+                    "application/*+json": components["schemas"]["BankNameEnquiryQuery"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["StringBaseResponse"];
+                        "application/json": components["schemas"]["StringBaseResponse"];
+                        "text/json": components["schemas"]["StringBaseResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/common/banks": {
         parameters: {
             query?: never;
@@ -535,6 +580,53 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/wallets/{walletId}/withdraw-fund": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Withdraw funds from the user's wallet */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    walletId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json-patch+json": components["schemas"]["WithdrawFundCommand"];
+                    "application/json": components["schemas"]["WithdrawFundCommand"];
+                    "text/json": components["schemas"]["WithdrawFundCommand"];
+                    "application/*+json": components["schemas"]["WithdrawFundCommand"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["BooleanBaseResponse"];
+                        "application/json": components["schemas"]["BooleanBaseResponse"];
+                        "text/json": components["schemas"]["BooleanBaseResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -557,6 +649,10 @@ export interface components {
             message?: string | null;
             data?: components["schemas"]["BankModel"][] | null;
             metaData?: unknown;
+        };
+        BankNameEnquiryQuery: {
+            accountNumber: string | null;
+            bankCode: string | null;
         };
         BeneficiaryModel: {
             name?: string | null;
@@ -623,6 +719,13 @@ export interface components {
             /** Format: date-time */
             transactionDate?: string;
         };
+        StringBaseResponse: {
+            isSuccess?: boolean;
+            statusCode?: string | null;
+            message?: string | null;
+            data?: string | null;
+            metaData?: unknown;
+        };
         TransactionModel: {
             transactionReference: string | null;
             narration?: string | null;
@@ -680,6 +783,12 @@ export interface components {
             message?: string | null;
             data?: components["schemas"]["WalletModel"];
             metaData?: unknown;
+        };
+        WithdrawFundCommand: {
+            beneficiaryAccountNumber: string | null;
+            /** Format: double */
+            amount?: number;
+            walletId?: string | null;
         };
     };
     responses: never;
