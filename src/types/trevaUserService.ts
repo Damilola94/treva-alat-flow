@@ -948,6 +948,9 @@ export interface paths {
                         WebsiteUrl?: string;
                         /** Format: binary */
                         Picture?: string;
+                        AllowInAppNotifications?: boolean;
+                        AllowEmailNotifications?: boolean;
+                        AllowPushNotifications?: boolean;
                     };
                 };
             };
@@ -972,6 +975,46 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/users/{userId}/delete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete my account */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    userId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["BooleanBaseResponse"];
+                        "application/json": components["schemas"]["BooleanBaseResponse"];
+                        "text/json": components["schemas"]["BooleanBaseResponse"];
+                    };
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -980,6 +1023,13 @@ export interface components {
         AccountTypeEnums: "Company" | "Individual";
         /** @enum {string} */
         ActorTypeEnums: "Client" | "Creative";
+        BooleanBaseResponse: {
+            isSuccess?: boolean;
+            statusCode?: string | null;
+            message?: string | null;
+            data?: boolean;
+            metaData?: unknown;
+        };
         ChangePasswordCommand: {
             currentPassword: string | null;
             newPassword: string | null;
@@ -1259,6 +1309,9 @@ export interface components {
             portfolioLink?: string | null;
             websiteUrl?: string | null;
             profession?: string | null;
+            allowInAppNotifications?: boolean;
+            allowEmailNotifications?: boolean;
+            allowPushNotifications?: boolean;
             userSocialMedias?: components["schemas"]["UserSocialMediaModel"][] | null;
             userAddresses?: components["schemas"]["UserAddressModel"][] | null;
         };

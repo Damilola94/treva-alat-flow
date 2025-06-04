@@ -56,6 +56,7 @@ export const endpoints = {
     getCreativesById: (userId: string) => `/users/creative-detail/${userId}`,
     getUserRatings: (userId: string) => `/users/${userId}/ratings`,
     updateUserProfile: '/users/update-profile',
+    deleteUserProfile: (userId: string) => `/users/${userId}/delete`,
   },
 
   // project service
@@ -157,13 +158,14 @@ export const endpoints = {
   },
   chats: {
     getAllChats: `/chats`,
+    startChat: `/chats`,
   },
 
   // payment service
   wallets: {
     getMyWallets: `/wallets/my-wallet`,
     getTransactions: (walletId: string) => `wallets/${walletId}/transactions`,
-    addWithdrawFunds: (walletId: string) => `wallets/${walletId}/withdraw-fund`
+    addWithdrawFunds: (walletId: string) => `wallets/${walletId}/withdraw-fund`,
   },
   beneficiaryManagement: {
     getBeneficiarymanagement: `/beneficiarymanagement/all`,

@@ -56,6 +56,9 @@ interface IUpdateUserProfile {
   portfolioLink?: string;
   websiteUrl?: string;
   picture?: string;
+  allowInAppNotifications?: boolean;
+  allowEmailNotifications?: boolean;
+  allowPushNotifications?: boolean;
 }
 
 const useUsers = () => {
@@ -163,11 +166,14 @@ const useUsers = () => {
         if (
           (typeof value === 'string' && value.trim() !== '') ||
           typeof value === 'number' ||
+          typeof value === 'boolean' ||
           isFile
         ) {
           formData.append(
             key,
-            typeof value === 'number' ? value.toString() : value,
+            typeof value === 'boolean' || typeof value === 'number'
+              ? value.toString()
+              : value,
           );
         }
       });
