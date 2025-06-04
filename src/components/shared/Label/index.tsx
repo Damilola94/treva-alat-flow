@@ -2,7 +2,7 @@ import { HighStatus, LowStatus, MediumStatus } from '@/app/assets/svgs';
 import React from 'react';
 
 type PriorityLevel = 'High' | 'Medium' | 'Low'
-type StatusType = 'Pending' | 'Due' | 'Completed' | 'ToDo' | 'AwaitingClientConfirmation' | 'RequestingRevision'
+type StatusType = 'Pending' | 'Due' | 'Completed' | 'ToDo' | 'AwaitingClientConfirmation' | 'RequestingRevision' | 'Paid' |'Over due' | 'Closed'
 type TransactionType = 'Credit' | 'Debit'
 type LabelType = PriorityLevel | StatusType | TransactionType
 
@@ -40,6 +40,9 @@ const statusMap: Record<number, StatusType> = {
   4: 'Completed',
   9: 'AwaitingClientConfirmation',
   10: 'RequestingRevision',
+  3: 'Closed',
+  5: 'Paid',
+  6: 'Over due',
 };
 
 
@@ -92,6 +95,15 @@ const Label: React.FC<LabelProps> = ({
     RequestingRevision: {
       style: 'bg-[#E76E51] text-[#3C3C3C]'
     },
+    Paid: {
+    style: 'bg-[#D1FADF] text-[#027A48]'
+  },
+  'Over due': {
+    style: 'bg-[#FFE4E4] text-[#B42318]'
+  },
+  Closed: {
+    style: 'bg-[#EAECF0] text-[#344054]'
+  },
   };
 
   const transactionConfig = {

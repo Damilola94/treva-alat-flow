@@ -59,6 +59,7 @@ export function Header({ showBackArrow = false }: HeaderProps) {
   const notificationCountData = useMemo(() => {
     if (!notificationCount?.isSuccess) return null;
     return notificationCount?.data ?? 0;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [notificationCount?.data]);
 
   console.log(notificationCountData);

@@ -90,6 +90,7 @@ export const priorityItems = [
     { label: 'Pending', value: 'Pending' },
     { label: 'Completed', value: 'Completed' },
     { label: 'Due', value: 'Due' },
+    { label: 'Await confirmation', value: 'AwaitingClientConfirmation'},
   ]
 
   export const deliverableItems = [

@@ -115,11 +115,6 @@ export default function Dashboard() {
     // bankName: '',
   };
 
-  const wallletParamsId = {
-    ...params,
-    walletId: params.accountNumber.toString(),
-  };
-
   const { userOnboardingData } = useUsers();
   const { allProjectsData, loading } = useProjects(params);
   const { myWalletData } = usePaymentService(params);
@@ -135,7 +130,7 @@ export default function Dashboard() {
   const wallet = myWalletData?.data;
 
   const bankOptions = [
-    { label: 'Bank', value: '', isDisabled: true }, // <-- non-selectable
+    { label: 'Bank', value: '', isDisabled: true },
     ...(myCommonData?.data || []).map((item) => ({
       label: item.name,
       value: item.code,
@@ -186,12 +181,11 @@ export default function Dashboard() {
   };
 
   useEffect(() => {
-        if (addWithdrawResponse?.isSuccess) {
-          refetch && refetch();
-          //  formik.resetForm();
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-      }, [addWithdrawResponse]);
+    if (addWithdrawResponse?.isSuccess) {
+      refetch && refetch();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [addWithdrawResponse]);
 
   const formik = useFormik({
     initialValues,
@@ -202,7 +196,6 @@ export default function Dashboard() {
         accountNumber: values?.accountNumber,
       };
       addBeneficiary(payload);
-      console.log('button clicked');
     },
     validationSchema,
   });
@@ -371,7 +364,7 @@ export default function Dashboard() {
     }));
   };
 
-    const handleWithdrawFunds = async () => {
+  const handleWithdrawFunds = async () => {
     const walletId = myWalletData?.data?.accountNumber;
     const payload = {
       beneficiaryAccountNumber: selectedBeneficiary.accountNumber,
@@ -443,8 +436,8 @@ export default function Dashboard() {
       </div>
 
       <div className="app_dashboard_home__task app_dashboard_page__px">
-        <div className="app_dashboard_home__task__hdr flex-wrap gap-2">
-          <div className="flex md:flex-wrap gap-2">
+        <div className="app_dashboard_home__task__hdr flex-wrap gap-2 mt-4">
+          <div className="grid grid-cols-2 gap-2 md:flex md:flex-wrap mt-7">
             {clientDashboardTasks.map((item) => (
               <Pill
                 key={item.value}
@@ -522,6 +515,7 @@ export default function Dashboard() {
           </div> */}
           </div>
         </CenterModal>
+
         {/* add account number */}
         <SideModal
           isOpen={addAccount}
@@ -537,11 +531,17 @@ export default function Dashboard() {
               <div className="space-y-5">
                 <Input
                   name="accountNumber"
-                  type="number"
+                  type="text"
                   id="accountNumber"
                   placeholder="Enter your Account Number"
                   value={values.accountNumber}
-                  onChange={handleChange}
+                  maxLength={10}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    if (/^\d{0,10}$/.test(val)) {
+                      handleChange(e);
+                    }
+                  }}
                   onBlur={handleBlur}
                   errors={errors}
                   touched={touched}
@@ -608,113 +608,113 @@ export default function Dashboard() {
         </SideModal>
 
         {/* withdraw funds side modal */}
-         <SideModal
-                 isOpen={withdraw}
-                 onClose={() => {
-                   toggleWithdraw(false);
-                 }}
-                 title="Withdraw Funds"
-                 showFooter
-                 usebg
-                 footerChildren={
-                   <div className="w-full gap-5">
-                     <button
-                       disabled={
-                         !selectedBeneficiary ||
-                         !withdrawAmount ||
-                         !Number(withdrawAmount)
-                       }
-                       className={`border p-5 rounded-full w-full ${
-                         selectedBeneficiary && withdrawAmount
-                           ? 'bg-[#7B37F0] text-white'
-                           : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                       }`}
-                       onClick={handleWithdrawFunds}
-                     >
-                       {withdrawing ? 'Processing...' : 'Withdraw'}
-                     </button>
-                   </div>
-                 }
-               >
-                 <div className="space-y-10">
-                   <div>
-                     {/* <Input placeholder="Withdrawal Amount" /> */}
-                     <Input
-                       placeholder="Withdrawal Amount"
-                       type="number"
-                       value={withdrawAmount}
-                       onChange={(e) => {
-                         console.log(setWithdrawAmount, 'withdraw amount');
-                         console.log(e.target.value, 'value');
-                         setWithdrawAmount(e.target.value);
-                       }}
-                     />
-                     <div>
-                       <p className="font-semibold mt-3">
-                         {numberFormat(myWalletData?.data?.availableBalance)}
-                       </p>
-                     </div>
-                   </div>
-                   <div className="space-y-5">
-                     <div className="flex items-center justify-between">
-                       <p className="font-semibold ">Select Bank Account</p>
-                       <button
-                         className="flex items-center rounded-2xl p-2 gap-1 border border-black"
-                         onClick={() => {
-                           toggleWithdraw(false);
-                           toggleAddAccount(true);
-                         }}
-                       >
-                         <Plus className="w-5 h-5" />
-                         <p>Add Account</p>
-                       </button>
-                     </div>
-                     {Array.isArray(beneficiaryData?.data) &&
-                       beneficiaryData.data.map((item: any) => (
-                         <div
-                           // className="border p-4 rounded-lg border-[#888888]"
-                           key={item?.id || item?.accountNumber}
-                           onClick={() => {
-                             console.log('Selected:', item);
-                             setSelectedBeneficiary(item);
-                           }}
-                           className={`p-4 border rounded cursor-pointer ${
-                             selectedBeneficiary?.accountNumber === item.accountNumber
-                               ? 'border-blue-500 bg-blue-50'
-                               : 'border-gray-300'
-                           }`}
-                         >
-                           <div className="flex items-center justify-between">
-                             <p className="font-semibold text-xl text-[#333333]">
-                               {item?.accountNumber}
-                             </p>
-                             <div
-                               onClick={(e) => {
-                                 e.stopPropagation();
-                                 setIsDecisionModalOpen(true);
-                               }}
-                               className="cursor-pointer"
-                             >
-                               <Delete />
-                             </div>
-                           </div>
-                           <div className="text-[#262626] space-y-3 mt-5">
-                             <p className="flex items-center gap-3">
-                               <span>
-                                 <SmallHome />
-                               </span>
-                               {item?.bankName}
-                             </p>
-                             <p className="flex items-center gap-3">
-                               <SmallAvatar />
-                               {item?.name}
-                             </p>
-                           </div>
-                         </div>
-                       ))}
-                   </div>
-                 </div>
-               </SideModal>
+        <SideModal
+          isOpen={withdraw}
+          onClose={() => {
+            toggleWithdraw(false);
+          }}
+          title="Withdraw Funds"
+          showFooter
+          usebg
+          footerChildren={
+            <div className="w-full gap-5">
+              <button
+                disabled={
+                  !selectedBeneficiary ||
+                  !withdrawAmount ||
+                  !Number(withdrawAmount)
+                }
+                className={`border p-5 rounded-full w-full ${
+                  selectedBeneficiary && withdrawAmount
+                    ? 'bg-[#7B37F0] text-white'
+                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                }`}
+                onClick={handleWithdrawFunds}
+              >
+                {withdrawing ? 'Processing...' : 'Withdraw'}
+              </button>
+            </div>
+          }
+        >
+          <div className="space-y-10">
+            <div>
+              {/* <Input placeholder="Withdrawal Amount" /> */}
+              <Input
+                placeholder="Withdrawal Amount"
+                type="number"
+                value={withdrawAmount}
+                onChange={(e) => {
+                  console.log(setWithdrawAmount, 'withdraw amount');
+                  console.log(e.target.value, 'value');
+                  setWithdrawAmount(e.target.value);
+                }}
+              />
+              <div>
+                <p className="font-semibold mt-3">
+                  {numberFormat(myWalletData?.data?.availableBalance)}
+                </p>
+              </div>
+            </div>
+            <div className="space-y-5">
+              <div className="flex items-center justify-between">
+                <p className="font-semibold ">Select Bank Account</p>
+                <button
+                  className="flex items-center rounded-2xl p-2 gap-1 border border-black"
+                  onClick={() => {
+                    toggleWithdraw(false);
+                    toggleAddAccount(true);
+                  }}
+                >
+                  <Plus className="w-5 h-5" />
+                  <p>Add Account</p>
+                </button>
+              </div>
+              {Array.isArray(beneficiaryData?.data) &&
+                beneficiaryData.data.map((item: any) => (
+                  <div
+                    // className="border p-4 rounded-lg border-[#888888]"
+                    key={item?.id || item?.accountNumber}
+                    onClick={() => {
+                      console.log('Selected:', item);
+                      setSelectedBeneficiary(item);
+                    }}
+                    className={`p-4 border rounded cursor-pointer ${
+                      selectedBeneficiary?.accountNumber === item.accountNumber
+                        ? 'border-blue-500 bg-blue-50'
+                        : 'border-gray-300'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <p className="font-semibold text-xl text-[#333333]">
+                        {item?.accountNumber}
+                      </p>
+                      <div
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setIsDecisionModalOpen(true);
+                        }}
+                        className="cursor-pointer"
+                      >
+                        <Delete />
+                      </div>
+                    </div>
+                    <div className="text-[#262626] space-y-3 mt-5">
+                      <p className="flex items-center gap-3">
+                        <span>
+                          <SmallHome />
+                        </span>
+                        {item?.bankName}
+                      </p>
+                      <p className="flex items-center gap-3">
+                        <SmallAvatar />
+                        {item?.name}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+            </div>
+          </div>
+        </SideModal>
 
         {/* delete modal */}
         <CenterModal

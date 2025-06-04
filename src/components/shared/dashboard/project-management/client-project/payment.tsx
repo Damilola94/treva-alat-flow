@@ -92,15 +92,13 @@ export default function ProjectPayment(props: IProps) {
         }).unwrap();
         resetForm();
         setAddExpenses(false);
-
-        // Store in Redux
-        dispatch(
-          storeValues({
-            paymentTitle: values.name,
-            amount: values.amount,
-            paymentDescription: values.description,
-          }),
-        );
+        // dispatch(
+        //   storeValues({
+        //     paymentTitle: values.name,
+        //     amount: values.amount,
+        //     paymentDescription: values.description,
+        //   }),
+        // );
 
         refetch();
       } catch (error) {
@@ -271,9 +269,6 @@ export default function ProjectPayment(props: IProps) {
           maxEnd.toISOString(),
         )}`
       : '';
-
-  console.log(addFormik?.errors);
-  console.log(editFormik?.errors);
 
   return (
     <div className="app_get_started_professional_details py-6 px-4 flex flex-col gap-14">

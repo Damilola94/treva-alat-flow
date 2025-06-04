@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 import { SendMessageButton } from '@/app/assets/svgs';
 import { Avatar } from '@/components/shared/avatar';

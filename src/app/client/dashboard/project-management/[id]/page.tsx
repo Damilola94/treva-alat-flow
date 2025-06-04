@@ -510,22 +510,24 @@ export default function Page() {
                   />
                 </div>
               </div>
-              <ProjectProgressBar
-                percent={
-                  allProjectsByIdData?.data?.metrics?.progressPercent ?? 0
-                }
-                daysLeft={
-                  statusEnum[Number(project?.status)] !== 'Completed'
-                    ? allProjectsByIdData?.data?.metrics?.daysLeftDisplay ??
-                      'Days left'
-                    : undefined
-                }
-                text={
-                  statusEnum[Number(project?.status)] === 'Completed'
-                    ? 'Completed'
-                    : 'undefined'
-                }
-              />
+              {project.status === 'AwaitingClientConfirmation' ||
+              project.status === 'Completed' ? (
+                <p className="text-muted">
+                  {project.status === 'AwaitingClientConfirmation'
+                    ? 'Awaiting Client Confirmation'
+                    : 'Completed'}
+                </p>
+              ) : (
+                <ProjectProgressBar
+                  percent={
+                    allProjectsByIdData?.data?.metrics?.progressPercent ?? 0
+                  }
+                  daysLeft={
+                    allProjectsByIdData?.data?.metrics?.daysLeftDisplay ??
+                    'days left'
+                  }
+                />
+              )}
             </div>
 
             <div className="app_dashboard_home__task__hdr flex-wrap gap-2 mt-4 border-[#E7E7E7] border-t border-b">
@@ -534,19 +536,20 @@ export default function Page() {
               </div>
             </div>
             <DeliverableTable />
-            <div className="flex justify-center">
-              <Button
-                size="xl"
-                isLoading={loading}
-                // backgroundColor="primary-blue-500"
-                className="border border-[#7B37F0] text-[#7B37F0] "
-                onClick={() => setShowModal(true)}
-              >
-                <Check />
-                Mark Project Completed
-              </Button>
-            </div>
-            {/* )} */}
+            {project?.status === 'AwaitingClientConfirmation' && (
+              <div className="flex justify-center">
+                <Button
+                  size="xl"
+                  isLoading={loading}
+                  // backgroundColor="primary-blue-500"
+                  className="border border-[#7B37F0] text-[#7B37F0] "
+                  onClick={() => setShowModal(true)}
+                >
+                  <Check />
+                  Mark Project Completed
+                </Button>
+              </div>
+            )}
           </div>
         )
       )}

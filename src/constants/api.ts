@@ -145,6 +145,7 @@ export const endpoints = {
   invoices: {
     getInvoice: '/invoices',
     getMyInvoice: (invoiceId: string) => `/invoices/${invoiceId}`,
+    addInvoice:  (invoiceId: string) => `/invoices/${invoiceId}/pay`,
   },
   notifications: {
     getNotifications: '/notifications',

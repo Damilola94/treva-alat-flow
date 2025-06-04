@@ -288,8 +288,9 @@ export default function Page() {
       </RenderIf>
 
       <div className="app_dashboard_home__task app_dashboard_page__px">
-        <div className="app_dashboard_home__task__hdr md:flex-wrap gap-4 mt-4">
-          <div className="flex flex-wrap gap-2">
+        <div className="app_dashboard_home__task__hdr flex flex-col md:flex-row ">
+          {/* md:flex-wrap gap-4 mt-4 */}
+          <div className="">
             <Pill
               size="md"
               active={search === ''}
@@ -300,7 +301,7 @@ export default function Page() {
             </Pill>
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex gap-4">
             <Input
               placeholder="Search for client"
               className="app_navbar__right__searchbar"

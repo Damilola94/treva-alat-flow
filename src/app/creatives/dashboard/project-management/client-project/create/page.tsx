@@ -137,15 +137,34 @@ function ClientProject() {
   const [projectId, setProjectId] = useState<string>('');
   const [, setFormData] = useState<FormDataType>(defaultValues);
 
-  useEffect(() => {
-    if (paramsProjectId) {
-      setProjectId(paramsProjectId);
-    }
-     const savedStep = localStorage.getItem(`project-${paramsProjectId}-step`);
-    if (savedStep) {
-      dispatch(setCurrentStep(Number(savedStep)));
-    }
-  }, [paramsProjectId]);
+  // useEffect(() => {
+  //   if (paramsProjectId) {
+  //     setProjectId(paramsProjectId);
+  //   }
+  //    const savedStep = localStorage.getItem(`project-${paramsProjectId}-step`);
+  //   if (savedStep) {
+  //     dispatch(setCurrentStep(Number(savedStep)));
+  //   }
+  // }, [paramsProjectId]);
+
+useEffect(() => {
+  if (paramsProjectId) {
+    setProjectId(paramsProjectId);
+  }
+
+  const savedStep = localStorage.getItem(`project-${paramsProjectId}-step`);
+  const stepFromUrl = searchParams.get('step');
+
+  if (stepFromUrl) {
+    dispatch(setCurrentStep(Number(stepFromUrl)));
+  } else if (savedStep) {
+    dispatch(setCurrentStep(Number(savedStep)));
+  } else {
+    dispatch(setCurrentStep(1)); // default to step 1 if none found
+  }
+}, [paramsProjectId]);
+
+
 
   const handleNext = (
     step: 1 | 2 | 3 | 4 | 5 | 6,
@@ -176,8 +195,6 @@ function ClientProject() {
      dispatch(setCurrentStep(stepNumber));
     }
   };
-
-
 
   const steps = [
     {

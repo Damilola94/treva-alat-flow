@@ -435,3 +435,25 @@ export const useInvoicesById = (invoiceId?: string) => {
     allInvoicesError,
   };
 };
+
+// export const usePayInvoice = (invoiceId?: string) => {
+//   const { loggedIn } = useAppSelector((state) => state?.auth);
+
+//   const {
+//     data: payInvoiceData,
+//     isFetching: fetchingpayInvoice,
+//     isLoading: loadingpayInvoice,
+//     refetch: refetchpayInvoice,
+//     error: allInvoicesError,
+//   } = useCreateInvoiceMutation({ invoiceId: invoiceId ?? ''}, {
+//       refetchOnMountOrArgChange: true,
+//       skip: !loggedIn || !invoiceId,
+//     });
+//   return {
+//     payInvoiceData,
+//     loading: fetchingpayInvoice || loadingpayInvoice,
+//     refetchpayInvoice,
+//     allInvoicesError,
+//   };
+// };
+

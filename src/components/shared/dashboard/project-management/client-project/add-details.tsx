@@ -33,10 +33,8 @@ export function ProjectDetails(props: IProps) {
     expectedDeliveryDate,
     priority,
     clientUserId,
-    ...rest
   } = useAppSelector((state) => state?.project);
   // const projectValues = useAppSelector((state) => state.project.projectValues)
-  console.log(rest, 'rest');
 
   const validationSchema = Yup.object().shape({
     title: Yup.string().required('Please enter a project title'),

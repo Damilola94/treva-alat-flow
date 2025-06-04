@@ -11,7 +11,6 @@ import {
   SideModal,
 } from '@/components/shared';
 import type { InitialStep4Values } from '@/app/creatives/dashboard/project-management/client-project/create/page';
-import routes from '@/lib/routes';
 import { formatDate } from '@/lib/utils';
 import * as Yup from 'yup';
 import { useAppDispatch, useAppSelector } from '@/store';
@@ -209,10 +208,10 @@ export function ProjectPaymentSchedule(props: IProps) {
     }
   };
 
-  const handleSkip = () => {
-    localStorage.setItem(`project-${projectId}-step`, '4');
-    window.location.href = routes.creatives.dashboard.projectManagement.path;
-  };
+  // const handleSkip = () => {
+  //   localStorage.setItem(`project-${projectId}-step`, '4');
+  //   window.location.href = routes.creatives.dashboard.projectManagement.path;
+  // };
 
   const handleNextStep = () => {
     const step4Data = {
@@ -514,7 +513,7 @@ export function ProjectPaymentSchedule(props: IProps) {
           )}
         </div>
         <div className="pt-4 flex gap-4">
-          <Button
+          {/* <Button
             type="button"
             size="xl"
             backgroundColor="primary-blue-500"
@@ -522,7 +521,7 @@ export function ProjectPaymentSchedule(props: IProps) {
             onClick={handleSkip}
           >
             skip for now
-          </Button>
+          </Button> */}
 
           <Button
             type="button"

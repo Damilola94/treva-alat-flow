@@ -10,7 +10,7 @@ import { Loader2 } from 'lucide-react';
 import { useGetDeliverablesQuery } from '@/services';
 import { useRouter } from 'next/navigation';
 import { useAppDispatch } from '@/store';
-import { clearValues } from '@/store/slices/project';
+import { resetProject, storeValues } from '@/store/slices/project';
 import { DeleteDeliverable } from '../project-table/delete-deliverable';
 import projectManagement from '@/lib/assets/project-management';
 
@@ -19,7 +19,7 @@ interface Deliverable {
   name: string;
   description: string;
   startDate: string;
-  dueDate: string;
+  endDate: string;
 }
 
 const deleteDeliverableItem = {
@@ -52,17 +52,28 @@ export function PersonalProjectDeliverables({projectId,}: {projectId: string;}) 
 
   useEffect(() => {
     if (deliverablesData?.data) {
-      setDeliverables(
-        deliverablesData.data.map((item) => ({
-          deliverableId: item.id ?? '',
-          name: item.name ?? '',
-          description: item.description ?? '',
-          startDate: item.startDate ?? '',
-          dueDate: item.endDate ?? '',
-        })),
-      );
+      const mappedDeliverables = deliverablesData.data.map((item) => ({
+        deliverableId: item.id ?? "",
+        name: item.name ?? "",
+        description: item.description ?? "",
+        startDate: item.startDate ?? "",
+        endDate: item.endDate ?? "",
+
+         }))
+
+      setDeliverables(mappedDeliverables)
+      dispatch(
+        storeValues({
+          deliverables: mappedDeliverables.map((d) => ({
+            name: d.name,
+            description: d.description,
+            startDate: d.startDate,
+            endDate: d.endDate,
+          })),
+        }),
+      )
     }
-  }, [deliverablesData]);
+  }, [deliverablesData, dispatch])
 
   const closeModal = () => {
     setIsModalOpen(false);
@@ -96,7 +107,7 @@ export function PersonalProjectDeliverables({projectId,}: {projectId: string;}) 
   };
 
   const handleSkip = () => {
-    dispatch(clearValues());
+    dispatch(resetProject());
     rt.push(routes.creatives.dashboard.projectManagement.path);
   };
 
@@ -234,7 +245,7 @@ export function PersonalProjectDeliverables({projectId,}: {projectId: string;}) 
                   </p>
                   <p className="flex gap-4 mb-3">
                     <CalendarWithMark fill="#6E50DB" />
-                    {formatDate(deliverable.dueDate)}
+                    {formatDate(deliverable.endDate)}
                   </p>
                 </div>
               </div>

@@ -124,11 +124,6 @@ export default function Page() {
     name: '',
   });
 
-  //   const wallletParamsId = {
-  //    ...params,
-  //    walletId: params.accountNumber.toString(),
-  //  };
-
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [accountToDelete, setAccountToDelete] = useState<string | null>(null);
@@ -366,16 +361,6 @@ export default function Page() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [creativeOnboardingData]);
 
-  const handleAccountNumberChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    const input = e.target.value;
-    // Allow only digits and max 10 characters
-    if (/^\d{0,10}$/.test(input)) {
-      handleChange(e); // Call Formik's handler if input is valid
-    }
-  };
-
   const columns = [
     {
       header: 'Project name',
@@ -549,8 +534,8 @@ export default function Page() {
       )}
 
       <div className="app_dashboard_home__task app_dashboard_page__px pt-4">
-        <div className="app_dashboard_home__task__hdr flex-wrap gap-2">
-          <div className="flex md:flex-wrap gap-2">
+        <div className="app_dashboard_home__task__hdr flex flex-col gap-4  ">
+          <div className="grid grid-cols-2 gap-2 md:flex md:flex-wrap">
             {clientDashboardTasks.map((item) => (
               <Pill
                 key={item.value}
@@ -651,12 +636,16 @@ export default function Page() {
                   id="accountNumber"
                   placeholder="Enter your Account Number"
                   value={values.accountNumber}
-                  // onChange={handleChange}
-                  onChange={handleAccountNumberChange}
+                  maxLength={10}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    if (/^\d{0,10}$/.test(val)) {
+                      handleChange(e);
+                    }
+                  }}
                   onBlur={handleBlur}
                   errors={errors}
                   touched={touched}
-                  maxLength={10}
                   inputMode="numeric"
                   pattern="\d*"
                 />
