@@ -45,6 +45,10 @@ export function PersonalProjectDetails (props: IProps) {
     type: 'Personal',
   };
 
+  console.log(initialValues);
+  
+  
+
   type InitialValues = ReturnType<() => typeof initialValues>;
 
 const onSubmit = async (_values: InitialValues) => {
@@ -52,6 +56,7 @@ const onSubmit = async (_values: InitialValues) => {
     const response = await createProject(_values).unwrap();
     if (response?.data?.id) {
       dispatch(storeValues(_values))
+      console.log(dispatch(storeValues(_values)));
       setProjectId(response.data.id);
       handleNext(_values);
     } else {

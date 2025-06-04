@@ -54,9 +54,9 @@ export function AddDeliverables(props: IProps) {
     unitAmount: Yup.number().required('Please enter unit amount'),
     unit: Yup.number().required('Please enter unit'),
   });
-  
+
   const onSubmit = async (values: typeof initialValues) => {
-    const projectIdAPI: string = projectIdStore ? projectIdStore : projectId
+    const projectIdAPI: string = projectIdStore ? projectIdStore : projectId;
     try {
       const response = await createDeliverables({
         projectId: projectIdAPI,
@@ -75,7 +75,20 @@ export function AddDeliverables(props: IProps) {
           total: (Number(values.unitAmount) || 0) * (Number(values.unit) || 0),
         });
         successToast(response?.message || 'Deliverable created successfully');
+        // resetForm()
         onClose();
+        // dispatch(storeValues(values))
+        
+        dispatch(
+          storeValues({
+            name: '',
+            description: '',
+            startDate: '',
+            endDate: '',
+            unitAmount: '',
+            unit: '',
+          }),
+        );
       } else {
         errorToast(response?.message || 'Something went wrong');
       }
@@ -191,8 +204,10 @@ export function AddDeliverables(props: IProps) {
                   <p className="font-bold text-lg mt-2">
                     Total Amount:{' '}
                     <span>
-                      {numberFormat((Number(values.unitAmount) || 0) *
-                        (Number(values.unit) || 0))}
+                      {numberFormat(
+                        (Number(values.unitAmount) || 0) *
+                          (Number(values.unit) || 0),
+                      )}
                     </span>
                   </p>
 

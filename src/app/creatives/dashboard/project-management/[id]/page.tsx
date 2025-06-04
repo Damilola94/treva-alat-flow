@@ -31,7 +31,6 @@ import clientManagement from '@/lib/assets/client-management';
 import { ProjectProgressBar } from '@/components/shared/dashboard/progressbar';
 import { EditTaskCard } from '@/components/shared/dashboard/project-management/personal-project/edit-task';
 import { DeleteTask } from '@/components/shared/dashboard/project-management/project-table/delete-task';
-import { statusEnum } from '@/constants';
 import { errorToast, successToast, useUpdateProjectMutation } from '@/services';
 import { getErrorMessage } from '@/utils';
 
@@ -91,10 +90,10 @@ export default function Page() {
         body: { status: 9 },
       }).unwrap();
       refetchAllProjectsById();
-      setShowAssementModal(false)
+      setShowAssementModal(false);
       if (response?.data?.id || projectId) {
         // successToast(response?.message || 'Updated Successfully');
-        successToast( 'Updated Successfully');
+        successToast('Updated Successfully');
       } else {
         errorToast(
           response?.message ||
@@ -154,7 +153,7 @@ export default function Page() {
   useEffect(() => {
     if (progress === 100) {
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allProjectsByIdData?.data?.metrics?.progressPercent]);
 
   if (loading) {
@@ -392,22 +391,31 @@ export default function Page() {
                 />
               </div>
             </div>
-            <ProjectProgressBar
+            {/* <ProjectProgressBar
               percent={allProjectsByIdData?.data?.metrics?.progressPercent ?? 0}
-              daysLeft={
-                statusEnum[Number(project?.status)] === 
-                'AwaitingClientConfirmation' || 'Completed'
-                  ? allProjectsByIdData?.data?.metrics?.daysLeftDisplay ??
-                    'Days left'
-                  : undefined
+              daysLeft={allProjectsByIdData?.data?.metrics?.daysLeftDisplay ?? 'days left'}
+              text ={
+                project.status === 'AwaitingClientConfirmation' || project.status === 'Completed'? 'Awaiting Client Confirmation' : 'Completed'
               }
-              text={
-                statusEnum[Number(project?.status)] ===
-                'AwaitingClientConfirmation' || 'Completed'
+            /> */}
+            {project.status === 'AwaitingClientConfirmation' ||
+            project.status === 'Completed' ? (
+              <p className="text-muted">
+                {project.status === 'AwaitingClientConfirmation'
                   ? 'Awaiting Client Confirmation'
-                  : undefined
-              }
-            />
+                  : 'Completed' }
+              </p>
+            ) : (
+              <ProjectProgressBar
+                percent={
+                  allProjectsByIdData?.data?.metrics?.progressPercent ?? 0
+                }
+                daysLeft={
+                  allProjectsByIdData?.data?.metrics?.daysLeftDisplay ??
+                  'days left'
+                }
+              />
+            )}
           </div>
         </div>
       )}
@@ -463,7 +471,7 @@ export default function Page() {
         {activeTab === 'payment' && <PaymentTable />}
       </div>
       {/* completed project */}
-      {progress === 100 && (
+      {allProjectsByIdData?.data?.type === 'Client' && progress === 100 && (
         <div className="flex justify-center">
           <Button
             size="xl"

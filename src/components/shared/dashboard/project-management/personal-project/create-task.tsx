@@ -6,10 +6,11 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Pill } from '../../../pill';
 import { useAppDispatch, useAppSelector } from '@/store';
-import { useCreateDeliverableTaskMutation } from '@/services';
+import { errorToast, successToast, useCreateDeliverableTaskMutation } from '@/services';
 import { storeValues } from '@/store/slices/project';
 import { useParams } from 'next/navigation';
 import { useDeliverable } from '@/hooks/Projects/useProjects';
+import { getErrorMessage } from '@/utils';
 
 interface IProps {
   onClose: () => void;
@@ -29,14 +30,14 @@ export function CreateTaskCard(props: IProps) {
   const projectId = Array.isArray(id) ? id[0] : id;
   const { onClose } = props;
   const dispatch = useAppDispatch();
-  const { name, startDate, dueDate, priority, deliverableId } = useAppSelector(
+  const { name, startDate, endDate, priority, deliverableId } = useAppSelector(
     (state) => state?.project,
   );
 
   const validationSchema = Yup.object().shape({
     name: Yup.string().required('Please enter a task name'),
     startDate: Yup.date().required('Please select a start date'),
-    dueDate: Yup.date().required('Please select a due date'),
+    endDate: Yup.date().required('Please select a due date'),
     priority: Yup.string().required('Please select a priority'),
     deliverableId: Yup.string().required('Please select a deliverable'),
   });
@@ -50,7 +51,7 @@ export function CreateTaskCard(props: IProps) {
     deliverableId: deliverableId,
     name: name,
     startDate: startDate,
-    dueDate: dueDate,
+    endDate: endDate,
     priority: priority,
   };
 
@@ -62,15 +63,13 @@ export function CreateTaskCard(props: IProps) {
       if (response?.data?.id) {
         dispatch(storeValues(_values));
         onClose();
-        // setDeliverableId(response.data.id);
-        console.log(deliverableId, 'deliverableId');
+        successToast(response.message || "Task added successfully")
       } else {
-        console.log(deliverableId, 'deliverableId');
-
-        console.warn('Project ID not found. Cannot proceed to next step.');
+       errorToast(response.message || 'Something went wrong')
       }
     } catch (error) {
-      console.error('Failed to create project:', error);
+      const message = getErrorMessage(error)
+      errorToast(message || 'Something went wrong')
     }
   };
 
@@ -128,11 +127,11 @@ export function CreateTaskCard(props: IProps) {
                   />
 
                   <Input
-                    name="dueDate"
+                    name="endDate"
                     type="date"
-                    label="Due Date"
+                    label="End Date"
                     size="xl"
-                    value={values.dueDate}
+                    value={values.endDate}
                     onChange={handleChange}
                     onBlur={handleBlur}
                     errors={errors}

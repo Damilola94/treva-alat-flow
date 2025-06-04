@@ -248,7 +248,7 @@ export function ProjectAgreement({ handleNext, projectId }: IProps) {
             backgroundColor="primary-blue-500"
             className="w-full py-3 px-12"
             onClick={handleNextStep}
-            disabled={isLoading}
+            disabled={!selectedFile}
           >
             {isLoading ? 'Uploading...' : 'Save & Continue'}
           </Button>

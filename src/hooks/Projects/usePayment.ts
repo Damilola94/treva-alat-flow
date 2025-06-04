@@ -56,15 +56,13 @@ const usePaymentService = (params: IParams) => {
   }
 };
 
+
   const {
     data: myTransactions,
   } = useGetTransactionsQuery(walletId, {
     refetchOnMountOrArgChange: true,
     skip: !loggedIn || !walletId,
   });
-
-  console.log('loggedIn', loggedIn);
-console.log('walletId', walletId);
 
   return {
     addWithdrawResponse,

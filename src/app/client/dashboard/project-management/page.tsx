@@ -131,7 +131,7 @@ export default function Page() {
   return (
     <div className="app_dashboard_home__task app_dashboard_page__px">
       <div className="app_dashboard_home__task__hdr flex-wrap gap-2 mt-4">
-        <div className="flex border-t border-gray-200 p-4 gap-2">
+        <div className="grid grid-cols-2 gap-2 md:flex md:flex-wrap">
           {clientDashboardTasks.map((item) => (
             <Pill
               key={item.value}

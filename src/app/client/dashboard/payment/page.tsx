@@ -121,7 +121,6 @@ export default function Page() {
     useBeneficiaryManagement();
   const [triggerDelete, { isLoading }] = useDeleteBeneficiaryMutation();
   const walletId = myWalletData?.data?.accountNumber ?? '';
-
   // const { myTransactions } = usePaymentService(params);
   const { data: myTransactions } = useGetTransactionsQuery(walletId);
 
@@ -130,7 +129,6 @@ export default function Page() {
     [myTransactions?.data],
   );
   const data = myWalletData?.data;
-  console.log(myTransactions, 'wallet data by id');
 
   const bankOptions = [
     { label: 'Bank', value: '', isDisabled: true },
@@ -156,16 +154,6 @@ export default function Page() {
       walletId: walletId,
     };
     addWithdrawFunds(payload);
-  };
-
-  const handleAccountNumberChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    const input = e.target.value;
-    // Allow only digits and max 10 characters
-    if (/^\d{0,10}$/.test(input)) {
-      handleChange(e); // Call Formik's handler if input is valid
-    }
   };
 
   const handleCopy = () => {
@@ -241,7 +229,6 @@ export default function Page() {
   useEffect(() => {
     if (addWithdrawResponse?.isSuccess) {
       refetch && refetch();
-      //  formik.resetForm();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addWithdrawResponse]);
@@ -261,7 +248,7 @@ export default function Page() {
   const tractionHeaders = [
     {
       header: 'Description',
-      accessorKey: 'description',
+      accessorKey: 'narration',
     },
     {
       header: 'Amount',
@@ -269,7 +256,7 @@ export default function Page() {
     },
     {
       header: 'Recipient',
-      accessorKey: 'narration',
+      accessorKey: 'destinationAccountName',
     },
     {
       header: 'Date',
@@ -336,6 +323,8 @@ export default function Page() {
           value={row.original.status}
           mapOverride={{
             1: 'Pending',
+            2: 'Due',
+            3: 'Closed',
           }}
         />
       ),
@@ -408,10 +397,12 @@ export default function Page() {
               columns={tractionHeaders}
               emptyTitle="No transaction Yet"
               emptyMessage="Transactions will be added here"
-              data={transactionData.filter((d) =>
-                activeTransactionTab === 'All'
-                  ? true
-                  : d.transactionType === activeTransactionTab,
+              data={transactionData.filter(
+                (d) =>
+                  activeTransactionTab === 'All'
+                    ? true
+                    : d.transactionType === activeTransactionTab,
+                // : d.transactionType?.toLowerCase() === activeTransactionTab.toLowerCase()
               )}
               // data={transactionData}
               pagination={pagination}
@@ -518,7 +509,13 @@ export default function Page() {
                 id="accountNumber"
                 placeholder="Enter your Account Number"
                 value={values.accountNumber}
-                onChange={handleAccountNumberChange}
+                maxLength={10}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (/^\d{0,10}$/.test(val)) {
+                    handleChange(e);
+                  }
+                }}
                 onBlur={handleBlur}
                 errors={errors}
                 touched={touched}
@@ -565,7 +562,7 @@ export default function Page() {
                 backgroundColor="transparent"
                 color="primary-blue-500"
                 className="w-full hover:bg-transparent app_auth_login__btn border border-[#F1F1F1]"
-                onClick={() => toggleAddAccount(false)}
+                onClick={() => toggleWithdraw(true)}
               >
                 Close
               </Button>

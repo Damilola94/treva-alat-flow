@@ -182,7 +182,8 @@ export function PaymentTable() {
           </p>
           {projectId && (
             <Link
-              href={`/dashboard/project-management/client-project/create?projectId=${projectId}`}
+            href={`/creatives/dashboard/project-management/client-project/create?projectId=${projectId}&step=3`}
+              // href={`/creatives/dashboard/project-management/client-project/create?projectId=${projectId}`}
             >
               <p className="app_dashboard_home__task__ctt__desc !text-[#7D6CE8]">
                 <div className="flex gap-1 justify-center items-center">

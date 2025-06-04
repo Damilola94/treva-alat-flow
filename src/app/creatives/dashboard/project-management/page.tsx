@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
   ClientIcon,
@@ -25,7 +25,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { Check, ListFilter, Loader2 } from 'lucide-react';
+import { Check, ListFilter} from 'lucide-react';
 import projectManagement from '@/lib/assets/project-management';
 import { BinGray, EditPencilGray } from '@/components/shared/svgs';
 import { popoverItems, priorityItems, statusItems } from '@/constants';
@@ -80,21 +80,23 @@ const deleteProject = {
 };
 
 export default function Page() {
-  const searchParams = useSearchParams();
+  // const searchParams = useSearchParams();
   const router = useRouter();
 
   const [params, setParams] = useState<ProjectQueryParams>({
     // type: '2',
     // status: '2',
     // priority: '3',
-    pageNumber: 1,
+    pageNumber: 0,
     pageSize: 50,
     currency: 'NGN',
     searchKey: '',
   });
 
   const { allProjectsData, loading, refetchAllProjects } = useProjects(params);
-  
+
+const projectData = useMemo(() => allProjectsData?.data || [], [allProjectsData?.data],)
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [takeATour, setTakeATour] = useState(true);
@@ -109,11 +111,11 @@ export default function Page() {
     pageSize: 50,
   });
 
-  const tableBody = useMemo(() => {
-    return allProjectsData?.isSuccess && allProjectsData.data
-      ? allProjectsData.data
-      : [];
-  }, [allProjectsData?.isSuccess, allProjectsData?.data]);
+  // const tableBody = useMemo(() => {
+  //   return allProjectsData?.isSuccess && allProjectsData.data
+  //     ? allProjectsData.data
+  //     : [];
+  // }, [allProjectsData?.isSuccess, allProjectsData?.data]);
 
   useEffect(() => {
     setParams((prev) => ({
@@ -121,12 +123,17 @@ export default function Page() {
       pageNumber: pagination?.pageIndex + 1,
       pageSize: pagination?.pageSize,
     }));
+    setPagination((prev) => ({
+    ...prev,
+    pageIndex: 0,
+  }));
   }, [pagination]);
 
   const handleParamChange = (param: Partial<ProjectQueryParams>) => {
     setParams((prev) => ({
       ...prev,
       ...param,
+      pageNumber: 1
     }));
   };
 
@@ -176,7 +183,7 @@ export default function Page() {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       cell: ({ row }: any) => {
         const date = row.original.expectedDeliveryDate;
-        return formatDate(date)
+        return formatDate(date);
       },
     },
     {
@@ -270,7 +277,6 @@ export default function Page() {
         </AnimatedModal>
       </RenderIf>
 
-
       {false && (
         <RenderIf condition={takeATour}>
           <AnimatedModal
@@ -333,7 +339,7 @@ export default function Page() {
                     >
                       {item.label}
                       <RenderIf
-                        condition={searchParams.get('Type') === item.value}
+                        condition={selectedCategory === item.value}
                       >
                         <Check />
                       </RenderIf>
@@ -371,7 +377,7 @@ export default function Page() {
                       {item.label}
                       <RenderIf
                         condition={
-                          searchParams.get('projectPriority') === item.value
+                          selectedCategory === item.value
                         }
                       >
                         <Check />
@@ -408,7 +414,7 @@ export default function Page() {
                       {item.label}
                       <RenderIf
                         condition={
-                          searchParams.get('projectStatus') === item.value
+                          selectedCategory === item.value
                         }
                       >
                         <Check />
@@ -441,14 +447,9 @@ export default function Page() {
         </div>
 
         <div className="app_dashboard_home__task__ctt">
-          {loading ? (
-            <div className="text-center flex justify-center items-center">
-              <Loader2 size={18} className="animate-spin" />
-            </div>
-          ) : (
             <Table
               columns={columns}
-              data={tableBody}
+              data={projectData}
               emptyTitle="No project yet"
               emptyMessage='Click "add project" button to get started'
               pagination={pagination}
@@ -456,8 +457,13 @@ export default function Page() {
               onRowClick={(row) =>
                 router.push(`/creatives/dashboard/project-management/${row.id}`)
               }
+              manualPagination={true}
+              pageCount={
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              ((allProjectsData?.metaData as any)?.totalPages as number) ?? 1
+              }
+              loading={loading}
             />
-          )}
         </div>
       </div>
     </div>

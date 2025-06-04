@@ -59,6 +59,7 @@ const Profile = () => {
       toggleIsEdit(false);
       refetch && refetch();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [updateResponse]);
 
   console.log(values?.picture);

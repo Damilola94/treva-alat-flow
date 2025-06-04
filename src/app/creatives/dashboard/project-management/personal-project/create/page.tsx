@@ -9,6 +9,7 @@ import { ProgressStatus } from '@/components/shared/dashboard/get-started/progre
 import { useAppDispatch, useAppSelector } from '@/store';
 import { useSearchParams } from 'next/navigation';
 import { setCurrentStep, storeValues } from '@/store/slices/project';
+import { ProjectDeliverables } from '@/components/shared/dashboard/project-management/client-project/add-deliverables';
 
 const step1Values = {
   title: '',
@@ -47,6 +48,8 @@ function PersonalProject() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [formData, setFormData] = useState(defaultValues);
   const [projectId, setProjectId] = useState<string>('');
+    const { projectId: projectIdStore} = useAppSelector((state) => state?.project);
+  
 
   useEffect(() => {
     if (paramsProjectId) {
@@ -68,25 +71,69 @@ function PersonalProject() {
     dispatch(storeValues(data));
     const nextStepNumber = step + 1;
     dispatch(setCurrentStep(nextStepNumber));
+    localStorage.setItem(`project-${projectId}-step`, nextStepNumber.toString())
   };
+
+  // const handlePrevious = () => {
+  //   dispatch(previousStep())
+  // }
 
   const handleStepClick = (stepNumber: number) => {
     if (stepNumber <= currentStep) {
       dispatch(setCurrentStep(stepNumber));
+    }else {
+      dispatch(stepNumber)
     }
   };
+
+  const steps = [
+      {
+          label: 'Project details',
+          Component: PersonalProjectDetails,
+        },
+        {
+          label: 'Deliverables',
+          Component: ProjectDeliverables,
+        },
+  ]
 
   return (
     <Fragment>
       <RenderIf condition={true}>
         <div className="mt-7">
           <div className="flex justify-center items-center gap-4">
-            <ProgressStatus
+            {steps.map((step, index) => (
+              <>
+              {
+                projectIdStore ?
+                <ProgressStatus
+                key={step.label}
+                label={step.label}
+                checked={currentStep >= index + 1}
+                onClick={() => handleStepClick(index + 1)}
+                className='cursor-pointer'
+                />
+                :
+                <ProgressStatus
+                  key={step.label}
+                  label={step.label}
+                  checked={currentStep >= index + 1}
+                  onClick={() => handleStepClick(index + 1)}
+                  className={
+                    currentStep >= index + 1
+                      ? 'cursor-pointer'
+                      : 'cursor-not-allowed opacity-50'
+                  }
+                /> 
+              }
+              </>
+            ))}
+            {/* <ProgressStatus
               label="Project details"
               checked={currentStep >= 1 }
               onClick={() => handleStepClick(1)}
             />
-            <ProgressStatus label="Deliverables" checked={currentStep >= 2} onClick={() => handleStepClick(2)}/>
+            <ProgressStatus label="Deliverables" checked={currentStep >= 2} onClick={() => handleStepClick(2)}/> */}
           </div>
         </div>
 

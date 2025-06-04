@@ -21,7 +21,10 @@ const validationSchema = Yup.object().shape({
     .email('Please enter a valid email address')
     .required('Please enter an email address'),
   phoneNumber: Yup.string()
-    .matches(/^[0-9]{11}$/, 'Phone number must be exactly 11 digits')
+    .matches(
+      /^(0\d{10}|234\d{10})$/,
+      'Phone number must start with 0 or 234 and be valid',
+    )
     .required('Phone number is required'),
   birthMonth: Yup.string().required('Month is required'),
   birthDay: Yup.string().required('Day is required'),
@@ -50,7 +53,11 @@ export function AddClient({ onClose }: IProps) {
       const payload = {
         name: values?.fullName,
         email: values?.emailAddress,
-        phoneNumber: values?.phoneNumber,
+        // phoneNumber: values?.phoneNumber,
+        phoneNumber: values.phoneNumber.startsWith('0')
+          ? `234${values.phoneNumber.slice(1)}`
+          : values.phoneNumber,
+
         avatar: values?.avatar,
         birthMonth: values.birthMonth,
         birthDay: Number(values.birthDay),
@@ -102,7 +109,7 @@ export function AddClient({ onClose }: IProps) {
       onClose();
       refetch && refetch();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addClientResponse]);
 
   return (
@@ -162,7 +169,7 @@ export function AddClient({ onClose }: IProps) {
                     value={values.phoneNumber}
                     onChange={(e) => {
                       const onlyNums = e.target.value.replace(/\D/g, '');
-                      if (onlyNums.length <= 11) {
+                      if (onlyNums.length <= 13) {
                         setFieldValue('phoneNumber', onlyNums);
                       }
                     }}
@@ -171,20 +178,6 @@ export function AddClient({ onClose }: IProps) {
                     touched={touched}
                   />
                 </div>
-                {/* <div className="flex flex-col gap-2">
-                  <Input
-                    name="birthday"
-                    type="date"
-                    id="birthday"
-                    size="xl"
-                    label="Date of Birth"
-                    value={values.birthday}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    errors={errors}
-                    touched={touched}
-                  />
-                </div> */}
                 <div>
                   <p>Birthday</p>
                   <div className="flex justify-between items-center">
@@ -240,71 +233,70 @@ export function AddClient({ onClose }: IProps) {
                     </div>
                   </div>
                 </div>
-
               </div>
-                <div className="app_upload_con py-5 px-4 flex flex-col gap-3 items-center">
-                  <input
-                    type="file"
-                    id="avatar"
-                    name="avatar"
-                    accept="image/png, image/jpeg, image/jpg"
-                    ref={fileInputRef}
-                    style={{ display: 'none' }}
-                    onChange={handleFileChange}
-                  />
-                  {errors.avatar && touched.avatar && (
-                    <div className="text-red-500 text-sm mt-1">
-                      {errors.avatar}
-                    </div>
-                  )}
-
-                  <Button
-                    type="button"
-                    onClick={() => fileInputRef.current?.click()}
-                    className="flex flex-col"
-                  >
-                    <div className="pt-5">
-                      <Upload />
-                    </div>
-                    <div className="flex flex-col gap-1 pb-5">
-                      <p className="app_upload_con__title">
-                        Upload client’s image
-                      </p>
-                      <p className="app_upload_con__description">
-                        PDF, PNG, JPG | 10MB max.
-                      </p>
-                    </div>
-                  </Button>
-                </div>
-                {values?.avatar && (
-                  <div className="flex items-center justify-between w-full app_upload_con rounded-lg p-4">
-                    <div className="flex items-center gap-3">
-                      <div>
-                        <p className="font-medium text-sm text-gray-900">
-                          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                          {(values?.avatar as any)?.name}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                          {(
-                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                            (values?.avatar as any)?.size /
-                            1024 /
-                            1024
-                          ).toFixed(2)}{' '}
-                          MB
-                        </p>
-                      </div>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={handleRemoveFile}
-                      className="text-gray-500 hover:text-gray-900"
-                    >
-                      <Delete className="w-5 h-5" />
-                    </button>
+              <div className="app_upload_con py-5 px-4 flex flex-col gap-3 items-center">
+                <input
+                  type="file"
+                  id="avatar"
+                  name="avatar"
+                  accept="image/png, image/jpeg, image/jpg"
+                  ref={fileInputRef}
+                  style={{ display: 'none' }}
+                  onChange={handleFileChange}
+                />
+                {errors.avatar && touched.avatar && (
+                  <div className="text-red-500 text-sm mt-1">
+                    {errors.avatar}
                   </div>
                 )}
+
+                <Button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="flex flex-col"
+                >
+                  <div className="pt-5">
+                    <Upload />
+                  </div>
+                  <div className="flex flex-col gap-1 pb-5">
+                    <p className="app_upload_con__title">
+                      Upload client’s image
+                    </p>
+                    <p className="app_upload_con__description">
+                      PDF, PNG, JPG | 10MB max.
+                    </p>
+                  </div>
+                </Button>
+              </div>
+              {values?.avatar && (
+                <div className="flex items-center justify-between w-full app_upload_con rounded-lg p-4">
+                  <div className="flex items-center gap-3">
+                    <div>
+                      <p className="font-medium text-sm text-gray-900">
+                        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                        {(values?.avatar as any)?.name}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                        {
+                          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                          ((values?.avatar as any)?.size / 1024 / 1024).toFixed(
+                            2,
+                          )
+                        }{' '}
+                        MB
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleRemoveFile}
+                    className="text-gray-500 hover:text-gray-900"
+                  >
+                    <Delete className="w-5 h-5" />
+                  </button>
+                </div>
+              )}
 
               <div className="flex gap-4 w-full">
                 {/* flex justify-between space-x-10 absolute bottom-0 w-full -left-5 mb-5 m */}

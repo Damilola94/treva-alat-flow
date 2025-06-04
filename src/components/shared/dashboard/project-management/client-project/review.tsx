@@ -5,13 +5,13 @@ import { CenterModal, PlusIcon, Table } from '@/components/shared';
 import routes from '@/lib/routes';
 import { useGetProjectByIdQuery } from '@/services';
 import { Loader2 } from 'lucide-react';
-import { formatDate } from '@/lib/utils';
 import {
   useDeliverable,
   usePaymentSchedule,
 } from '@/hooks/Projects/useProjects';
 import { resetProject } from '@/store/slices/project';
 import { useAppDispatch } from '@/store';
+import { numberFormat } from '@/lib/numbers';
 
 interface IProps {
   projectId: string;
@@ -78,15 +78,16 @@ export function ProjectReview(props: IProps) {
     {
       header: 'Amount',
       accessorKey: 'amount',
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      cell: ({ row }: any) => (
+        <span>{numberFormat(row.original.amount)}</span>
+      ),
     },
     {
       header: 'Due date',
       accessorKey: 'dueDate',
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      cell: ({ row }: any) => {
-        const date = row.original.dueDate;
-        return formatDate(date);
-      },
+      // cell: ({ row }: any) => <span>{formatDate(row.original.dueDate)}</span>,
     },
   ];
 
@@ -107,6 +108,10 @@ export function ProjectReview(props: IProps) {
     {
       header: 'Amount',
       accessorKey: 'total',
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      cell: ({ row }: any) => (
+        <span>{numberFormat(row.original.total)}</span>
+      ),
     },
   ];
 
@@ -187,13 +192,15 @@ export function ProjectReview(props: IProps) {
           showFooter
           footerChildren={
             <div className="w-full flex items-center gap-5">
-              <button
-                className="w-full flex items-center justify-center text-[#7B37F0]"
+              {false &&
+               <button
+                 className="w-full flex items-center justify-center text-[#7B37F0]"
                 onClick={handleCloseModal}
-              >
-                <PlusIcon fill="#7B37F0" />
-                New invoice
-              </button>
+               >
+                 <PlusIcon fill="#7B37F0" />
+                 New invoice
+               </button>
+          }
               <button
                 className="border p-3 bg-[#7B37F0] rounded-full w-full text-[#fff]"
                 onClick={handleDone}

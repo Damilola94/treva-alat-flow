@@ -32,9 +32,8 @@ const SettingNotification = () => {
     if (updateResponse === 'success') {
       refetch && refetch();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [updateResponse]);
-
-  console.log(formik.values);
 
   return (
     <form onSubmit={formik.handleSubmit}>
