@@ -2040,7 +2040,7 @@ export interface components {
         UpdateProjectCommand: {
             /** Format: uuid */
             id?: string | null;
-            title: string | null;
+            title?: string | null;
             description?: string | null;
             /** Format: date-time */
             startDate?: string | null;
