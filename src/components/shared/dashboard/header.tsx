@@ -12,6 +12,7 @@ import { ArrowLeft, ArrowRightToBracket, Bell, Logo } from '../svgs';
 import Link from 'next/link';
 import routes from '@/lib/routes';
 import { useNotifications } from '@/hooks/Chat';
+import { useAppSelector } from '@/store';
 
 interface HeaderProps {
   showBackArrow?: boolean;
@@ -47,6 +48,7 @@ const useBreadcrumb = () => {
 };
 
 export function Header({ showBackArrow = false }: HeaderProps) {
+  const { role } = useAppSelector((state) => state?.auth);
   const bread = useBreadcrumb();
   const pt = usePathname();
   const rt = useRouter();
@@ -60,6 +62,14 @@ export function Header({ showBackArrow = false }: HeaderProps) {
   }, [notificationCount?.data]);
 
   console.log(notificationCountData);
+
+  const handleNotification = () => {
+    if (role?.includes('Client')) {
+      rt.push(routes.client.dashboard.notifications.path);
+    } else {
+      rt.push(routes.creatives.dashboard.notifications.path);
+    }
+  };
 
   // Show back arrow only for the specific route pattern
   // const showBackArrow = pt.startsWith('/client/dashboard/project-management/')
@@ -95,7 +105,14 @@ export function Header({ showBackArrow = false }: HeaderProps) {
 
       <div className="app_dash_main__hdr__rgt">
         <div className="flex items-center gap-4">
-          <Bell />
+          <div onClick={handleNotification} className="relative cursor-pointer">
+            <Bell />
+            {(notificationCountData as number) > 0 && (
+              <span className="absolute top-3 -right-2 w-5 h-5 text-white text-center bg-red-800 p-1 text-[8px] rounded-full">
+                {notificationCountData}
+              </span>
+            )}
+          </div>
 
           <Link href={routes.auth.signOut.path}>
             <ArrowRightToBracket />

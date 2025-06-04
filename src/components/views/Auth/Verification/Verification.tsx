@@ -81,8 +81,7 @@ export default function Verification() {
               <p className="app_auth_verification__p">
                 {verified
                   ? 'Congratulations, your email has been verified successfully'
-                  : data?.message ||
-                    'Email has been resent, please check your email'}
+                  : data?.message || 'Something went wrong'}
               </p>
 
               {verified && (
