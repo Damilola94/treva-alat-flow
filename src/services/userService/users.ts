@@ -107,6 +107,16 @@ export const usersService = userServiceApiSlice.injectEndpoints({
         response: ITrevaUserService['schemas']['UserModelBaseResponse'],
       ) => response,
     }),
+
+    deleteUserProfile: builder.mutation({
+      query: ({ userId }) => ({
+        url: endpoints.users.deleteUserProfile(userId),
+        method: REQUEST_METHODS.DELETE,
+      }),
+      transformResponse: (
+        response: ITrevaUserService['schemas']['BooleanBaseResponse'],
+      ) => response,
+    }),
   }),
 });
 
@@ -121,4 +131,5 @@ export const {
   useSaveCreativeOnboardingMutation,
   useGetCreativeOnboardingQuery,
   useUpdateUserProfileMutation,
+  useDeleteUserProfileMutation,
 } = usersService;

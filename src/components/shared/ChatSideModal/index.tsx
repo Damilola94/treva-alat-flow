@@ -1,7 +1,7 @@
 import React from 'react';
 import { X } from 'lucide-react';
-import Image from 'next/image';
-import { NAvatar } from '@/app/assets/pngs';
+import { Avatar } from '../avatar';
+import { extractName, getAvatar, getFullName } from '@/lib/utils';
 
 interface ModalProps {
   isOpen: boolean;
@@ -14,6 +14,7 @@ interface ModalProps {
   children: React.ReactNode;
   footerChildren?: React.ReactNode;
   usebg?: boolean;
+  pfp?: string;
 }
 
 const ChatSideModal: React.FC<ModalProps> = ({
@@ -25,6 +26,7 @@ const ChatSideModal: React.FC<ModalProps> = ({
   children,
   footerChildren,
   usebg,
+  pfp,
 }) => {
   if (!isOpen) return null;
 
@@ -49,12 +51,18 @@ const ChatSideModal: React.FC<ModalProps> = ({
           className="w-full p-4 border-b border-[#E7E7E7] "
         >
           <div className="flex justify-between items-center">
-            <div className="flex gap-3">
-              <div className='w-[43px] h-[43px]'>
-                <Image
-                  src={NAvatar}
-                  alt="avatar"
-                  className="rounded-full object-cover"
+            <div className="flex items-center gap-3">
+              <div className="w-[43px] h-[43px]">
+                <Avatar
+                  src={
+                    pfp ??
+                    getAvatar({
+                      name: title ? getFullName(extractName(title)) : '',
+                      length: 2,
+                    })
+                  }
+                  className="w-12 h-12 rounded-full border-[2.42px] border-[#A5A6F6] object-cover"
+                  size="md"
                 />
               </div>
               <div>

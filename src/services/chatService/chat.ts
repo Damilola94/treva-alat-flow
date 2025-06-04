@@ -14,7 +14,18 @@ export const chatService = chatServiceApiSlice.injectEndpoints({
         response: ITrevaChatService['schemas']['ChatModelPagedListBaseResponse'],
       ) => response,
     }),
+
+    startChat: builder.mutation({
+      query: (values) => ({
+        url: endpoints.chats.startChat,
+        method: REQUEST_METHODS.POST,
+        body: values,
+      }),
+      transformResponse: (
+        response: ITrevaChatService['schemas']['ChatModelBaseResponse'],
+      ) => response,
+    }),
   }),
 });
 
-export const { useGetAllChatsQuery } = chatService;
+export const { useGetAllChatsQuery, useStartChatMutation } = chatService;

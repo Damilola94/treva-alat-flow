@@ -1,7 +1,7 @@
 import { MAX_COOKIES_AGE } from '@/constants';
-import dayjs from "dayjs";
-import duration from "dayjs/plugin/duration";
-import utc from "dayjs/plugin/utc";
+import dayjs from 'dayjs';
+import duration from 'dayjs/plugin/duration';
+import utc from 'dayjs/plugin/utc';
 import relativeTime from 'dayjs/plugin/relativeTime';
 
 dayjs.extend(relativeTime);
@@ -93,6 +93,7 @@ export const handleLogoutRedirect = () => {
   if (typeof window !== 'undefined') {
     expireCookie('_tk');
     expireCookie('_ar');
+    expireCookie('_rtk');
     window.location.replace('/');
   }
 };
