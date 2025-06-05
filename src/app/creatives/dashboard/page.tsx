@@ -150,11 +150,11 @@ export default function Page() {
   const { beneficiaryData, refetch } = useBeneficiaryManagement(params);
   const { addBeneficiary, addBeneficiaryResponse } = useBeneficiaryManagement();
   const [triggerDelete, { isLoading }] = useDeleteBeneficiaryMutation();
-   const {
-      addWithdrawFunds,
-      addWithdrawResponse,
-      loading: withdrawing,
-    } = usePaymentService(params);
+  const {
+    addWithdrawFunds,
+    addWithdrawResponse,
+    loading: withdrawing,
+  } = usePaymentService(params);
 
   const wallet = myWalletData?.data;
 
@@ -241,14 +241,14 @@ export default function Page() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addBeneficiaryResponse]);
 
-    useEffect(() => {
-      if (addWithdrawResponse?.isSuccess) {
-        refetch && refetch();
-        //  formik.resetForm();
-      }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [addWithdrawResponse]);
-    
+  useEffect(() => {
+    if (addWithdrawResponse?.isSuccess) {
+      refetch && refetch();
+      //  formik.resetForm();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [addWithdrawResponse]);
+
   const kpis = [
     { label: 'Active Project', value: '0' },
     { label: 'Completed Project', value: '0' },
@@ -534,7 +534,7 @@ export default function Page() {
       )}
 
       <div className="app_dashboard_home__task app_dashboard_page__px pt-4">
-        <div className="app_dashboard_home__task__hdr flex flex-col gap-4  ">
+        <div className="app_dashboard_home__task__hdr flex flex-col md:flex-row md:items-center md:justify-between gap-4 mt-4 flex-wrap">
           <div className="grid grid-cols-2 gap-2 md:flex md:flex-wrap">
             {clientDashboardTasks.map((item) => (
               <Pill
@@ -795,6 +795,7 @@ export default function Page() {
                         onClick={(e) => {
                           e.stopPropagation();
                           setIsDecisionModalOpen(true);
+                          setAccountToDelete(item?.accountNumber);
                         }}
                         className="cursor-pointer"
                       >
@@ -842,7 +843,7 @@ export default function Page() {
 
               <button
                 className="border p-3 bg-[#F9403A] rounded-full w-full border-[#F1F1F1] text-[#fff]"
-                onClick={handleDelete}
+                onClick={() => handleDelete()}
                 disabled={isLoading || !accountToDelete}
                 type="button"
               >
