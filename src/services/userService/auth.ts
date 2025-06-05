@@ -28,7 +28,7 @@ export const authService = userServiceApiSlice.injectEndpoints({
 
     forgotPassword: builder.mutation({
       query: (
-        values: ITrevaUserService['schemas']['ForgotPasswordCommand'],
+        values,
       ) => ({
         url: endpoints.auth.forgotPassword,
         method: REQUEST_METHODS.POST,

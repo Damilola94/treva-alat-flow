@@ -1,7 +1,9 @@
 'use client';
 import { CenterModal, Table } from '@/components/shared';
 import { Button } from '@/components/ui/button';
+import { invoiceEnum } from '@/constants';
 import { useInvoicesById } from '@/hooks/Projects/useProjects';
+import { numberFormat } from '@/lib/numbers';
 import routes from '@/lib/routes';
 import { errorToast, successToast, useCreateInvoiceMutation } from '@/services';
 import { getErrorMessage } from '@/utils';
@@ -26,7 +28,6 @@ export default function Page() {
         setTogglePayInvoice(true);
       } else {
         errorToast(response?.message || 'Something went erong');
-        setTogglePayInvoice(true);
       }
     } catch (error) {
       const message = getErrorMessage(error);
@@ -39,31 +40,6 @@ export default function Page() {
     window.location.href = routes.client.dashboard.payment.path;
   };
 
-  const deliverableHeaders = [
-    {
-      header: 'Deliverable',
-      accessorKey: 'name',
-      // cell: ({ row }: any) => `Payment ${row.index + 1}`,
-    },
-    {
-      header: 'Unit Price',
-      accessorKey: 'unitAmount',
-    },
-    {
-      header: 'Unit',
-      accessorKey: 'unit',
-    },
-    {
-      header: 'Amount',
-      accessorKey: 'total',
-    },
-  ];
-
-  const [pagination, setPagination] = useState({
-    pageIndex: 0,
-    pageSize: 50,
-  });
-
   const tableBody = useMemo(() => {
     if (
       allInvoicesByIdData?.isSuccess &&
@@ -75,6 +51,44 @@ export default function Page() {
   }, [allInvoicesByIdData]);
 
   const invoice = allInvoicesByIdData?.data;
+
+  const deliverableHeaders = [
+    {
+      header: 'Deliverable',
+      accessorKey: 'name',
+      // cell: ({ row }: any) => `Payment ${row.index + 1}`,
+    },
+   {
+  header: 'Unit Price',
+  accessorKey: 'unitAmount',
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  cell: ({ row }: any) => (
+    <span>{numberFormat(row.original.unitAmount)}</span>
+  ),
+
+},
+    {
+      header: 'Unit',
+      accessorKey: 'unit',
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      cell: ({ row }: any) => (
+    <span>{numberFormat(row.original.unit)}</span>
+  ),
+    },
+    {
+      header: 'Amount',
+      accessorKey: 'total',
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      cell: ({ row }: any) => (
+    <span>{numberFormat(row.original.total)}</span>
+  ),
+    },
+  ];
+
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 50,
+  });
 
   return (
     <div className="app_get_started_professional_details py-6 px-4 flex flex-col gap-14">
@@ -161,18 +175,22 @@ export default function Page() {
           </div>
           <div className="flex justify-end">
             <div className="mt-6 text-start space-y-4">
-              <div className="flex gap-5">
+              {/* <div className="flex gap-5">
                 <span className="text-[#6B7280]">TOTAL:</span>
-                {/* <span>{deliverableSubtotal.toLocaleString()}</span> */}
-              </div>
+                <span>{deliverableSubtotal.toLocaleString()}</span>
+              </div> */}
               <div className="flex gap-5">
-                <span className="text-[#6B7280]">AMOUNT PAID:</span>
-                <span>NGN 4,000.00</span>
+                <span className="text-[#6B7280]">AMOUNT DUE:</span>
+                <span>
+                  {numberFormat(
+                    invoice?.paymentSchedule?.project?.paidAmount ?? 0,
+                  )}
+                </span>
               </div>
-              <div className="flex gap-5 font-bold">
+              {/* <div className="flex gap-5 font-bold">
                 <span>BALANCE DUE:</span>
-                <span>NGN 64,000.00</span>
-              </div>
+                <span>{numberFormat(invoice?.paymentSchedule?.project?.remainingAmount ?? 0)}</span>
+              </div> */}
             </div>
           </div>
         </div>
@@ -181,7 +199,8 @@ export default function Page() {
             <hr className="bg-[#E5E5E5] mt-6" />
           </div>
         </div>
-        {allInvoicesByIdData?.data?.status !== 'Closed' && (
+        {invoiceEnum[Number(allInvoicesByIdData?.data?.status)] !==
+          'Closed' && (
           <div className="mt-6 text-right">
             <Button
               size="lg"
@@ -190,7 +209,7 @@ export default function Page() {
               onClick={() => handlePayInvoice()}
               isLoading={isLoading}
             >
-              Pay Balance Due
+              Pay Amount Due
             </Button>
           </div>
         )}

@@ -10,6 +10,7 @@ import {
   SideModal,
   RenderIf,
   CenterModal,
+  MiniLoader,
 } from '@/components/shared';
 import { Button } from '@/components/ui/button';
 import React, { useEffect, useState } from 'react';
@@ -157,18 +158,7 @@ export default function Page() {
   }, [allProjectsByIdData?.data?.metrics?.progressPercent]);
 
   if (loading) {
-    return (
-      <div className="w-full h-full flex items-center justify-center">
-        <div className="flex  gap-12">
-          <div
-            className="flex justify-center items-center"
-            style={{ minHeight: 200 }}
-          >
-            <span className="txxx_loader" />
-          </div>
-        </div>
-      </div>
-    );
+    return <MiniLoader message="Loading" />;
   }
 
   return (
@@ -403,7 +393,7 @@ export default function Page() {
               <p className="text-muted">
                 {project.status === 'AwaitingClientConfirmation'
                   ? 'Awaiting Client Confirmation'
-                  : 'Completed' }
+                  : 'Completed'}
               </p>
             ) : (
               <ProjectProgressBar

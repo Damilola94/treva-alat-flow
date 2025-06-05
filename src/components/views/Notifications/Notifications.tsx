@@ -1,5 +1,5 @@
 'use client';
-import { ChatSideModal, Tab } from '@/components/shared';
+import { ChatSideModal, MiniLoader, Tab } from '@/components/shared';
 import React, { useMemo, useState } from 'react';
 import { ChatWindow, NotificationsList } from './components';
 import { useMessages, useNotifications } from '@/hooks/Chat';
@@ -102,16 +102,7 @@ const Notifications = () => {
 
   if (loading) {
     return (
-      <div className="w-full h-full flex items-center justify-center">
-        <div className="flex  gap-12">
-          <div
-            className="flex justify-center items-center"
-            style={{ minHeight: 200 }}
-          >
-            <span className="txxx_loader" />
-          </div>
-        </div>
-      </div>
+      <MiniLoader message="Loading" />
     );
   }
 

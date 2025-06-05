@@ -15,6 +15,7 @@ import {
   Delete,
   EmptyStatus,
   Label,
+  MiniLoader,
   PersonalIcon,
   Pill,
   PlusIcon,
@@ -535,6 +536,7 @@ export default function Page() {
 
       <div className="app_dashboard_home__task app_dashboard_page__px pt-4">
         <div className="app_dashboard_home__task__hdr flex flex-col md:flex-row md:items-center md:justify-between gap-4 mt-4 flex-wrap">
+        <div className="app_dashboard_home__task__hdr  flex-wrap gap-2 mt-4  ">
           <div className="grid grid-cols-2 gap-2 md:flex md:flex-wrap">
             {clientDashboardTasks.map((item) => (
               <Pill
@@ -564,7 +566,7 @@ export default function Page() {
         <div className="app_dashboard_home__task__ctt">
           {loading ? (
             <div className="text-center flex justify-center items-center">
-              <Loader2 size={18} className="animate-spin" />
+              <MiniLoader message="Loading" />
             </div>
           ) : (
             <Table
@@ -795,6 +797,7 @@ export default function Page() {
                         onClick={(e) => {
                           e.stopPropagation();
                           setIsDecisionModalOpen(true);
+                        setAccountToDelete(item?.accountNumber)
                           setAccountToDelete(item?.accountNumber);
                         }}
                         className="cursor-pointer"
@@ -864,6 +867,7 @@ export default function Page() {
           </div>
         </CenterModal>
       </div>
+    </div>
     </div>
   );
 }

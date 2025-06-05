@@ -9,6 +9,7 @@ import { errorToast, successToast, useVerifyAccountMutation } from '@/services';
 import { clearValues, useAppDispatch } from '@/store';
 import { getErrorMessage } from '@/utils';
 import { useRouter } from 'next/navigation';
+import { MiniLoader } from '@/components/shared';
 
 export default function Verification() {
   const dispatch = useAppDispatch();
@@ -54,18 +55,7 @@ export default function Verification() {
   };
 
   if (isLoading || verificationLoading) {
-    return (
-      <div className="app_auth_login">
-        <div className="flex flex-col gap-12">
-          <div
-            className="flex justify-center items-center"
-            style={{ minHeight: 200 }}
-          >
-            <span className="txxx_loader" />
-          </div>
-        </div>
-      </div>
-    );
+    return <MiniLoader message="Loading" />;
   }
 
   return (

@@ -8,6 +8,7 @@ import {
   Facebook,
   Instagram,
   Linkedin,
+  MiniLoader,
   Pagination,
   TikTok,
   Twitter,
@@ -111,14 +112,7 @@ export default function CreativeProfile() {
   if (isLoading || isFetching || fetchingReviews || loadingReviews) {
     return (
       <div className="w-full h-full flex items-center justify-center">
-        <div className="flex  gap-12">
-          <div
-            className="flex justify-center items-center"
-            style={{ minHeight: 200 }}
-          >
-            <span className="txxx_loader" />
-          </div>
-        </div>
+        <MiniLoader message="loading" />
       </div>
     );
   }

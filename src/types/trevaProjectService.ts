@@ -1886,6 +1886,10 @@ export interface components {
             id?: string;
             title: string | null;
             deliverables?: components["schemas"]["DeliverableModel"][] | null;
+            /** Format: double */
+            paidAmount?: number | null;
+            /** Format: double */
+            remainingAmount?: number | null;
         };
         ProjectMetric: {
             /** Format: int32 */
@@ -1943,6 +1947,10 @@ export interface components {
             revisionRequestDescription?: string | null;
             /** Format: double */
             actualCost?: number | null;
+            /** Format: double */
+            paidAmount?: number | null;
+            /** Format: double */
+            remainingAmount?: number | null;
             creativeUser?: components["schemas"]["UserDto"];
             clientUser?: components["schemas"]["UserDto"];
             /** Format: date-time */

@@ -112,6 +112,12 @@ export const priorityItems = [
 
 };
 
+export const invoiceEnum: Record<number, string> = {
+  1: 'Pending',
+  2: 'Due',
+  3: 'Closed'
+}
+
 export const mockProjects = [
   {
     id: '1',

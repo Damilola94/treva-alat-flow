@@ -13,6 +13,7 @@ import {
   CenterModal,
   Delete,
   Label,
+  MiniLoader,
   Pill,
   SideModal,
   Table,
@@ -464,8 +465,8 @@ export default function Dashboard() {
         </div>
 
         {loading ? (
-          <div className="text-center flex justify-center items-center">
-            <Loader2 size={18} className="animate-spin" />
+          <div className="text-center mt-10 flex justify-center items-center">
+            <MiniLoader message="loading" />
           </div>
         ) : (
           <Table
@@ -692,6 +693,8 @@ export default function Dashboard() {
                         onClick={(e) => {
                           e.stopPropagation();
                           setIsDecisionModalOpen(true);
+                        setAccountToDelete(item?.accountNumber)
+
                         }}
                         className="cursor-pointer"
                       >
@@ -738,7 +741,7 @@ export default function Dashboard() {
               </button>
               <button
                 className="border p-3 bg-[#F9403A] rounded-full w-full border-[#F1F1F1] text-[#fff]"
-                onClick={() => handleDelete()}
+                onClick={() => handleDelete(accountToDelete)}
                 disabled={isLoading || !accountToDelete}
                 type="button"
               >
