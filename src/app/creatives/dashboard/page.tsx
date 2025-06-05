@@ -15,6 +15,7 @@ import {
   Delete,
   EmptyStatus,
   Label,
+  MiniLoader,
   PersonalIcon,
   Pill,
   PlusIcon,
@@ -150,11 +151,11 @@ export default function Page() {
   const { beneficiaryData, refetch } = useBeneficiaryManagement(params);
   const { addBeneficiary, addBeneficiaryResponse } = useBeneficiaryManagement();
   const [triggerDelete, { isLoading }] = useDeleteBeneficiaryMutation();
-   const {
-      addWithdrawFunds,
-      addWithdrawResponse,
-      loading: withdrawing,
-    } = usePaymentService(params);
+  const {
+    addWithdrawFunds,
+    addWithdrawResponse,
+    loading: withdrawing,
+  } = usePaymentService(params);
 
   const wallet = myWalletData?.data;
 
@@ -241,14 +242,14 @@ export default function Page() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addBeneficiaryResponse]);
 
-    useEffect(() => {
-      if (addWithdrawResponse?.isSuccess) {
-        refetch && refetch();
-        //  formik.resetForm();
-      }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [addWithdrawResponse]);
-    
+  useEffect(() => {
+    if (addWithdrawResponse?.isSuccess) {
+      refetch && refetch();
+      //  formik.resetForm();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [addWithdrawResponse]);
+
   const kpis = [
     { label: 'Active Project', value: '0' },
     { label: 'Completed Project', value: '0' },
@@ -564,7 +565,7 @@ export default function Page() {
         <div className="app_dashboard_home__task__ctt">
           {loading ? (
             <div className="text-center flex justify-center items-center">
-              <Loader2 size={18} className="animate-spin" />
+              <MiniLoader message="Loading" />
             </div>
           ) : (
             <Table

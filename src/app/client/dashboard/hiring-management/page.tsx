@@ -3,7 +3,7 @@
 import { ArrowRight, Search, Star } from 'lucide-react';
 import { Avatar } from '@/components/shared/avatar';
 import { useRouter } from 'next/navigation';
-import { Pagination } from '@/components/shared';
+import { MiniLoader, Pagination } from '@/components/shared';
 import { useGetCreatives, useHiringStats } from '@/hooks/Users';
 import { useMemo, useState } from 'react';
 import { extractName, getAvatar, getFullName } from '@/lib/utils';
@@ -62,14 +62,7 @@ export default function Page() {
   if (loading || creativesLoading) {
     return (
       <div className="w-full h-full flex items-center justify-center">
-        <div className="flex  gap-12">
-          <div
-            className="flex justify-center items-center"
-            style={{ minHeight: 200 }}
-          >
-            <span className="txxx_loader" />
-          </div>
-        </div>
+        <MiniLoader message="loading" />
       </div>
     );
   }

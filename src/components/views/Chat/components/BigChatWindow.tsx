@@ -10,6 +10,7 @@ import { dayJs, getErrorMessage } from '@/utils';
 import Image from 'next/image';
 import { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { FiPaperclip, FiDownload } from 'react-icons/fi';
+import { MiniLoader } from '@/components/shared';
 
 export type UserPreview = {
   id: string | null;
@@ -196,9 +197,7 @@ const BigChatWindow = () => {
         {/* Messages */}
         <div className="flex-1 min-h-0 overflow-y-auto px-4 py-2 space-y-4">
           {messageLoading ? (
-            <div className="w-full h-full flex items-center justify-center">
-              <span className="txxx_loader" />
-            </div>
+            <MiniLoader message="Loading" />
           ) : messageList?.length === 0 ? (
             <p className="text-center text-gray-400 mt-10">
               {chatList?.length > 0

@@ -8,6 +8,7 @@ import * as Yup from 'yup';
 import { useGetAllSubsQuery } from '@/services';
 import { useAppSelector } from '@/store';
 import { useUsers } from '@/hooks/Users';
+import MiniLoader from '../../MiniLoader';
 
 const validationSchema = Yup.object().shape({
   // Define validation rules if necessary
@@ -42,18 +43,12 @@ const PricingCards: React.FC = () => {
 
   if (isLoading || isFetching) {
     return (
-      <div className="w-full h-full flex items-center justify-center">
-        <div className="flex  gap-12">
-          <div
-            className="flex justify-center items-center"
-            style={{ minHeight: 200 }}
-          >
-            <span className="txxx_loader" />
-          </div>
-        </div>
+      <div className="flex items-center justify-center w-full h-screen">
+        <MiniLoader message="Loading" />
       </div>
     );
   }
+  
 
   return (
     <div className="pricing-cards">
