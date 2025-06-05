@@ -20,13 +20,14 @@ const routes = {
       path: '/auth/sign-out',
     },
 
+    resetPassword: {
+      path: '/auth/reset-password',
+    },
+
     forgotPassword: {
       path: '/auth/forgot-password',
       resetEmail: {
         path: '/auth/forgot-password/reset-email',
-      },
-      resetPassword: {
-        path: '/auth/forgot-password/reset-password',
       },
       passwordResetSuccessful: {
         path: '/auth/forgot-password/password-reset-successful',

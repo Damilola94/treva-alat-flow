@@ -3,7 +3,14 @@
 import { Suspense, useEffect, useState } from 'react';
 import { Footer, Header, Sidebar } from '@/components/shared/dashboard';
 import { Inter } from 'next/font/google';
-import { Column, Users, GlobeAlt, Grid, Payment, Settings } from '@/components/shared';
+import {
+  Column,
+  Users,
+  GlobeAlt,
+  Grid,
+  Payment,
+  Settings,
+} from '@/components/shared';
 import routes from '@/lib/routes';
 // import queries from '@/services/queries/profile';
 import { usePathname } from 'next/navigation';
@@ -15,14 +22,13 @@ const inter = Inter({
   weight: ['400', '500', '600', '700'],
 });
 
-
 function Main({ children }: { children: React.ReactNode }) {
   const pt = usePathname();
-  
+
   const shouldShowBackArrow =
-  pt.startsWith('/client/dashboard/project-management/') ||
-  pt.startsWith('/client/dashboard/hiring-management/') ||
-  /^\/client\/dashboard\/payment\/[^/]+$/.test(pt);
+    pt.startsWith('/client/dashboard/project-management/') ||
+    pt.startsWith('/client/dashboard/hiring-management/') ||
+    /^\/client\/dashboard\/payment\/[^/]+$/.test(pt);
 
   const [mounted, setMounted] = useState(false);
   // const { data } = queries.read();
@@ -67,7 +73,7 @@ function Main({ children }: { children: React.ReactNode }) {
     {
       label: 'Settings',
       href: routes.client.dashboard.settings.profile.path,
-      icon: <Settings/>
+      icon: <Settings />,
     },
   ];
 
