@@ -69,8 +69,7 @@ const NotificationList: React.FC<{
   refetch,
 }) => {
   console.log(notifications);
-  const [triggerReadNotification] =
-    useReadNotificationMutation();
+  const [triggerReadNotification] = useReadNotificationMutation();
 
   const handleReadNotification = async (item: NotificationItem) => {
     try {
@@ -122,7 +121,9 @@ const NotificationList: React.FC<{
                           <Image
                             src={item.sourceAvatar}
                             alt="avatar"
-                            className="rounded-full object-cover"
+                            className="rounded-full w-[40px] h-[40px] object-cover"
+                            width={40}
+                            height={40}
                           />
                         ) : (
                           <>
