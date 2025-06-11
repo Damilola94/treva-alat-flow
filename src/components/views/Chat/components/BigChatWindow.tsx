@@ -53,7 +53,9 @@ const BigChatWindow = () => {
   const [message, setMessage] = useState('');
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const bottomRef = useRef<HTMLDivElement | null>(null);
+  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+  const bottomRef = useRef<HTMLDivElement | null>(null); // keep this
+
   const [triggerPost, { isLoading }] = usePostMessagesByChatIdMutation();
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -83,7 +85,12 @@ const BigChatWindow = () => {
 
   // 🔽 Scroll to latest message
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    const el = scrollContainerRef.current;
+    if (el) {
+      requestAnimationFrame(() => {
+        el.scrollTop = el.scrollHeight;
+      });
+    }
   }, [messageList]);
 
   useEffect(() => {
@@ -195,7 +202,11 @@ const BigChatWindow = () => {
         </div>
 
         {/* Messages */}
-        <div className="flex-1 min-h-0 overflow-y-auto px-4 py-2 space-y-4">
+        <div
+          ref={scrollContainerRef}
+          className="flex-1 min-h-0 overflow-y-auto px-4 py-2 space-y-4 pb-24"
+          style={{ scrollBehavior: 'auto' }}
+        >
           {messageLoading ? (
             <MiniLoader message="Loading" />
           ) : messageList?.length === 0 ? (
@@ -264,6 +275,7 @@ const BigChatWindow = () => {
                 );
               })}
               <div ref={bottomRef} />
+              <div style={{ height: '0px' }} />
             </>
           )}
         </div>

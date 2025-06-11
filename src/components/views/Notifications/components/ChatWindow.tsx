@@ -76,9 +76,9 @@ const ChatWindow = ({
   }, [chats]);
 
   return (
-    <div className="flex flex-col h-[85vh] max-w-md mx-auto bg-white shadow-sm">
+    <div className="flex flex-col h-[89vh] max-w-md mx-auto bg-white shadow-sm">
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-4 py-2 space-y-4">
+      <div className="flex-1 overflow-y-auto space-y-4">
         {chats.length === 0 ? (
           <p className="text-center text-gray-400 mt-10">No messages yet</p>
         ) : (

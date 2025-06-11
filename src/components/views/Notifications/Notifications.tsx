@@ -48,10 +48,19 @@ const Notifications = () => {
     [allNotifications?.data],
   );
 
-  const chatsFetchedById = useMemo(
-    () => chatByIdData?.data || null,
-    [chatByIdData?.data],
-  );
+  // const chatsFetchedById = useMemo(
+  //   () => chatByIdData?.data || null,
+  //   [chatByIdData?.data],
+  // );
+
+  const chatsFetchedById = useMemo(() => {
+    const unsorted = chatByIdData?.data || [];
+    return [...unsorted].sort((a, b) => {
+      const aTime = a?.sentAt ? new Date(a.sentAt).getTime() : 0;
+      const bTime = b?.sentAt ? new Date(b.sentAt).getTime() : 0;
+      return aTime - bTime;
+    });
+  }, [chatByIdData?.data]);
 
   const selectedNotificationItem = useMemo(
     () => notificationsList?.find((x) => x?.id === selectedNotification?.id),
@@ -101,9 +110,7 @@ const Notifications = () => {
   ];
 
   if (loading) {
-    return (
-      <MiniLoader message="Loading" />
-    );
+    return <MiniLoader message="Loading" />;
   }
 
   return (
