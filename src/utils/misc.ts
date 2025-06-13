@@ -3,10 +3,12 @@ import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 import utc from 'dayjs/plugin/utc';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import timezone from 'dayjs/plugin/timezone';
 
 dayjs.extend(relativeTime);
 dayjs.extend(duration);
 dayjs.extend(utc);
+dayjs.extend(timezone);
 
 export { dayjs as dayJs };
 
@@ -160,3 +162,19 @@ export const formatAsMoney = (
     maximumFractionDigits: 2,
   }).format(!isNaN(Number(value)) ? parseFloat(value.toString()) : 0);
 };
+
+export const getDateLabel = (date: string | undefined) => {
+   if (!date) return "Unknown Date"
+      const messageDate = dayjs(date);
+      const today = dayjs();
+      const yesterday = today.subtract(1, 'day');
+
+       if (messageDate.isSame(today, 'day')) {
+          return 'Today';
+           } else if (messageDate.isSame(yesterday, 'day')) {
+             return 'Yesterday';
+           } else {
+           return messageDate.format('MMMM D, YYYY');
+           }
+           };
+           

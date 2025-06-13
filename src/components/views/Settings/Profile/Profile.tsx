@@ -1,6 +1,7 @@
 'use client';
 import { EditSmall } from '@/app/assets/svgs';
 import {
+  CenterModal,
   CloseX,
   Edit,
   Facebook,
@@ -14,7 +15,14 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useProfile, useUsers } from '@/hooks/Users';
 import { getAvatar, getFullName } from '@/lib/utils';
-import { handleErrors } from '@/services';
+import {
+  errorToast,
+  handleErrors,
+  successToast,
+  useDeleteUserProfileMutation,
+} from '@/services';
+import { useAppSelector } from '@/store';
+import { getErrorMessage, handleLogoutRedirect } from '@/utils';
 import { useFormik } from 'formik';
 import Image from 'next/image';
 import { useEffect, useMemo, useState } from 'react';
@@ -22,9 +30,12 @@ import { useEffect, useMemo, useState } from 'react';
 const Profile = () => {
   const { data, refetch } = useProfile();
   const userData = useMemo(() => data?.data || null, [data]);
+  const { userId } = useAppSelector((state) => state?.auth);
   const [isEdit, toggleIsEdit] = useState(false);
   const [pictureEdit, togglePictureEdit] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [deleteModal, setDeleteModal] = useState(false);
+  const [triggerDelete, { isLoading }] = useDeleteUserProfileMutation();
 
   const { updateProfileDetails, loading, updateResponse } = useUsers();
 
@@ -59,10 +70,25 @@ const Profile = () => {
       toggleIsEdit(false);
       refetch && refetch();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [updateResponse]);
 
-  console.log(values?.picture);
+  const deleteUser = async () => {
+    try {
+      const payload = {
+        userId: userId,
+      };
+      const response = await triggerDelete(payload).unwrap();
+      if (response?.isSuccess) {
+        successToast(response?.message || 'Account deleted successfully');
+        handleLogoutRedirect();
+      } else {
+        errorToast(response?.message || 'Something went wrong');
+      }
+    } catch (error) {
+      errorToast(getErrorMessage(error));
+    }
+  };
 
   return (
     <div>
@@ -434,7 +460,15 @@ const Profile = () => {
           )}
         </div>
 
-        <div className="w-full flex justify-end items-center">
+        <div className="w-full items-center justify-between flex md:justify-end md:items-center">
+          <div className="">
+            <button
+              onClick={() => setDeleteModal(true)}
+              className="text-[#E7211B] w-full text-left"
+            >
+              Delete Account
+            </button>
+          </div>
           <Button
             className="app_auth_login__btn"
             size="md"
@@ -446,6 +480,40 @@ const Profile = () => {
           </Button>
         </div>
       </div>
+      
+      <CenterModal
+        isOpen={deleteModal}
+        onClose={() => setDeleteModal(false)}
+        headerImageType={5}
+      >
+        <div className="space-y-5 text-center">
+          <div>
+            <p className="font-bold text-[16px]">
+              Are you sure you want to delete this account?
+            </p>
+            <p className="text-[#888888]">
+              Account will be deleted Permanently
+            </p>
+          </div>
+          <div className="w-full flex items-center gap-5">
+            <Button
+              onClick={() => setDeleteModal(false)}
+              className="w-full p-3 rounded-full border border-[#F1F1F1]"
+              variant={'outline'}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={deleteUser}
+              className="w-full p-3 rounded-full bg-[#F14343] text-white"
+              isLoading={isLoading}
+              variant={'destructive'}
+            >
+              Delete
+            </Button>
+          </div>
+        </div>
+      </CenterModal>
     </div>
   );
 };

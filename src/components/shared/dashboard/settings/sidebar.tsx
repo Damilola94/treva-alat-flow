@@ -63,7 +63,30 @@ export default function Sidebar() {
 
   return (
     <>
-      <div className="w-60 mb-24 min-h-[calc(100vh-4rem)] overflow-auto shrink-0 p-6 border-r border-gray-200 bg-white rounded-l-xl shadow-sm relative">
+      {/* mobile */}
+        <div className="md:hidden flex justify-between items-center px-4 py-5 border-b bg-white sticky top-0 z-50">
+          <ul className="flex gap-6">
+            {menuItems.map((item) => {
+              const isActive = pathname === item.href;
+              return (
+                <li key={item.label}>
+                  <Link
+                    href={item.href}
+                    className={`text-sm font-medium ${
+                      isActive
+                        ? 'text-[#7B37F0] border-b-4 border-[#7B37F0]'
+                        : 'text-[#3D3D3D]'
+                    }`}
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+
+      <div className="hidden md:block w-60 mb-24 min-h-[calc(100vh-4rem)] overflow-auto shrink-0 p-6 border-r border-gray-200 bg-white rounded-l-xl shadow-sm relative">
         <ul className="space-y-5">
           {menuItems.map((item) => {
             //   const activeCN = isActive(item?.href, item.label === 'Settings')
