@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
 import {
@@ -10,16 +9,27 @@ import {
   SmallHome,
 } from '@/app/assets/svgs';
 import {
+  AnimatedModal,
   CenterModal,
+  ClientIcon,
   Delete,
+  EmptyStatus,
   Label,
   MiniLoader,
+  PersonalIcon,
   Pill,
+  PlusIcon,
+  projectTypeMap,
+  RenderIf,
   SideModal,
   Table,
 } from '@/components/shared';
 import { Avatar } from '@/components/shared/avatar';
-import SearchInput from '@/components/ui/SearchInput';
+import { EmptyState } from '@/components/shared/dashboard/empty-state';
+import {
+  AddProject,
+  CreateProjectCard,
+} from '@/components/shared/project-management';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -27,6 +37,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+import SearchInput from '@/components/ui/SearchInput';
 import { clientDashboardTasks } from '@/constants';
 import {
   useBeneficiaryManagement,
@@ -42,16 +53,31 @@ import routes from '@/lib/routes';
 import { formatDate, getAvatar, getFullName } from '@/lib/utils';
 import { errorToast, successToast } from '@/services';
 import { useDeleteBeneficiaryMutation } from '@/services/paymentService';
-import { getErrorMessage } from '@/utils';
 import { useFormik } from 'formik';
-// import queries from '@/services/queries/profile';
 import { Copy, Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { Fragment, useEffect, useMemo, useState } from 'react';
 import * as Yup from 'yup';
 import Select from 'react-select';
 
+const createAProject = {
+  img: projectManagement.topImageProject,
+  title: 'Add new project',
+  createProject: [
+    {
+      icon: <PersonalIcon />,
+      title: 'Personal',
+      details: 'Support a cause by making one-time donations.',
+    },
+    {
+      icon: <ClientIcon />,
+      title: 'Client',
+      details: 'Support a cause by making one-time donations.',
+    },
+  ],
+  btnText1: 'Proceed',
+};
 interface ProjectQueryParams {
   type?: string;
   status?: string;
@@ -78,28 +104,18 @@ const validationSchema = Yup.object({
   // bankName: Yup.string().required('Bank name is required'),
 });
 
-export default function Dashboard() {
-  const router = useRouter();
-  const [copied, setCopied] = useState(false);
-  const [popOver, togglePopOver] = useState(false);
-  const [withdraw, toggleWithdraw] = useState(false);
-  const [addFunds, toggleAddFunds] = useState(false);
-  const [addAccount, toggleAddAccount] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [accountToDelete, setAccountToDelete] = useState<string | null>(null);
-  const [isDecisionModalOpen, setIsDecisionModalOpen] = useState(false);
-  const [, setSelected] = useState<string | null>(null);
-  const [withdrawAmount, setWithdrawAmount] = useState('');
-  const [selectedBeneficiary, setSelectedBeneficiary] = useState<any>(null);
+enum Tasks {
+  'Due Task' = 'Due Task',
+  'Ongoing Task' = 'Ongoing Task',
+}
 
-  const { data } = useProfile();
-  const userData = useMemo(() => data?.data || null, [data]);
+export default function Page() {
+  const router = useRouter();
 
   const [params, setParams] = useState<ProjectQueryParams>({
+    pageNumber: 0,
+    pageSize: 0,
     currency: 'NGN',
-    pageNumber: 1,
-    pageSize: 4,
     searchKey: '',
     walletId: '',
     accountNumber: 0,
@@ -109,16 +125,28 @@ export default function Dashboard() {
     name: '',
   });
 
-  const initialValues = {
-    name: '',
-    accountNumber: '',
-    bankCode: '',
-    // bankName: '',
-  };
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [accountToDelete, setAccountToDelete] = useState<string | null>(null);
+  const [isDecisionModalOpen, setIsDecisionModalOpen] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [selected, setSelected] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
+  const [popOver, togglePopOver] = useState(false);
+  const [withdraw, toggleWithdraw] = useState(false);
+  const [addFunds, toggleAddFunds] = useState(false);
+  const [addAccount, toggleAddAccount] = useState(false);
+  const [withdrawAmount, setWithdrawAmount] = useState('');
+  const [selectedBeneficiary, setSelectedBeneficiary] = useState<any>(null);
 
-  const { userOnboardingData } = useUsers();
+  const [addProject, setAddProject] = useState(true);
   const { allProjectsData, loading } = useProjects(params);
+  const [addProjectForm, setAddProjectForm] = useState(true);
+  const { data } = useProfile();
+  const userData = useMemo(() => data?.data || null, [data]);
+  const { creativeOnboardingData } = useUsers();
   const { myWalletData } = usePaymentService(params);
+  // const { myWalletByIdData } = usePaymentService(wallletParamsId);
   const { myCommonData } = useCommon();
   const { beneficiaryData, refetch } = useBeneficiaryManagement(params);
   const { addBeneficiary, addBeneficiaryResponse } = useBeneficiaryManagement();
@@ -128,6 +156,7 @@ export default function Dashboard() {
     addWithdrawResponse,
     loading: withdrawing,
   } = usePaymentService(params);
+
   const wallet = myWalletData?.data;
 
   const bankOptions = [
@@ -156,37 +185,29 @@ export default function Dashboard() {
       });
   };
 
-  const openDeleteModal = (accountNumber: string) => {
-    setAccountToDelete(accountNumber);
-    setIsDecisionModalOpen(true);
-  };
-
-  const handleDelete = async (accountNumber?: string | null) => {
-    if (!accountNumber) {
-      errorToast('Invalid account number');
-      return;
-    }
+  const handleDelete = async () => {
+    if (!accountToDelete) return;
     try {
-      const response = await triggerDelete(accountNumber).unwrap();
+      const response = await triggerDelete(accountToDelete).unwrap();
       if (response?.isSuccess) {
         successToast(response?.message || 'Account deleted successfully');
         await refetch();
-        setIsDecisionModalOpen(false);
       } else {
         errorToast(response?.message || 'Something went wrong');
       }
     } catch (error) {
-      const message = getErrorMessage(error);
-      errorToast(message || 'Something went wrong');
+      errorToast('Something went wrong');
     }
+    setIsDecisionModalOpen(false);
+    setAccountToDelete(null);
   };
 
-  useEffect(() => {
-    if (addWithdrawResponse?.isSuccess) {
-      refetch && refetch();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [addWithdrawResponse]);
+  const initialValues = {
+    name: '',
+    accountNumber: '',
+    bankCode: '',
+    // bankName: '',
+  };
 
   const formik = useFormik({
     initialValues,
@@ -220,6 +241,14 @@ export default function Dashboard() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addBeneficiaryResponse]);
+
+  useEffect(() => {
+    if (addWithdrawResponse?.isSuccess) {
+      refetch && refetch();
+      //  formik.resetForm();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [addWithdrawResponse]);
 
   const kpis = [
     { label: 'Active Project', value: '0' },
@@ -276,45 +305,85 @@ export default function Dashboard() {
 
   const [pagination, setPagination] = useState({
     pageIndex: 0,
-    pageSize: 4,
+    pageSize: 10,
   });
 
-  const headers = [
+  const tableBody = useMemo(() => {
+    return allProjectsData?.isSuccess && allProjectsData.data
+      ? allProjectsData.data
+      : [];
+  }, [allProjectsData?.isSuccess, allProjectsData?.data]);
+
+  useEffect(() => {
+    setParams((prev) => ({
+      ...prev,
+      pageNumber: pagination?.pageIndex + 1,
+      pageSize: pagination?.pageSize,
+    }));
+  }, [pagination]);
+
+  const handleParamChange = (param: Partial<ProjectQueryParams>) => {
+    setParams((prev) => ({
+      ...prev,
+      ...param,
+    }));
+  };
+
+  const handleAddProjectClick = () => {
+    setAddProject(!addProject);
+  };
+
+  const handleProjectFormClick = () => {
+    setAddProject(!addProject);
+    setAddProjectForm(!addProjectForm);
+  };
+
+  const handleWithdrawFunds = async () => {
+    const walletId = myWalletData?.data?.accountNumber;
+    const payload = {
+      beneficiaryAccountNumber: selectedBeneficiary.accountNumber,
+      amount: Number(withdrawAmount),
+      walletId: walletId,
+    };
+    addWithdrawFunds(payload);
+  };
+
+  const handleProjectFormClose = () => {
+    setAddProjectForm(!addProjectForm);
+  };
+
+  useEffect(() => {
+    if (
+      creativeOnboardingData?.data?.isCompleted &&
+      creativeOnboardingData?.data
+    ) {
+      router.push(routes.creatives.dashboard.getStarted.path);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [creativeOnboardingData]);
+
+  const columns = [
     {
-      header: 'Project Name',
+      header: 'Project name',
       accessorKey: 'title',
     },
     {
-      header: 'Creative',
-      accessorKey: 'creativeUser',
+      header: 'Project Type',
+      accessorKey: 'type',
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       cell: ({ row }: any) => {
-        const creative = row.original.creativeUser?.profilePicture;
-        const firstName = row.original.creativeUser?.firstName;
-        const lastName = row.original.creativeUser?.lastName;
-
-        return (
-          <div className="flex items-center gap-2">
-            <Image
-              src={creative || projectManagement.female}
-              alt={firstName}
-              className="w-6 h-6 rounded-full"
-              width={100}
-              height={100}
-            />
-            <span>
-              {firstName} {lastName}
-            </span>
-          </div>
-        );
+        const typeValue = row.original.type;
+        return <div>{projectTypeMap[typeValue] || 'Unknown'}</div>;
       },
     },
     {
-      header: 'Due Date',
+      header: 'Due date',
       accessorKey: 'expectedDeliveryDate',
-      cell: ({ row }: any) => (
-        <span>{formatDate(row.original.expectedDeliveryDate)}</span>
-      ),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      cell: ({ row }: any) => {
+        const date = row.original.expectedDeliveryDate;
+        return formatDate(date);
+      },
     },
     {
       header: 'Priority',
@@ -344,58 +413,50 @@ export default function Dashboard() {
     },
   ];
 
-  const tableBody = useMemo(() => {
-    return allProjectsData?.isSuccess && allProjectsData.data
-      ? allProjectsData.data
-      : [];
-  }, [allProjectsData?.isSuccess, allProjectsData?.data]);
-
-  useEffect(() => {
-    setParams((prev) => ({
-      ...prev,
-      pageNumber: pagination?.pageIndex + 1,
-      pageSize: pagination?.pageSize,
-    }));
-  }, [pagination]);
-
-  const handleParamChange = (param: Partial<ProjectQueryParams>) => {
-    setParams((prev) => ({
-      ...prev,
-      ...param,
-    }));
-  };
-
-  const handleWithdrawFunds = async () => {
-    const walletId = myWalletData?.data?.accountNumber;
-    const payload = {
-      beneficiaryAccountNumber: selectedBeneficiary.accountNumber,
-      amount: Number(withdrawAmount),
-      walletId: walletId,
-    };
-    addWithdrawFunds(payload);
-  };
-
-  useEffect(() => {
-    if (!userOnboardingData?.data?.isCompleted && userOnboardingData?.data) {
-      router.push(routes.client.dashboard.getStarted.path);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userOnboardingData]);
-
   return (
     <div className="app_dashboard_page app_dashboard_home">
+      <RenderIf condition={!addProject}>
+        <Fragment>
+          <AnimatedModal
+            {...{
+              isOpen: true,
+              from: 'middle',
+              onClose: handleAddProjectClick,
+              className: 'sm:max-w-[450px] h-[420px] p-0',
+            }}
+          >
+            <CreateProjectCard
+              item={createAProject}
+              handleProject={handleProjectFormClick}
+              handleClick={handleAddProjectClick}
+              onClose={handleProjectFormClick}
+            />
+          </AnimatedModal>
+        </Fragment>
+      </RenderIf>
+
+      <RenderIf condition={!addProjectForm}>
+        <Fragment>
+          <AnimatedModal
+            {...{
+              isOpen: true,
+              from: 'right',
+              onClose: handleProjectFormClose,
+              className:
+                'absolute bottom-0 right-0 h-[calc(100vh-20px)] w-full sm:w-[350px] bg-white p-0 flex flex-col mb-2 mr-2',
+            }}
+          >
+            <AddProject onClose={handleProjectFormClose} />
+          </AnimatedModal>
+        </Fragment>
+      </RenderIf>
+
       <div className="app_dashboard_home__header">
         <div className="app_dashboard_home__header__profile_con app_dashboard_page__px">
           <div className="app_dashboard_home__header__profile">
             {false && (
               <div className="app_dash_main__aside__btm__avi">
-                <Image
-                  src={dashboard.avi}
-                  alt="avi"
-                  className="w-full"
-                  width={100}
-                  height={100}
-                />
+                <Image src={dashboard.avi} alt="avi" className="w-full" />
               </div>
             )}
             <Avatar
@@ -408,6 +469,19 @@ export default function Dashboard() {
               Welcome, {userData?.firstName}
             </h4>
           </div>
+          <Button
+            size="md"
+            backgroundColor="text-color-100"
+            color="shark-950"
+            className="app_auth_login__btn"
+            onClick={() => {
+              window.location.href =
+                routes.creatives.dashboard.projectManagement.path;
+            }}
+          >
+            <PlusIcon fill="var(--shark-950)" />
+            Create Project
+          </Button>
         </div>
 
         <div className="app_dashboard_home__kpis grid grid-cols-4 app_dashboard_page__px">
@@ -417,9 +491,7 @@ export default function Dashboard() {
             return (
               <div
                 className={`app_dashboard_home__kpis__item ${
-                  IS_WALLET
-                    ? 'app_dashboard_home__kpis__item--wallet overflow-visible'
-                    : ''
+                  IS_WALLET ? 'app_dashboard_home__kpis__item--wallet' : ''
                 }`}
                 key={index}
               >
@@ -435,6 +507,32 @@ export default function Dashboard() {
           })}
         </div>
       </div>
+
+      {false && (
+        <div className="app_dashboard_home__task app_dashboard_page__px pt-4">
+          <div className="app_dashboard_home__task__hdr flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2">
+              {Object.entries(Tasks).map(([label]) => (
+                <Pill
+                  key={label}
+                  size="md"
+                  active={Tasks['Due Task'] === label}
+                >
+                  {label}
+                </Pill>
+              ))}
+            </div>
+          </div>
+
+          <div className="app_dashboard_home__task__ctt app_dashboard_home__task__ctt--empty">
+            <EmptyState
+              icon={<EmptyStatus />}
+              title="No task yet"
+              description="Click “create project” button to get started"
+            />
+          </div>
+        </div>
+      )}
 
       <div className="app_dashboard_home__task app_dashboard_page__px pt-4">
         <div className="app_dashboard_home__task__hdr flex flex-col md:flex-row md:items-center md:justify-between gap-4 mt-4 flex-wrap">
@@ -464,21 +562,25 @@ export default function Dashboard() {
           />
         </div>
 
-        {loading ? (
-          <div className="text-center mt-10 flex justify-center items-center">
-            <MiniLoader message="loading" />
-          </div>
-        ) : (
-          <Table
-            columns={headers}
-            emptyTitle="No Project Yet"
-            emptyMessage="You'll see all your projects here"
-            data={tableBody}
-            pagination={pagination}
-            setPagination={setPagination}
-          />
-        )}
-        {/* add funds */}
+        <div className="app_dashboard_home__task__ctt">
+          {loading ? (
+            <div className="text-center flex justify-center items-center">
+              <MiniLoader message="Loading" />
+            </div>
+          ) : (
+            <Table
+              columns={columns}
+              data={tableBody}
+              emptyTitle="No project yet"
+              emptyMessage='Click "add project" button to get started'
+              pagination={pagination}
+              setPagination={setPagination}
+              onRowClick={(row) =>
+                router.push(`/creatives/dashboard/project-management/${row.id}`)
+              }
+            />
+          )}
+        </div>
         <CenterModal
           headerImageType={1}
           title="Add Funds"
@@ -511,12 +613,11 @@ export default function Dashboard() {
               </span>
             </div>
             {/* <div className="flex justify-between items-center">
-            <span className="text-[#808080]">Account Name</span>
-            <span className="font-semibold"></span>
-          </div> */}
+                    <span className="text-[#808080]">Account Name</span>
+                    <span className="font-semibold"></span>
+                  </div> */}
           </div>
         </CenterModal>
-
         {/* add account number */}
         <SideModal
           isOpen={addAccount}
@@ -546,6 +647,8 @@ export default function Dashboard() {
                   onBlur={handleBlur}
                   errors={errors}
                   touched={touched}
+                  inputMode="numeric"
+                  pattern="\d*"
                 />
                 <Select
                   name="bankCode"
@@ -639,11 +742,14 @@ export default function Dashboard() {
         >
           <div className="space-y-10">
             <div>
+              {/* <Input placeholder="Withdrawal Amount" /> */}
               <Input
                 placeholder="Withdrawal Amount"
                 type="number"
                 value={withdrawAmount}
                 onChange={(e) => {
+                  console.log(setWithdrawAmount, 'withdraw amount');
+                  console.log(e.target.value, 'value');
                   setWithdrawAmount(e.target.value);
                 }}
               />
@@ -691,7 +797,7 @@ export default function Dashboard() {
                           e.stopPropagation();
                           setIsDecisionModalOpen(true);
                         setAccountToDelete(item?.accountNumber)
-
+                          setAccountToDelete(item?.accountNumber);
                         }}
                         className="cursor-pointer"
                       >
@@ -736,9 +842,10 @@ export default function Dashboard() {
               >
                 Cancel
               </button>
+
               <button
                 className="border p-3 bg-[#F9403A] rounded-full w-full border-[#F1F1F1] text-[#fff]"
-                onClick={() => handleDelete(accountToDelete)}
+                onClick={() => handleDelete()}
                 disabled={isLoading || !accountToDelete}
                 type="button"
               >

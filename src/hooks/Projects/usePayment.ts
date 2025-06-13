@@ -44,16 +44,21 @@ const usePaymentService = (params: IParams) => {
     const response = await triggerAddBeneficiary(payload).unwrap();
 
     if (response?.isSuccess) {
-      successToast(response?.message || "Client added successfully");
+      successToast(response?.message || "Withdraw successful");
       setAddWithdrawResponse(response);
       refetch();
     } else {
       errorToast(response?.message || "Something went wrong");
+      console.log(response?.message, 'response');
+      
     }
-  } catch (error) {
-    const message = getErrorMessage(error);
-    errorToast(message || "Something went wrong");
-  }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+  const message =
+    error?.data?.message || error?.error || getErrorMessage(error) || "Something went wrong";
+  errorToast(message);
+}
+
 };
 
 
