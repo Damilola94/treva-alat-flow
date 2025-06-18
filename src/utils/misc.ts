@@ -173,6 +173,8 @@ export const getDateLabel = (date: string | undefined) => {
           return 'Today';
            } else if (messageDate.isSame(yesterday, 'day')) {
              return 'Yesterday';
+            } else if (messageDate.isAfter(today.subtract(6, 'day'), 'day')) {
+            return messageDate.format('dddd');
            } else {
            return messageDate.format('MMMM D, YYYY');
            }

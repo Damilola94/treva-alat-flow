@@ -320,11 +320,13 @@ export default function Page() {
                       src={projectManagement?.male}
                       alt="male"
                       className="w-10 h-10 rounded-full border-2 border-white object-cover"
+                      unoptimized
                     />
                     <Image
                       src={projectManagement?.female}
                       alt="female"
                       className="w-10 h-10 rounded-full border-2 border-white object-cover"
+                      unoptimized
                     />
                   </div>
                 </div>

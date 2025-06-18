@@ -25,7 +25,7 @@ export function TakeATour (props: IProps) {
   return (
     <div className="project_management_card flex flex-col gap-4">
       <div className="project_management_card__bg">
-        <Image src={item?.img} alt="take a tour" className="w-full" />
+        <Image src={item?.img} alt="take a tour" className="w-full" unoptimized />
       </div>
       <div className={'flex flex-col gap-9 justify-between flex-1'}>
         <div className="project_management_card__ctt">

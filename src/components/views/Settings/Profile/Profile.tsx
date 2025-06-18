@@ -294,6 +294,7 @@ const Profile = () => {
                             alt={name || 'Social icon'}
                             width={22}
                             height={22}
+                            unoptimized
                           />
                         )}
                         <span>{socials?.username}</span>
@@ -422,6 +423,7 @@ const Profile = () => {
                             alt={name || 'Social icon'}
                             width={22}
                             height={22}
+                            unoptimized
                           />
                         )}
                         <span>{socials?.username}</span>

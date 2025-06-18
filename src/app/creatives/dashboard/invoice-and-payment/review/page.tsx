@@ -27,7 +27,7 @@ export default function Page () {
             <div className="app_get_started_professional_details__form flex flex-col gap-10 !overflow-y-auto ">
                 <Modal {...{ open: isDecisionModalOpen, handleClose: handleCloseModal }}>
                     <div className="app_modal__ctt__mid">
-                        <Image src={projectManagement.successLogo} alt='successLogo' className='w-16' />
+                        <Image src={projectManagement.successLogo} alt='successLogo' className='w-16' unoptimized />
                         <h2 className="app_modal__ctt__mid__h2">Invoice has been sent to client successfully</h2>
                         <p className='text-[#888888]'>Invoice has been sent to make payment.</p>
                     </div>

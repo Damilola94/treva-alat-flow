@@ -23,6 +23,7 @@ export default function Page () {
               className="w-10 justify-center items-center flex mx-auto"
               height={10}
               width={600}
+              unoptimized
             />
             <h3 className="app_auth_login__reset_successful">
               Password reset successful

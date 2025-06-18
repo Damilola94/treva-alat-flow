@@ -316,7 +316,7 @@ const BigChatWindow = () => {
                           <div key={chat.id} className="space-y-2 mb-4">
                             {chat.content && (
                               <div
-                                className={`w-fit max-w-[85%] md:max-w-md break-words p-3 rounded-2xl text-sm relative ${
+                                className={`w-fit max-w-[85%] min-w-[60px] md:max-w-md break-words p-3 rounded-2xl text-sm relative ${
                                   isSender
                                     ? 'bg-[#C4E0FF] mr-auto self-start text-[#262626] rounded-tl-md'
                                     : 'bg-[#BDF7F6] ml-auto self-end text-[#262626] rounded-tr-md'

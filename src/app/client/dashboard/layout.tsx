@@ -92,13 +92,16 @@ function Main({ children }: { children: React.ReactNode }) {
             logoHref={routes.client.dashboard.entry.path}
             userData={data?.data}
           />
-          ;
         </div>
         <div className="app_dash_main__ctt">
           <Header showBackArrow={shouldShowBackArrow} />
           <div className="app_dash_main__ctt__mn w-full">
             <div className="app_dashboard_page">{children}</div>
-            {false && <Footer />}
+            {false && 
+            <div className='fixed bottom-0 w-full'>
+             <Footer />
+            </div>
+      }
           </div>
         </div>
       </div>

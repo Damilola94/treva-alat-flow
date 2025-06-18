@@ -113,6 +113,7 @@ export function EditProject(props: IProps) {
         className=""
         width={100}
         height={100}
+        unoptimized
       />
       <div className="app_auth_login_container__upper !-mt-60">
         <div className="app_auth_login">

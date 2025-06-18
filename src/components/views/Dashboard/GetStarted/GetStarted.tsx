@@ -1,11 +1,11 @@
 'use client';
 import React, { useState } from 'react';
-import queries from '@/services/queries/profile';
 import { GetStartedCard } from './components/GetStartedCard';
 import { dashboardCards } from '@/constants';
+import { useProfile } from '@/hooks/Users';
 
 export default function GetStarted () {
-  const { data } = queries.read();
+ const { data } = useProfile();
 
   const [showSteps, setShowSteps] = useState(false);
 
@@ -14,7 +14,7 @@ export default function GetStarted () {
       <div className="app_get_started__bg">
         <div className="app_get_started__bg__ctt">
           <h3 className="app_get_started__bg__ctt__text">
-            Welcome, <span>{data?.firstName}</span>
+            Welcome, <span>{data?.data?.firstName}</span>
           </h3>
         </div>
       </div>

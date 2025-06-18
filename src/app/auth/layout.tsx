@@ -14,9 +14,9 @@ const titleArray = [
 ]
 
 const detailsArray = [
-  'Creathrivity streamlines business operations, reducing administrative tasks so you can focus on your creative work.',
-  'Simplify transactions and communication with Creathrivity, improving client interactions and your professional image.',
-  'Creathrivity offers industry-specific tools and a supportive community, tailored to the needs of creative professionals.'
+  'Treva streamlines business operations, reducing administrative tasks so you can focus on your creative work.',
+  'Simplify transactions and communication with Treva, improving client interactions and your professional image.',
+  'Treva offers industry-specific tools and a supportive community, tailored to the needs of creative professionals.'
 ]
 
 interface IProps {
@@ -50,6 +50,7 @@ export default function Layout (props: IProps) {
                 src={src}
                 alt="carousel background"
                 objectFit="object-fill"
+                unoptimized
               />
             </div>
           ))}

@@ -124,6 +124,7 @@ const NotificationList: React.FC<{
                             className="rounded-full w-[40px] h-[40px] object-cover"
                             width={40}
                             height={40}
+                            unoptimized
                           />
                         ) : (
                           <>

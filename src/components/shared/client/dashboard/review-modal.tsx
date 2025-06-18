@@ -33,7 +33,7 @@ export function Modal (props: IProps) {
         className={` project_management_card  ${className} ${contentClassName}`}
       >
         <div className="project_management_card__bg">
-                <Image src={projectManagement.topImage} alt="take a tour" className="w-full" />
+                <Image src={projectManagement.topImage} alt="take a tour" className="w-full" unoptimized />
               </div>
         <VisuallyHidden.Root>
           <DialogTitle className="DialogTitle" />

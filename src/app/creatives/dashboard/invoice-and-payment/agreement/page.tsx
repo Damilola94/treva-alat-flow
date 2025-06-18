@@ -118,6 +118,7 @@ export default function Page() {
                   src="/icons/pdf-icon.svg"
                   alt="PDF Icon"
                   className="w-6 h-6 mr-3"
+                  unoptimized
                 />
                 <div>
                   <p className="text-sm font-medium">{file}</p>
