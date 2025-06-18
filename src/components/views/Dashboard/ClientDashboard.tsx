@@ -301,6 +301,7 @@ export default function Dashboard() {
               className="w-6 h-6 rounded-full"
               width={100}
               height={100}
+              unoptimized
             />
             <span>
               {firstName} {lastName}
@@ -395,6 +396,7 @@ export default function Dashboard() {
                   className="w-full"
                   width={100}
                   height={100}
+                  unoptimized
                 />
               </div>
             )}

@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 import { GetStartedCard } from '@/components/shared/dashboard/get-started'
 import dashboard from '@/lib/assets/dashboard'
-import queries from '@/services/queries/profile'
+import { useProfile } from '@/hooks/Users'
 
 const cards = [
   {
@@ -10,7 +10,7 @@ const cards = [
     img: dashboard.getStartedCard,
     title: 'Start a Tour',
     details:
-      "Welcome to Creathrivity! Let's take a quick tour to help you get started and make the most of our features. Click 'Get started' to begin your journey!",
+      "Welcome to Treva! Let's take a quick tour to help you get started and make the most of our features. Click 'Get started' to begin your journey!",
     btnText: 'Start tour',
     bottomInfo: '',
     bg: 'linear-gradient(137deg, rgba(165, 166, 246, 0) 33.3%, #a5a6f6 100%)'
@@ -21,7 +21,7 @@ const cards = [
     img: dashboard.getStartedCard2,
     title: 'Complete onboarding',
     details:
-      "You're almost there! Complete your onboarding to unlock the full potential of Creathrivity and start achieving your goals today. Click ‘Get started’ to continue.",
+      "You're almost there! Complete your onboarding to unlock the full potential of Treva and start achieving your goals today. Click ‘Get started’ to continue.",
     btnText: 'Continue',
     bottomInfo: '1/5 steps',
     bg: 'linear-gradient(135deg, rgba(199, 255, 107, 0) 0%, #c7ff6b 100%)'
@@ -29,7 +29,7 @@ const cards = [
 ]
 
 export default function Page () {
-  const { data } = queries.read()
+ const { data } = useProfile();
 
   const [showSteps, setShowSteps] = useState(false)
 
@@ -38,7 +38,7 @@ export default function Page () {
       <div className="app_get_started__bg">
         <div className="app_get_started__bg__ctt">
           <h3 className="app_get_started__bg__ctt__text">
-            Welcome, <span>{data?.firstName}</span>
+            Welcome, <span>{data?.data?.firstName}</span>
           </h3>
         </div>
       </div>

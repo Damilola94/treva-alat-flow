@@ -61,6 +61,7 @@ export default function Page() {
               className="w-6 h-6 rounded-full"
               width={100}
               height={100}
+              unoptimized
             />
             <span>
               {creative.firstName} {creative.lastName}

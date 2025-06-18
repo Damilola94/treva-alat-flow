@@ -27,7 +27,7 @@ export function GetStartedCard (props: IProps) {
         className="app_get_started_card__bg"
         style={{ background: item?.bg }}
       >
-        <Image src={item?.img} alt="get started" className="w-full" />
+        <Image src={item?.img} alt="get started" className="w-full" unoptimized />
       </div>
       <div className={'flex flex-col gap-9 justify-between flex-1'}>
         <div className="app_get_started_card__ctt">

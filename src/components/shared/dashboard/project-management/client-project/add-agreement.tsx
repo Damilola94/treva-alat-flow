@@ -207,6 +207,7 @@ export function ProjectAgreement({ handleNext, projectId }: IProps) {
                     className="w-12 h-12 rounded-md"
                     width={48}
                     height={48}
+                    unoptimized
                   />
                 )}
                 <div>

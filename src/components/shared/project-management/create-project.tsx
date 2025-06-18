@@ -53,6 +53,7 @@ export function CreateProjectCard(props: IProps) {
           className="w-full"
           width={100}
           height={100}
+          unoptimized
         />
       </div>
       <div className={'flex flex-col gap-9 justify-between flex-1'}>

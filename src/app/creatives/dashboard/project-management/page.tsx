@@ -65,7 +65,7 @@ const viewTakeATour = {
   img: projectManagement.topImage,
   title: 'Create Project',
   details:
-    "You're almost there! Complete your onboarding to unlock the full potential of Creathrivity and start achieving your goals today.",
+    "You're almost there! Complete your onboarding to unlock the full potential of Treva and start achieving your goals today.",
   btnText1: 'Start tour',
   btnText2: 'Skip',
   bottomInfo: '',

@@ -455,6 +455,7 @@ export default function Page() {
                         alt=""
                         width={28}
                         height={28}
+                        unoptimized
                       />
                       <p className="">
                         {project.creativeUser

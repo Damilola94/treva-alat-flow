@@ -22,6 +22,9 @@ export default function Login() {
     email: Yup.string()
       .email('Please enter a valid email address')
       .required('Please enter your email address'),
+    password: Yup.string()
+      .min(8, 'Password must be at least 8 characters')
+      .required('Please enter your password'),
   });
 
   const initialValues = {
@@ -59,6 +62,7 @@ export default function Login() {
           }, 500);
         } else {
           errorToast(getErrorMessage(response));
+          console.log('Login response error:', response);
         }
       } catch (error) {
         errorToast(getErrorMessage(error));
@@ -125,6 +129,7 @@ export default function Login() {
                   isLoading={isLoading}
                   backgroundColor="primary-blue-500"
                   className="w-full app_auth_login__btn"
+                  type="submit"
                 >
                   Submit
                 </Button>

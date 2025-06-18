@@ -53,7 +53,7 @@ export default function AddPayment(props: IProps) {
 
   return (
         <div className="app_auth_login_container relative">
-            <Image src={projectManagement.topGradient} alt="top gradient" className="w-full" />
+            <Image src={projectManagement.topGradient} alt="top gradient" className="w-full" unoptimized />
             <div className="app_auth_login_container__upper !-mt-80">
                 <div className="app_auth_login">
                     <div>

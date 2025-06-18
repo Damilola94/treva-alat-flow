@@ -285,6 +285,7 @@ export default function CreativeProfile() {
                                     alt={name || 'Social icon'}
                                     width={22}
                                     height={22}
+                                    unoptimized
                                   />
                                 )}
                                 <span>{socials?.username}</span>
