@@ -13,6 +13,7 @@ import Link from 'next/link';
 import routes from '@/lib/routes';
 import { useNotifications } from '@/hooks/Chat';
 import { useAppSelector } from '@/store';
+import { handleLogoutRedirect } from '@/utils';
 
 interface HeaderProps {
   showBackArrow?: boolean;
@@ -59,7 +60,7 @@ export function Header({ showBackArrow = false }: HeaderProps) {
   const notificationCountData = useMemo(() => {
     if (!notificationCount?.isSuccess) return null;
     return notificationCount?.data ?? 0;
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [notificationCount?.data]);
 
   console.log(notificationCountData);
@@ -115,9 +116,9 @@ export function Header({ showBackArrow = false }: HeaderProps) {
             )}
           </div>
 
-          <Link href={routes.auth.signOut.path}>
+          <button onClick={handleLogoutRedirect}>
             <ArrowRightToBracket />
-          </Link>
+          </button>
         </div>
       </div>
     </header>
