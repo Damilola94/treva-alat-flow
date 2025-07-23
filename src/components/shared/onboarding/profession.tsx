@@ -116,8 +116,8 @@ export function Profession() {
   return (
     <div className="app_auth_login_container">
       <Header />
-      <div className="app_auth_login_container__upper">
-        <div className="app_auth_login">
+      <div className="app_auth_login_container__upper overflow-scroll">
+        <div className="max-w-3xl">
           <div>
             <form onSubmit={handleSubmit} className="flex flex-col gap-8">
               <h3 className="app_auth_login__title">What is your profession</h3>
