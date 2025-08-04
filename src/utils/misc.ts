@@ -69,6 +69,14 @@ export const getErrorMessage = (error: any): string => {
       return messages.join(' ');
     }
   }
+
+  // Handle structured error model like:
+  const structuredMessage =
+    error?.response?.data?.message || error?.data?.message;
+  if (structuredMessage && typeof structuredMessage === 'string') {
+    return structuredMessage;
+  }
+
   return (
     error?.response?.data?.title ||
     (typeof error?.response?.data === 'string'
@@ -164,19 +172,18 @@ export const formatAsMoney = (
 };
 
 export const getDateLabel = (date: string | undefined) => {
-   if (!date) return "Unknown Date"
-      const messageDate = dayjs(date);
-      const today = dayjs();
-      const yesterday = today.subtract(1, 'day');
+  if (!date) return 'Unknown Date';
+  const messageDate = dayjs(date);
+  const today = dayjs();
+  const yesterday = today.subtract(1, 'day');
 
-       if (messageDate.isSame(today, 'day')) {
-          return 'Today';
-           } else if (messageDate.isSame(yesterday, 'day')) {
-             return 'Yesterday';
-            } else if (messageDate.isAfter(today.subtract(6, 'day'), 'day')) {
-            return messageDate.format('dddd');
-           } else {
-           return messageDate.format('MMMM D, YYYY');
-           }
-           };
-           
+  if (messageDate.isSame(today, 'day')) {
+    return 'Today';
+  } else if (messageDate.isSame(yesterday, 'day')) {
+    return 'Yesterday';
+  } else if (messageDate.isAfter(today.subtract(6, 'day'), 'day')) {
+    return messageDate.format('dddd');
+  } else {
+    return messageDate.format('MMMM D, YYYY');
+  }
+};

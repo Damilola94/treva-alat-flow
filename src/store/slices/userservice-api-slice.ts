@@ -35,7 +35,11 @@ const baseQueryWithReAuth: BaseQueryFn<
 
   let result = await baseQuery(args, api, extraOptions);
 
-  if (result.error && (result.error as { status?: number }).status === 401) {
+  if (
+    result.error &&
+    (result.error as { status?: number }).status === 401 &&
+    window.location.pathname !== '/auth/sign-in'
+  ) {
     const refreshToken = getCookie('_rtk');
     const expiredToken = getCookie('_tk');
     if (refreshToken) {
@@ -110,7 +114,11 @@ const baseQueryWithReAuth: BaseQueryFn<
     }
   }
 
-  if (result.error && (result.error as { status?: number }).status === 401) {
+  if (
+    result.error &&
+    (result.error as { status?: number }).status === 401 &&
+    window.location.pathname !== '/auth/sign-in'
+  ) {
     handleLogoutRedirect();
   }
   return result;

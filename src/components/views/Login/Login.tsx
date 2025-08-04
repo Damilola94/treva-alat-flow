@@ -65,6 +65,8 @@ export default function Login() {
           console.log('Login response error:', response);
         }
       } catch (error) {
+        console.log(error);
+
         errorToast(getErrorMessage(error));
       }
     },
