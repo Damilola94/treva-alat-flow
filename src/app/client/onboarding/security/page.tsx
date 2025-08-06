@@ -31,13 +31,19 @@ export default function Page() {
   const rt = useRouter();
   // const { isLoading } = queries.login();
   const { setFormData } = useClientOnboardingForm();
+  const passwordRegex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!"#$%&'()*+,-.\/:;<=>?@[\\\]^_`{|}~])[A-Za-z\d!"#$%&'()*+,-.\/:;<=>?@[\\\]^_`{|}~]{8,}$/gm;
 
   const [triggerRegister, { isLoading }] = useRegisterMutation();
 
   const validationSchema = Yup.object().shape({
     password: Yup.string()
-      .min(8, 'Password must be at least 8 characters')
-      .required('Password is required'),
+      .trim('Password cannot contain spaces')
+      .required('Please provide a password')
+      .matches(
+        passwordRegex,
+        'We recommend using a minimum of 8 characters containing a mix of upper and lower case letters, special characters and numbers.',
+      ),
     password2: Yup.string()
       .oneOf([Yup.ref('password')], 'Passwords must match')
       .required('Confirm password is required'),
