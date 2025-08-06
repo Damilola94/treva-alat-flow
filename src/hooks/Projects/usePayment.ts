@@ -1,9 +1,13 @@
-import { errorToast, successToast } from "@/services";
-import {useAddWithdrawFundsMutation, useGetMyWalletQuery, useGetTransactionsQuery } from "@/services/paymentService";
-import { useAppSelector } from "@/store";
-import { ITrevaPaymentService } from "@/types";
-import { getErrorMessage } from "@/utils";
-import { useState } from "react";
+import { errorToast, successToast } from '@/services';
+import {
+  useAddWithdrawFundsMutation,
+  useGetMyWalletQuery,
+  useGetTransactionsQuery,
+} from '@/services/paymentService';
+import { useAppSelector } from '@/store';
+import { ITrevaPaymentService } from '@/types';
+import { getErrorMessage } from '@/utils';
+import { useState } from 'react';
 
 interface IParams {
   accountNumber: number;
@@ -22,8 +26,8 @@ interface IAddWithdraw {
 const usePaymentService = (params: IParams) => {
   const { walletId } = params;
   const { loggedIn } = useAppSelector((state) => state?.auth);
-    const [addWithdrawResponse, setAddWithdrawResponse] =
-      useState<ITrevaPaymentService["schemas"]["WalletModelBaseResponse"]>();
+  const [addWithdrawResponse, setAddWithdrawResponse] =
+    useState<ITrevaPaymentService['schemas']['WalletModelBaseResponse']>();
   const {
     data: myWalletData,
     isLoading,
@@ -31,40 +35,33 @@ const usePaymentService = (params: IParams) => {
     error,
     isError,
     refetch,
-  } = useGetMyWalletQuery( {
+  } = useGetMyWalletQuery({
     refetchOnMountOrArgChange: true,
     skip: !loggedIn,
   });
 
- const [triggerAddBeneficiary, { isLoading: addBeneficiaryLoading }] =
+  const [triggerAddBeneficiary, { isLoading: addBeneficiaryLoading }] =
     useAddWithdrawFundsMutation();
 
- const addWithdrawFunds = async (payload: IAddWithdraw) => {
-  try {
-    const response = await triggerAddBeneficiary(payload).unwrap();
+  const addWithdrawFunds = async (payload: IAddWithdraw) => {
+    try {
+      const response = await triggerAddBeneficiary(payload).unwrap();
 
-    if (response?.isSuccess) {
-      successToast(response?.message || "Withdraw successful");
-      setAddWithdrawResponse(response);
-      refetch();
-    } else {
-      errorToast(response?.message || "Something went wrong");
-      console.log(response?.message, 'response');
-      
+      if (response?.isSuccess) {
+        successToast(response?.message || 'Withdraw successful');
+        setAddWithdrawResponse(response);
+        refetch();
+      } else {
+        errorToast(response?.message || 'Something went wrong');
+      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      const message = getErrorMessage(error) || 'Something went wrong';
+      errorToast(message);
     }
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
-  const message =
-    error?.data?.message || error?.error || getErrorMessage(error) || "Something went wrong";
-  errorToast(message);
-}
+  };
 
-};
-
-
-  const {
-    data: myTransactions,
-  } = useGetTransactionsQuery(walletId, {
+  const { data: myTransactions } = useGetTransactionsQuery(walletId, {
     refetchOnMountOrArgChange: true,
     skip: !loggedIn || !walletId,
   });

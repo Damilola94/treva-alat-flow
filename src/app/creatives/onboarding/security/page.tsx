@@ -20,8 +20,17 @@ interface FormData {
   password: string;
 }
 
+const passwordRegex =
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!"#$%&'()*+,-.\/:;<=>?@[\\\]^_`{|}~])[A-Za-z\d!"#$%&'()*+,-.\/:;<=>?@[\\\]^_`{|}~]{8,}$/gm;
+
 const validationSchema = Yup.object().shape({
-  password: Yup.string().min(8).required(),
+  password: Yup.string()
+    .trim('Password cannot contain spaces')
+    .required('Please provide a password')
+    .matches(
+      passwordRegex,
+      'We recommend using a minimum of 8 characters containing a mix of upper and lower case letters, special characters and numbers.',
+    ),
 });
 
 export default function Page() {
