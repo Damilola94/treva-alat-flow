@@ -78,6 +78,17 @@ export const projectService = projectServiceApiSlice.injectEndpoints({
         response: ITrevaProjectService["schemas"]["DashboardSummaryCountModelBaseResponse"]
       ) => response,
     }),
+
+    getCreativeHires: builder.query({
+      query: (params) => ({
+        url: endpoints.projects.getCreativeHires,
+        method: REQUEST_METHODS.GET,
+        params: params,
+      }),
+      transformResponse: (
+        response: ITrevaProjectService['schemas']['UserDtoPagedListBaseResponse'],
+      ) => response,
+    }),
   }),
 });
 
@@ -89,4 +100,5 @@ export const {
   useDeleteProjectMutation,
   useCreateRateProjectMutation,
   useGetDashboardSummaryCountQuery,
+  useGetCreativeHiresQuery,
 } = projectService;

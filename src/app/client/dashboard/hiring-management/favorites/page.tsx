@@ -1,4 +1,4 @@
-import { Bio } from '@/components/views';
+import { Favorites } from '@/components/views';
 import { Metadata } from 'next';
 import { headers } from 'next/headers';
 
@@ -7,24 +7,23 @@ export async function generateMetadata(): Promise<Metadata> {
   const host = headersList.get('host');
   const protocol = headersList.get('x-forwarded-proto') || 'http';
   const fullHost = `${protocol}://${host}`;
-  const pageUrl = `${fullHost}/client/dashboard/get-started/bio`;
+  const pageUrl = `${fullHost}/client/dashboard/hiring-management/favorites`;
 
   return {
-    title: 'Bio - Get Started | Treva by Wema',
-    description:
-      'Start your journey on Treva. Set up your profile and explore features.',
-    keywords: ['get started', 'dashboard', 'setup', 'Treva'],
+    title: 'Favorites - Hiring | Treva by Wema',
+    description: 'Explore your favorite hires',
+    keywords: ['favorites', 'hiring', 'creatives', 'Treva'],
     openGraph: {
-      title: 'Bio - Get Started| Treva',
-      description: 'Set up your profile and explore features on Treva.',
+      title: 'Favorites - Hiring | Treva',
+      description: 'Explore your favorite hires',
       url: pageUrl,
       siteName: 'Treva by Wema',
       type: 'website',
     },
     twitter: {
       card: 'summary_large_image',
-      title: 'Bio - Get Started| Treva by Wema',
-      description: 'Set up your profile and explore features on Treva.',
+      title: 'Favorites - Hiring | Treva',
+      description: 'Explore your favorite hires',
       images: [`${fullHost}/images/og-dashboard.png`],
     },
     alternates: {
@@ -34,5 +33,5 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default function BioPage() {
-  return <Bio />;
+  return <Favorites />;
 }
