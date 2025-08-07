@@ -63,8 +63,6 @@ export function Header({ showBackArrow = false }: HeaderProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [notificationCount?.data]);
 
-  console.log(notificationCountData);
-
   const handleNotification = () => {
     if (role?.includes('Client')) {
       rt.push(routes.client.dashboard.notifications.path);

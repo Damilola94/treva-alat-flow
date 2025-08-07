@@ -1323,6 +1323,48 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/projects/hired-creative-users": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get all hired creative users for a project */
+        get: {
+            parameters: {
+                query?: {
+                    PageNumber?: number;
+                    PageSize?: number;
+                    SearchKey?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["UserDtoPagedListBaseResponse"];
+                        "application/json": components["schemas"]["UserDtoPagedListBaseResponse"];
+                        "text/json": components["schemas"]["UserDtoPagedListBaseResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/projects": {
         parameters: {
             query?: never;
@@ -1488,6 +1530,44 @@ export interface paths {
                 };
             };
         };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/projects/dashboard-summary-count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get dashboard summary count for both creatives and clients */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["DashboardSummaryCountModelBaseResponse"];
+                        "application/json": components["schemas"]["DashboardSummaryCountModelBaseResponse"];
+                        "text/json": components["schemas"]["DashboardSummaryCountModelBaseResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -1682,6 +1762,21 @@ export interface components {
         };
         /** @enum {string} */
         CurrencyEnums: "AUD" | "CAD" | "EUR" | "GBP" | "JPY" | "NGN" | "USD";
+        DashboardSummaryCountModel: {
+            /** Format: int32 */
+            totalActiveProjects?: number;
+            /** Format: int32 */
+            totalCompletedProjects?: number;
+            /** Format: int32 */
+            totalTasks?: number;
+        };
+        DashboardSummaryCountModelBaseResponse: {
+            isSuccess?: boolean;
+            statusCode?: string | null;
+            message?: string | null;
+            data?: components["schemas"]["DashboardSummaryCountModel"];
+            metaData?: unknown;
+        };
         DeleteMyClientCommand: {
             clientUserId?: string | null;
         };
@@ -2063,8 +2158,18 @@ export interface components {
             firstName: string | null;
             profilePicture?: string | null;
             lastName: string | null;
+            email?: string | null;
             /** Format: uuid */
             actorId?: string;
+            readonly fullName?: string | null;
+            userProfession?: string | null;
+        };
+        UserDtoPagedListBaseResponse: {
+            isSuccess?: boolean;
+            statusCode?: string | null;
+            message?: string | null;
+            data?: components["schemas"]["UserDto"][] | null;
+            metaData?: unknown;
         };
     };
     responses: never;

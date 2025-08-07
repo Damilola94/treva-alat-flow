@@ -1,4 +1,4 @@
-import { useGetCreativesQuery } from '@/services';
+import { useGetAllFavoritesQuery } from '@/services';
 import { useAppSelector } from '@/store';
 
 interface IParams {
@@ -9,7 +9,7 @@ interface IParams {
   professionId: string | null;
 }
 
-const useGetCreatives = (params: IParams) => {
+const useFavorites = (params: IParams) => {
   const { loggedIn } = useAppSelector((state) => state?.auth);
 
   const filteredParams = Object.fromEntries(
@@ -17,19 +17,19 @@ const useGetCreatives = (params: IParams) => {
   );
 
   const {
-    data: creativesData,
+    data: favoriteData,
     isLoading,
     isFetching,
     isError,
     error,
     refetch,
-  } = useGetCreativesQuery(filteredParams, {
+  } = useGetAllFavoritesQuery(filteredParams, {
     refetchOnMountOrArgChange: true,
     skip: !loggedIn,
   });
 
   return {
-    creativesData,
+    favoriteData,
     loading: isFetching || isLoading,
     error,
     refetch,
@@ -37,4 +37,4 @@ const useGetCreatives = (params: IParams) => {
   };
 };
 
-export default useGetCreatives;
+export default useFavorites;

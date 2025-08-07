@@ -527,6 +527,135 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/userfavorites/client-user-favorites-creative": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get client favorite creatives */
+        get: {
+            parameters: {
+                query?: {
+                    ProfessionId?: string;
+                    Rating?: number;
+                    PageNumber?: number;
+                    PageSize?: number;
+                    SearchKey?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["UserFavoriteModelBaseResponse"];
+                        "application/json": components["schemas"]["UserFavoriteModelBaseResponse"];
+                        "text/json": components["schemas"]["UserFavoriteModelBaseResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/userfavorites/add-client-favorite-creative": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Add client favorite creative */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json-patch+json": components["schemas"]["CreateClientUserFavoriteCommand"];
+                    "application/json": components["schemas"]["CreateClientUserFavoriteCommand"];
+                    "text/json": components["schemas"]["CreateClientUserFavoriteCommand"];
+                    "application/*+json": components["schemas"]["CreateClientUserFavoriteCommand"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["BooleanBaseResponse"];
+                        "application/json": components["schemas"]["BooleanBaseResponse"];
+                        "text/json": components["schemas"]["BooleanBaseResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/userfavorites/remove-client-favorite-creative/{creativeUserId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Remove client favorite creative */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    creativeUserId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["BooleanBaseResponse"];
+                        "application/json": components["schemas"]["BooleanBaseResponse"];
+                        "text/json": components["schemas"]["BooleanBaseResponse"];
+                    };
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/users/save-client-onboarding": {
         parameters: {
             query?: never;
@@ -729,6 +858,8 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
+                    ProfessionId?: string;
+                    Rating?: number;
                     PageNumber?: number;
                     PageSize?: number;
                     SearchKey?: string;
@@ -1049,6 +1180,9 @@ export interface components {
         };
         /** @enum {string} */
         CompanySizeEnums: "ElevenToFifty" | "FiftyOneToTwoHundred" | "FiveHundredOneToThousand" | "NotSet" | "OneToTen" | "ThousandOneToTwoThousand" | "TwoHundredOneToFiveHundred" | "TwoThousandPlus";
+        CreateClientUserFavoriteCommand: {
+            creativeUserId: string | null;
+        };
         ForgotPasswordCommand: {
             email: string | null;
         };
@@ -1294,8 +1428,28 @@ export interface components {
             firstName: string | null;
             profilePicture?: string | null;
             lastName: string | null;
+            email?: string | null;
             /** Format: uuid */
             actorId?: string;
+            readonly fullName?: string | null;
+            userProfession?: string | null;
+        };
+        UserFavoriteModel: {
+            id?: string | null;
+            name?: string | null;
+            profession?: string | null;
+            profilePicture?: string | null;
+            /** Format: double */
+            averageRating?: number;
+            /** Format: int32 */
+            totalRatings?: number;
+        };
+        UserFavoriteModelBaseResponse: {
+            isSuccess?: boolean;
+            statusCode?: string | null;
+            message?: string | null;
+            data?: components["schemas"]["UserFavoriteModel"][];
+            metaData?: unknown;
         };
         UserModel: {
             id?: string | null;

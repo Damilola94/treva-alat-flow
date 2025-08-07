@@ -59,6 +59,13 @@ export const endpoints = {
     deleteUserProfile: (userId: string) => `/users/${userId}/delete`,
   },
 
+  userFavorites: {
+    getAllFavorites: '/userfavorites/client-user-favorites-creative',
+    addFavorite: '/userfavorites/add-client-favorite-creative',
+    deleteFavorite: (creativeUserId: string) =>
+      `/api/v1/userfavorites/remove-client-favorite-creative/${creativeUserId}`,
+  },
+
   // project service
   agreements: {
     getAgreements: (projectId: string) => `/projects/${projectId}/agreements`,
@@ -145,7 +152,7 @@ export const endpoints = {
   invoices: {
     getInvoice: '/invoices',
     getMyInvoice: (invoiceId: string) => `/invoices/${invoiceId}`,
-    addInvoice:  (invoiceId: string) => `/invoices/${invoiceId}/pay`,
+    addInvoice: (invoiceId: string) => `/invoices/${invoiceId}/pay`,
   },
   notifications: {
     getNotifications: '/notifications',
