@@ -165,6 +165,7 @@ const Table = <T,>({
                     return (
                       <tr
                         key={row.id}
+                        className="hover:bg-gray-100 transition-colors"
                         style={{
                           borderBottom: rowDivider
                             ? '1px solid #EBEFF2'

@@ -116,8 +116,6 @@ export default function CreativeProfile() {
     [reviewsData?.data],
   );
 
-  console.log(reviewsData);
-
   const starLevels = [
     { label: '5', key: 'fiveCount' },
     { label: '4', key: 'fourCount' },

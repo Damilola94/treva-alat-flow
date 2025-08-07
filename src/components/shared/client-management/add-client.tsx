@@ -28,7 +28,6 @@ const validationSchema = Yup.object().shape({
     .required('Phone number is required'),
   birthMonth: Yup.string().required('Month is required'),
   birthDay: Yup.string().required('Day is required'),
-  avatar: Yup.mixed().optional(),
 });
 
 export function AddClient({ onClose }: IProps) {
@@ -53,11 +52,9 @@ export function AddClient({ onClose }: IProps) {
       const payload = {
         name: values?.fullName,
         email: values?.emailAddress,
-        // phoneNumber: values?.phoneNumber,
         phoneNumber: values.phoneNumber.startsWith('0')
           ? `234${values.phoneNumber.slice(1)}`
           : values.phoneNumber,
-
         avatar: values?.avatar,
         birthMonth: values.birthMonth,
         birthDay: Number(values.birthDay),
@@ -79,6 +76,8 @@ export function AddClient({ onClose }: IProps) {
     isValid,
   } = formik;
 
+  console.log(errors, "errors");
+  
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {

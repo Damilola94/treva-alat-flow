@@ -93,7 +93,6 @@ export default function Page() {
       refetchAllProjectsById();
       setShowAssementModal(false);
       if (response?.data?.id || projectId) {
-        // successToast(response?.message || 'Updated Successfully');
         successToast('Updated Successfully');
       } else {
         errorToast(
@@ -145,7 +144,15 @@ export default function Page() {
     }
   };
 
-  const tabs: TabType[] = ['deliverables', 'task'];
+  // const tabs: TabType[] = ['deliverables', 'task'];
+  // if (Number(project?.type) === 2) {
+  //   tabs.push('payment');
+  // }
+
+  const tabs: TabType[] = ['deliverables'];
+  if (selectedDeliverableId) {
+    tabs.push('task');
+  }
   if (Number(project?.type) === 2) {
     tabs.push('payment');
   }
@@ -383,13 +390,6 @@ export default function Page() {
                 />
               </div>
             </div>
-            {/* <ProjectProgressBar
-              percent={allProjectsByIdData?.data?.metrics?.progressPercent ?? 0}
-              daysLeft={allProjectsByIdData?.data?.metrics?.daysLeftDisplay ?? 'days left'}
-              text ={
-                project.status === 'AwaitingClientConfirmation' || project.status === 'Completed'? 'Awaiting Client Confirmation' : 'Completed'
-              }
-            /> */}
             {project.status === 'AwaitingClientConfirmation' ||
             project.status === 'Completed' ? (
               <p className="text-muted">
@@ -420,7 +420,12 @@ export default function Page() {
                 key={tab}
                 size="md"
                 active={activeTab === tab}
+                // onClick={() => {
+                //   setActiveTab(tab as TabType);
+                // }}
+
                 onClick={() => {
+                  if (tab === 'task' && !selectedDeliverableId) return;
                   setActiveTab(tab as TabType);
                 }}
               >
@@ -442,7 +447,7 @@ export default function Page() {
         </div>
       </div>
       <div className="app_dashboard_page__px mt-10">
-        {activeTab === 'task' && (
+        {activeTab === 'task' && selectedDeliverableId && (
           <TaskTable
             viewType={viewType}
             onAddTask={handleAddTask}
@@ -467,8 +472,6 @@ export default function Page() {
         <div className="flex justify-center">
           <Button
             size="xl"
-            // isLoading={isLoading}
-            // backgroundColor="primary-blue-500"
             className="border border-[#7B37F0] text-[#7B37F0] "
             onClick={() => setShowAssementModal(true)}
           >
