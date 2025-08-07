@@ -56,7 +56,7 @@ export const projectService = projectServiceApiSlice.injectEndpoints({
         response: ITrevaProjectService['schemas']['ProjectModelBaseResponse'],
       ) => response,
     }),
-    
+
     createRateProject: builder.mutation({
       query: ({ projectId, ...values }) => ({
         url: endpoints.projects.rateProject(projectId),
@@ -67,8 +67,26 @@ export const projectService = projectServiceApiSlice.injectEndpoints({
         response: ITrevaProjectService['schemas']['ProjectModelBaseResponse'],
       ) => response,
     }),
+
+    getCreativeHires: builder.query({
+      query: (params) => ({
+        url: endpoints.projects.getCreativeHires,
+        method: REQUEST_METHODS.GET,
+        params: params,
+      }),
+      transformResponse: (
+        response: ITrevaProjectService['schemas']['UserDtoPagedListBaseResponse'],
+      ) => response,
+    }),
   }),
+});
 
-})
-
-export const { useGetAllProjectsQuery, useCreateProjectMutation, useGetProjectByIdQuery, useUpdateProjectMutation,useDeleteProjectMutation, useCreateRateProjectMutation } = projectService;
+export const {
+  useGetAllProjectsQuery,
+  useCreateProjectMutation,
+  useGetProjectByIdQuery,
+  useUpdateProjectMutation,
+  useDeleteProjectMutation,
+  useCreateRateProjectMutation,
+  useGetCreativeHiresQuery,
+} = projectService;

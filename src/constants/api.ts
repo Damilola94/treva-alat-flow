@@ -63,7 +63,7 @@ export const endpoints = {
     getAllFavorites: '/userfavorites/client-user-favorites-creative',
     addFavorite: '/userfavorites/add-client-favorite-creative',
     deleteFavorite: (creativeUserId: string) =>
-      `/api/v1/userfavorites/remove-client-favorite-creative/${creativeUserId}`,
+      `/userfavorites/remove-client-favorite-creative/${creativeUserId}`,
   },
 
   // project service
@@ -84,6 +84,7 @@ export const endpoints = {
     updateProject: (projectId: string) => `/projects/${projectId}`,
     deleteProject: (projectId: string) => `/projects/${projectId}`,
     rateProject: (projectId: string) => `/projects/${projectId}/rate`,
+    getCreativeHires: '/projects/hired-creative-users',
   },
   deliverables: {
     getDeliverables: (projectId: string) =>

@@ -4,7 +4,13 @@ import { Avatar } from '@/components/shared/avatar';
 import { useFavorites } from '@/hooks/Users';
 import useProfessions from '@/hooks/Users/useProfessions';
 import { extractName, getAvatar, getFullName } from '@/lib/utils';
-import { ArrowRight, Search, Star } from 'lucide-react';
+import {
+  errorToast,
+  successToast,
+  useDeleteFavoriteMutation,
+} from '@/services';
+import { getErrorMessage } from '@/utils';
+import { ArrowRight, Loader2, Search, Star, TrashIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React, { useMemo, useState } from 'react';
 
@@ -18,8 +24,22 @@ const Favorites = () => {
     professionId: '',
   });
 
-  const { favoriteData, loading } = useFavorites(params);
+  const { favoriteData, loading, refetch } = useFavorites(params);
   const { loading: profLoading, professions } = useProfessions();
+  const [triggerDeleteFav, { isLoading }] = useDeleteFavoriteMutation();
+
+  const deleteFavorite = async (id: string) => {
+    try {
+      const response = await triggerDeleteFav(id).unwrap();
+      if (response?.isSuccess) {
+        successToast(response?.message || 'Favorite deleted successfully');
+        refetch();
+      }
+    } catch (error) {
+      const message = getErrorMessage(error);
+      errorToast(message || 'Error Deleting Favorite');
+    }
+  };
 
   const favorites = useMemo(
     () => favoriteData?.data || [],
@@ -142,8 +162,22 @@ const Favorites = () => {
         {favorites?.map((user) => (
           <div
             key={user?.id}
-            className="bg-white border border-[#E7E7E7] rounded-lg p-5 mb-5"
+            className="relative bg-white border border-[#E7E7E7] rounded-lg p-5 mb-5"
           >
+            {/* Delete icon */}
+            <div className="absolute top-3 right-3">
+              {isLoading ? (
+                <Loader2 size={18} className="animate-spin" />
+              ) : (
+                <button
+                  onClick={() => deleteFavorite(user?.id || '')}
+                  className="text-gray-400 hover:text-red-500"
+                >
+                  <TrashIcon className="w-5 h-5" />
+                </button>
+              )}
+            </div>
+
             <div className="flex items-center gap-3">
               <Avatar
                 src={
@@ -182,8 +216,8 @@ const Favorites = () => {
                   user?.id && handleUserClick(user?.id);
                 }}
               >
-                View profile{' '}
-                <ArrowRight className="w-[20px] h-[20px]"></ArrowRight>
+                View profile
+                <ArrowRight className="w-[20px] h-[20px]" />
               </button>
             </div>
           </div>

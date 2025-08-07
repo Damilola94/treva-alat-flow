@@ -29,6 +29,10 @@ export default function Page() {
     router.push('/client/dashboard/hiring-management/favorites');
   };
 
+  const handleViewHires = () => {
+    router.push('/client/dashboard/hiring-management/creative-hires');
+  };
+
   const { hiringStatsData, loading } = useHiringStats();
   const {
     creativesData,
@@ -93,12 +97,15 @@ export default function Page() {
               <p className="app_dashboard_home__kpis__item__value">
                 {item.value}
               </p>
-              {item.hasViewAll && (
-                <button className="absolute top-4 right-4 text-xs border border-[#262626] rounded-full px-3 py-1">
+              {item.hasViewAll && Number(item?.value) > 0 && (
+                <button
+                  onClick={handleViewHires}
+                  className="absolute top-4 right-4 text-xs border border-[#262626] rounded-full px-3 py-1"
+                >
                   View all
                 </button>
               )}
-              {item.hasViewFavorites && (
+              {item.hasViewFavorites && Number(item?.value) > 0 && (
                 <button
                   onClick={handleViewFav}
                   className="absolute top-4 right-4 text-xs border border-[#262626] rounded-full px-3 py-1"
