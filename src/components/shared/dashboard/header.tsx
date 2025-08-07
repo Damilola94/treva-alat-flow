@@ -29,17 +29,31 @@ const useBreadcrumb = () => {
   const segments = useSelectedLayoutSegments();
 
   let title = 'Dashboard';
+  let secondLevel = '';
 
   if (segments.length) {
     const sgt = segments[0];
-
     title = capitalizeFirstLetter(sgt).replace('-', ' ');
 
-    if (title === 'Payment') {
-      title = 'Invoice & Payment';
+    if (segments.length > 1) {
+      const second = segments[1];
+
+      // UUID regex check
+      const isUUID =
+        /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$/.test(
+          second,
+        );
+
+      if (!isUUID) {
+        secondLevel = capitalizeFirstLetter(second).replace('-', ' ');
+      }
     }
-    if (title === 'Get Started') {
-      title = 'Complete Onboarding';
+
+    if (title === 'Payment') title = 'Invoice & Payment';
+    if (title === 'Get Started') title = 'Complete Onboarding';
+
+    if (title === 'Hiring Management') {
+      return `${title}${secondLevel ? ` / ${secondLevel}` : ''}`;
     }
 
     return <span>{title}</span>;
@@ -89,7 +103,7 @@ export function Header({ showBackArrow = false }: HeaderProps) {
         </div>
       </Link>
 
-      <div className="app_dash_main__hdr__title flex space-x-5 justify-center items-center">
+      <div className="app_dash_main__hdr__title flex gap-3 space-x-5 justify-center items-center">
         {showBackArrow && (
           <button
             onClick={() => {
