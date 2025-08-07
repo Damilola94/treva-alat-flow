@@ -30,7 +30,7 @@ const validationSchema = Yup.object().shape({
     .matches(
       passwordRegex,
       'We recommend using a minimum of 8 characters containing a mix of upper and lower case letters, special characters and numbers.',
-    ),
+    )
 });
 
 export default function Page() {

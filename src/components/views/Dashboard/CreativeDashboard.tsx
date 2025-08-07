@@ -42,6 +42,7 @@ import { clientDashboardTasks } from '@/constants';
 import {
   useBeneficiaryManagement,
   useCommon,
+  useDashboardSummaryCount,
   usePaymentService,
   useProjects,
 } from '@/hooks/Projects';
@@ -92,6 +93,9 @@ interface ProjectQueryParams {
   walletId: string;
   bankCode: number;
   name: string;
+  totalActiveProjects?: number
+  totalCompletedProjects?: number
+  totalTasks?: number
 }
 
 const validationSchema = Yup.object({
@@ -123,6 +127,9 @@ export default function Page() {
     bankName: '',
     bankCode: 0,
     name: '',
+    totalActiveProjects: 0,
+    totalCompletedProjects: 0,
+    totalTasks: 0
   });
 
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -147,6 +154,7 @@ export default function Page() {
   const { creativeOnboardingData } = useUsers();
   const { myWalletData } = usePaymentService(params);
   // const { myWalletByIdData } = usePaymentService(wallletParamsId);
+  const { dashboardSummaryCountData } = useDashboardSummaryCount();  
   const { myCommonData } = useCommon();
   const { beneficiaryData, refetch } = useBeneficiaryManagement(params);
   const { addBeneficiary, addBeneficiaryResponse } = useBeneficiaryManagement();
@@ -158,6 +166,8 @@ export default function Page() {
   } = usePaymentService(params);
 
   const wallet = myWalletData?.data;
+
+  const summaryCount = dashboardSummaryCountData?.data
 
   const bankOptions = [
     { label: 'Bank', value: '', isDisabled: true },
@@ -251,9 +261,9 @@ export default function Page() {
   }, [addWithdrawResponse]);
 
   const kpis = [
-    { label: 'Active Project', value: '0' },
-    { label: 'Completed Project', value: '0' },
-    { label: 'To-do Task', value: '0' },
+    { label: 'Active Project', value: summaryCount?.totalActiveProjects || 0 },
+    { label: 'Completed Project', value: summaryCount?.totalCompletedProjects || 0 },
+    { label: 'To-do Task', value: summaryCount?.totalTasks || 0 },
     {
       label: (
         <div className="relative w-full font-spaceGrotesk">
@@ -535,8 +545,8 @@ export default function Page() {
       )}
 
       <div className="app_dashboard_home__task app_dashboard_page__px pt-4">
-        <div className="app_dashboard_home__task__hdr flex flex-col md:flex-row md:items-center md:justify-between gap-4 mt-4 flex-wrap">
-          <div className="grid grid-cols-2 gap-2 md:flex md:flex-wrap">
+       <div className="app_dashboard_home__task__hdr flex gap-4 mt-4 flex-wrap overflow-x-auto">
+          <div className="flex">
             {clientDashboardTasks.map((item) => (
               <Pill
                 key={item.value}

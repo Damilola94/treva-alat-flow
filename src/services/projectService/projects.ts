@@ -1,6 +1,6 @@
-import { REQUEST_METHODS, endpoints } from '@/constants';
-import { projectServiceApiSlice } from '@/store/slices';
-import { ITrevaProjectService } from '@/types';
+import { REQUEST_METHODS, endpoints } from "@/constants";
+import { projectServiceApiSlice } from "@/store/slices";
+import { ITrevaProjectService } from "@/types";
 
 export const projectService = projectServiceApiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -11,7 +11,7 @@ export const projectService = projectServiceApiSlice.injectEndpoints({
         params: values,
       }),
       transformResponse: (
-        response: ITrevaProjectService['schemas']['ProjectMiniModelPagedListBaseResponse'],
+        response: ITrevaProjectService["schemas"]["ProjectMiniModelPagedListBaseResponse"]
       ) => response,
     }),
 
@@ -22,7 +22,7 @@ export const projectService = projectServiceApiSlice.injectEndpoints({
         body: values,
       }),
       transformResponse: (
-        response: ITrevaProjectService['schemas']['ProjectModelBaseResponse'],
+        response: ITrevaProjectService["schemas"]["ProjectModelBaseResponse"]
       ) => response,
     }),
 
@@ -32,7 +32,7 @@ export const projectService = projectServiceApiSlice.injectEndpoints({
         method: REQUEST_METHODS.GET,
       }),
       transformResponse: (
-        response: ITrevaProjectService['schemas']['ProjectModelBaseResponse'],
+        response: ITrevaProjectService["schemas"]["ProjectModelBaseResponse"]
       ) => response,
     }),
 
@@ -43,7 +43,7 @@ export const projectService = projectServiceApiSlice.injectEndpoints({
         body: values,
       }),
       transformResponse: (
-        response: ITrevaProjectService['schemas']['ProjectModelBaseResponse'],
+        response: ITrevaProjectService["schemas"]["ProjectModelBaseResponse"]
       ) => response,
     }),
 
@@ -53,10 +53,10 @@ export const projectService = projectServiceApiSlice.injectEndpoints({
         method: REQUEST_METHODS.DELETE,
       }),
       transformResponse: (
-        response: ITrevaProjectService['schemas']['ProjectModelBaseResponse'],
+        response: ITrevaProjectService["schemas"]["ProjectModelBaseResponse"]
       ) => response,
     }),
-    
+
     createRateProject: builder.mutation({
       query: ({ projectId, ...values }) => ({
         url: endpoints.projects.rateProject(projectId),
@@ -64,11 +64,29 @@ export const projectService = projectServiceApiSlice.injectEndpoints({
         body: values,
       }),
       transformResponse: (
-        response: ITrevaProjectService['schemas']['ProjectModelBaseResponse'],
+        response: ITrevaProjectService["schemas"]["ProjectModelBaseResponse"]
+      ) => response,
+    }),
+
+    getDashboardSummaryCount: builder.query({
+      query: (values) => ({
+        url: endpoints.projects.dashboardSummaryCount,
+        method: REQUEST_METHODS.GET,
+        params: values,
+      }),
+      transformResponse: (
+        response: ITrevaProjectService["schemas"]["DashboardSummaryCountModelBaseResponse"]
       ) => response,
     }),
   }),
+});
 
-})
-
-export const { useGetAllProjectsQuery, useCreateProjectMutation, useGetProjectByIdQuery, useUpdateProjectMutation,useDeleteProjectMutation, useCreateRateProjectMutation } = projectService;
+export const {
+  useGetAllProjectsQuery,
+  useCreateProjectMutation,
+  useGetProjectByIdQuery,
+  useUpdateProjectMutation,
+  useDeleteProjectMutation,
+  useCreateRateProjectMutation,
+  useGetDashboardSummaryCountQuery,
+} = projectService;

@@ -1,4 +1,4 @@
-import { useDeleteDeliverableMutation, useDeleteDeliverableTaskMutation, useDeleteExtraCostMutation, useDeleteProjectMutation, useGetAllExtraCostsQuery, useGetAllPaymentScheduleQuery, useGetAllProjectsQuery, useGetDeliverableByIdQuery, useGetDeliverablesQuery, useGetDeliverableTaskByIdQuery, useGetDeliverableTasksQuery, useGetExtraCostByIdQuery, useGetInvoicesQuery, useGetMyInvoicesQuery, useUpdateDeliverableMutation, useUpdateDeliverableTaskMutation, useUpdateExtraCostMutation, useUpdateProjectMutation } from '@/services';
+import { useDeleteDeliverableMutation, useDeleteDeliverableTaskMutation, useDeleteExtraCostMutation, useDeleteProjectMutation, useGetAllExtraCostsQuery, useGetAllPaymentScheduleQuery, useGetAllProjectsQuery, useGetDashboardSummaryCountQuery, useGetDeliverableByIdQuery, useGetDeliverablesQuery, useGetDeliverableTaskByIdQuery, useGetDeliverableTasksQuery, useGetExtraCostByIdQuery, useGetInvoicesQuery, useGetMyInvoicesQuery, useUpdateDeliverableMutation, useUpdateDeliverableTaskMutation, useUpdateExtraCostMutation, useUpdateProjectMutation } from '@/services';
 import { useGetCommentsQuery } from '@/services/projectService/comment';
 import { useAppSelector } from '@/store';
 
@@ -10,7 +10,11 @@ interface ProjectQueryParams {
   pageNumber?: number;
   pageSize?: number;
   searchKey?: string;
+  totalActiveProjects?: number
+  totalCompletedProjects?: number
+  totalTasks?: number
 }
+
 interface InvoiceParams {
   status?: string;
   pageNumber?: number;
@@ -88,6 +92,27 @@ export const useProjectById = (projectId?: string) => {
   };
 };
 
+export const useDashboardSummaryCount = () => {
+  const { loggedIn } = useAppSelector((state) => state?.auth);
+
+  const {
+    data: dashboardSummaryCountData,
+    isFetching: fetchingDashboardSummaryCountData,
+    isLoading: loadingDashboardSummaryCountData,
+    refetch: refetchDashboardSummaryCountData,
+    error: dashboardSummaryCountDataError,
+  } = useGetDashboardSummaryCountQuery({
+    refetchOnMountOrArgChange: true,
+    skip: !loggedIn,
+  });
+
+  return {
+    dashboardSummaryCountData,
+    loading: fetchingDashboardSummaryCountData|| loadingDashboardSummaryCountData,
+    refetchDashboardSummaryCountData,
+    dashboardSummaryCountDataError,
+  };
+};
 
 export const useDeliverable = (projectId?: string) => {
   const { loggedIn } = useAppSelector((state) => state?.auth);
@@ -436,24 +461,4 @@ export const useInvoicesById = (invoiceId?: string) => {
   };
 };
 
-// export const usePayInvoice = (invoiceId?: string) => {
-//   const { loggedIn } = useAppSelector((state) => state?.auth);
-
-//   const {
-//     data: payInvoiceData,
-//     isFetching: fetchingpayInvoice,
-//     isLoading: loadingpayInvoice,
-//     refetch: refetchpayInvoice,
-//     error: allInvoicesError,
-//   } = useCreateInvoiceMutation({ invoiceId: invoiceId ?? ''}, {
-//       refetchOnMountOrArgChange: true,
-//       skip: !loggedIn || !invoiceId,
-//     });
-//   return {
-//     payInvoiceData,
-//     loading: fetchingpayInvoice || loadingpayInvoice,
-//     refetchpayInvoice,
-//     allInvoicesError,
-//   };
-// };
 

@@ -77,6 +77,7 @@ export const endpoints = {
     updateProject: (projectId: string) => `/projects/${projectId}`,
     deleteProject: (projectId: string) => `/projects/${projectId}`,
     rateProject: (projectId: string) => `/projects/${projectId}/rate`,
+    dashboardSummaryCount:'/projects/dashboard-summary-count',
   },
   deliverables: {
     getDeliverables: (projectId: string) =>

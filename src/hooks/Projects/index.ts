@@ -1,4 +1,4 @@
-export { useProjects, useDeliverable } from './useProjects';
+export { useProjects, useDeliverable, useDashboardSummaryCount } from './useProjects';
 export { default as useProjectById } from './useProjectId';
 export { default as useClientManagement } from './useClientManagement';
 export { default as usePaymentService } from './usePayment';
