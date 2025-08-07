@@ -1,15 +1,14 @@
 'use client';
-
-import { ArrowRight, Search, Star } from 'lucide-react';
-import { Avatar } from '@/components/shared/avatar';
-import { useRouter } from 'next/navigation';
 import { MiniLoader, Pagination } from '@/components/shared';
-import { useGetCreatives, useHiringStats } from '@/hooks/Users';
-import { useMemo, useState } from 'react';
-import { extractName, getAvatar, getFullName } from '@/lib/utils';
+import { Avatar } from '@/components/shared/avatar';
+import { useFavorites } from '@/hooks/Users';
 import useProfessions from '@/hooks/Users/useProfessions';
+import { extractName, getAvatar, getFullName } from '@/lib/utils';
+import { ArrowRight, Search, Star } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import React, { useMemo, useState } from 'react';
 
-export default function Page() {
+const Favorites = () => {
   const router = useRouter();
   const [params, setParams] = useState({
     pageNumber: 1,
@@ -19,57 +18,25 @@ export default function Page() {
     professionId: '',
   });
 
+  const { favoriteData, loading } = useFavorites(params);
   const { loading: profLoading, professions } = useProfessions();
+
+  const favorites = useMemo(
+    () => favoriteData?.data || [],
+    [favoriteData?.data],
+  );
+
+  const favoritedPageData = useMemo(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    () => (favoriteData?.metaData as any) || null,
+    [favoriteData?.metaData],
+  );
 
   const handleUserClick = (id: string) => {
     router.push(`/client/dashboard/hiring-management/${id}`);
   };
 
-  const handleViewFav = () => {
-    router.push('/client/dashboard/hiring-management/favorites');
-  };
-
-  const { hiringStatsData, loading } = useHiringStats();
-  const {
-    creativesData,
-    // isError,
-    loading: creativesLoading,
-  } = useGetCreatives(params);
-
-  const hiringStats = useMemo(
-    () => hiringStatsData?.data || null,
-    [hiringStatsData?.data],
-  );
-
-  const creatives = useMemo(
-    () => creativesData?.data || [],
-    [creativesData?.data],
-  );
-
-  const creativesPageData = useMemo(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    () => (creativesData?.metaData as any) || null,
-    [creativesData?.metaData],
-  );
-
-  const kpis = [
-    {
-      label: 'Onboarded Creatives',
-      value: hiringStats?.onboardedCreativeCount || '0',
-      hasViewFavorites: true,
-    },
-    {
-      label: 'Creative Hires',
-      value: hiringStats?.hiredCreativeCount || '0',
-      hasViewAll: true,
-    },
-    {
-      label: 'Published projects',
-      value: hiringStats?.publishedProjectCount || '0',
-    },
-  ];
-
-  if (loading || creativesLoading || profLoading) {
+  if (loading || profLoading) {
     return (
       <div className="w-full h-full flex items-center justify-center">
         <MiniLoader message="loading" />
@@ -79,37 +46,6 @@ export default function Page() {
 
   return (
     <div className="app_dashboard_page app_dashboard_home !p-4">
-      <div className=" grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-20">
-        {kpis.map((item, index) => {
-          return (
-            <div
-              className="app_dashboard_home__kpis__item relative"
-              key={index}
-            >
-              <h6 className="app_dashboard_home__kpis__item__h6 !font-bold">
-                {item.label}
-              </h6>
-
-              <p className="app_dashboard_home__kpis__item__value">
-                {item.value}
-              </p>
-              {item.hasViewAll && (
-                <button className="absolute top-4 right-4 text-xs border border-[#262626] rounded-full px-3 py-1">
-                  View all
-                </button>
-              )}
-              {item.hasViewFavorites && (
-                <button
-                  onClick={handleViewFav}
-                  className="absolute top-4 right-4 text-xs border border-[#262626] rounded-full px-3 py-1"
-                >
-                  View Favorites
-                </button>
-              )}
-            </div>
-          );
-        })}
-      </div>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
         <div className="flex items-center gap-3">
           <div className="relative">
@@ -130,6 +66,7 @@ export default function Page() {
                 </option>
               ))}
             </select>
+
             <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
               <svg
                 className="h-4 w-4 text-gray-400"
@@ -165,6 +102,7 @@ export default function Page() {
                 </option>
               ))}
             </select>
+
             <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
               <svg
                 className="h-4 w-4 text-gray-400"
@@ -186,7 +124,7 @@ export default function Page() {
         <div className="relative w-full sm:w-64">
           <input
             type="text"
-            placeholder="Search for creatives"
+            placeholder="Search Favorites"
             className="w-full border border-gray-200 rounded-full px-4 py-2 pl-10 text-sm"
             onChange={(e) => {
               setParams((prev) => ({
@@ -201,7 +139,7 @@ export default function Page() {
         </div>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-        {creatives.map((user) => (
+        {favorites?.map((user) => (
           <div
             key={user?.id}
             className="bg-white border border-[#E7E7E7] rounded-lg p-5 mb-5"
@@ -254,14 +192,16 @@ export default function Page() {
       <div className="bg-white app_table__pagination">
         <Pagination
           paginate={{
-            pageCount: creativesPageData?.totalPages || 0,
-            currentPage: creativesPageData?.currentPage || 0,
+            pageCount: favoritedPageData?.totalPages || 0,
+            currentPage: favoritedPageData?.currentPage || 0,
             marginPagesDisplayed: 2,
-            pageRangeDisplayed: creativesPageData?.pageSize || 0,
+            pageRangeDisplayed: favoritedPageData?.pageSize || 0,
           }}
           // handlePageClick={handlePageClick}
         />
       </div>
     </div>
   );
-}
+};
+
+export default Favorites;

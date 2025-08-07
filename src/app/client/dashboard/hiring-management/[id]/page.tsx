@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { MapPin, Heart, Send, Globe, Star } from 'lucide-react';
+import { MapPin, Heart, Send, Globe, Star, Loader2 } from 'lucide-react';
 import { Avatar } from '@/components/shared/avatar';
 import {
   ChatSideModal,
@@ -16,6 +16,8 @@ import {
 import { useParams } from 'next/navigation';
 import {
   errorToast,
+  successToast,
+  useAddFavoriteMutation,
   useGetCreativesByIdQuery,
   useGetUserRatingsQuery,
   useStartChatMutation,
@@ -38,7 +40,25 @@ export default function CreativeProfile() {
   const [chatId, setChatId] = useState('');
   const params = useParams();
   const { id } = params;
-  console.log(id);
+
+  const [triggerAddFavorite, { isLoading: addFavLoading }] =
+    useAddFavoriteMutation();
+
+  const handleAddFavorite = async (creativeUserId: string) => {
+    try {
+      const response = await triggerAddFavorite({
+        creativeUserId,
+      }).unwrap();
+      if (response?.isSuccess) {
+        successToast(response?.message || 'Added to favorites');
+      } else {
+        errorToast(response?.message || 'Something went wrong');
+      }
+    } catch (error) {
+      const message = getErrorMessage(error);
+      errorToast(message || 'An error occurred while adding to favorites');
+    }
+  };
 
   const { data, isFetching, isLoading } = useGetCreativesByIdQuery(
     { userId: id as string },
@@ -170,9 +190,16 @@ export default function CreativeProfile() {
                 </Button>
 
                 <div className="flex justify-end pt-6">
-                  <button className="">
-                    <Heart className="h-5 w-5 text-gray-700" />
-                  </button>
+                  {addFavLoading ? (
+                    <Loader2 size={18} className="animate-spin" />
+                  ) : (
+                    <button
+                      onClick={() => handleAddFavorite(creativeData?.id || '')}
+                      className=""
+                    >
+                      <Heart className="h-5 w-5 text-gray-700" />
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
