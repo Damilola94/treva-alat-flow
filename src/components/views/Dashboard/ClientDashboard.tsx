@@ -232,7 +232,7 @@ export default function Dashboard() {
       label: 'Completed Project',
       value: summaryCount?.totalCompletedProjects || 0,
     },
-    { label: 'To-do Task', value: summaryCount?.totalTasks || 0 },
+    { label: 'Awaiting Confirmation', value: summaryCount?.totalProjectsAwaitingClientConfirmation || 0 },
     {
       label: (
         <div className="relative w-full font-spaceGrotesk">
