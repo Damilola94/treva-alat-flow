@@ -1193,6 +1193,8 @@ export interface components {
             publishedProjectCount?: number;
             /** Format: int32 */
             onboardedCreativeCount?: number;
+            /** Format: int32 */
+            favoriteCreativeCount?: number;
         };
         HiringStatisticsModelBaseResponse: {
             isSuccess?: boolean;
@@ -1398,6 +1400,7 @@ export interface components {
             userProfession?: components["schemas"]["UserProfessionModel"];
             userSocialMedias?: components["schemas"]["UserSocialMediaModel"][] | null;
             userAddresses?: components["schemas"]["UserAddressModel"][] | null;
+            isCreativeFavorited?: boolean;
         };
         UserCreativeDetailModelBaseResponse: {
             isSuccess?: boolean;
