@@ -194,8 +194,17 @@ export default function CreativeProfile() {
                     <button
                       onClick={() => handleAddFavorite(creativeData?.id || '')}
                       className=""
+                      disabled={creativeData?.isCreativeFavorited}
                     >
-                      <Heart className="h-5 w-5 text-gray-700" />
+                      <Heart
+                        fill={
+                          creativeData?.isCreativeFavorited ? 'red' : '#000'
+                        }
+                        stroke={
+                          creativeData?.isCreativeFavorited ? 'red' : '#000'
+                        }
+                        className="h-5 w-5 text-gray-700"
+                      />
                     </button>
                   )}
                 </div>

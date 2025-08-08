@@ -1,4 +1,24 @@
-import { useDeleteDeliverableMutation, useDeleteDeliverableTaskMutation, useDeleteExtraCostMutation, useDeleteProjectMutation, useGetAllExtraCostsQuery, useGetAllPaymentScheduleQuery, useGetAllProjectsQuery, useGetDashboardSummaryCountQuery, useGetDeliverableByIdQuery, useGetDeliverablesQuery, useGetDeliverableTaskByIdQuery, useGetDeliverableTasksQuery, useGetExtraCostByIdQuery, useGetInvoicesQuery, useGetMyInvoicesQuery, useUpdateDeliverableMutation, useUpdateDeliverableTaskMutation, useUpdateExtraCostMutation, useUpdateProjectMutation } from '@/services';
+import {
+  useDeleteDeliverableMutation,
+  useDeleteDeliverableTaskMutation,
+  useDeleteExtraCostMutation,
+  useDeleteProjectMutation,
+  useGetAllExtraCostsQuery,
+  useGetAllPaymentScheduleQuery,
+  useGetAllProjectsQuery,
+  useGetDashboardSummaryCountQuery,
+  useGetDeliverableByIdQuery,
+  useGetDeliverablesQuery,
+  useGetDeliverableTaskByIdQuery,
+  useGetDeliverableTasksQuery,
+  useGetExtraCostByIdQuery,
+  useGetInvoicesQuery,
+  useGetMyInvoicesQuery,
+  useUpdateDeliverableMutation,
+  useUpdateDeliverableTaskMutation,
+  useUpdateExtraCostMutation,
+  useUpdateProjectMutation,
+} from '@/services';
 import { useGetCommentsQuery } from '@/services/projectService/comment';
 import { useAppSelector } from '@/store';
 
@@ -10,16 +30,16 @@ interface ProjectQueryParams {
   pageNumber?: number;
   pageSize?: number;
   searchKey?: string;
-  totalActiveProjects?: number
-  totalCompletedProjects?: number
-  totalTasks?: number
+  totalActiveProjects?: number;
+  totalCompletedProjects?: number;
+  totalTasks?: number;
 }
 
 interface InvoiceParams {
   status?: string;
   pageNumber?: number;
   pageSize?: number;
-  searchKey?: string
+  searchKey?: string;
 }
 
 export const useProjects = (params: ProjectQueryParams) => {
@@ -51,14 +71,14 @@ export const useProjects = (params: ProjectQueryParams) => {
 };
 
 export const useDeleteProject = () => {
-const [deleteProject, { data, isLoading, error }] = useDeleteProjectMutation();
-return {
-  deleteProject,
-  data,
-  loading: isLoading,
-  error,
-};
- 
+  const [deleteProject, { data, isLoading, error }] =
+    useDeleteProjectMutation();
+  return {
+    deleteProject,
+    data,
+    loading: isLoading,
+    error,
+  };
 };
 
 export const useUpdateProject = () => {
@@ -79,11 +99,13 @@ export const useProjectById = (projectId?: string) => {
     isLoading: loadingAllProjectsById,
     refetch: refetchAllProjectsById,
     error: allProjectError,
-  } = useGetAllProjectsQuery({ projectId: projectId ?? '' },
+  } = useGetAllProjectsQuery(
+    { projectId: projectId ?? '' },
     {
       refetchOnMountOrArgChange: true,
       skip: !loggedIn || !projectId,
-    });
+    },
+  );
   return {
     allProjectsByIdData,
     loading: fetchingAllProjectsById || loadingAllProjectsById,
@@ -108,7 +130,8 @@ export const useDashboardSummaryCount = () => {
 
   return {
     dashboardSummaryCountData,
-    loading: fetchingDashboardSummaryCountData|| loadingDashboardSummaryCountData,
+    loading:
+      fetchingDashboardSummaryCountData || loadingDashboardSummaryCountData,
     refetchDashboardSummaryCountData,
     dashboardSummaryCountDataError,
   };
@@ -123,11 +146,13 @@ export const useDeliverable = (projectId?: string) => {
     isLoading: loadingAllDeliverables,
     refetch: refetchAllDeliverables,
     error: allProjectError,
-  } = useGetDeliverablesQuery({ projectId: projectId ?? '' },
+  } = useGetDeliverablesQuery(
+    { projectId: projectId ?? '' },
     {
       refetchOnMountOrArgChange: true,
       skip: !loggedIn || !projectId,
-    });
+    },
+  );
 
   return {
     allDeliverablesData,
@@ -138,7 +163,8 @@ export const useDeliverable = (projectId?: string) => {
 };
 
 export const useUpdateDeliverable = () => {
-  const [updateDeliverable, { data, isLoading, error }] = useUpdateDeliverableMutation();
+  const [updateDeliverable, { data, isLoading, error }] =
+    useUpdateDeliverableMutation();
 
   return {
     updateDeliverable,
@@ -149,7 +175,8 @@ export const useUpdateDeliverable = () => {
 };
 
 export const useDeleteDeliverable = () => {
-  const [deleteDeliverable, { data, isLoading, error }] = useDeleteDeliverableMutation();
+  const [deleteDeliverable, { data, isLoading, error }] =
+    useDeleteDeliverableMutation();
 
   return {
     deleteDeliverable,
@@ -157,9 +184,12 @@ export const useDeleteDeliverable = () => {
     loading: isLoading,
     error,
   };
-}
+};
 
-export const useDeliverableById = (projectId?: string, deliverableId?: string) => {
+export const useDeliverableById = (
+  projectId?: string,
+  deliverableId?: string,
+) => {
   const { loggedIn } = useAppSelector((state) => state?.auth);
   const {
     data: allDeliverableIdData,
@@ -167,18 +197,20 @@ export const useDeliverableById = (projectId?: string, deliverableId?: string) =
     isLoading: loadingAllDeliverables,
     refetch: refetchAllDeliverables,
     error: allProjectError,
-  } = useGetDeliverableByIdQuery({ projectId: projectId ?? '', deliverableId: deliverableId ?? '' },
+  } = useGetDeliverableByIdQuery(
+    { projectId: projectId ?? '', deliverableId: deliverableId ?? '' },
     {
       refetchOnMountOrArgChange: true,
       skip: !loggedIn || !projectId || !deliverableId,
-    });
+    },
+  );
   return {
     allDeliverableIdData,
     loading: fetchingAllDeliverables || loadingAllDeliverables,
     refetchAllDeliverables,
     allProjectError,
   };
-}
+};
 
 export const useComment = (projectId?: string) => {
   const { loggedIn } = useAppSelector((state) => state?.auth);
@@ -189,11 +221,13 @@ export const useComment = (projectId?: string) => {
     isLoading: loadingAllComments,
     refetch: refetchAllComments,
     error: allCommentError,
-  } = useGetCommentsQuery({ projectId: projectId ?? '' },
+  } = useGetCommentsQuery(
+    { projectId: projectId ?? '' },
     {
       refetchOnMountOrArgChange: true,
       skip: !loggedIn || !projectId,
-    });
+    },
+  );
 
   return {
     allCommentsData,
@@ -201,7 +235,7 @@ export const useComment = (projectId?: string) => {
     refetchAllComments,
     allCommentError,
   };
-}
+};
 
 export const useGetTask = (projectId?: string, deliverableId?: string) => {
   const { loggedIn } = useAppSelector((state) => state?.auth);
@@ -212,11 +246,13 @@ export const useGetTask = (projectId?: string, deliverableId?: string) => {
     isLoading: loadingAllTasks,
     refetch: refetchAllTasks,
     error: allTaskError,
-  } = useGetDeliverableTasksQuery({ projectId: projectId ?? '', deliverableId: deliverableId ?? '' },
+  } = useGetDeliverableTasksQuery(
+    { projectId: projectId ?? '', deliverableId: deliverableId ?? '' },
     {
       refetchOnMountOrArgChange: true,
       skip: !loggedIn || !projectId || !deliverableId,
-    });
+    },
+  );
 
   return {
     allTasksData,
@@ -224,7 +260,7 @@ export const useGetTask = (projectId?: string, deliverableId?: string) => {
     refetchAllTasks,
     allTaskError,
   };
-}
+};
 
 export const useTasks = (projectId?: string, deliverableId?: string) => {
   const { loggedIn } = useAppSelector((state) => state?.auth);
@@ -235,11 +271,13 @@ export const useTasks = (projectId?: string, deliverableId?: string) => {
     isLoading: loadingAllTasks,
     refetch: refetchAllTasks,
     error: allTaskError,
-  } = useGetDeliverableTasksQuery({ projectId: projectId ?? '', deliverableId: deliverableId ?? '' },
+  } = useGetDeliverableTasksQuery(
+    { projectId: projectId ?? '', deliverableId: deliverableId ?? '' },
     {
       refetchOnMountOrArgChange: true,
       skip: !loggedIn || !projectId || !deliverableId,
-    });
+    },
+  );
 
   return {
     allTasksData,
@@ -247,9 +285,13 @@ export const useTasks = (projectId?: string, deliverableId?: string) => {
     refetchAllTasks,
     allTaskError,
   };
-}
+};
 
-export const useGetTaskById = (projectId?: string, deliverableId?: string, taskId?: string) => {
+export const useGetTaskById = (
+  projectId?: string,
+  deliverableId?: string,
+  taskId?: string,
+) => {
   const { loggedIn } = useAppSelector((state) => state?.auth);
 
   const {
@@ -258,11 +300,17 @@ export const useGetTaskById = (projectId?: string, deliverableId?: string, taskI
     isLoading: loadingAllTasks,
     refetch: refetchAllTasks,
     error: allTaskError,
-  } = useGetDeliverableTaskByIdQuery({ projectId: projectId ?? '', deliverableId: deliverableId ?? '', taskId: taskId ?? '' },
+  } = useGetDeliverableTaskByIdQuery(
+    {
+      projectId: projectId ?? '',
+      deliverableId: deliverableId ?? '',
+      taskId: taskId ?? '',
+    },
     {
       refetchOnMountOrArgChange: true,
       skip: !loggedIn || !projectId || !deliverableId || !taskId,
-    });
+    },
+  );
 
   return {
     allTaskByIdData,
@@ -270,7 +318,7 @@ export const useGetTaskById = (projectId?: string, deliverableId?: string, taskI
     refetchAllTasks,
     allTaskError,
   };
-}
+};
 
 export const updateTask = () => {
   // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -284,7 +332,8 @@ export const updateTask = () => {
 }
 export const useDeleteTask = () => {
   // eslint-disable-next-line react-hooks/rules-of-hooks
-  const [deleteTask, { data, isLoading, error }] = useDeleteDeliverableTaskMutation();
+  const [deleteTask, { data, isLoading, error }] =
+    useDeleteDeliverableTaskMutation();
 
   return {
     deleteTask,
@@ -292,7 +341,7 @@ export const useDeleteTask = () => {
     loading: isLoading,
     error,
   };
-}
+};
 
 export const usePayment = (projectId?: string) => {
   const { loggedIn } = useAppSelector((state) => state?.auth);
@@ -303,13 +352,10 @@ export const usePayment = (projectId?: string) => {
     isLoading: loadingAllPayments,
     refetch: refetchAllPayments,
     error: allPaymentError,
-  } = useGetAllExtraCostsQuery(
-    projectId ?? '',
-    {
-      refetchOnMountOrArgChange: true,
-      skip: !loggedIn || !projectId,
-    }
-  );
+  } = useGetAllExtraCostsQuery(projectId ?? '', {
+    refetchOnMountOrArgChange: true,
+    skip: !loggedIn || !projectId,
+  });
 
   return {
     allPaymentsData,
@@ -317,10 +363,11 @@ export const usePayment = (projectId?: string) => {
     refetchAllPayments,
     allPaymentError,
   };
-}
+};
 
 export const useDeletePayment = () => {
-  const [deletePayment, { data, isLoading, error }] = useDeleteExtraCostMutation();
+  const [deletePayment, { data, isLoading, error }] =
+    useDeleteExtraCostMutation();
 
   return {
     deletePayment,
@@ -328,10 +375,11 @@ export const useDeletePayment = () => {
     loading: isLoading,
     error,
   };
-}
+};
 
 export const useUpdatePayment = () => {
-  const [updatePayment, { data, isLoading, error }] = useUpdateExtraCostMutation();
+  const [updatePayment, { data, isLoading, error }] =
+    useUpdateExtraCostMutation();
 
   return {
     updatePayment,
@@ -339,7 +387,7 @@ export const useUpdatePayment = () => {
     loading: isLoading,
     error,
   };
-}
+};
 
 export const usePaymentById = (projectId?: string, extraCostId?: string) => {
   const { loggedIn } = useAppSelector((state) => state?.auth);
@@ -355,7 +403,7 @@ export const usePaymentById = (projectId?: string, extraCostId?: string) => {
     {
       refetchOnMountOrArgChange: true,
       skip: !loggedIn || !projectId || !extraCostId,
-    }
+    },
   );
 
   return {
@@ -364,10 +412,11 @@ export const usePaymentById = (projectId?: string, extraCostId?: string) => {
     refetchAllPayments,
     allPaymentError,
   };
-}
+};
 
 export const useDeletePaymentSchedule = () => {
-  const [deletePaymentSchedule, { data, isLoading, error }] = useDeleteExtraCostMutation();
+  const [deletePaymentSchedule, { data, isLoading, error }] =
+    useDeleteExtraCostMutation();
 
   return {
     deletePaymentSchedule,
@@ -375,7 +424,7 @@ export const useDeletePaymentSchedule = () => {
     loading: isLoading,
     error,
   };
-}
+};
 
 export const usePaymentSchedule = (projectId?: string) => {
   const { loggedIn } = useAppSelector((state) => state?.auth);
@@ -386,24 +435,22 @@ export const usePaymentSchedule = (projectId?: string) => {
     isLoading: loadingAllPaymentSchedule,
     refetch: refetchAllPaymentSchedule,
     error: aallPaymentScheduleError,
-  } = useGetAllPaymentScheduleQuery(
-    projectId ?? '',
-    {
-      refetchOnMountOrArgChange: true,
-      skip: !loggedIn || !projectId,
-    }
-  );
+  } = useGetAllPaymentScheduleQuery(projectId ?? '', {
+    refetchOnMountOrArgChange: true,
+    skip: !loggedIn || !projectId,
+  });
 
   return {
     allPaymentScheduleData,
-    loading: fetchingAllPaymentSchedule|| loadingAllPaymentSchedule,
+    loading: fetchingAllPaymentSchedule || loadingAllPaymentSchedule,
     refetchAllPaymentSchedule,
     aallPaymentScheduleError,
   };
 };
 
-export const useDeleteAgreement = () => { 
-  const [deleteAgreement, { data, isLoading, error }] = useDeleteExtraCostMutation();
+export const useDeleteAgreement = () => {
+  const [deleteAgreement, { data, isLoading, error }] =
+    useDeleteExtraCostMutation();
 
   return {
     deleteAgreement,
@@ -411,7 +458,7 @@ export const useDeleteAgreement = () => {
     loading: isLoading,
     error,
   };
-}
+};
 
 export const useInvoices = (params: InvoiceParams) => {
   const { loggedIn } = useAppSelector((state) => state?.auth);
@@ -449,10 +496,10 @@ export const useInvoicesById = (invoiceId?: string) => {
     isLoading: loadingAllInvoicesById,
     refetch: refetchAllInvoicesById,
     error: allInvoicesError,
-  } = useGetMyInvoicesQuery( invoiceId ?? '', {
-      refetchOnMountOrArgChange: true,
-      skip: !loggedIn || !invoiceId,
-    });
+  } = useGetMyInvoicesQuery(invoiceId ?? '', {
+    refetchOnMountOrArgChange: true,
+    skip: !loggedIn || !invoiceId,
+  });
   return {
     allInvoicesByIdData,
     loading: fetchingAllInvoicesById || loadingAllInvoicesById,
@@ -460,5 +507,3 @@ export const useInvoicesById = (invoiceId?: string) => {
     allInvoicesError,
   };
 };
-
-
