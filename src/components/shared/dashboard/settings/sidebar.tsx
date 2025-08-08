@@ -1,3 +1,4 @@
+'use client';
 import routes from '@/lib/routes';
 import { useAppSelector } from '@/store';
 import Link from 'next/link';

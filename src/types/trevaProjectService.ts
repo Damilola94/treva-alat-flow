@@ -1769,6 +1769,8 @@ export interface components {
             totalCompletedProjects?: number;
             /** Format: int32 */
             totalTasks?: number;
+            /** Format: int32 */
+            totalProjectsAwaitingClientConfirmation?: number;
         };
         DashboardSummaryCountModelBaseResponse: {
             isSuccess?: boolean;

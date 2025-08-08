@@ -27,6 +27,7 @@ const validationSchema = Yup.object().shape({
     .required('Please confirm your password'),
 });
 
+
 const ResetPassword = () => {
   const rt = useRouter();
   const [token, setToken] = useState('');

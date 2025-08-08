@@ -31,6 +31,7 @@ import { clientDashboardTasks } from '@/constants';
 import {
   useBeneficiaryManagement,
   useCommon,
+  useDashboardSummaryCount,
   usePaymentService,
   useProjects,
 } from '@/hooks/Projects';
@@ -120,6 +121,8 @@ export default function Dashboard() {
   const { allProjectsData, loading } = useProjects(params);
   const { myWalletData } = usePaymentService(params);
   const { myCommonData } = useCommon();
+  const { dashboardSummaryCountData } = useDashboardSummaryCount();
+
   const { beneficiaryData, refetch } = useBeneficiaryManagement(params);
   const { addBeneficiary, addBeneficiaryResponse } = useBeneficiaryManagement();
   const [triggerDelete, { isLoading }] = useDeleteBeneficiaryMutation();
@@ -129,6 +132,8 @@ export default function Dashboard() {
     loading: withdrawing,
   } = usePaymentService(params);
   const wallet = myWalletData?.data;
+
+  const summaryCount = dashboardSummaryCountData?.data;
 
   const bankOptions = [
     { label: 'Bank', value: '', isDisabled: true },
@@ -222,9 +227,12 @@ export default function Dashboard() {
   }, [addBeneficiaryResponse]);
 
   const kpis = [
-    { label: 'Active Project', value: '0' },
-    { label: 'Completed Project', value: '0' },
-    { label: 'To-do Task', value: '0' },
+    { label: 'Active Project', value: summaryCount?.totalActiveProjects || 0 },
+    {
+      label: 'Completed Project',
+      value: summaryCount?.totalCompletedProjects || 0,
+    },
+    { label: 'Awaiting Confirmation', value: summaryCount?.totalProjectsAwaitingClientConfirmation || 0 },
     {
       label: (
         <div className="relative w-full font-spaceGrotesk">
@@ -439,8 +447,8 @@ export default function Dashboard() {
       </div>
 
       <div className="app_dashboard_home__task app_dashboard_page__px pt-4">
-        <div className="app_dashboard_home__task__hdr flex flex-col md:flex-row md:items-center md:justify-between gap-4 mt-4 flex-wrap">
-          <div className="grid grid-cols-2 gap-2 md:flex md:flex-wrap">
+        <div className="app_dashboard_home__task__hdr flex gap-4 mt-4 flex-wrap overflow-x-auto">
+          <div className="flex">
             {clientDashboardTasks.map((item) => (
               <Pill
                 key={item.value}
@@ -692,8 +700,7 @@ export default function Dashboard() {
                         onClick={(e) => {
                           e.stopPropagation();
                           setIsDecisionModalOpen(true);
-                        setAccountToDelete(item?.accountNumber)
-
+                          setAccountToDelete(item?.accountNumber);
                         }}
                         className="cursor-pointer"
                       >

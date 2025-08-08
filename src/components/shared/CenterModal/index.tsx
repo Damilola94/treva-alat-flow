@@ -37,17 +37,13 @@ const CenterModal: React.FC<ModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4 font-spaceGrotesk">
-      {/* Overlay that closes modal when clicked outside content */}
       <div className="absolute inset-0 " onClick={onClose} />
-
-      {/* Modal Content */}
       <div
         className="relative z-10 flex w-full max-w-lg flex-col overflow-hidden rounded-lg bg-white"
         onClick={(e) => {
           e.stopPropagation()
         }}
       >
-        {/* Modal Header */}
         <div
           style={{
             backgroundImage: topBgImg,
@@ -100,10 +96,7 @@ const CenterModal: React.FC<ModalProps> = ({
           )}
         </div>
 
-        {/* Modal Body */}
         <div className={`flex-1 overflow-y-auto p-6 ${headerImageType === 3 || headerImageType === 4 ? 'pt-4' : ''}`}>{children}</div>
-
-        {/* Modal Footer */}
         {showFooter && (
           <div className="flex min-h-16 justify-end border-t border-[#E7E7E7] p-4">
             {footerChildren}

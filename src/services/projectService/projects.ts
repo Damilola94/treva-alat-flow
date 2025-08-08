@@ -68,6 +68,17 @@ export const projectService = projectServiceApiSlice.injectEndpoints({
       ) => response,
     }),
 
+    getDashboardSummaryCount: builder.query({
+      query: (values) => ({
+        url: endpoints.projects.dashboardSummaryCount,
+        method: REQUEST_METHODS.GET,
+        params: values,
+      }),
+      transformResponse: (
+        response: ITrevaProjectService['schemas']['DashboardSummaryCountModelBaseResponse'],
+      ) => response,
+    }),
+
     getCreativeHires: builder.query({
       query: (params) => ({
         url: endpoints.projects.getCreativeHires,
@@ -88,5 +99,6 @@ export const {
   useUpdateProjectMutation,
   useDeleteProjectMutation,
   useCreateRateProjectMutation,
+  useGetDashboardSummaryCountQuery,
   useGetCreativeHiresQuery,
 } = projectService;

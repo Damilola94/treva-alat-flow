@@ -95,6 +95,9 @@ export default function Page() {
 
   const { allProjectsData, loading, refetchAllProjects } = useProjects(params);
 
+  console.log('Pagination', allProjectsData?.metaData);
+  
+
 const projectData = useMemo(() => allProjectsData?.data || [], [allProjectsData?.data],)
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -108,14 +111,8 @@ const projectData = useMemo(() => allProjectsData?.data || [], [allProjectsData?
 
   const [pagination, setPagination] = useState({
     pageIndex: 0,
-    pageSize: 50,
+    pageSize: 10,
   });
-
-  // const tableBody = useMemo(() => {
-  //   return allProjectsData?.isSuccess && allProjectsData.data
-  //     ? allProjectsData.data
-  //     : [];
-  // }, [allProjectsData?.isSuccess, allProjectsData?.data]);
 
   useEffect(() => {
     setParams((prev) => ({
@@ -123,10 +120,7 @@ const projectData = useMemo(() => allProjectsData?.data || [], [allProjectsData?
       pageNumber: pagination?.pageIndex + 1,
       pageSize: pagination?.pageSize,
     }));
-    setPagination((prev) => ({
-    ...prev,
-    pageIndex: 0,
-  }));
+
   }, [pagination]);
 
   const handleParamChange = (param: Partial<ProjectQueryParams>) => {
@@ -162,6 +156,13 @@ const projectData = useMemo(() => allProjectsData?.data || [], [allProjectsData?
   const handleDeleteProject = () => {
     setDeleteForm(!deleteForm);
   };
+
+  useEffect(() => {
+  projectData.forEach(project => {
+    router.prefetch(`/creatives/dashboard/project-management/${project.id}`);
+  });
+}, [projectData]);
+
 
   const columns = [
     {

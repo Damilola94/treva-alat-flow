@@ -22,9 +22,12 @@ interface IAddClient {
   name?: string | null;
   email?: string | null;
   phoneNumber?: string;
-  avatar?: File | null;
+  avatar?: File | string | null;
   birthMonth?: string | null;
   birthDay?: number | null;
+  pageNumber?: number;
+  pageSize?: number;
+  searchKey?: string;
 }
 
 const useClientManagement = (params?: IParams) => {
@@ -93,11 +96,9 @@ const useClientManagement = (params?: IParams) => {
       const formData = new FormData();
       Object.entries(payload).forEach(([key, value]) => {
         if (value !== undefined && value !== null) {
-          // Convert number to string
           if (typeof value === 'number') {
             formData.append(key, value.toString());
           }
-          // Allow File/Blob to be appended as is
           else {
             formData.append(key, value);
           }

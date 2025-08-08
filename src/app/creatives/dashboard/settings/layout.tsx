@@ -1,4 +1,3 @@
-'use client';
 import  Sidebar  from '@/components/shared/dashboard/settings/sidebar';
 
 export default function RootLayout({
