@@ -1,43 +1,9 @@
 import React from 'react'
 import Image, { type StaticImageData } from 'next/image'
-import { ChevronRight, SmallLogo } from '../../svgs'
-import { RenderIf } from '../../render-if'
 import Link from 'next/link'
 import routes from '@/lib/routes'
-
-const steps = [
-  {
-    id: 1,
-    label: 'Professional details',
-    details:
-      "You're almost there! Complete your onboarding to unlock the full potential of",
-    href: routes.creatives.dashboard.getStarted.personalDetails.path
-  },
-
-  {
-    id: 2,
-    label: 'Social media details',
-    details:
-      "You're almost there! Complete your onboarding to unlock the full potential of ",
-    href: routes.creatives.dashboard.getStarted.socialMediaDetails.path
-  },
-
-  {
-    id: 3,
-    label: 'Bio',
-    details:
-      "You're almost there! Complete your onboarding to unlock the full potential of",
-    href: routes.creatives.dashboard.getStarted.bio.path
-  },
-
-  {
-    id: 4,
-    label: 'Select plan',
-    details:
-      "You're almost there! Complete your onboarding to unlock the full potential of",
-    href: routes.creatives.dashboard.getStarted.selectPlan.path
-  }
-]
+import { ChevronRight, RenderIf, SmallLogo } from '@/components/shared'
+import { creativesOnboardingSteps } from '@/constants'
 
 interface IProps {
   item: {
@@ -52,7 +18,7 @@ interface IProps {
   showSteps?: boolean
 }
 
-export function GetStartedCard (props: IProps) {
+export function CreativesGetStartedCard (props: IProps) {
   const { item, handleClick, showSteps = false } = props
 
   return (
@@ -74,7 +40,7 @@ export function GetStartedCard (props: IProps) {
         <div className="flex flex-col">
           <RenderIf condition={showSteps}>
             <div className="app_get_started_card__steps flex flex-col">
-              {steps.map((item) => (
+              {creativesOnboardingSteps.map((item) => (
                 <Link key={item.id} href={item.href}>
                   <div className="app_get_started_card__steps__item flex gap-4">
                     <div className="app_get_started_card__steps__item__logo">
@@ -83,7 +49,7 @@ export function GetStartedCard (props: IProps) {
 
                     <div className="app_get_started_card__steps__item__ctt flex-1 flex flex-col gap-2">
                       <div className="flex justify-between">
-                        <h3 className="app_get_started_card__steps__item__ctt__title">
+                        <h3 className="app_get_started_card__steps__item__ctt__title !font-bold">
                           {item.label}
                         </h3>
                         <ChevronRight />

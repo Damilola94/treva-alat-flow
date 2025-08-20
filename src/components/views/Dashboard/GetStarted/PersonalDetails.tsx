@@ -72,8 +72,6 @@ export default function PersonalDetails() {
     validationSchema,
   });
 
-  console.log(userOnboardingData);
-
   useEffect(() => {
     if (saveOnboardingResponse?.isSuccess) {
       router.push(routes.client.dashboard.getStarted.socialMediaDetails.path);

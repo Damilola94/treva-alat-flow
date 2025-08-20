@@ -6,13 +6,14 @@ interface IProps {
   label: string
   checked?: boolean
   active?: boolean
+  className?: string
 }
 
 export function ProgressStatus (props: IProps) {
-  const { label, active = false, checked = false } = props
+  const { label, active = false, checked = false, className } = props
 
   return (
-    <div className="app_get_started_progress_status flex gap-1 items-center">
+    <div className={`app_get_started_progress_status flex gap-1 items-center ${className}`}>
       <div className="app_get_started_progress_status__icon">
         <RenderIf condition={checked}>
           <CheckCircle />

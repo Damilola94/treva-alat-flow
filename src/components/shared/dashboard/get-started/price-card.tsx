@@ -35,6 +35,8 @@ const PricingCards: React.FC = () => {
     skip: !loggedIn,
   });
 
+  console.log('allSubs', allSubs);
+  
   const subscriptions = useMemo(() => allSubs?.data || [], [allSubs?.data]);
 
   const filteredSubscriptions = subscriptions?.filter(
@@ -84,6 +86,7 @@ const PricingCards: React.FC = () => {
             price={subs.amount}
             features={subs.features ?? []}
             billingCycle={subs.period}
+            description={subs.description}
             backgroundColor={subs.color}
           />
         ))}
@@ -106,6 +109,7 @@ interface PlanCardProps {
     | undefined;
   billingCycle: string | null | undefined;
   backgroundColor: string | null | undefined;
+  description?: string | null | undefined;
 }
 
 const PlanCard: React.FC<PlanCardProps> = ({
@@ -113,6 +117,7 @@ const PlanCard: React.FC<PlanCardProps> = ({
   title,
   features,
   billingCycle,
+  description,
   backgroundColor,
 }) => {
   const router = useRouter();
@@ -123,7 +128,7 @@ const PlanCard: React.FC<PlanCardProps> = ({
   const onSubmit = (id: string) => {
     const payload = {
       subscriptionId: id,
-      currentStep: 4,
+      currentStep: 5,
     };
     saveCreativeOnboarding(payload);
   };
@@ -143,7 +148,7 @@ const PlanCard: React.FC<PlanCardProps> = ({
         style={{ backgroundColor: backgroundColor ?? '' }}
       >
         <h2 className="plans__plan__title">{title}</h2>
-        <p>per month billed {billingCycle?.toLowerCase()}</p>
+        <p>{description} {billingCycle?.toLowerCase()}</p>
       </div>
       <Formik
         initialValues={initialValues}

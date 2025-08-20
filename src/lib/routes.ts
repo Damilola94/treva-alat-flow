@@ -165,8 +165,20 @@ const routes = {
       getStarted: {
         path: '/creatives/dashboard/get-started',
 
-        professionalDetails: {
-          path: '/creatives/dashboard/get-started/professional-details',
+       personalDetails: {
+          path: '/creatives/dashboard/get-started/personal-details',
+        },
+
+      bvnVerification: {
+          path: '/creatives/dashboard/get-started/bvn-verification',
+        },
+
+        ninVerification: {
+          path: '/creatives/dashboard/get-started/nin-verification',
+        },
+
+        addressVerification: {
+          path: '/creatives/dashboard/get-started/address-verification',
         },
 
         socialMediaDetails: {

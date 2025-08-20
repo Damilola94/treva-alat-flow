@@ -1,6 +1,6 @@
 import { headers } from 'next/headers';
 import type { Metadata } from 'next';
-import { GetStarted } from '@/components/views';
+import { CreativesGetStarted } from '@/components/views/Dashboard/creativesGetStarted';
 
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -35,5 +35,5 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default function DashboardPage() {
-  return <GetStarted />;
+  return <CreativesGetStarted />;
 }

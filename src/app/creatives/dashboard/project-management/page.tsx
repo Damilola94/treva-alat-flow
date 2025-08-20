@@ -161,7 +161,7 @@ const projectData = useMemo(() => allProjectsData?.data || [], [allProjectsData?
   projectData.forEach(project => {
     router.prefetch(`/creatives/dashboard/project-management/${project.id}`);
   });
-}, [projectData]);
+}, [projectData, router]);
 
 
   const columns = [

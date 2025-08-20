@@ -52,6 +52,32 @@ export const clientOnboardingSteps = [
   },
 ];
 
+export const creativesOnboardingSteps = [
+  {
+    id: 1,
+    label: 'Personal details',
+    details:
+      "You're almost there! Complete your onboarding to unlock the full potential of",
+    href: routes.creatives.dashboard.getStarted.personalDetails.path,
+  },
+
+  {
+    id: 2,
+    label: 'Verify your identity',
+    details:
+      "You're almost there! Complete your onboarding to unlock the full potential of ",
+    href: routes.creatives.dashboard.getStarted.bvnVerification.path,
+  },
+
+  {
+    id: 3,
+    label: 'Select plan',
+    details:
+      "You're almost there! Complete your onboarding to unlock the full potential of",
+    href: routes.creatives.dashboard.getStarted.selectPlan.path,
+  },
+];
+
 export const clientDashboardTasks = [
   { label: 'All Project', value: 'All' },
   { label: 'Pending Project', value: 'Pending' },
