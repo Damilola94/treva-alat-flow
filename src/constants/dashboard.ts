@@ -21,7 +21,7 @@ export const dashboardCards = [
     details:
       "You're almost there! Complete your onboarding to unlock the full potential of Treva and start achieving your goals today. Click ‘Get started’ to continue.",
     btnText: 'Continue',
-    bottomInfo: '1/3 steps',
+    bottomInfo: '1/4 steps',
     bg: 'linear-gradient(135deg, rgba(199, 255, 107, 0) 0%, #c7ff6b 100%)',
   },
 ];
@@ -29,7 +29,7 @@ export const dashboardCards = [
 export const clientOnboardingSteps = [
   {
     id: 1,
-    label: 'Personal details',
+    label: 'Profile Setup',
     details:
       "You're almost there! Complete your onboarding to unlock the full potential of",
     href: routes.client.dashboard.getStarted.personalDetails.path,
@@ -37,18 +37,26 @@ export const clientOnboardingSteps = [
 
   {
     id: 2,
-    label: 'Social media details',
+    label: 'BVN Verification',
     details:
       "You're almost there! Complete your onboarding to unlock the full potential of ",
-    href: routes.client.dashboard.getStarted.socialMediaDetails.path,
+    href: routes.client.dashboard.getStarted.bvnVerification.path,
   },
 
   {
     id: 3,
-    label: 'Bio',
+    label: 'NIN Verification',
     details:
       "You're almost there! Complete your onboarding to unlock the full potential of",
-    href: routes.client.dashboard.getStarted.bio.path,
+    href: routes.client.dashboard.getStarted.ninVerification.path,
+  },
+
+  {
+    id: 4,
+    label: 'Address Verification',
+    details:
+      "You're almost there! Complete your onboarding to unlock the full potential of",
+    href: routes.client.dashboard.getStarted.addressVerification.path,
   },
 ];
 
@@ -82,14 +90,14 @@ export const clientDashboardTasks = [
   { label: 'All Project', value: 'All' },
   { label: 'Pending Project', value: 'Pending' },
   { label: 'Completed Project', value: 'Completed' },
-  { label: 'Awaiting Confirmation', value: 'AwaitingClientConfirmation'}
+  { label: 'Awaiting Confirmation', value: 'AwaitingClientConfirmation' },
 ];
 
 export const invoiceTabs = [
   { label: 'All Invoice', value: 'All' },
   { label: 'Pending Invoice', value: 'Pending' },
   { label: 'Closed Invoice', value: 'Closed' },
-  { label: 'Due Invoice', value: 'Due'},
+  { label: 'Due Invoice', value: 'Due' },
 ];
 
 export const transactionTabs = [
@@ -102,29 +110,29 @@ export const popoverItems = [
   { label: 'All Project', value: '' },
   { label: 'Personal Project', value: 'Personal' },
   { label: 'Client Project', value: 'Client' },
-]
+];
 
 export const priorityItems = [
   { label: 'All', value: '' },
   { label: 'Low', value: 'Low' },
   { label: 'Medium', value: 'Medium' },
   { label: 'High', value: 'High' },
-]
+];
 
- export const statusItems = [
-    { label: 'All', value: '' },
-    { label: 'Pending', value: 'Pending' },
-    { label: 'Completed', value: 'Completed' },
-    { label: 'Due', value: 'Due' },
-    { label: 'Await confirmation', value: 'AwaitingClientConfirmation'},
-  ]
+export const statusItems = [
+  { label: 'All', value: '' },
+  { label: 'Pending', value: 'Pending' },
+  { label: 'Completed', value: 'Completed' },
+  { label: 'Due', value: 'Due' },
+  { label: 'Await confirmation', value: 'AwaitingClientConfirmation' },
+];
 
-  export const deliverableItems = [
-    { label: 'All', value: 'All' },
-    { label: 'Completed', value: 'Completed' },
-  ]
+export const deliverableItems = [
+  { label: 'All', value: 'All' },
+  { label: 'Completed', value: 'Completed' },
+];
 
-  export const statusEnum: { [key: number]: string } = {
+export const statusEnum: { [key: number]: string } = {
   1: 'Active',
   2: 'Pending',
   3: 'InProgress',
@@ -134,15 +142,14 @@ export const priorityItems = [
   7: 'Archieved',
   8: 'Due',
   9: 'AwaitingClientConfirmation',
-  10: 'RequestingRevision'
-
+  10: 'RequestingRevision',
 };
 
 export const invoiceEnum: Record<number, string> = {
   1: 'Pending',
   2: 'Due',
-  3: 'Closed'
-}
+  3: 'Closed',
+};
 
 export const mockProjects = [
   {
@@ -153,7 +160,7 @@ export const mockProjects = [
     startDate: 'June 15, 2020',
     dueDate: 'June 15, 2023',
     priority: 'High',
-    status: 'Completed'
+    status: 'Completed',
   },
   {
     id: '2',
@@ -163,7 +170,7 @@ export const mockProjects = [
     startDate: 'June 15, 2020',
     dueDate: 'July 1, 2023',
     priority: 'Medium',
-    status: 'Pending'
+    status: 'Pending',
   },
   {
     id: '3',
@@ -173,7 +180,7 @@ export const mockProjects = [
     startDate: 'June 15, 2020',
     dueDate: 'May 30, 2023',
     priority: 'Low',
-    status: 'Due'
+    status: 'Due',
   },
   {
     id: '4',
@@ -183,7 +190,7 @@ export const mockProjects = [
     startDate: 'June 15, 2020',
     dueDate: 'April 10, 2023',
     priority: 'Low',
-    status: 'Completed'
+    status: 'Completed',
   },
   {
     id: '5',
@@ -193,7 +200,7 @@ export const mockProjects = [
     startDate: 'June 15, 2020',
     dueDate: 'August 5, 2023',
     priority: 'High',
-    status: 'Pending'
+    status: 'Pending',
   },
   {
     id: '6',
@@ -203,8 +210,8 @@ export const mockProjects = [
     startDate: 'June 15, 2020',
     dueDate: 'June 28, 2023',
     priority: 'Medium',
-    status: 'Due'
-  }
+    status: 'Due',
+  },
 ];
 
 export const mockTransactions = [
@@ -288,7 +295,7 @@ export const mockTransactions = [
     date: new Date('2023-03-20'),
     type: 'Debit',
   },
-]
+];
 
 export const mockInvoices = [
   {
@@ -323,58 +330,63 @@ export const mockInvoices = [
     dueDate: 'July 20, 2025',
     status: 'Completed',
   },
-]
+];
 
 export const mockComments = [
-     {
-      id: "1",
-      author: {
-        name: "Client's Name",
-        avatar: clientManagement.femaleClient,
-        isClient: true,
-      },
-      content: "Can we hasten the duration of the project? I'd really like to get it done within the few days.",
-      timestamp: "Time",
+  {
+    id: '1',
+    author: {
+      name: "Client's Name",
+      avatar: clientManagement.femaleClient,
+      isClient: true,
     },
-    {
-      id: "2",
-      author: {
-        name: "Creative's Name",
-        avatar: clientManagement.femaleClient,
-        isClient: false,
-      },
-      content: "Can we hasten the duration of the project? I'd really like to get it done within the few days.",
-      timestamp: "Time",
+    content:
+      "Can we hasten the duration of the project? I'd really like to get it done within the few days.",
+    timestamp: 'Time',
+  },
+  {
+    id: '2',
+    author: {
+      name: "Creative's Name",
+      avatar: clientManagement.femaleClient,
+      isClient: false,
     },
-    {
-      id: "3",
-      author: {
-        name: "Client's Name",
-        avatar: clientManagement.femaleClient,
-        isClient: true,
-      },
-      content: "Can we hasten the duration of the project? I'd really like to get it done within the few days.",
-      timestamp: "Time",
+    content:
+      "Can we hasten the duration of the project? I'd really like to get it done within the few days.",
+    timestamp: 'Time',
+  },
+  {
+    id: '3',
+    author: {
+      name: "Client's Name",
+      avatar: clientManagement.femaleClient,
+      isClient: true,
     },
-    {
-      id: "4",
-      author: {
-        name: "Creative's Name",
-        avatar: clientManagement.femaleClient,
+    content:
+      "Can we hasten the duration of the project? I'd really like to get it done within the few days.",
+    timestamp: 'Time',
+  },
+  {
+    id: '4',
+    author: {
+      name: "Creative's Name",
+      avatar: clientManagement.femaleClient,
 
-        isClient: false,
-      },
-      content: "Can we hasten the duration of the project? I'd really like to get it done within the few days.",
-      timestamp: "Time",
+      isClient: false,
     },
-    {
-      id: "5",
-      author: {
-        name: "Client's Name",
-         avatar: clientManagement.femaleClient,
-        isClient: true,
-      },
-      content: "Can we hasten the duration of the project? I'd really like to get it done within the few days.",
-      timestamp: "Time",
-    }
-  ]
+    content:
+      "Can we hasten the duration of the project? I'd really like to get it done within the few days.",
+    timestamp: 'Time',
+  },
+  {
+    id: '5',
+    author: {
+      name: "Client's Name",
+      avatar: clientManagement.femaleClient,
+      isClient: true,
+    },
+    content:
+      "Can we hasten the duration of the project? I'd really like to get it done within the few days.",
+    timestamp: 'Time',
+  },
+];
