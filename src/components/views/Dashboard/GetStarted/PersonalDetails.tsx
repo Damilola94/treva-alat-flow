@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation';
 import routes from '@/lib/routes';
 import { useCities, useStates, useUsers } from '@/hooks/Users';
 import { readFileToDataUrl } from '@/utils';
+import { Textarea } from '@/components/ui/textarea';
 
 const validationSchema = Yup.object().shape({
   // startTour: Yup.string().required('Please enter company name')
@@ -23,8 +24,7 @@ export default function PersonalDetails() {
 
   const { stateData } = useStates({ country: 'Nigeria' });
   const { citiesData } = useCities({ state: state });
-  const { saveClientOnboarding, saveOnboardingResponse, userOnboardingData } =
-    useUsers();
+  const { saveOnboardingResponse, userOnboardingData } = useUsers();
 
   const stateOptions = useMemo(() => {
     return (
@@ -46,6 +46,7 @@ export default function PersonalDetails() {
 
   const initialValues = useMemo(
     () => ({
+      bio: userOnboardingData?.data?.bio || '',
       photo: null as File | null, // file upload is manual; we'll preview with photoUrl
       address: userOnboardingData?.data?.address || '',
       website: userOnboardingData?.data?.websiteUrl || '',
@@ -60,6 +61,7 @@ export default function PersonalDetails() {
     enableReinitialize: true, // this is important
     onSubmit: (values) => {
       const payload = {
+        bio: values?.bio,
         photo: values?.photo,
         stateId: values?.state,
         cityId: values?.city,
@@ -67,16 +69,18 @@ export default function PersonalDetails() {
         websiteUrl: values?.website,
         currentStep: 1,
       };
-      saveClientOnboarding(payload);
+      console.log(payload);
+      // saveClientOnboarding(payload);
+      router.push(routes.client.dashboard.getStarted.bvnVerification.path);
     },
     validationSchema,
   });
 
   useEffect(() => {
     if (saveOnboardingResponse?.isSuccess) {
-      router.push(routes.client.dashboard.getStarted.socialMediaDetails.path);
+      router.push(routes.client.dashboard.getStarted.bvnVerification.path);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [saveOnboardingResponse]);
 
   useEffect(() => {
@@ -122,68 +126,29 @@ export default function PersonalDetails() {
 
   useEffect(() => {
     if (saveOnboardingResponse?.isSuccess) {
-      router.push(routes.client.dashboard.getStarted.socialMediaDetails.path);
+      router.push(routes.client.dashboard.getStarted.bvnVerification.path);
     }
   }, [router, saveOnboardingResponse]);
 
   return (
     <div className="app_get_started_professional_details py-6 px-4 flex flex-col gap-14">
       <div className="flex justify-center items-center gap-4">
-        <ProgressStatus label="Your details" checked />
-        <ProgressStatus label="Social media details" />
-        <ProgressStatus label="Bio" />
+        <ProgressStatus label="Profile Setup" checked />
+        <ProgressStatus label="BVN Verification" />
+        <ProgressStatus label="NIN Verification" />
+        <ProgressStatus label="Address Verification" />
         <ProgressStatus label="Finish" />
         {/* <ProgressStatus label="Team setup" /> */}
       </div>
 
       <div className="app_get_started_professional_details__form flex flex-col gap-10">
         <h3 className="app_get_started_professional_details__form__title">
-          Professional details
+          Profile Setup
         </h3>
         <div className="">
           <div>
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
               <div className="flex flex-col gap-8">
-                {values.photo || previewUrl ? (
-                  <div className="flex flex-col items-center gap-2 border p-4 rounded-md bg-gray-50">
-                    {previewUrl && (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={previewUrl}
-                        alt="Preview"
-                        className="w-32 h-32 object-cover rounded-md"
-                      />
-                    )}
-                    <p className="text-sm text-gray-700">
-                      {typeof values?.photo === 'string'
-                        ? values?.photo
-                        : values?.photo?.name}
-                    </p>
-                    <button
-                      type="button"
-                      onClick={handleRemoveFile}
-                      className="text-red-500 underline text-sm"
-                    >
-                      Remove
-                    </button>
-                  </div>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={() => fileInputRef?.current?.click()}
-                    className="border border-dashed border-gray-300 rounded-md w-full"
-                  >
-                    <div className="app_upload_con py-5 px-4 flex flex-col gap-3 items-center">
-                      <Upload />
-                      <div className="flex flex-col gap-1">
-                        <p className="app_upload_con__title">Your photo</p>
-                        <p className="app_upload_con__description">
-                          PDF, PNG, JPG, GIF | 10MB max.
-                        </p>
-                      </div>
-                    </div>
-                  </button>
-                )}
                 <input
                   type="file"
                   className="hidden"
@@ -191,6 +156,40 @@ export default function PersonalDetails() {
                   accept=".pdf,.png,.jpg,.jpeg,.gif"
                   onChange={handleFileChange}
                 />
+
+                <div className="">
+                  <Textarea
+                    name="bio"
+                    id="bio"
+                    placeholder="Enter your bio"
+                    label="Bio (150 words max)"
+                    value={values.bio}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    errors={errors}
+                    touched={touched}
+                    wordCount={{
+                      limit: 1000,
+                      current: values?.bio?.length,
+                    }}
+                  />
+                </div>
+
+                <div className="">
+                  <Input
+                    name="social"
+                    type="text"
+                    id="social"
+                    label="Preferred Social Media Profile"
+                    placeholder="Enter profile URL"
+                    size="lg"
+                    value={values.address}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    errors={errors}
+                    touched={touched}
+                  />
+                </div>
 
                 <div>
                   <SelectField
@@ -250,6 +249,53 @@ export default function PersonalDetails() {
                     touched={touched}
                   />
                 </div>
+
+                {values.photo || previewUrl ? (
+                  <div>
+                    <p className="app_input_con__lbl mb-5">Profile Photo</p>
+                    <div className="flex flex-col items-center gap-2 border p-4 rounded-md bg-gray-50">
+                      {previewUrl && (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={previewUrl}
+                          alt="Preview"
+                          className="w-32 h-32 object-cover rounded-md"
+                        />
+                      )}
+                      <p className="text-sm text-gray-700">
+                        {typeof values?.photo === 'string'
+                          ? values?.photo
+                          : values?.photo?.name}
+                      </p>
+                      <button
+                        type="button"
+                        onClick={handleRemoveFile}
+                        className="text-red-500 underline text-sm"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div>
+                    <p className="app_input_con__lbl mb-5">Profile Photo</p>
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef?.current?.click()}
+                      className="border border-dashed border-gray-300 rounded-md w-full"
+                    >
+                      <div className="app_upload_con py-5 px-4 flex flex-col gap-3 items-center">
+                        <Upload />
+                        <div className="flex flex-col gap-1">
+                          <p className="app_upload_con__title">Your photo</p>
+                          <p className="app_upload_con__description">
+                            PDF, PNG, JPG, GIF | 10MB max.
+                          </p>
+                        </div>
+                      </div>
+                    </button>
+                  </div>
+                )}
               </div>
 
               <div className="pt-4 flex">

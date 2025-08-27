@@ -1,4 +1,4 @@
-import { Bio } from '@/components/views';
+import { PersonalDetails } from '@/components/views';
 import { Metadata } from 'next';
 import { headers } from 'next/headers';
 
@@ -7,15 +7,15 @@ export async function generateMetadata(): Promise<Metadata> {
   const host = headersList.get('host');
   const protocol = headersList.get('x-forwarded-proto') || 'http';
   const fullHost = `${protocol}://${host}`;
-  const pageUrl = `${fullHost}/client/dashboard/get-started/bio`;
+  const pageUrl = `${fullHost}/client/dashboard/get-started/profile-setup`;
 
   return {
-    title: 'Bio - Get Started | Treva by Wema',
+    title: 'Profile Setup - Get Started | Treva by Wema',
     description:
       'Start your journey on Treva. Set up your profile and explore features.',
     keywords: ['get started', 'dashboard', 'setup', 'Treva'],
     openGraph: {
-      title: 'Bio - Get Started| Treva',
+      title: 'Profile Setup - Get Started| Treva',
       description: 'Set up your profile and explore features on Treva.',
       url: pageUrl,
       siteName: 'Treva by Wema',
@@ -23,7 +23,7 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     twitter: {
       card: 'summary_large_image',
-      title: 'Bio - Get Started| Treva by Wema',
+      title: 'Profile Setup - Get Started | Treva by Wema',
       description: 'Set up your profile and explore features on Treva.',
       images: [`${fullHost}/images/og-dashboard.png`],
     },
@@ -33,6 +33,6 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function BioPage() {
-  return <Bio />;
+export default function PersonalDetailsPage() {
+  return <PersonalDetails />;
 }

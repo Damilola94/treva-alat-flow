@@ -65,15 +65,19 @@ const routes = {
         path: '/client/dashboard/get-started',
 
         personalDetails: {
-          path: '/client/dashboard/get-started/personal-details',
+          path: '/client/dashboard/get-started/profile-setup',
         },
 
-        socialMediaDetails: {
-          path: '/client/dashboard/get-started/social-media-details',
+        bvnVerification: {
+          path: '/client/dashboard/get-started/bvn-verification',
         },
 
-        bio: {
-          path: '/client/dashboard/get-started/bio',
+        ninVerification: {
+          path: '/client/dashboard/get-started/nin-verification',
+        },
+
+        addressVerification: {
+          path: '/client/dashboard/get-started/address-verification',
         },
 
         done: {
@@ -165,11 +169,11 @@ const routes = {
       getStarted: {
         path: '/creatives/dashboard/get-started',
 
-       personalDetails: {
+        personalDetails: {
           path: '/creatives/dashboard/get-started/personal-details',
         },
 
-      bvnVerification: {
+        bvnVerification: {
           path: '/creatives/dashboard/get-started/bvn-verification',
         },
 

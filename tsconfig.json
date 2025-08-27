@@ -32,7 +32,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts"
-, "src/app/client/dashboard/get-started/personal-details", "src/app/creatives/dashboard/get-started/bvn-verification"  ],
+, "src/app/client/dashboard/get-started/profile-setup", "src/app/creatives/dashboard/get-started/bvn-verification"  ],
   "exclude": [
     "node_modules"
   ]
