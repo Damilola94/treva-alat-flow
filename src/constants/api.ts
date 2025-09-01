@@ -59,6 +59,12 @@ export const endpoints = {
     deleteUserProfile: (userId: string) => `/users/${userId}/delete`,
   },
 
+  selfieVerification: {
+    bvn: '/selfieverification/verify-bvn',
+    nin: '/selfieverification/verify-nin',
+    callback: '/selfieverification/callback',
+  },
+
   userFavorites: {
     getAllFavorites: '/userfavorites/client-user-favorites-creative',
     addFavorite: '/userfavorites/add-client-favorite-creative',

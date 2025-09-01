@@ -13,7 +13,25 @@ import { readFileToDataUrl } from '@/utils';
 import { Textarea } from '@/components/ui/textarea';
 
 const validationSchema = Yup.object().shape({
-  // startTour: Yup.string().required('Please enter company name')
+  bio: Yup.string()
+    .max(500, 'Bio cannot be more than 500 characters')
+    .nullable(),
+  photo: Yup.mixed().nullable(), // optional
+  state: Yup.string()
+    .typeError('State is required')
+    .required('State is required'),
+  city: Yup.string().typeError('City is required').required('City is required'),
+  address: Yup.string()
+    .required('Address is required')
+    .min(5, 'Address must be at least 5 characters'),
+  websiteUrl: Yup.string()
+    .url('Must be a valid website URL')
+    .nullable()
+    .notRequired(),
+  socialMediaUrl: Yup.string()
+    .url('Must be a valid social media URL')
+    .nullable()
+    .notRequired(),
 });
 
 export default function PersonalDetails() {
@@ -24,7 +42,8 @@ export default function PersonalDetails() {
 
   const { stateData } = useStates({ country: 'Nigeria' });
   const { citiesData } = useCities({ state: state });
-  const { saveOnboardingResponse, userOnboardingData } = useUsers();
+  const { saveClientOnboarding, saveOnboardingResponse, userOnboardingData } =
+    useUsers();
 
   const stateOptions = useMemo(() => {
     return (
@@ -44,17 +63,15 @@ export default function PersonalDetails() {
     );
   }, [citiesData]);
 
-  const initialValues = useMemo(
-    () => ({
-      bio: userOnboardingData?.data?.bio || '',
-      photo: null as File | null, // file upload is manual; we'll preview with photoUrl
-      address: userOnboardingData?.data?.address || '',
-      website: userOnboardingData?.data?.websiteUrl || '',
-      city: userOnboardingData?.data?.cityId || '',
-      state: userOnboardingData?.data?.stateId || '',
-    }),
-    [userOnboardingData?.data],
-  );
+  const initialValues = {
+    bio: '',
+    photo: null as File | null,
+    address: '',
+    websiteUrl: '',
+    city: '',
+    state: '',
+    socialMediaUrl: '',
+  };
 
   const formik = useFormik({
     initialValues,
@@ -66,12 +83,12 @@ export default function PersonalDetails() {
         stateId: values?.state,
         cityId: values?.city,
         address: values?.address,
-        websiteUrl: values?.website,
+        websiteUrl: values?.websiteUrl,
+        socialMediaUrl: values?.socialMediaUrl,
         currentStep: 1,
       };
-      console.log(payload);
-      // saveClientOnboarding(payload);
-      router.push(routes.client.dashboard.getStarted.bvnVerification.path);
+      saveClientOnboarding(payload);
+      // router.push(routes.client.dashboard.getStarted.bvnVerification.path);
     },
     validationSchema,
   });
@@ -89,6 +106,16 @@ export default function PersonalDetails() {
     }
   }, [userOnboardingData?.data?.photoUrl]);
 
+  useEffect(() => {
+    if (userOnboardingData?.data?.stateId) {
+      const state =
+        stateOptions?.find(
+          (x) => x?.value === userOnboardingData?.data?.stateId,
+        )?.label || '';
+      setState(state);
+    }
+  }, [userOnboardingData?.data?.stateId]);
+
   const {
     handleBlur,
     handleChange,
@@ -97,6 +124,8 @@ export default function PersonalDetails() {
     touched,
     setFieldValue,
     values,
+    isValid,
+    dirty,
   } = formik;
 
   const handleFileChange = async (
@@ -129,6 +158,32 @@ export default function PersonalDetails() {
       router.push(routes.client.dashboard.getStarted.bvnVerification.path);
     }
   }, [router, saveOnboardingResponse]);
+
+  // Update Formik values when userOnboardingData changes
+  useEffect(() => {
+    if (userOnboardingData?.data) {
+      formik.setFieldValue('bio', userOnboardingData.data.bio || '');
+      formik.setFieldValue('address', userOnboardingData.data.address || '');
+      formik.setFieldValue(
+        'websiteUrl',
+        userOnboardingData.data.websiteUrl || '',
+      );
+      formik.setFieldValue('city', userOnboardingData.data.cityId || '');
+      formik.setFieldValue('state', userOnboardingData.data.stateId || '');
+      formik.setFieldValue(
+        'socialMediaUrl',
+        userOnboardingData.data.socialMediaUrl || '',
+      );
+    }
+
+    if (userOnboardingData?.data?.stateId) {
+      const state =
+        stateOptions?.find(
+          (x) => x?.value === userOnboardingData?.data?.stateId,
+        )?.label || '';
+      setState(state);
+    }
+  }, [userOnboardingData?.data]);
 
   return (
     <div className="app_get_started_professional_details py-6 px-4 flex flex-col gap-14">
@@ -177,13 +232,13 @@ export default function PersonalDetails() {
 
                 <div className="">
                   <Input
-                    name="social"
+                    name="socialMediaUrl"
                     type="text"
                     id="social"
                     label="Preferred Social Media Profile"
                     placeholder="Enter profile URL"
                     size="lg"
-                    value={values.address}
+                    value={values.socialMediaUrl}
                     onChange={handleChange}
                     onBlur={handleBlur}
                     errors={errors}
@@ -198,7 +253,7 @@ export default function PersonalDetails() {
                     options={stateOptions}
                     placeholder="Select State"
                     onChange={(option) => {
-                      setFieldValue('state', option.value);
+                      setFieldValue('state', option.value, true);
                       setState(option?.label);
                     }}
                     value={values?.state}
@@ -212,7 +267,7 @@ export default function PersonalDetails() {
                     options={citiesOptions}
                     placeholder="Select LGA"
                     onChange={(option) => {
-                      setFieldValue('city', option.value);
+                      setFieldValue('city', option.value, true);
                     }}
                     value={values?.city}
                   />
@@ -236,13 +291,13 @@ export default function PersonalDetails() {
 
                 <div className="">
                   <Input
-                    name="website"
+                    name="websiteUrl"
                     type="text"
                     id="website"
                     label="Website (Optional)"
                     placeholder="Enter website"
                     size="lg"
-                    value={values.website}
+                    value={values.websiteUrl}
                     onChange={handleChange}
                     onBlur={handleBlur}
                     errors={errors}
@@ -304,6 +359,7 @@ export default function PersonalDetails() {
                     size="xl"
                     backgroundColor="primary-blue-500"
                     className="w-full py-3 px-12"
+                    disabled={!(isValid && dirty)}
                   >
                     Save & Continue
                   </Button>

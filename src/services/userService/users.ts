@@ -51,6 +51,7 @@ export const usersService = userServiceApiSlice.injectEndpoints({
         url: endpoints.users.getUserProfile,
         method: REQUEST_METHODS.GET,
       }),
+      keepUnusedDataFor: 0,
       transformResponse: (
         response: ITrevaUserService['schemas']['UserModelBaseResponse'],
       ) => response,
