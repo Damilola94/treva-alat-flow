@@ -1,25 +1,26 @@
-import React from 'react'
-import Image, { type StaticImageData } from 'next/image'
-import Link from 'next/link'
-import routes from '@/lib/routes'
-import { ChevronRight, RenderIf, SmallLogo } from '@/components/shared'
-import { clientOnboardingSteps } from '@/constants'
+import React from 'react';
+import Image, { type StaticImageData } from 'next/image';
+import Link from 'next/link';
+import routes from '@/lib/routes';
+import { ChevronRight, RenderIf, SmallLogo } from '@/components/shared';
+import { clientOnboardingSteps } from '@/constants';
 
 interface IProps {
   item: {
-    img: StaticImageData
-    title: string
-    details: string
-    btnText: string
-    bottomInfo: string
-    bg: string
-  }
-  handleClick?: () => void
-  showSteps?: boolean
+    img: StaticImageData;
+    title: string;
+    details: string;
+    btnText: string;
+    bottomInfo: string;
+    bg: string;
+  };
+  handleClick?: () => void;
+  showSteps?: boolean;
+  showBtn?: boolean;
 }
 
-export function GetStartedCard (props: IProps) {
-  const { item, handleClick, showSteps = false } = props
+export function GetStartedCard(props: IProps) {
+  const { item, handleClick, showSteps = false, showBtn = true } = props;
 
   return (
     <div className="app_get_started_card flex flex-col gap-4">
@@ -27,7 +28,12 @@ export function GetStartedCard (props: IProps) {
         className="app_get_started_card__bg"
         style={{ background: item?.bg }}
       >
-        <Image src={item?.img} alt="get started" className="w-full" unoptimized />
+        <Image
+          src={item?.img}
+          alt="get started"
+          className="w-full"
+          unoptimized
+        />
       </div>
       <div className={'flex flex-col gap-9 justify-between flex-1'}>
         <div className="app_get_started_card__ctt">
@@ -78,15 +84,17 @@ export function GetStartedCard (props: IProps) {
                 </Link>
               </RenderIf>
 
-              <RenderIf condition={!showSteps}>
-                <button
-                  className="app_get_started_card__action__btn"
-                  type="button"
-                  onClick={handleClick}
-                >
-                  {item?.btnText}
-                </button>
-              </RenderIf>
+              {showBtn && (
+                <RenderIf condition={!showSteps}>
+                  <button
+                    className="app_get_started_card__action__btn"
+                    type="button"
+                    onClick={handleClick}
+                  >
+                    {item?.btnText}
+                  </button>
+                </RenderIf>
+              )}
 
               <p className="app_get_started_card__action__text">
                 {item?.bottomInfo}
@@ -96,5 +104,5 @@ export function GetStartedCard (props: IProps) {
         </div>
       </div>
     </div>
-  )
+  );
 }

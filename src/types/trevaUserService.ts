@@ -4,6 +4,51 @@
  */
 
 export interface paths {
+    "/api/v1/addressverification/feedback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Address Verification Feedback */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json-patch+json": components["schemas"]["AddressVerificationFeedbackCommand"];
+                    "application/json": components["schemas"]["AddressVerificationFeedbackCommand"];
+                    "text/json": components["schemas"]["AddressVerificationFeedbackCommand"];
+                    "application/*+json": components["schemas"]["AddressVerificationFeedbackCommand"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["BooleanBaseResponse"];
+                        "application/json": components["schemas"]["BooleanBaseResponse"];
+                        "text/json": components["schemas"]["BooleanBaseResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/auth/register": {
         parameters: {
             query?: never;
@@ -443,6 +488,141 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/selfieverification/verify-bvn": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Generate User Selfie Verification Link for BVN */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json-patch+json": components["schemas"]["GenerateUserBVNSelfieLinkCommand"];
+                    "application/json": components["schemas"]["GenerateUserBVNSelfieLinkCommand"];
+                    "text/json": components["schemas"]["GenerateUserBVNSelfieLinkCommand"];
+                    "application/*+json": components["schemas"]["GenerateUserBVNSelfieLinkCommand"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["UserDocumentModelBaseResponse"];
+                        "application/json": components["schemas"]["UserDocumentModelBaseResponse"];
+                        "text/json": components["schemas"]["UserDocumentModelBaseResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/selfieverification/verify-nin": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Generate User Selfie Verification Link for NIN */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json-patch+json": components["schemas"]["GenerateUserNINSelfieLinkCommand"];
+                    "application/json": components["schemas"]["GenerateUserNINSelfieLinkCommand"];
+                    "text/json": components["schemas"]["GenerateUserNINSelfieLinkCommand"];
+                    "application/*+json": components["schemas"]["GenerateUserNINSelfieLinkCommand"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["UserDocumentModelBaseResponse"];
+                        "application/json": components["schemas"]["UserDocumentModelBaseResponse"];
+                        "text/json": components["schemas"]["UserDocumentModelBaseResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/selfieverification/callback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Selfie Verification Callback */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json-patch+json": components["schemas"]["SelfieCallbackCommand"];
+                    "application/json": components["schemas"]["SelfieCallbackCommand"];
+                    "text/json": components["schemas"]["SelfieCallbackCommand"];
+                    "application/*+json": components["schemas"]["SelfieCallbackCommand"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["SelfieCallbackModelBaseResponse"];
+                        "application/json": components["schemas"]["SelfieCallbackModelBaseResponse"];
+                        "text/json": components["schemas"]["SelfieCallbackModelBaseResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/subscriptions/{subscriptionId}": {
         parameters: {
             query?: never;
@@ -683,15 +863,24 @@ export interface paths {
                         /** Format: uuid */
                         CityId?: string;
                         Address?: string;
-                        WebsiteUrl?: string;
-                        LinkedIn?: string;
-                        Instagram?: string;
-                        Facebook?: string;
-                        X?: string;
-                        TikTok?: string;
+                        SocialMediaUrl?: string;
                         Bio?: string;
+                        PhoneNumber?: string;
                         /** Format: int32 */
                         CurrentStep?: number;
+                        BuildingNumber?: string;
+                        Apartment?: string;
+                        Street?: string;
+                        City?: string;
+                        Town?: string;
+                        State?: string;
+                        Lga?: string;
+                        Lcda?: string;
+                        Landmark?: string;
+                        AdditionalInformation?: string;
+                        Country?: string;
+                        FullAddress?: string;
+                        PostalCode?: string;
                     };
                 };
             };
@@ -775,17 +964,31 @@ export interface paths {
                     "multipart/form-data": {
                         /** Format: binary */
                         Cv?: string;
+                        /** Format: binary */
+                        AwardsAndCertifications?: string;
+                        /** Format: binary */
+                        ProfessionalHeadshot?: string;
                         PortfolioLink?: string;
-                        LinkedIn?: string;
-                        Instagram?: string;
-                        Facebook?: string;
-                        X?: string;
-                        TikTok?: string;
+                        ScocialMediaUrl?: string;
                         Bio?: string;
                         /** Format: uuid */
                         SubscriptionId?: string;
                         /** Format: int32 */
                         CurrentStep?: number;
+                        PhoneNumber?: string;
+                        BuildingNumber?: string;
+                        Apartment?: string;
+                        Street?: string;
+                        City?: string;
+                        Town?: string;
+                        State?: string;
+                        Lga?: string;
+                        Lcda?: string;
+                        Landmark?: string;
+                        AdditionalInformation?: string;
+                        Country?: string;
+                        FullAddress?: string;
+                        PostalCode?: string;
                     };
                 };
             };
@@ -1075,7 +1278,6 @@ export interface paths {
                         MiddleName?: string;
                         PhoneNumber?: string;
                         Bio?: string;
-                        PortfolioLink?: string;
                         WebsiteUrl?: string;
                         /** Format: binary */
                         Picture?: string;
@@ -1146,6 +1348,86 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/users/my-referral-detail": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Gets logged in user's referral detail */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["MyReferralDetailModelBaseResponse"];
+                        "application/json": components["schemas"]["MyReferralDetailModelBaseResponse"];
+                        "text/json": components["schemas"]["MyReferralDetailModelBaseResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/users/my-referrals": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Gets logged in user's referrals */
+        get: {
+            parameters: {
+                query?: {
+                    PageNumber?: number;
+                    PageSize?: number;
+                    SearchKey?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["MyReferralModelPagedListBaseResponse"];
+                        "application/json": components["schemas"]["MyReferralModelPagedListBaseResponse"];
+                        "text/json": components["schemas"]["MyReferralModelPagedListBaseResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1154,6 +1436,11 @@ export interface components {
         AccountTypeEnums: "Company" | "Individual";
         /** @enum {string} */
         ActorTypeEnums: "Client" | "Creative";
+        AddressVerificationFeedbackCommand: {
+            referenceId?: string | null;
+            feedbackMessage?: string | null;
+            isVerificationSuccessful?: boolean;
+        };
         BooleanBaseResponse: {
             isSuccess?: boolean;
             statusCode?: string | null;
@@ -1185,6 +1472,12 @@ export interface components {
         };
         ForgotPasswordCommand: {
             email: string | null;
+        };
+        GenerateUserBVNSelfieLinkCommand: {
+            bvn: string | null;
+        };
+        GenerateUserNINSelfieLinkCommand: {
+            nin: string | null;
         };
         HiringStatisticsModel: {
             /** Format: int32 */
@@ -1221,6 +1514,27 @@ export interface components {
             statusCode?: string | null;
             message?: string | null;
             data?: components["schemas"]["LoginModel"];
+            metaData?: unknown;
+        };
+        MyReferralDetailModel: {
+            referralCode?: string | null;
+        };
+        MyReferralDetailModelBaseResponse: {
+            isSuccess?: boolean;
+            statusCode?: string | null;
+            message?: string | null;
+            data?: components["schemas"]["MyReferralDetailModel"];
+            metaData?: unknown;
+        };
+        MyReferralModel: {
+            name?: string | null;
+            status?: string | null;
+        };
+        MyReferralModelPagedListBaseResponse: {
+            isSuccess?: boolean;
+            statusCode?: string | null;
+            message?: string | null;
+            data?: components["schemas"]["MyReferralModel"][] | null;
             metaData?: unknown;
         };
         ProfessionModel: {
@@ -1263,11 +1577,32 @@ export interface components {
             password: string | null;
             /** Format: uuid */
             professionId?: string | null;
+            referralCode?: string | null;
         };
         ResetPasswordCommand: {
             email: string | null;
             newPassword: string | null;
             token: string | null;
+        };
+        SelfieCallbackCommand: {
+            success?: boolean;
+            cId?: string | null;
+            id?: string | null;
+            idType?: string | null;
+        };
+        SelfieCallbackModel: {
+            userId?: string | null;
+            documentType?: string | null;
+            isVerified?: boolean;
+            /** Format: date-time */
+            verifiedDate?: string | null;
+        };
+        SelfieCallbackModelBaseResponse: {
+            isSuccess?: boolean;
+            statusCode?: string | null;
+            message?: string | null;
+            data?: components["schemas"]["SelfieCallbackModel"];
+            metaData?: unknown;
         };
         StateModel: {
             /** Format: uuid */
@@ -1331,12 +1666,26 @@ export interface components {
             cityId?: string | null;
             address?: string | null;
             websiteUrl?: string | null;
-            linkedIn?: string | null;
-            instagram?: string | null;
-            facebook?: string | null;
-            x?: string | null;
-            tikTok?: string | null;
+            socialMediaUrl?: string | null;
+            bvn?: string | null;
+            nin?: string | null;
             bio?: string | null;
+            phoneNumber?: string | null;
+            buildingNumber?: string | null;
+            apartment?: string | null;
+            street?: string | null;
+            city?: string | null;
+            town?: string | null;
+            state?: string | null;
+            lga?: string | null;
+            lcda?: string | null;
+            /** Format: date-time */
+            dateVerified?: string | null;
+            landmark?: string | null;
+            additionalInformation?: string | null;
+            country?: string | null;
+            fullAddress?: string | null;
+            postalCode?: string | null;
             /** Format: int32 */
             currentStep?: number;
             /** Format: int32 */
@@ -1353,14 +1702,31 @@ export interface components {
         TempCreativeOnboardingModel: {
             cvUrl?: string | null;
             portfolioLink?: string | null;
-            linkedIn?: string | null;
-            instagram?: string | null;
-            facebook?: string | null;
-            x?: string | null;
+            professionalHeadshotUrl?: string | null;
+            scocialMediaUrl?: string | null;
+            awardsAndCertificationsUrl?: string | null;
+            bvn?: string | null;
+            nin?: string | null;
             tikTok?: string | null;
             bio?: string | null;
             /** Format: uuid */
             subscriptionPlan?: string | null;
+            phoneNumber?: string | null;
+            buildingNumber?: string | null;
+            apartment?: string | null;
+            street?: string | null;
+            city?: string | null;
+            town?: string | null;
+            state?: string | null;
+            lga?: string | null;
+            lcda?: string | null;
+            /** Format: date-time */
+            dateVerified?: string | null;
+            landmark?: string | null;
+            additionalInformation?: string | null;
+            country?: string | null;
+            fullAddress?: string | null;
+            postalCode?: string | null;
             /** Format: int32 */
             currentStep?: number;
             /** Format: int32 */
@@ -1426,6 +1792,24 @@ export interface components {
             data?: components["schemas"]["UserCreativeModel"][] | null;
             metaData?: unknown;
         };
+        UserDocumentModel: {
+            name?: string | null;
+            description?: string | null;
+            userId?: string | null;
+            type?: string | null;
+            data?: string | null;
+            url?: string | null;
+            isVerified?: boolean;
+            /** Format: date-time */
+            createdDate?: string | null;
+        };
+        UserDocumentModelBaseResponse: {
+            isSuccess?: boolean;
+            statusCode?: string | null;
+            message?: string | null;
+            data?: components["schemas"]["UserDocumentModel"];
+            metaData?: unknown;
+        };
         UserDto: {
             id: string | null;
             firstName: string | null;
@@ -1461,6 +1845,8 @@ export interface components {
             lastName: string | null;
             profilePicture?: string | null;
             email?: string | null;
+            awardsAndCertificationsUrl?: string | null;
+            professionalHeadshotUrl?: string | null;
             bio?: string | null;
             phoneNumber?: string | null;
             portfolioLink?: string | null;

@@ -11,7 +11,19 @@ import { SelectField } from '@/components/shared';
 import * as Yup from 'yup';
 
 const validationSchema = Yup.object().shape({
-  // startTour: Yup.string().required('Please enter company name')
+  buildingNumber: Yup.string()
+    .required('Building number is required')
+    .max(10, 'Building number is too long'),
+  apartment: Yup.string().optional(), // not always required
+  street: Yup.string()
+    .required('Street is required')
+    .max(100, 'Street name is too long'),
+  landmark: Yup.string().optional(),
+  address: Yup.string()
+    .required('Address is required')
+    .max(200, 'Address is too long'),
+  city: Yup.string().required('City is required'),
+  state: Yup.string().required('State is required'),
 });
 
 export default function AddressVerification() {
@@ -40,54 +52,40 @@ export default function AddressVerification() {
   }, [citiesData]);
 
   const {
-    // saveCreativeOnboarding,
+    saveClientOnboarding,
     saveOnboardingResponse,
-    // creativeOnboardingData,
+    userOnboardingData,
     loading,
   } = useUsers();
 
-  //   const initialValues = useMemo(
-  //     () => ({
-  //       buildingNo: creativeOnboardingData?.data?.buildingNo || '',
-  //       city: creativeOnboardingData?.data?.cityId || '',
-  //       state: creativeOnboardingData?.data?.stateId || '',
-  //       apartment: creativeOnboardingData?.data?.apartment || '',
-  //       street: creativeOnboardingData?.data?.street || '',
-  //       landmark: creativeOnboardingData?.data?.landmark || '',
-  //       address: creativeOnboardingData?.data?.address || '',
-  //     }),
-  //     [creativeOnboardingData?.data],
-  //   );
-
-  const initialValues = {
-    buildingNo: '',
-    city: '',
-    state: '',
-    apartment: '',
-    street: '',
-    landmark: '',
-    address: '',
-  };
+  const initialValues = useMemo(
+    () => ({
+      buildingNumber: userOnboardingData?.data?.buildingNumber || '',
+      city: userOnboardingData?.data?.cityId || '',
+      state: userOnboardingData?.data?.stateId || '',
+      apartment: userOnboardingData?.data?.apartment || '',
+      street: userOnboardingData?.data?.street || '',
+      landmark: userOnboardingData?.data?.landmark || '',
+      address: userOnboardingData?.data?.address || '',
+    }),
+    [userOnboardingData?.data],
+  );
 
   const formik = useFormik({
     initialValues,
     enableReinitialize: true,
-    // onSubmit: (values) => {
-    //   const payload = {
-    //     buildingNo: values?.buildingNo,
-    //     apartment: values?.apartment,
-    //     street: values?.street,
-    //     cityId: values?.city,
-    //     stateId: values?.state,
-    //     landmark: values?.landmark,
-    //     address: values?.address,
-    //     currentStep: 4,
-    //   };
-    //   saveCreativeOnboarding(payload);
-    // },
-    onSubmit: () => {
-      // Skip validation + API call
-      router.push(routes.client.dashboard.getStarted.done.path);
+    onSubmit: (values) => {
+      const payload = {
+        buildingNo: values?.buildingNumber,
+        apartment: values?.apartment,
+        street: values?.street,
+        cityId: values?.city,
+        stateId: values?.state,
+        landmark: values?.landmark,
+        address: values?.address,
+        currentStep: 4,
+      };
+      saveClientOnboarding(payload);
     },
     validationSchema,
   });
@@ -111,11 +109,7 @@ export default function AddressVerification() {
 
   return (
     <div className="app_get_started_professional_details py-6 px-4 flex flex-col gap-14 ">
-      <div
-        className="flex items-center gap-4 overflow-x-auto px-2 md:px-0 
-                        scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent
-                        snap-x snap-mandatory md:justify-center"
-      >
+      <div className="flex items-center gap-4 overflow-x-auto px-2 md:px-0 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent snap-x snap-mandatory md:justify-center">
         <ProgressStatus label="Profile Setup" className="snap-start shrink-0" />
         <ProgressStatus
           label="BVN Verification"
@@ -142,13 +136,13 @@ export default function AddressVerification() {
             <div className="flex flex-col gap-8">
               <div className="">
                 <Input
-                  name="buildingNo"
+                  name="buildingNumber"
                   type="text"
                   label="Building No"
-                  //   required
+                  required
                   placeholder="e.g 15, Block A"
                   size="lg"
-                  value={values.buildingNo}
+                  value={values.buildingNumber}
                   onChange={handleChange}
                   onBlur={handleBlur}
                   errors={errors}
@@ -161,7 +155,7 @@ export default function AddressVerification() {
                   name="apartment"
                   type="text"
                   label="Apartment"
-                  //   required
+                  required
                   placeholder="e.g 3B, Suite 201"
                   size="lg"
                   value={values.apartment}
@@ -177,7 +171,7 @@ export default function AddressVerification() {
                   name="street"
                   type="text"
                   label="Street"
-                  //   required
+                  required
                   placeholder="e.g Adeniran Ogunsanya Street"
                   size="lg"
                   value={values.street}
@@ -185,19 +179,6 @@ export default function AddressVerification() {
                   onBlur={handleBlur}
                   errors={errors}
                   touched={touched}
-                />
-              </div>
-
-              <div>
-                <SelectField
-                  name="city"
-                  label="City"
-                  options={citiesOptions}
-                  placeholder="Select city"
-                  onChange={(option) => {
-                    setFieldValue('city', option.value);
-                  }}
-                  value={values?.city}
                 />
               </div>
 
@@ -212,6 +193,19 @@ export default function AddressVerification() {
                     setState(option?.label);
                   }}
                   value={values?.state}
+                />
+              </div>
+
+              <div>
+                <SelectField
+                  name="city"
+                  label="City"
+                  options={citiesOptions}
+                  placeholder="Select city"
+                  onChange={(option) => {
+                    setFieldValue('city', option.value);
+                  }}
+                  value={values?.city}
                 />
               </div>
 
@@ -234,7 +228,7 @@ export default function AddressVerification() {
                   name="landmark"
                   type="text"
                   label="Landmark"
-                  //   required
+                  required
                   placeholder="e.g National Theathre, GTBank"
                   size="lg"
                   value={values.landmark}
@@ -250,7 +244,7 @@ export default function AddressVerification() {
                   name="address"
                   type="text"
                   label="Enter Full Address*"
-                  //   required
+                  required
                   placeholder="e.g No 5, Adeniran street off Anthony street Lagos, Nigeria"
                   size="lg"
                   value={values.address}

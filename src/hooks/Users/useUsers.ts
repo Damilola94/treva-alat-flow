@@ -73,6 +73,7 @@ const useUsers = () => {
     isLoading: userOnboardingLoading,
     isFetching: userOnboardingFetching,
     refetch: refetchUserOnboardingData,
+    error: clientOnboardingError,
   } = useGetClientOnboardingQuery(undefined, {
     refetchOnMountOrArgChange: true,
     skip: !loggedIn || !role?.includes('Client'),
@@ -198,6 +199,7 @@ const useUsers = () => {
     userOnboardingData,
     creativeOnboardingData,
     saveOnboardingResponse,
+    clientOnboardingError,
     loading:
       userOnboardingFetching ||
       userOnboardingLoading ||

@@ -4,3 +4,4 @@ export * from './location';
 export * from './professions';
 export * from './subscription';
 export * from './user-favorites';
+export * from './selfie-verification';
