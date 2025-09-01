@@ -24,6 +24,16 @@ export const dashboardCards = [
     bottomInfo: '1/4 steps',
     bg: 'linear-gradient(135deg, rgba(199, 255, 107, 0) 0%, #c7ff6b 100%)',
   },
+  {
+    id: 3,
+    img: dashboard.getStartedCard2,
+    title: 'Onboarding Completed',
+    details:
+      "Your Onboarding has been completed, Explore Treva",
+    btnText: 'Continue',
+    bottomInfo: '4/4 steps',
+    bg: 'linear-gradient(135deg, rgba(199, 255, 107, 0) 0%, #c7ff6b 100%)',
+  },
 ];
 
 export const clientOnboardingSteps = [

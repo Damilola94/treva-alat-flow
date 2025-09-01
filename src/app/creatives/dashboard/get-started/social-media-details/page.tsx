@@ -1,6 +1,6 @@
 'use client';
 import React, { useEffect } from 'react';
-import {  useFormik } from 'formik';
+import { useFormik } from 'formik';
 // import * as Yup from 'yup';
 import { ProgressStatus } from '@/components/shared/dashboard/get-started';
 import { Input } from '@/components/ui/input';
@@ -19,19 +19,19 @@ export default function Page() {
   const {
     saveCreativeOnboarding,
     saveOnboardingResponse,
-    creativeOnboardingData,
+    // creativeOnboardingData,
     loading,
   } = useUsers();
 
   const initialValues = React.useMemo(
     () => ({
-      x: creativeOnboardingData?.data?.x || '',
-      linkedin: creativeOnboardingData?.data?.linkedIn || '',
-      instagram: creativeOnboardingData?.data?.instagram || '',
-      facebook: creativeOnboardingData?.data?.facebook || '',
-      tiktok: creativeOnboardingData?.data?.tikTok || '',
+      x: '',
+      linkedin: '',
+      instagram: '',
+      facebook: '',
+      tiktok: '',
     }),
-    [creativeOnboardingData?.data],
+    [],
   );
 
   const formik = useFormik({
