@@ -25,7 +25,12 @@ const validationSchema = Yup.object().shape({
 
 export default function BvnVerification() {
   const router = useRouter();
-  const { userOnboardingData } = useUsers();
+  const {
+    userOnboardingData,
+    saveClientOnboarding,
+    saveOnboardingResponse,
+    loading,
+  } = useUsers();
   const [triggerBvnVerify, { isLoading }] = useVerifyBvnMutation();
   const [triggerCallback, { isLoading: callbackLoading }] =
     useCallbackMutation();
@@ -111,10 +116,19 @@ export default function BvnVerification() {
   }, []);
 
   useEffect(() => {
-    if (!!userOnboardingData?.data?.bvn) {
+    if (
+      !!userOnboardingData?.data?.bvn &&
+      userOnboardingData?.data?.isBvnVerified
+    ) {
       setIsSuccess(true);
     }
   }, [userOnboardingData]);
+
+  useEffect(() => {
+    if (saveOnboardingResponse?.isSuccess) {
+      router.push(routes.client.dashboard.getStarted.ninVerification.path);
+    }
+  }, [saveOnboardingResponse]);
 
   return (
     <div className="app_get_started_professional_details py-6 px-4 flex flex-col gap-14">
@@ -203,12 +217,9 @@ export default function BvnVerification() {
                     size="xl"
                     backgroundColor="primary-blue-500"
                     className="w-full py-3 px-12"
-                    onClick={() =>
-                      router.push(
-                        routes.client.dashboard.getStarted.ninVerification.path,
-                      )
-                    }
+                    onClick={() => saveClientOnboarding({ currentStep: 2 })}
                     disabled={!isSuccess || callbackLoading}
+                    isLoading={loading}
                   >
                     Save & Continue
                   </Button>

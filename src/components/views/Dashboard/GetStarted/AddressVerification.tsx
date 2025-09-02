@@ -14,7 +14,7 @@ const validationSchema = Yup.object().shape({
   buildingNumber: Yup.string()
     .required('Building number is required')
     .max(10, 'Building number is too long'),
-  apartment: Yup.string().optional(), // not always required
+  apartment: Yup.string().optional(),
   street: Yup.string()
     .required('Street is required')
     .max(100, 'Street name is too long'),
@@ -155,7 +155,7 @@ export default function AddressVerification() {
                   name="apartment"
                   type="text"
                   label="Apartment"
-                  required
+                  // required
                   placeholder="e.g 3B, Suite 201"
                   size="lg"
                   value={values.apartment}
