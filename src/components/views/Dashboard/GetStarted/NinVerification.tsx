@@ -25,7 +25,8 @@ const validationSchema = Yup.object().shape({
 
 export default function NinVerification() {
   const router = useRouter();
-  const { userOnboardingData } = useUsers();
+  const { userOnboardingData, saveClientOnboarding, saveOnboardingResponse } =
+    useUsers();
   const [triggerNinVerify, { isLoading }] = useVerifyNinMutation();
   const [triggerCallback, { isLoading: callbackLoading }] =
     useCallbackMutation();
@@ -111,10 +112,19 @@ export default function NinVerification() {
   }, []);
 
   useEffect(() => {
-    if (!!userOnboardingData?.data?.nin) {
+    if (
+      !!userOnboardingData?.data?.nin &&
+      userOnboardingData?.data?.isNinVerified
+    ) {
       setIsSuccess(true);
     }
   }, [userOnboardingData]);
+
+  useEffect(() => {
+    if (saveOnboardingResponse?.isSuccess) {
+      router.push(routes.client.dashboard.getStarted.addressVerification.path);
+    }
+  }, [saveOnboardingResponse]);
 
   return (
     <div className="app_get_started_professional_details py-6 px-4 flex flex-col gap-14">
@@ -186,15 +196,16 @@ export default function NinVerification() {
                 </div>
               </div>
 
-              <button
-                className="border border-[#E5E5E8] rounded-lg p-4 flex items-center justify-center gap-2 mt-4"
-                type="button"
-                onClick={() => handleSubmit()}
-                disabled={isLoading || isSuccess}
-              >
-                <Camera />
-                Click to take a picture
-              </button>
+              {!isSuccess && (
+                <button
+                  className="border border-[#E5E5E8] rounded-lg p-4 flex items-center justify-center gap-2 mt-4"
+                  onClick={() => handleSubmit()}
+                  disabled={isLoading || isSuccess}
+                >
+                  <Camera />
+                  Click to take a picture
+                </button>
+              )}
 
               <div className="pt-4 flex">
                 <div className="">
@@ -202,12 +213,7 @@ export default function NinVerification() {
                     size="xl"
                     backgroundColor="primary-blue-500"
                     className="w-full py-3 px-12"
-                    onClick={() =>
-                      router.push(
-                        routes.client.dashboard.getStarted.addressVerification
-                          .path,
-                      )
-                    }
+                    onClick={() => saveClientOnboarding({ currentStep: 3 })}
                     disabled={!isSuccess || callbackLoading}
                   >
                     Save & Continue
