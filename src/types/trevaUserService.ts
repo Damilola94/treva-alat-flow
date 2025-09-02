@@ -1586,9 +1586,9 @@ export interface components {
         };
         SelfieCallbackCommand: {
             success?: boolean;
-            cId?: string | null;
+            c_id?: string | null;
             id?: string | null;
-            idType?: string | null;
+            id_type?: string | null;
         };
         SelfieCallbackModel: {
             userId?: string | null;
@@ -1691,6 +1691,8 @@ export interface components {
             /** Format: int32 */
             totalSteps?: number;
             isCompleted?: boolean;
+            isNinVerified?: boolean;
+            isBvnVerified?: boolean;
         };
         TempClientOnboardingModelBaseResponse: {
             isSuccess?: boolean;
@@ -1732,6 +1734,8 @@ export interface components {
             /** Format: int32 */
             totalSteps?: number;
             isCompleted?: boolean;
+            isNinVerified?: boolean;
+            isBvnVerified?: boolean;
         };
         TempCreativeOnboardingModelBaseResponse: {
             isSuccess?: boolean;

@@ -1,17 +1,21 @@
-'use client'
-import { CheckCircle } from '@/components/shared'
-import { Button } from '@/components/ui/button'
-import routes from '@/lib/routes'
-import { useRouter } from 'next/navigation'
-import React from 'react'
+'use client';
+import { CheckCircle } from '@/components/shared';
+import { Button } from '@/components/ui/button';
+import { useUsers } from '@/hooks/Users';
+import routes from '@/lib/routes';
+import { useRouter } from 'next/navigation';
+import React, { useEffect } from 'react';
 
-export default function Finish () {
+export default function Finish() {
   const rt = useRouter();
+  const { saveClientOnboarding, saveOnboardingResponse, loading } = useUsers();
 
-  const handleNext = () => {
-    rt.push(routes.client.dashboard.entry.path);
-  }
-  
+  useEffect(() => {
+    if (saveOnboardingResponse?.isSuccess) {
+      rt.push(routes.client.dashboard.entry.path);
+    }
+  }, [saveOnboardingResponse]);
+
   return (
     <div className="app_get_started_professional_details app_get_started_done py-6 px-4 h-full flex">
       <div className="flex-1 flex flex-col items-center justify-center gap-11">
@@ -25,7 +29,8 @@ export default function Finish () {
               size="xl"
               backgroundColor="primary-blue-500"
               className="w-full py-3 px-12"
-              onClick={handleNext}
+              onClick={() => saveClientOnboarding({ currentStep: 5 })}
+              isLoading={loading}
             >
               Next
             </Button>
@@ -33,5 +38,5 @@ export default function Finish () {
         </div>
       </div>
     </div>
-  )
+  );
 }
