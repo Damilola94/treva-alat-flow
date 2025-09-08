@@ -13,12 +13,28 @@ import { useUsers } from '@/hooks/Users';
 import { Textarea } from '@/components/ui/textarea';
 
 const validationSchema = Yup.object().shape({
-  // startTour: Yup.string().required('Please enter company name')
+  bio: Yup.string()
+    .max(500, 'Bio cannot be more than 500 characters')
+    .nullable(),
+  professionalHeadshot: Yup.mixed().nullable(),
+  socialMediaUrl: Yup.string()
+    .url('Must be a valid social media URL')
+    .nullable()
+    .notRequired(),
+  cv: Yup.mixed().nullable(),
+  awardsAndCertifications: Yup.mixed().nullable(),
+  portfolioLink: Yup.string()
+    .url('Must be a valid portfolio URL')
+    .nullable()
+    .notRequired(),
 });
 
 export default function ProfileSetup() {
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<Record<string, string | null>>({
+    professionalHeadshot: null,
+    cv: null,
+    awardsAndCertifications: null,
+  });
   const router = useRouter();
 
   const {
@@ -28,22 +44,14 @@ export default function ProfileSetup() {
     loading,
   } = useUsers();
 
-  // const initialValues = useMemo(
-  //   () => ({
-  //     cv: null as File | null, // file upload is manual; we'll preview with photoUrl
-  //     portfolio: creativeOnboardingData?.data?.portfolioLink || '',
-  //   }),
-  //   [creativeOnboardingData?.data],
-  // );
-
   const initialValues = {
     bio: '',
-    portfolio: '',
-    socialMedial: '',
+    portfolioLink: '',
+    socialMediaUrl: '',
     professionalHeadshot: null as File | null,
     cv: null as File | null,
-    awards: null as File | null,
-  }
+    awardsAndCertifications: null as File | null,
+  };
 
   const formik = useFormik({
     initialValues,
@@ -51,17 +59,50 @@ export default function ProfileSetup() {
     onSubmit: (values) => {
       const payload = {
         bio: values?.bio,
-        portfolio: values?.portfolio,
-        socialMedial: values?.socialMedial,
         professionalHeadshot: values?.professionalHeadshot,
+        portfolioLink: values?.portfolioLink,
+        socialMedialUrl: values?.socialMediaUrl,
         cv: values?.cv,
-        awards: values?.awards,
+        awardsAndCertifications: values?.awardsAndCertifications,
         currentStep: 1,
       };
       saveCreativeOnboarding(payload);
     },
     validationSchema,
   });
+
+  useEffect(() => {
+    if (saveOnboardingResponse?.isSuccess) {
+      router.push(routes.creatives.dashboard.getStarted.bvnVerification.path);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [saveOnboardingResponse]);
+
+  useEffect(() => {
+    const url = creativeOnboardingData?.data?.professionalHeadshotUrl ?? null;
+    if (url) {
+      setPreviewUrl((p) => ({ ...p, professionalHeadshot: url }));
+    }
+  }, [creativeOnboardingData?.data?.professionalHeadshotUrl]);
+
+  useEffect(() => {
+    const url = creativeOnboardingData?.data?.cvUrl ?? null;
+    if (url) {
+      setPreviewUrl((p) => ({ ...p, cv: url }));
+    }
+  }, [creativeOnboardingData?.data?.cvUrl]);
+
+  useEffect(() => {
+    const url =
+      creativeOnboardingData?.data?.awardsAndCertificationsUrl ?? null;
+    if (url) {
+      setPreviewUrl((p) => ({ ...p, awardsAndCertifications: url }));
+    }
+  }, [creativeOnboardingData?.data?.awardsAndCertificationsUrl]);
+
+  const headshotRef = useRef<HTMLInputElement | null>(null);
+  const cvRef = useRef<HTMLInputElement | null>(null);
+  const awardsRef = useRef<HTMLInputElement | null>(null);
 
   const {
     handleBlur,
@@ -70,48 +111,59 @@ export default function ProfileSetup() {
     touched,
     errors,
     values,
+    isValid,
+    dirty,
     setFieldValue,
   } = formik;
 
   const handleFileChange = async (
-    event: React.ChangeEvent<HTMLInputElement>,
+    e: React.ChangeEvent<HTMLInputElement>,
+    field: 'professionalHeadshot' | 'cv' | 'awardsAndCertifications',
   ) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setFieldValue('cv', file);
+    const file = e.target.files?.[0];
+    if (!file) return;
 
-      // generate preview URL for image files
-      if (file.type.startsWith('image/')) {
-        const fileData = (await readFileToDataUrl(file)) as string;
-        setPreviewUrl(fileData);
-      } else {
-        setPreviewUrl(null);
-      }
+    setFieldValue(field, file);
+
+    // preview only for images
+    if (file.type.startsWith('image/')) {
+      const dataUrl = (await readFileToDataUrl(file)) as string;
+      setPreviewUrl((p) => ({ ...p, [field]: dataUrl }));
+    } else {
+      setPreviewUrl((p) => ({ ...p, [field]: null }));
     }
   };
 
-  const handleRemoveFile = () => {
-    setFieldValue('cv', '');
-    setPreviewUrl(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = ''; // Reset input field
-    }
+  const handleRemoveFile = (
+    field: 'professionalHeadshot' | 'cv' | 'awardsAndCertifications',
+    ref: React.RefObject<HTMLInputElement>,
+  ) => {
+    setFieldValue(field, null);
+    setPreviewUrl((p) => ({ ...p, [field]: null }));
+    if (ref.current) ref.current.value = '';
   };
 
   useEffect(() => {
     if (saveOnboardingResponse?.isSuccess) {
-      router.push(
-        routes.creatives.dashboard.getStarted.bvnVerification.path,
-      );
+      router.push(routes.creatives.dashboard.getStarted.bvnVerification.path);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [saveOnboardingResponse]);
 
   useEffect(() => {
-    if (creativeOnboardingData?.data?.cvUrl) {
-      setPreviewUrl(creativeOnboardingData?.data.cvUrl);
+    if (creativeOnboardingData?.data) {
+      formik.setFieldValue('bio', creativeOnboardingData.data.bio || '');
+      formik.setFieldValue(
+        'portfolio',
+        creativeOnboardingData.data.portfolioLink || '',
+      );
+      formik.setFieldValue('cv', creativeOnboardingData.data.cvUrl || '');
+      formik.setFieldValue(
+        'socialMediaUrl',
+        creativeOnboardingData.data.scocialMediaUrl || '',
+      );
     }
-  }, [creativeOnboardingData?.data?.cvUrl]);
+  }, [creativeOnboardingData?.data]);
 
   return (
     <div className="app_get_started_professional_details py-6 px-4 flex flex-col gap-14 ">
@@ -169,14 +221,14 @@ export default function ProfileSetup() {
                   />
                 </div>
 
-                 <div className="">
+                <div className="">
                   <Input
-                    name="portfolio"
+                    name="portfolioLink"
                     type="text"
                     label="Portfolio Link (Optional)"
-                    placeholder="Enter Link"
+                    placeholder="Enter portfolio Link"
                     size="lg"
-                    value={values.portfolio}
+                    value={values.portfolioLink}
                     onChange={handleChange}
                     onBlur={handleBlur}
                     errors={errors}
@@ -184,42 +236,96 @@ export default function ProfileSetup() {
                   />
                 </div>
 
-                  <div className="">
+                <div className="">
                   <Input
-                    name="portfolio"
+                    name="socialMediaUrl"
                     type="text"
+                    id='social'
                     label="Preferred Social Media Profile"
                     placeholder="Enter profile URL"
                     size="lg"
-                    value={values.portfolio}
+                    value={values.socialMediaUrl}
                     onChange={handleChange}
                     onBlur={handleBlur}
                     errors={errors}
                     touched={touched}
                   />
                 </div>
-                
+
+                {values.professionalHeadshot ||
+                previewUrl.professionalHeadshot ? (
+                  <div>
+                    <p className="app_input_con__lbl mb-5">
+                      Professional headshot
+                    </p>
+                    <div className="flex flex-col items-center gap-2 border p-4 rounded-md bg-gray-50">
+                      {previewUrl.professionalHeadshot && (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={previewUrl.professionalHeadshot}
+                          alt="Preview"
+                          className="w-32 h-32 object-cover rounded-md"
+                        />
+                      )}
+                      <p className="text-sm text-gray-700">
+                        {typeof values.professionalHeadshot === 'string'
+                          ? values.professionalHeadshot
+                          : values.professionalHeadshot?.name}
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          handleRemoveFile('professionalHeadshot', headshotRef)
+                        }
+                        className="text-red-500 underline text-sm"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div>
+                    <p className="app_input_con__lbl mb-5">
+                      Professional headshot
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => headshotRef.current?.click()}
+                      className="border border-dashed border-gray-300 rounded-md w-full"
+                    >
+                      <div className="app_upload_con py-5 px-4 flex flex-col gap-3 items-center">
+                        <Upload />
+                        <div className="flex flex-col gap-1">
+                          <p className="app_upload_con__title">Your photo</p>
+                          <p className="app_upload_con__description">
+                            PDF, PNG, JPG, GIF | 10MB max.
+                          </p>
+                        </div>
+                      </div>
+                    </button>
+                  </div>
+                )}
+                <input
+                  ref={headshotRef}
+                  className="hidden"
+                  type="file"
+                  accept="image/*,.pdf"
+                  onChange={(e) => handleFileChange(e, 'professionalHeadshot')}
+                />
+
                 <div>
-                    <label htmlFor="">Professional headshot</label>
+                  <label htmlFor="">Curriculum Vitae</label>
                 </div>
-                {values.cv || previewUrl ? (
+                {values.cv ? (
                   <div className="flex flex-col items-center gap-2 border p-4 rounded-md bg-gray-50">
-                    {previewUrl && (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={previewUrl}
-                        alt="Preview"
-                        className="w-32 h-32 object-cover rounded-md"
-                      />
-                    )}
                     <p className="text-sm text-gray-700">
-                      {typeof values?.cv === 'string'
-                        ? values?.cv
-                        : values?.cv?.name}
+                      {typeof values.cv === 'string'
+                        ? values.cv
+                        : values.cv?.name}
                     </p>
                     <button
                       type="button"
-                      onClick={handleRemoveFile}
+                      onClick={() => handleRemoveFile('cv', cvRef)}
                       className="text-red-500 underline text-sm"
                     >
                       Remove
@@ -228,13 +334,15 @@ export default function ProfileSetup() {
                 ) : (
                   <button
                     type="button"
-                    onClick={() => fileInputRef?.current?.click()}
+                    onClick={() => cvRef.current?.click()}
                     className="border border-dashed border-gray-300 rounded-md w-full"
                   >
                     <div className="app_upload_con py-5 px-4 flex flex-col gap-3 items-center">
                       <Upload />
                       <div className="flex flex-col gap-1">
-                        <p className="app_upload_con__title !font-bold">Upload your professional headshot</p>
+                        <p className="app_upload_con__title !font-bold">
+                          Upload your CV
+                        </p>
                         <p className="app_upload_con__description">
                           PDF, PNG, JPG, GIF | 10MB max.
                         </p>
@@ -243,34 +351,37 @@ export default function ProfileSetup() {
                   </button>
                 )}
                 <input
-                  type="file"
+                  ref={cvRef}
                   className="hidden"
-                  ref={fileInputRef}
-                  accept=".pdf,.png,.jpg,.jpeg,.gif"
-                  onChange={handleFileChange}
+                  type="file"
+                 accept=".png,.doc,.pdf,.gif,.jpg,.jpeg,image/png,image/jpeg,image/gif,application/pdf,application/msword"
+                  onChange={(e) => handleFileChange(e, 'cv')}
                 />
 
-                 <div>
-                    <label htmlFor="">Curriculum Vitae</label>
+                <div>
+                  <label htmlFor="">Awards/Certifications (Optional)</label>
                 </div>
-                {values.cv || previewUrl ? (
+                {values.awardsAndCertifications ||
+                previewUrl.awardsAndCertifications ? (
                   <div className="flex flex-col items-center gap-2 border p-4 rounded-md bg-gray-50">
-                    {previewUrl && (
+                    {previewUrl.awardsAndCertifications && (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
-                        src={previewUrl}
+                        src={previewUrl.awardsAndCertifications}
                         alt="Preview"
                         className="w-32 h-32 object-cover rounded-md"
                       />
                     )}
                     <p className="text-sm text-gray-700">
-                      {typeof values?.cv === 'string'
-                        ? values?.cv
-                        : values?.cv?.name}
+                      {typeof values.awardsAndCertifications === 'string'
+                        ? values.awardsAndCertifications
+                        : values.awardsAndCertifications?.name}
                     </p>
                     <button
                       type="button"
-                      onClick={handleRemoveFile}
+                      onClick={() =>
+                        handleRemoveFile('awardsAndCertifications', awardsRef)
+                      }
                       className="text-red-500 underline text-sm"
                     >
                       Remove
@@ -279,13 +390,15 @@ export default function ProfileSetup() {
                 ) : (
                   <button
                     type="button"
-                    onClick={() => fileInputRef?.current?.click()}
+                    onClick={() => awardsRef.current?.click()}
                     className="border border-dashed border-gray-300 rounded-md w-full"
                   >
                     <div className="app_upload_con py-5 px-4 flex flex-col gap-3 items-center">
                       <Upload />
                       <div className="flex flex-col gap-1">
-                        <p className="app_upload_con__title !font-bold">Upload your CV</p>
+                        <p className="app_upload_con__title !font-bold">
+                          Upload your awards/certifications
+                        </p>
                         <p className="app_upload_con__description">
                           PDF, PNG, JPG, GIF | 10MB max.
                         </p>
@@ -294,62 +407,13 @@ export default function ProfileSetup() {
                   </button>
                 )}
                 <input
-                  type="file"
+                  ref={awardsRef}
                   className="hidden"
-                  ref={fileInputRef}
-                  accept=".pdf,.png,.jpg,.jpeg,.gif"
-                  onChange={handleFileChange}
-                />
-
-                 <div>
-                    <label htmlFor="">Awards/Certifications (Optional)</label>
-                </div>
-                {values.cv || previewUrl ? (
-                  <div className="flex flex-col items-center gap-2 border p-4 rounded-md bg-gray-50">
-                    {previewUrl && (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={previewUrl}
-                        alt="Preview"
-                        className="w-32 h-32 object-cover rounded-md"
-                      />
-                    )}
-                    <p className="text-sm text-gray-700">
-                      {typeof values?.cv === 'string'
-                        ? values?.cv
-                        : values?.cv?.name}
-                    </p>
-                    <button
-                      type="button"
-                      onClick={handleRemoveFile}
-                      className="text-red-500 underline text-sm"
-                    >
-                      Remove
-                    </button>
-                  </div>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={() => fileInputRef?.current?.click()}
-                    className="border border-dashed border-gray-300 rounded-md w-full"
-                  >
-                    <div className="app_upload_con py-5 px-4 flex flex-col gap-3 items-center">
-                      <Upload />
-                      <div className="flex flex-col gap-1">
-                        <p className="app_upload_con__title !font-bold">Upload your awards/certifications</p>
-                        <p className="app_upload_con__description">
-                          PDF, PNG, JPG, GIF | 10MB max.
-                        </p>
-                      </div>
-                    </div>
-                  </button>
-                )}
-                <input
                   type="file"
-                  className="hidden"
-                  ref={fileInputRef}
-                  accept=".pdf,.png,.jpg,.jpeg,.gif"
-                  onChange={handleFileChange}
+                  accept=".pdf,.png,.jpg,.jpeg,.gif,.doc,.docx"
+                  onChange={(e) =>
+                    handleFileChange(e, 'awardsAndCertifications')
+                  }
                 />
               </div>
 
@@ -360,6 +424,7 @@ export default function ProfileSetup() {
                     backgroundColor="primary-blue-500"
                     className="w-full py-3 px-12"
                     isLoading={loading}
+                     disabled={!(isValid && dirty)}
                   >
                     Save & Continue
                   </Button>

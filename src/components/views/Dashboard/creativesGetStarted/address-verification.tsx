@@ -11,10 +11,22 @@ import { SelectField } from '@/components/shared';
 import * as Yup from 'yup';
 
 const validationSchema = Yup.object().shape({
-  // startTour: Yup.string().required('Please enter company name')
+  buildingNumber: Yup.string()
+    .required('Building number is required')
+    .max(10, 'Building number is too long'),
+  apartment: Yup.string().optional(),
+  street: Yup.string()
+    .required('Street is required')
+    .max(100, 'Street name is too long'),
+  landmark: Yup.string().optional(),
+  address: Yup.string()
+    .required('Address is required')
+    .max(200, 'Address is too long'),
+  city: Yup.string().required('City is required'),
+  state: Yup.string().required('State is required'),
 });
 
-export default function AddressVerificationPage() {
+export default function AddressVerification() {
   const router = useRouter();
   const [state, setState] = useState('');
 
@@ -40,54 +52,40 @@ export default function AddressVerificationPage() {
   }, [citiesData]);
 
   const {
-    // saveCreativeOnboarding,
-    saveOnboardingResponse,
-    // creativeOnboardingData,
-    loading,
-  } = useUsers();
+     saveCreativeOnboarding,
+     saveOnboardingResponse,
+     creativeOnboardingData,
+     loading,
+   } = useUsers();
 
-//   const initialValues = useMemo(
-//     () => ({
-//       buildingNo: creativeOnboardingData?.data?.buildingNo || '',
-//       city: creativeOnboardingData?.data?.cityId || '',
-//       state: creativeOnboardingData?.data?.stateId || '',
-//       apartment: creativeOnboardingData?.data?.apartment || '',
-//       street: creativeOnboardingData?.data?.street || '',
-//       landmark: creativeOnboardingData?.data?.landmark || '',
-//       address: creativeOnboardingData?.data?.address || '',
-//     }),
-//     [creativeOnboardingData?.data],
-//   );
-
- const initialValues = {
-    buildingNo: '',
-    city: '',
-    state: '',
-    apartment: '',
-    street: '',
-    landmark: '',
-    address: '',
-  };
+  const initialValues = useMemo(
+    () => ({
+      buildingNumber: creativeOnboardingData?.data?.buildingNumber || '',
+      city: creativeOnboardingData?.data?.city || '',
+      state: creativeOnboardingData?.data?.state || '',
+      apartment: creativeOnboardingData?.data?.apartment || '',
+      street: creativeOnboardingData?.data?.street || '',
+      landmark: creativeOnboardingData?.data?.landmark || '',
+      address: creativeOnboardingData?.data?.fullAddress || '',
+    }),
+    [creativeOnboardingData?.data],
+  );
 
   const formik = useFormik({
     initialValues,
     enableReinitialize: true,
-    // onSubmit: (values) => {
-    //   const payload = {
-    //     buildingNo: values?.buildingNo,
-    //     apartment: values?.apartment,
-    //     street: values?.street,
-    //     cityId: values?.city,
-    //     stateId: values?.state,
-    //     landmark: values?.landmark,
-    //     address: values?.address,
-    //     currentStep: 4,
-    //   };
-    //   saveCreativeOnboarding(payload);
-    // },
-     onSubmit: () => {
-      // Skip validation + API call
-      router.push(routes.creatives.dashboard.getStarted.selectPlan.path);
+    onSubmit: (values) => {
+      const payload = {
+        buildingNo: values?.buildingNumber,
+        apartment: values?.apartment,
+        street: values?.street,
+        cityId: values?.city,
+        stateId: values?.state,
+        landmark: values?.landmark,
+        address: values?.address,
+        currentStep: 4,
+      };
+      saveCreativeOnboarding(payload);
     },
     validationSchema,
   });
@@ -104,20 +102,14 @@ export default function AddressVerificationPage() {
 
   useEffect(() => {
     if (saveOnboardingResponse?.isSuccess) {
-      router.push(
-        routes.creatives.dashboard.getStarted.selectPlan.path,
-      );
+      router.push(routes.creatives.dashboard.getStarted.selectPlan.path);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [saveOnboardingResponse]);
-  
+
   return (
     <div className="app_get_started_professional_details py-6 px-4 flex flex-col gap-14 ">
-      <div
-        className="flex items-center gap-4 overflow-x-auto px-2 md:px-0 
-                        scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent
-                        snap-x snap-mandatory md:justify-center"
-      >
+      <div className="flex items-center gap-4 overflow-x-auto px-2 md:px-0 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent snap-x snap-mandatory md:justify-center">
         <ProgressStatus label="Profile Setup" className="snap-start shrink-0" />
         <ProgressStatus
           label="BVN Verification"
@@ -132,7 +124,6 @@ export default function AddressVerificationPage() {
           checked
           className="snap-start shrink-0"
         />
-        <ProgressStatus label="Select plan" className="snap-start shrink-0" />
         <ProgressStatus label="Finish" className="snap-start shrink-0" />
       </div>
 
@@ -145,13 +136,13 @@ export default function AddressVerificationPage() {
             <div className="flex flex-col gap-8">
               <div className="">
                 <Input
-                  name="buildingNo"
+                  name="buildingNumber"
                   type="text"
                   label="Building No"
-                //   required
+                  required
                   placeholder="e.g 15, Block A"
                   size="lg"
-                  value={values.buildingNo}
+                  value={values.buildingNumber}
                   onChange={handleChange}
                   onBlur={handleBlur}
                   errors={errors}
@@ -164,7 +155,7 @@ export default function AddressVerificationPage() {
                   name="apartment"
                   type="text"
                   label="Apartment"
-                //   required
+                  // required
                   placeholder="e.g 3B, Suite 201"
                   size="lg"
                   value={values.apartment}
@@ -180,7 +171,7 @@ export default function AddressVerificationPage() {
                   name="street"
                   type="text"
                   label="Street"
-                //   required
+                  required
                   placeholder="e.g Adeniran Ogunsanya Street"
                   size="lg"
                   value={values.street}
@@ -188,32 +179,6 @@ export default function AddressVerificationPage() {
                   onBlur={handleBlur}
                   errors={errors}
                   touched={touched}
-                />
-              </div>
-
-              <div>
-                <SelectField
-                  name="city"
-                  label="City"
-                  options={citiesOptions}
-                  placeholder="Select city"
-                  onChange={(option) => {
-                    setFieldValue('city', option.value);
-                  }}
-                  value={values?.city}
-                />
-              </div>
-
-              <div>
-                <SelectField
-                  name="town"
-                  label="Town"
-                  options={citiesOptions}
-                  placeholder="Select Town"
-                  onChange={(option) => {
-                    setFieldValue('city', option.value);
-                  }}
-                  value={values?.city}
                 />
               </div>
 
@@ -233,12 +198,25 @@ export default function AddressVerificationPage() {
 
               <div>
                 <SelectField
-                  name="lga"
-                  label="LGA"
+                  name="city"
+                  label="City"
                   options={stateOptions}
-                  placeholder="Select LGA"
+                  placeholder="Select city"
                   onChange={(option) => {
                     setFieldValue('state', option.value);
+                  }}
+                  value={values?.city}
+                />
+              </div>
+
+              <div>
+                <SelectField
+                  name="lga"
+                  label="LGA"
+                  options={citiesOptions}
+                  placeholder="Select LGA"
+                  onChange={(option) => {
+                    setFieldValue('city', option.value);
                     setState(option?.label);
                   }}
                   value={values?.state}
@@ -250,7 +228,7 @@ export default function AddressVerificationPage() {
                   name="landmark"
                   type="text"
                   label="Landmark"
-                //   required
+                  required
                   placeholder="e.g National Theathre, GTBank"
                   size="lg"
                   value={values.landmark}
@@ -266,7 +244,7 @@ export default function AddressVerificationPage() {
                   name="address"
                   type="text"
                   label="Enter Full Address*"
-                //   required
+                  required
                   placeholder="e.g No 5, Adeniran street off Anthony street Lagos, Nigeria"
                   size="lg"
                   value={values.address}

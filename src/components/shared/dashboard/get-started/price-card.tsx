@@ -35,7 +35,6 @@ const PricingCards: React.FC = () => {
     skip: !loggedIn,
   });
 
-  console.log('allSubs', allSubs);
   
   const subscriptions = useMemo(() => allSubs?.data || [], [allSubs?.data]);
 

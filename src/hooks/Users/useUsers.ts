@@ -28,6 +28,8 @@ interface ISaveClientOnboaring {
 
 interface ISaveCreativeOnboaring {
   cv?: File | null;
+  professionalHeadshot?: File | null;
+  awardAndCertifications?: File | null;
   portfolioLink?: string;
   linkedIn?: string;
   instagram?: string;
@@ -83,6 +85,7 @@ const useUsers = () => {
     data: creativeOnboardingData,
     isLoading: creativeLoading,
     isFetching: creativeOnboardingFetching,
+    error: creativeOnboardingError,
     // refetch: refetchCreativeOnboardingData,
   } = useGetCreativeOnboardingQuery(undefined, {
     refetchOnMountOrArgChange: true,
@@ -200,6 +203,7 @@ const useUsers = () => {
     creativeOnboardingData,
     saveOnboardingResponse,
     clientOnboardingError,
+    creativeOnboardingError,
     loading:
       userOnboardingFetching ||
       userOnboardingLoading ||
