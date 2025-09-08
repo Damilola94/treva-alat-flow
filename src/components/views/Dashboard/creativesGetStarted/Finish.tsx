@@ -18,6 +18,7 @@ export default function Finish() {
       if (saveOnboardingResponse?.isSuccess) {
         rt.push(routes.creatives.dashboard.entry.path);
       }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [saveOnboardingResponse]);
 
   return (

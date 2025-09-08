@@ -163,6 +163,7 @@ export default function ProfileSetup() {
         creativeOnboardingData.data.scocialMediaUrl || '',
       );
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [creativeOnboardingData?.data]);
 
   return (

@@ -114,6 +114,7 @@ export default function BvnVerification() {
       };
       handleCallback(payload);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

@@ -114,6 +114,7 @@ export default function PersonalDetails() {
         )?.label || '';
       setState(state);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userOnboardingData?.data?.stateId]);
 
   const {
@@ -183,6 +184,7 @@ export default function PersonalDetails() {
         )?.label || '';
       setState(state);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userOnboardingData?.data]);
 
   return (
