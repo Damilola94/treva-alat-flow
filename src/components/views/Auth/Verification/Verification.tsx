@@ -54,6 +54,12 @@ export default function Verification() {
     }
   };
 
+  useEffect(() => {
+    if (verified) {
+      dispatch(clearValues());
+    }
+  }, [verified]);
+
   if (isLoading || verificationLoading) {
     return <MiniLoader message="Loading" />;
   }

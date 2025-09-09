@@ -58,18 +58,15 @@ export default function AddressVerification() {
     loading,
   } = useUsers();
 
-  const initialValues = useMemo(
-    () => ({
-      buildingNumber: userOnboardingData?.data?.buildingNumber || '',
-      city: userOnboardingData?.data?.cityId || '',
-      state: userOnboardingData?.data?.stateId || '',
-      apartment: userOnboardingData?.data?.apartment || '',
-      street: userOnboardingData?.data?.street || '',
-      landmark: userOnboardingData?.data?.landmark || '',
-      address: userOnboardingData?.data?.address || '',
-    }),
-    [userOnboardingData?.data],
-  );
+  const initialValues = {
+    buildingNumber: '',
+    city: '',
+    state: '',
+    apartment: '',
+    street: '',
+    landmark: '',
+    address: '',
+  };
 
   const formik = useFormik({
     initialValues,
@@ -98,7 +95,24 @@ export default function AddressVerification() {
     touched,
     errors,
     values,
+    dirty,
+    isValid,
   } = formik;
+
+  useEffect(() => {
+    if (userOnboardingData?.data) {
+      setFieldValue(
+        'buildingNumber',
+        userOnboardingData.data.buildingNumber || '',
+      );
+      setFieldValue('apartment', userOnboardingData.data.apartment || '');
+      setFieldValue('street', userOnboardingData.data.street || '');
+      setFieldValue('landmark', userOnboardingData.data.landmark || '');
+      setFieldValue('address', userOnboardingData.data.address || '');
+      setFieldValue('city', userOnboardingData?.data?.cityId || '');
+      setFieldValue('state', userOnboardingData?.data?.stateId || '');
+    }
+  }, [userOnboardingData]);
 
   useEffect(() => {
     if (saveOnboardingResponse?.isSuccess) {
@@ -259,10 +273,12 @@ export default function AddressVerification() {
             <div className="pt-4 flex">
               <div className="">
                 <Button
+                  type="submit"
                   size="xl"
                   backgroundColor="primary-blue-500"
                   className="w-full py-3 px-12"
                   isLoading={loading}
+                  disabled={!(dirty && isValid)}
                 >
                   Save & Continue
                 </Button>

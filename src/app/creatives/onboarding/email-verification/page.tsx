@@ -1,10 +1,10 @@
 'use client';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 // import queries from '@/services/queries/auth';
 import { Header } from '@/components/shared/onboarding';
-import { useAppSelector } from '@/store';
+import { clearValues, useAppDispatch, useAppSelector } from '@/store';
 
 const validationSchema = Yup.object().shape({});
 
@@ -13,6 +13,7 @@ const initialValues = {
 };
 
 export default function Page() {
+  const dispatch = useAppDispatch();
   const formData = useAppSelector((state) => state?.register);
   // const { isLoading, mutate } = queries.create()
   const onSubmit = () => {
@@ -34,6 +35,10 @@ export default function Page() {
   };
 
   const email = formData.email ?? '';
+
+  useEffect(() => {
+    dispatch(clearValues());
+  }, []);
 
   return (
     <div className="app_auth_login_container">
