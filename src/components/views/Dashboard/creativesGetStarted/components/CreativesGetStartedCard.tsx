@@ -16,10 +16,11 @@ interface IProps {
   }
   handleClick?: () => void
   showSteps?: boolean
+  showBtn?: boolean
 }
 
 export function CreativesGetStartedCard (props: IProps) {
-  const { item, handleClick, showSteps = false } = props
+  const { item, handleClick, showSteps = false, showBtn = true } = props
 
   return (
     <div className="app_get_started_card flex flex-col gap-4">
@@ -78,6 +79,7 @@ export function CreativesGetStartedCard (props: IProps) {
                 </Link>
               </RenderIf>
 
+              {showBtn && (
               <RenderIf condition={!showSteps}>
                 <button
                   className="app_get_started_card__action__btn"
@@ -87,6 +89,7 @@ export function CreativesGetStartedCard (props: IProps) {
                   {item?.btnText}
                 </button>
               </RenderIf>
+              )}
 
               <p className="app_get_started_card__action__text">
                 {item?.bottomInfo}

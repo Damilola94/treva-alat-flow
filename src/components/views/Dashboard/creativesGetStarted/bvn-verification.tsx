@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { ProgressStatus } from '@/components/shared/dashboard/get-started';
@@ -9,16 +9,22 @@ import { Camera } from '@/components/shared';
 import { useRouter } from 'next/navigation';
 import routes from '@/lib/routes';
 import { useUsers } from '@/hooks/Users';
+import {
+  errorToast,
+  useCallbackMutation,
+  useVerifyBvnMutation,
+} from '@/services';
+import { getErrorMessage } from '@/utils';
+import { ImagePlaceholder } from '@/app/assets/svgs';
 
 const validationSchema = Yup.object().shape({
-  // startTour: Yup.string().required('Please enter company name')
+  bvn: Yup.string()
+    .required('Please enter your BVN')
+    .matches(/^\d{11}$/, 'BVN must be exactly 11 digits'),
 });
 
 export default function BvnVerification() {
-  const [, setPreviewUrl] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const router = useRouter();
-
   const {
     saveCreativeOnboarding,
     saveOnboardingResponse,
@@ -26,27 +32,36 @@ export default function BvnVerification() {
     loading,
   } = useUsers();
 
-  // const initialValues = useMemo(
-  //   () => ({
-  //     // bvnValidation: creativeOnboardingData?.data?.portfolioLink || '',
-  //     bvnValidation: '',
-  //   }),
-  //   [creativeOnboardingData?.data],
-  // );
+  const [triggerBvnVerify, { isLoading }] = useVerifyBvnMutation();
+  const [triggerCallback, { isLoading: callbackLoading }] =
+    useCallbackMutation();
+  const [isSuccess, setIsSuccess] = useState(false);
 
-  const initialValues = {
-    bvnValidation: '',
-  }
+  const initialValues = React.useMemo(
+    () => ({
+      bvn: creativeOnboardingData?.data?.bvn || '',
+    }),
+    [creativeOnboardingData?.data],
+  );
 
   const formik = useFormik({
     initialValues,
     enableReinitialize: true,
-    onSubmit: (values) => {
-      const payload = {
-        bvnValidation: values?.bvnValidation,
-        currentStep: 2,
-      };
-      saveCreativeOnboarding(payload);
+    onSubmit: async (values) => {
+      try {
+        const payload = {
+          ...values,
+        };
+        const response = await triggerBvnVerify(payload).unwrap();
+        if (response?.isSuccess && response?.data?.url) {
+          window.location.href = response?.data?.url;
+        } else {
+          errorToast(response?.message || 'Something went wrong');
+        }
+      } catch (error) {
+        const message = getErrorMessage(error);
+        errorToast(message || 'Something went wrong');
+      }
     },
     validationSchema,
   });
@@ -57,8 +72,59 @@ export default function BvnVerification() {
     handleSubmit,
     touched,
     errors,
-    values
+    values,
+    setFieldValue,
   } = formik;
+
+  const handleCallback = async (payload: {
+    success: boolean;
+    id: string;
+    c_id: string;
+    id_type: string;
+  }) => {
+    try {
+      const response = await triggerCallback(payload).unwrap();
+      if (response?.isSuccess) {
+        setIsSuccess(true);
+      } else {
+        errorToast(response?.message || 'Something went wrong');
+      }
+    } catch (error) {
+      const message = getErrorMessage(error);
+      errorToast(message || 'SOmething went wrong');
+    }
+  };
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+
+    const success = params.get('success') === 'true';
+    const id = params.get('id') || '';
+    const c_id = params.get('c_id') || '';
+    const id_type = params.get('id_type') || '';
+
+    if (success && id_type === 'bvn') {
+      setFieldValue('bvn', id, true);
+
+      const payload = {
+        success,
+        id,
+        c_id,
+        id_type,
+      };
+      handleCallback(payload);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (
+      !!creativeOnboardingData?.data?.bvn &&
+      creativeOnboardingData?.data?.isBvnVerified
+    ) {
+      setIsSuccess(true);
+    }
+  }, [creativeOnboardingData]);
 
   useEffect(() => {
     if (saveOnboardingResponse?.isSuccess) {
@@ -66,12 +132,6 @@ export default function BvnVerification() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [saveOnboardingResponse]);
-
-  useEffect(() => {
-    if (creativeOnboardingData?.data?.cvUrl) {
-      setPreviewUrl(creativeOnboardingData?.data.cvUrl);
-    }
-  }, [creativeOnboardingData?.data?.cvUrl]);
 
   return (
     <div className="app_get_started_professional_details py-6 px-4 flex flex-col gap-14 ">
@@ -110,12 +170,12 @@ export default function BvnVerification() {
               <div className="flex flex-col gap-8">
                 <div className="">
                   <Input
-                    name="bvnValidation"
+                    name="bvn"
                     type="text"
                     label="BVN validation"
                     placeholder=""
                     size="lg"
-                    value={values.bvnValidation || ''}
+                    value={values.bvn || ''}
                     onChange={handleChange}
                     onBlur={handleBlur}
                     errors={errors}
@@ -123,20 +183,51 @@ export default function BvnVerification() {
                   />
                 </div>
                 <div>
-                  <h2 className='font-bold mb-2'>Take a selfie</h2>
-                  <ul className='list-disc list-outside ml-5 text-[#6D6D6D]'>
-                    <li>Make sure you are in a well -lit area</li> 
-                    <li>Make sure you are in a front of a plain background</li> 
-                    <li>Make sure you remove hats, thick glasses or anything else</li> 
-                    <li>Make sure you keep your expression neutral Make sure to keep your face within the circle</li>
-                  </ul>
+                  {isSuccess ? (
+                    <>
+                      <div className="w-full flex gap-6 items-center">
+                        <div>
+                          <ImagePlaceholder />
+                        </div>
+                        <div className="w-full">
+                          <p className="text-sm font-bold">Photo captured</p>
+                          <div className="h-1.5 bg-[#7B37F0] rounded mt-1" />
+                          <p className="text-sm font-normal mt-2">Completed</p>
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <h2 className="font-bold mb-2">Take a selfie</h2>
+                      <ul className="list-disc list-outside ml-5 text-[#6D6D6D]">
+                        <li>Make sure you are in a well -lit area</li>
+                        <li>
+                          Make sure you are in a front of a plain background
+                        </li>
+                        <li>
+                          Make sure you remove hats, thick glasses or anything
+                          else
+                        </li>
+                        <li>
+                          Make sure you keep your expression neutral Make sure
+                          to keep your face within the circle
+                        </li>
+                      </ul>
+                    </>
+                  )}
                 </div>
               </div>
 
-              <button className='border border-[#E5E5E8] rounded-lg p-4 flex items-center justify-center gap-2 mt-4' type="button" onClick={() => fileInputRef.current?.click()}>
-                <Camera/>
-                Click to take a picture
-              </button>
+              {!isSuccess && (
+                <button
+                  className="border border-[#E5E5E8] rounded-lg p-4 flex items-center justify-center gap-2 mt-4"
+                  onClick={() => handleSubmit()}
+                  disabled={isLoading || isSuccess}
+                >
+                  <Camera />
+                  Click to take a picture
+                </button>
+              )}
 
               <div className="pt-4 flex">
                 <div className="">
@@ -144,6 +235,8 @@ export default function BvnVerification() {
                     size="xl"
                     backgroundColor="primary-blue-500"
                     className="w-full py-3 px-12"
+                     onClick={() => saveCreativeOnboarding({ currentStep: 2 })}
+                    disabled={!isSuccess || callbackLoading}
                     isLoading={loading}
                   >
                     Save & Continue

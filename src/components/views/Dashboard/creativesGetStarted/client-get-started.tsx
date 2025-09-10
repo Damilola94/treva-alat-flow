@@ -1,13 +1,33 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { dashboardCards } from '@/constants';
-import { useProfile } from '@/hooks/Users';
+import { useProfile, useUsers } from '@/hooks/Users';
 import { CreativesGetStartedCard } from './components/CreativesGetStartedCard';
 
-export default function CreativesGetStarted () {
- const { data } = useProfile();
+export default function CreativesGetStarted() {
+  const { data } = useProfile();
 
   const [showSteps, setShowSteps] = useState(false);
+  const { creativeOnboardingData, creativeOnboardingError } = useUsers();
+  const [onboardingComplete, setOnboardingComplete] = useState(false);
+
+  const onboardingStatus = useMemo(
+    () => creativeOnboardingData?.data || null,
+    [creativeOnboardingData],
+  );
+
+  useEffect(() => {
+    if (
+      onboardingStatus?.isCompleted ||
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (creativeOnboardingError as any)?.data?.message ===
+      'Creative Onboarding not found or already completed.'
+    ) {
+      setOnboardingComplete(true);
+      console.log(onboardingStatus?.isCompleted, 'onboarding status');
+      
+    }
+  }, [onboardingStatus, creativeOnboardingError]);
 
   return (
     <div className="app_get_started flex flex-col gap-10 pb-10 mb-10 px-4">
@@ -28,13 +48,24 @@ export default function CreativesGetStarted () {
         }`}
       >
         <CreativesGetStartedCard item={dashboardCards[0]} />
-        <CreativesGetStartedCard
-          item={dashboardCards[1]}
-          handleClick={() => {
-            setShowSteps(true);
-          }}
-          showSteps={showSteps}
-        />
+        {!onboardingComplete ? (
+          <CreativesGetStartedCard
+            item={dashboardCards[1]}
+            handleClick={() => {
+              setShowSteps(true);
+            }}
+            showSteps={showSteps}
+          />
+        ) : (
+          <CreativesGetStartedCard
+            item={dashboardCards[2]}
+            handleClick={() => {
+              setShowSteps(true);
+            }}
+            showSteps={false}
+            showBtn={false}
+          />
+        )}
       </div>
     </div>
   );
