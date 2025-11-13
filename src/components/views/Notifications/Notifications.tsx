@@ -41,7 +41,6 @@ const Notifications = () => {
     chatId: selectedNotification?.objectId || '',
   });
 
-  console.log(chatByIdData);
 
   const notificationsList = useMemo(
     () => allNotifications?.data || [],
@@ -75,8 +74,6 @@ const Notifications = () => {
         notification?.type === NotificationTypeEnums.Message,
     );
   }, [notificationsList]);
-
-  console.log(notificationsList);
 
   const tabs = [
     {

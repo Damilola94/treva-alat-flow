@@ -68,7 +68,6 @@ const NotificationList: React.FC<{
   setSelectedNotification,
   refetch,
 }) => {
-  console.log(notifications);
   const [triggerReadNotification] = useReadNotificationMutation();
 
   const handleReadNotification = async (item: NotificationItem) => {
@@ -77,9 +76,6 @@ const NotificationList: React.FC<{
         notificationId: item?.id,
       });
       if (response?.data?.isSuccess) {
-        console.log(response);
-        console.log(response?.data);
-
         toggleMessageModal(true);
         setSelectedNotification(item);
         refetch && refetch();
@@ -87,7 +83,6 @@ const NotificationList: React.FC<{
         errorToast(response?.data?.message || getErrorMessage(response));
       }
     } catch (error) {
-      console.log(error);
       errorToast(getErrorMessage(error));
     }
   };
@@ -95,8 +90,6 @@ const NotificationList: React.FC<{
   const grouped = groupNotifications(
     Array.isArray(notifications) ? notifications : [],
   );
-
-  console.log(grouped);
 
   return (
     <>

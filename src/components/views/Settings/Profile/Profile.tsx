@@ -35,7 +35,7 @@ const Profile = () => {
   const [pictureEdit, togglePictureEdit] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [deleteModal, setDeleteModal] = useState(false);
-  const [triggerDelete, { isLoading }] = useDeleteUserProfileMutation();
+  const [triggerDelete, { isLoading }] = useDeleteUserProfileMutation();  
 
   const { updateProfileDetails, loading, updateResponse } = useUsers();
 
@@ -53,7 +53,7 @@ const Profile = () => {
     enableReinitialize: true,
     onSubmit: async (values) => {
       try {
-        updateProfileDetails(values);
+        await updateProfileDetails(values);
       } catch (error) {
         handleErrors(error);
       } finally {
@@ -463,14 +463,14 @@ const Profile = () => {
         </div>
 
         <div className="w-full items-center justify-between flex md:justify-end md:items-center">
-          <div className="">
+          {/* <div className="">
             <button
               onClick={() => setDeleteModal(true)}
               className="text-[#E7211B] w-full text-left"
             >
               Delete Account
             </button>
-          </div>
+          </div> */}
           <Button
             className="app_auth_login__btn"
             size="md"

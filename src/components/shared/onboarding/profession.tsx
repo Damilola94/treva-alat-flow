@@ -88,8 +88,6 @@ export function Profession() {
           countryCode: '+234',
         };
 
-        console.log(payload);
-
         const response = await triggerRegister(payload).unwrap();
         if (response?.isSuccess) {
           successToast(response?.message || 'Account created successfully');
@@ -110,8 +108,6 @@ export function Profession() {
     const current = values.profession;
     setFieldValue('profession', current === id ? '' : id); // deselect if clicked again
   };
-
-  console.log(values);
 
   return (
     <div className="app_auth_login_container">

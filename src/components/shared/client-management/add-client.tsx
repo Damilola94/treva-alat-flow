@@ -75,8 +75,6 @@ export function AddClient({ onClose }: IProps) {
     dirty,
     isValid,
   } = formik;
-
-  console.log(errors, "errors");
   
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>,

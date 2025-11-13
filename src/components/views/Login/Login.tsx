@@ -62,11 +62,8 @@ export default function Login() {
           }, 500);
         } else {
           errorToast(getErrorMessage(response));
-          console.log('Login response error:', response);
         }
       } catch (error) {
-        console.log(error);
-
         errorToast(getErrorMessage(error));
       }
     },

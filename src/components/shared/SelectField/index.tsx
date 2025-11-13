@@ -39,7 +39,6 @@ export function SelectField({
   }, [value, options]);
 
   const handleOptionClick = (option: Option) => {
-    console.log(option);
     
     setSelectedOption(option);
     setIsOpen(false);

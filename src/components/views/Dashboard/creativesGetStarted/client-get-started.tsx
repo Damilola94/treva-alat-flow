@@ -23,9 +23,7 @@ export default function CreativesGetStarted() {
       (creativeOnboardingError as any)?.data?.message ===
       'Creative Onboarding not found or already completed.'
     ) {
-      setOnboardingComplete(true);
-      console.log(onboardingStatus?.isCompleted, 'onboarding status');
-      
+      setOnboardingComplete(true);      
     }
   }, [onboardingStatus, creativeOnboardingError]);
 

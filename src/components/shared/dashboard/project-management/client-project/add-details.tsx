@@ -81,7 +81,6 @@ export function ProjectDetails(props: IProps) {
 
   type InitialValues = ReturnType<() => typeof initialValues>;
 
-  console.log(storeValues, 'store values');
   const onSubmit = async (_values: InitialValues) => {
     try {
       const response = await createProject(_values).unwrap();

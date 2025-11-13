@@ -93,10 +93,7 @@ export default function Page() {
     searchKey: '',
   });
 
-  const { allProjectsData, loading, refetchAllProjects } = useProjects(params);
-
-  console.log('Pagination', allProjectsData?.metaData);
-  
+  const { allProjectsData, loading, refetchAllProjects } = useProjects(params);  
 
 const projectData = useMemo(() => allProjectsData?.data || [], [allProjectsData?.data],)
 

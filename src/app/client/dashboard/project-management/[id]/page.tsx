@@ -102,9 +102,6 @@ export default function Page() {
           revisionRequestDescription: revisionRequestDescription.trim(),
         },
       }).unwrap();
-
-      console.log('Update response:', response);
-
       setShowRevisionModal(false);
       setShowModal(false);
       refetchAllProjectsById();

@@ -52,15 +52,6 @@ export default function Page() {
     setError('');
   };
 
-  //   const handleFormSubmit = () => {
-  //     if (file) {
-  //       console.log('File uploaded:', file);
-  //       router.push(routes.creatives.dashboard.invoiceAndPayment.review.path);
-  //     } else {
-  //       setError('Please upload a file to continue.');
-  //     }
-  //   };
-
   return (
     <div className="app_get_started_professional_details py-6 px-4 flex flex-col gap-14">
       <div className="flex justify-center items-center gap-4">

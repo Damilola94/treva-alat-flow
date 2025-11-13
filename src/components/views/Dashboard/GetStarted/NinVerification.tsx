@@ -109,6 +109,7 @@ export default function NinVerification() {
       };
       handleCallback(payload);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -124,6 +125,7 @@ export default function NinVerification() {
     if (saveOnboardingResponse?.isSuccess) {
       router.push(routes.client.dashboard.getStarted.addressVerification.path);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [saveOnboardingResponse]);
 
   return (
