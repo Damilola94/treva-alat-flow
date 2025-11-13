@@ -35,6 +35,7 @@ export default function Page() {
 
   useEffect(() => {
     dispatch(clearValues());
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

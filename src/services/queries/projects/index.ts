@@ -45,7 +45,6 @@ const useCreate = (options: { onSuccess?: (response: any) => void }) => {
   return {
     ...response,
     mutate: (body: Body) => {
-      console.log('Mutation triggered with body:', body);
       const requestBody = {
         title: body.title,
         description: body.description,
@@ -306,7 +305,6 @@ const useReadTasks = ({ projectId = '' } = {}, options = {}) => {
       const url = `${
         BASE_URL.project
       }/${projectId}/tasks?${queryParams.toString()}`;
-      console.log('API URL:', url);
       return await api.get({ url });
     },
     {

@@ -614,8 +614,6 @@ export default function Page() {
               type="number"
               value={withdrawAmount}
               onChange={(e) => {
-                console.log(setWithdrawAmount, 'withdraw amount');
-                console.log(e.target.value, 'value');
                 setWithdrawAmount(e.target.value);
               }}
             />
@@ -645,7 +643,6 @@ export default function Page() {
                   // className="border p-4 rounded-lg border-[#888888]"
                   key={item?.id || item?.accountNumber}
                   onClick={() => {
-                    console.log('Selected:', item);
                     setSelectedBeneficiary(item);
                   }}
                   className={`p-4 border rounded cursor-pointer ${

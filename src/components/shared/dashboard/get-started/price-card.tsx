@@ -34,7 +34,6 @@ const PricingCards: React.FC = () => {
     refetchOnReconnect: true,
     skip: !loggedIn,
   });
-
   
   const subscriptions = useMemo(() => allSubs?.data || [], [allSubs?.data]);
 

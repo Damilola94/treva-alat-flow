@@ -57,10 +57,6 @@ export function ProjectPaymentSchedule(props: IProps) {
   } = useAppSelector((state) => state?.project);
   const projectIdAPI: string = projectIdStore ? projectIdStore : projectId;
 
-  console.log(projectIdAPI);
-  console.log(projectId);
-  console.log(projectIdStore);
-
   const [createPaymentSchedule, { isLoading }] =
     useCreatePaymentScheduleMutation();
   const { data: paymentScheduleData, refetch } =

@@ -112,6 +112,7 @@ export default function AddressVerification() {
       setFieldValue('city', userOnboardingData?.data?.cityId || '');
       setFieldValue('state', userOnboardingData?.data?.stateId || '');
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userOnboardingData]);
 
   useEffect(() => {

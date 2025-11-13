@@ -683,7 +683,6 @@ export default function Dashboard() {
                     // className="border p-4 rounded-lg border-[#888888]"
                     key={item?.id || item?.accountNumber}
                     onClick={() => {
-                      console.log('Selected:', item);
                       setSelectedBeneficiary(item);
                     }}
                     className={`p-4 border rounded cursor-pointer ${

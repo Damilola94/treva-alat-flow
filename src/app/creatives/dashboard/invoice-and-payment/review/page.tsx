@@ -146,7 +146,6 @@ export default function Page () {
                         backgroundColor="primary-blue-500"
                         className="w-full py-3 px-12"
                         onClick={() => {
-                          console.log('Opening modal...');
                           setIsDecisionModalOpen(true);
                         }}
                         // onClick={() => { setIsDecisionModalOpen(true) }}

@@ -200,7 +200,7 @@ export default function AddressVerification() {
                 <SelectField
                   name="city"
                   label="City"
-                  options={stateOptions}
+                  options={citiesOptions}
                   placeholder="Select city"
                   onChange={(option) => {
                     setFieldValue('state', option.value);
