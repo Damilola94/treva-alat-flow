@@ -124,7 +124,7 @@ export function Sidebar({ menuItems, logoHref, userData }: SidebarProps) {
       )}
 
       <aside
-        className={`app_dash_main__aside fixed z-30 h-screen overflow-auto hide-scroll ${
+        className={`app_dash_main__aside fixed z-30 min-h-screen overflow-auto hide-scroll ${
           showMenu ? 'show-mobile-menu' : 'hide-mobile-menu'
         } lg:relative lg:show-mobile-menu`}
         style={{ backgroundImage: `url('${dashboard.dashBg.src}')` }}

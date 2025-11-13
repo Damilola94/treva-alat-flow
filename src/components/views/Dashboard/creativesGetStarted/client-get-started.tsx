@@ -21,7 +21,7 @@ export default function CreativesGetStarted() {
       onboardingStatus?.isCompleted ||
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (creativeOnboardingError as any)?.data?.message ===
-      'Creative Onboarding not found or already completed.'
+      'CreativeOnboarding not found or already completed.'
     ) {
       setOnboardingComplete(true);      
     }
