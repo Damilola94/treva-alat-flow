@@ -58,9 +58,18 @@ export default function NinVerification() {
         } else {
           errorToast(response?.message || 'Something went wrong');
         }
-      } catch (error) {
-        const message = getErrorMessage(error);
-        errorToast(message || 'Something went wrong');
+        // } catch (error) {
+        //   const message = getErrorMessage(error);
+        //   errorToast(message || 'Something went wrong');
+        // }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (error: any) {
+        const message =
+          error?.data?.message ||
+          error?.message ||
+          getErrorMessage(error) ||
+          'Something went wrong';
+        errorToast(message);
       }
     },
     validationSchema,
@@ -114,7 +123,7 @@ export default function NinVerification() {
       };
       handleCallback(payload);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -132,7 +141,7 @@ export default function NinVerification() {
         routes.creatives.dashboard.getStarted.addressVerification.path,
       );
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [saveOnboardingResponse]);
 
   return (
@@ -237,7 +246,7 @@ export default function NinVerification() {
                     size="xl"
                     backgroundColor="primary-blue-500"
                     className="w-full py-3 px-12"
-                     onClick={() => saveCreativeOnboarding({ currentStep: 3 })}
+                    onClick={() => saveCreativeOnboarding({ currentStep: 3 })}
                     disabled={!isSuccess || callbackLoading}
                     isLoading={loading}
                   >
