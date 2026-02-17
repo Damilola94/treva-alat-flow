@@ -122,6 +122,7 @@ const routes = {
       inputEmail: {
         path: '/creatives/onboarding/input-email',
       },
+
       phoneNumber: {
         path: '/creatives/onboarding/input-phone',
       },
@@ -131,6 +132,10 @@ const routes = {
 
       emailVerification: {
         path: '/creatives/onboarding/email-verification',
+      },
+
+      successfulEmailVerification: {
+        path: '/creatives/onboarding/verification-successful',
       },
 
       personalDetails: {
@@ -271,6 +276,14 @@ const routes = {
           path: '/creatives/dashboard/settings/notifications',
         },
       },
+    },
+  },
+  register: {
+    createAccount: {
+      path: '/register/create-account',
+    },
+    verifyEmail: {
+      path: '/register/verify-email',
     },
   },
 };

@@ -109,7 +109,7 @@ export default function NinVerification() {
       };
       handleCallback(payload);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -125,105 +125,181 @@ export default function NinVerification() {
     if (saveOnboardingResponse?.isSuccess) {
       router.push(routes.client.dashboard.getStarted.addressVerification.path);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [saveOnboardingResponse]);
 
   return (
-    <div className="app_get_started_professional_details py-6 px-4 flex flex-col gap-14">
-      <div className="flex justify-center items-center gap-4">
-        <ProgressStatus label="Profile Setup" />
-        <ProgressStatus label="BVN Verification" />
-        <ProgressStatus label="NIN Verification" checked />
-        <ProgressStatus label="Address Verification" />
-        <ProgressStatus label="Finish" />
-        {/* <ProgressStatus label="Team setup" /> */}
+    // <div className="app_get_started_professional_details py-6 px-4 flex flex-col gap-14">
+    //   <div className="flex justify-center items-center gap-4">
+    //     <ProgressStatus label="Profile Setup" />
+    //     <ProgressStatus label="BVN Verification" />
+    //     <ProgressStatus label="NIN Verification" checked />
+    //     <ProgressStatus label="Address Verification" />
+    //     <ProgressStatus label="Finish" />
+    //     {/* <ProgressStatus label="Team setup" /> */}
+    //   </div>
+
+    //   <div className="app_get_started_professional_details__form flex flex-col gap-10">
+    //     <h3 className="app_get_started_professional_details__form__title">
+    //       NIN Verification
+    //     </h3>
+    //     <div className="">
+    //       <div>
+    //         <div className="flex flex-col gap-4">
+    //           <div className="flex flex-col gap-8">
+    //             <div className="">
+    //               <Input
+    //                 name="nin"
+    //                 type="text"
+    //                 label="NIN validation"
+    //                 placeholder=""
+    //                 size="lg"
+    //                 value={values.nin || ''}
+    //                 onChange={handleChange}
+    //                 onBlur={handleBlur}
+    //                 errors={errors}
+    //                 touched={touched}
+    //               />
+    //             </div>
+
+    //             <div>
+    //               {isSuccess ? (
+    //                 <>
+    //                   <div className="w-full flex gap-6 items-center">
+    //                     <div>
+    //                       <ImagePlaceholder />
+    //                     </div>
+    //                     <div className="w-full">
+    //                       <p className="text-sm font-bold">Photo captured</p>
+    //                       <div className="h-1.5 bg-[#7B37F0] rounded mt-1" />
+    //                       <p className="text-sm font-normal mt-2">Completed</p>
+    //                     </div>
+    //                   </div>
+    //                 </>
+    //               ) : (
+    //                 <>
+    //                   <h2 className="font-bold mb-2">Take a selfie</h2>
+    //                   <ul className="list-disc list-outside ml-5 text-[#6D6D6D]">
+    //                     <li>Make sure you are in a well -lit area</li>
+    //                     <li>
+    //                       Make sure you are in a front of a plain background
+    //                     </li>
+    //                     <li>
+    //                       Make sure you remove hats, thick glasses or anything
+    //                       else
+    //                     </li>
+    //                     <li>
+    //                       Make sure you keep your expression neutral Make sure
+    //                       to keep your face within the circle
+    //                     </li>
+    //                   </ul>
+    //                 </>
+    //               )}
+    //             </div>
+    //           </div>
+
+    //           {!isSuccess && (
+    //             <button
+    //               className="border border-[#E5E5E8] rounded-lg p-4 flex items-center justify-center gap-2 mt-4"
+    //               onClick={() => handleSubmit()}
+    //               disabled={isLoading || isSuccess}
+    //             >
+    //               <Camera />
+    //               Click to take a picture
+    //             </button>
+    //           )}
+
+    //           <div className="pt-4 flex">
+    //             <div className="">
+    //               <Button
+    //                 size="xl"
+    //                 backgroundColor="primary-blue-500"
+    //                 className="w-full py-3 px-12"
+    //                 onClick={() => saveClientOnboarding({ currentStep: 3 })}
+    //                 disabled={!isSuccess || callbackLoading}
+    //               >
+    //                 Save & Continue
+    //               </Button>
+    //             </div>
+    //           </div>
+    //         </div>
+    //       </div>
+    //     </div>
+    //   </div>
+    // </div>
+
+    <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-8">
+        <div className="">
+          <Input
+            name="nin"
+            type="text"
+            label="NIN validation"
+            placeholder=""
+            size="lg"
+            value={values.nin || ''}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            errors={errors}
+            touched={touched}
+          />
+        </div>
+
+        <div>
+          {isSuccess ? (
+            <>
+              <div className="w-full flex gap-6 items-center">
+                <div>
+                  <ImagePlaceholder />
+                </div>
+                <div className="w-full">
+                  <p className="text-sm font-bold">Photo captured</p>
+                  <div className="h-1.5 bg-[#7B37F0] rounded mt-1" />
+                  <p className="text-sm font-normal mt-2">Completed</p>
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <h2 className="font-bold mb-2">Take a selfie</h2>
+              <ul className="list-disc list-outside ml-5 text-[#6D6D6D]">
+                <li>Make sure you are in a well -lit area</li>
+                <li>Make sure you are in a front of a plain background</li>
+                <li>
+                  Make sure you remove hats, thick glasses or anything else
+                </li>
+                <li>
+                  Make sure you keep your expression neutral Make sure to keep
+                  your face within the circle
+                </li>
+              </ul>
+            </>
+          )}
+        </div>
       </div>
 
-      <div className="app_get_started_professional_details__form flex flex-col gap-10">
-        <h3 className="app_get_started_professional_details__form__title">
-          NIN Verification
-        </h3>
+      {!isSuccess && (
+        <button
+          className="border border-[#E5E5E8] rounded-lg p-4 flex items-center justify-center gap-2 mt-4"
+          onClick={() => handleSubmit()}
+          disabled={isLoading || isSuccess}
+        >
+          <Camera />
+          Click to take a picture
+        </button>
+      )}
+
+      <div className="pt-4 flex">
         <div className="">
-          <div>
-            <div className="flex flex-col gap-4">
-              <div className="flex flex-col gap-8">
-                <div className="">
-                  <Input
-                    name="nin"
-                    type="text"
-                    label="NIN validation"
-                    placeholder=""
-                    size="lg"
-                    value={values.nin || ''}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    errors={errors}
-                    touched={touched}
-                  />
-                </div>
-
-                <div>
-                  {isSuccess ? (
-                    <>
-                      <div className="w-full flex gap-6 items-center">
-                        <div>
-                          <ImagePlaceholder />
-                        </div>
-                        <div className="w-full">
-                          <p className="text-sm font-bold">Photo captured</p>
-                          <div className="h-1.5 bg-[#7B37F0] rounded mt-1" />
-                          <p className="text-sm font-normal mt-2">Completed</p>
-                        </div>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <h2 className="font-bold mb-2">Take a selfie</h2>
-                      <ul className="list-disc list-outside ml-5 text-[#6D6D6D]">
-                        <li>Make sure you are in a well -lit area</li>
-                        <li>
-                          Make sure you are in a front of a plain background
-                        </li>
-                        <li>
-                          Make sure you remove hats, thick glasses or anything
-                          else
-                        </li>
-                        <li>
-                          Make sure you keep your expression neutral Make sure
-                          to keep your face within the circle
-                        </li>
-                      </ul>
-                    </>
-                  )}
-                </div>
-              </div>
-
-              {!isSuccess && (
-                <button
-                  className="border border-[#E5E5E8] rounded-lg p-4 flex items-center justify-center gap-2 mt-4"
-                  onClick={() => handleSubmit()}
-                  disabled={isLoading || isSuccess}
-                >
-                  <Camera />
-                  Click to take a picture
-                </button>
-              )}
-
-              <div className="pt-4 flex">
-                <div className="">
-                  <Button
-                    size="xl"
-                    backgroundColor="primary-blue-500"
-                    className="w-full py-3 px-12"
-                    onClick={() => saveClientOnboarding({ currentStep: 3 })}
-                    disabled={!isSuccess || callbackLoading}
-                  >
-                    Save & Continue
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </div>
+          <Button
+            size="xl"
+            backgroundColor="primary-blue-500"
+            className="w-full py-3 px-12"
+            onClick={() => saveClientOnboarding({ currentStep: 3 })}
+            disabled={!isSuccess || callbackLoading}
+          >
+            Save & Continue
+          </Button>
         </div>
       </div>
     </div>

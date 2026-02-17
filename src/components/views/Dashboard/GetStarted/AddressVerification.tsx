@@ -112,7 +112,7 @@ export default function AddressVerification() {
       setFieldValue('city', userOnboardingData?.data?.cityId || '');
       setFieldValue('state', userOnboardingData?.data?.stateId || '');
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userOnboardingData]);
 
   useEffect(() => {
@@ -127,13 +127,13 @@ export default function AddressVerification() {
       <div className="flex items-center gap-4 overflow-x-auto px-2 md:px-0 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent snap-x snap-mandatory md:justify-center">
         <ProgressStatus label="Profile Setup" className="snap-start shrink-0" />
         <ProgressStatus
-          label="BVN Verification"
+          label="ID Verification"
           className="snap-start shrink-0"
         />
-        <ProgressStatus
+        {/* <ProgressStatus
           label="NIN verification"
           className="snap-start shrink-0"
-        />
+        /> */}
         <ProgressStatus
           label="Address verification"
           checked
@@ -142,14 +142,63 @@ export default function AddressVerification() {
         <ProgressStatus label="Finish" className="snap-start shrink-0" />
       </div>
 
-      <div className="app_get_started_professional_details__form flex flex-col gap-10">
+      <div className="app_get_started_professional_details__form flex flex-col gap-10 !max-w-[600px]">
         <h3 className="app_get_started_professional_details__form__title !font-bold">
           Address Verification
         </h3>
         <div>
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div className="flex flex-col gap-8">
-              <div className="">
+              <div className="flex flex-col sm:flex-row w-full sm:items-center justify-between gap-4">
+                <div className="w-full">
+                  <Input
+                    name="buildingNumber"
+                    type="text"
+                    label="Building No"
+                    required
+                    placeholder="e.g 15, Block A"
+                    size="lg"
+                    value={values.buildingNumber}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    errors={errors}
+                    touched={touched}
+                  />
+                </div>
+
+                {/* <div className="">
+                             <Input
+                               name="apartment"
+                               type="text"
+                               label="Apartment"
+                               // required
+                               placeholder="e.g 3B, Suite 201"
+                               size="lg"
+                               value={values.apartment}
+                               onChange={handleChange}
+                               onBlur={handleBlur}
+                               errors={errors}
+                               touched={touched}
+                             />
+                           </div> */}
+
+                <div className="w-full">
+                  <Input
+                    name="street"
+                    type="text"
+                    label="Street"
+                    required
+                    placeholder="e.g Adeniran Ogunsanya Street"
+                    size="lg"
+                    value={values.street}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    errors={errors}
+                    touched={touched}
+                  />
+                </div>
+              </div>
+              {/* <div className="">
                 <Input
                   name="buildingNumber"
                   type="text"
@@ -195,8 +244,37 @@ export default function AddressVerification() {
                   errors={errors}
                   touched={touched}
                 />
-              </div>
+              </div> */}
 
+              <div className="flex flex-col sm:flex-row w-full sm:items-center justify-between gap-4">
+                <div className="w-full">
+                  <SelectField
+                    name="state"
+                    label="State"
+                    options={stateOptions}
+                    placeholder="Select State"
+                    onChange={(option) => {
+                      setFieldValue('state', option.value);
+                      setState(option?.label);
+                    }}
+                    value={values?.state}
+                  />
+                </div>
+                <div className="w-full">
+                  <SelectField
+                    name="lga"
+                    label="LGA"
+                    options={citiesOptions}
+                    placeholder="Select LGA"
+                    onChange={(option) => {
+                      setFieldValue('city', option.value);
+                      setState(option?.label);
+                    }}
+                    value={values?.state}
+                  />
+                </div>
+              </div>
+              {/* 
               <div>
                 <SelectField
                   name="state"
@@ -236,7 +314,7 @@ export default function AddressVerification() {
                   }}
                   value={values?.state}
                 />
-              </div>
+              </div> */}
 
               <div className="">
                 <Input
@@ -253,7 +331,7 @@ export default function AddressVerification() {
                   touched={touched}
                 />
               </div>
-
+              {/* 
               <div className="">
                 <Input
                   name="address"
@@ -268,10 +346,10 @@ export default function AddressVerification() {
                   errors={errors}
                   touched={touched}
                 />
-              </div>
+              </div> */}
             </div>
 
-            <div className="pt-4 flex">
+            <div className="pt-4 flex justify-end">
               <div className="">
                 <Button
                   type="submit"

@@ -16,6 +16,7 @@ import routes from '@/lib/routes';
 import { usePathname } from 'next/navigation';
 import { ChatIcon, Notifications } from '@/app/assets/svgs';
 import { useProfile } from '@/hooks/Users';
+import { useAppSelector } from '@/store';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -34,9 +35,18 @@ function Main({ children }: { children: React.ReactNode }) {
   // const { data } = queries.read();
   const { data } = useProfile();
 
+  const isOnboardingCompleted = useAppSelector(
+    (state) => state.auth.isOnboardingCompleted,
+  );
+
   const clientMenuItems = [
+    // {
+    //   label: 'Get Started',
+    //   href: routes.client.dashboard.getStarted.path,
+    //   icon: <GlobeAlt />,
+    // },
     {
-      label: 'Get Started',
+      label: 'Profile Onboarding',
       href: routes.client.dashboard.getStarted.path,
       icon: <GlobeAlt />,
     },
@@ -75,7 +85,14 @@ function Main({ children }: { children: React.ReactNode }) {
       href: routes.client.dashboard.settings.profile.path,
       icon: <Settings />,
     },
-  ];
+  ]
+    .map((item) => ({
+      ...item,
+      disabled: !isOnboardingCompleted && item.label !== 'Profile Onboarding',
+    }))
+    .filter(
+      (item) => !(isOnboardingCompleted && item.label === 'Profile Onboarding'),
+    );
 
   useEffect(() => {
     setMounted(true);
@@ -97,11 +114,11 @@ function Main({ children }: { children: React.ReactNode }) {
           <Header showBackArrow={shouldShowBackArrow} />
           <div className="app_dash_main__ctt__mn w-full">
             <div className="app_dashboard_page">{children}</div>
-            {false && 
-            <div className='fixed bottom-0 w-full'>
-             <Footer />
-            </div>
-      }
+            {false && (
+              <div className="fixed bottom-0 w-full">
+                <Footer />
+              </div>
+            )}
           </div>
         </div>
       </div>

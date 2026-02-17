@@ -50,15 +50,31 @@ export default function Login() {
                 userId: response?.data?.userId,
                 email: response?.data?.email,
                 role: response?.data?.roles,
+                isOnboardingCompleted: response?.data?.isOnboardingCompleted,
               }),
             );
           }
           successToast('Sign in successful');
           setTimeout(() => {
-            response?.data?.roles?.includes('Creative') &&
-              router.push(routes.creatives.dashboard.entry.path);
-            response?.data?.roles?.includes('Client') &&
-              router.push(routes.client.dashboard.entry.path);
+            const { isOnboardingCompleted, roles } = response?.data ?? {};
+
+            if (!roles?.length) return;
+
+            let destination: string | null = null;
+
+            if (roles.includes('Creative')) {
+              destination = isOnboardingCompleted
+                ? routes.creatives.dashboard.entry.path
+                : routes.creatives.dashboard.getStarted.personalDetails.path;
+            } else if (roles.includes('Client')) {
+              destination = isOnboardingCompleted
+                ? routes.client.dashboard.entry.path
+                : routes.client.dashboard.getStarted.personalDetails.path;
+            }
+
+            if (destination) {
+              router.push(destination);
+            }
           }, 500);
         } else {
           errorToast(getErrorMessage(response));
@@ -130,7 +146,7 @@ export default function Login() {
                   className="w-full app_auth_login__btn"
                   type="submit"
                 >
-                  Submit
+                  Sign in
                 </Button>
               </div>
               <Link href={routes.auth.forgotPassword.path}>
