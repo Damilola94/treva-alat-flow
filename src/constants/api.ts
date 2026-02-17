@@ -28,12 +28,14 @@ export const endpoints = {
     resetPassword: '/auth/reset-password',
     refreshToken: '/auth/refresh-token',
     verifyAccount: '/auth/verify-account',
+    resendVerification: '/auth/resend-email-verification',
     changePassword: '/auth/change-password',
   },
 
   location: {
     getStates: `/locations/states`,
     getCities: `/locations/cities`,
+    getLGA: `/locations/lga`,
   },
 
   professions: {

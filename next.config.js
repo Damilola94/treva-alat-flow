@@ -61,14 +61,24 @@ const nextConfig = {
   },
   async redirects() {
     return [
+      // {
+      //   source: '/',
+      //   destination: '/auth/sign-in',
+      //   permanent: false,
+      // },
+      // {
+      //   source: `/${namespace}`,
+      //   destination: `/${namespace}/auth/sign-in`,
+      //   permanent: false,
+      // },
       {
         source: '/',
-        destination: '/auth/sign-in',
+        destination: '/onboarding-type',
         permanent: false,
       },
       {
         source: `/${namespace}`,
-        destination: `/${namespace}/auth/sign-in`,
+        destination: `/${namespace}/onboarding-type`,
         permanent: false,
       },
     ];

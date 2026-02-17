@@ -17,7 +17,7 @@ export const locationService = userServiceApiSlice.injectEndpoints({
 
     getCities: builder.query({
       query: (values: { state: string }) => ({
-        url: endpoints.location.getCities,
+        url: endpoints.location.getLGA,
         method: REQUEST_METHODS.GET,
         params: values,
       }),

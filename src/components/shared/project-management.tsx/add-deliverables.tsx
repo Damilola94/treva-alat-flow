@@ -38,6 +38,11 @@ export function AddDeliverables(props: IProps) {
     projectId: projectIdStore,
   } = useAppSelector((state) => state?.project);
 
+  const today = new Date();
+  const maxEndDate = new Date(today);
+  maxEndDate.setMonth(maxEndDate.getMonth() + 3);
+  const todayStr = today.toISOString().split('T')[0];
+
   const initialValues = {
     name: name,
     description: deliverableDescription,
@@ -50,7 +55,11 @@ export function AddDeliverables(props: IProps) {
     name: Yup.string().required('Please enter a deliverable name'),
     description: Yup.string().required('Please enter a description'),
     startDate: Yup.date().required('Please select a start date'),
-    endDate: Yup.date().required('Please select a due date'),
+    // endDate: Yup.date().required('Please select a due date'),
+    endDate: Yup.date()
+      .min(today, 'End date cannot be in the past')
+      .max(maxEndDate, 'End date cannot be more than 3 months from today')
+      .required('Please select a due date'),
     unitAmount: Yup.number().required('Please enter unit amount'),
     unit: Yup.number().required('Please enter unit'),
   });
@@ -78,7 +87,7 @@ export function AddDeliverables(props: IProps) {
         // resetForm()
         onClose();
         // dispatch(storeValues(values))
-        
+
         dispatch(
           storeValues({
             name: '',
@@ -174,6 +183,8 @@ export function AddDeliverables(props: IProps) {
                       onBlur={handleBlur}
                       errors={errors}
                       touched={touched}
+                      min={todayStr}
+                      // max={maxEndDateStr}
                     />
                   </div>
 
@@ -193,7 +204,7 @@ export function AddDeliverables(props: IProps) {
                     <Input
                       name="unit"
                       type="number"
-                      placeholder="Unit"
+                      placeholder="Unit Price"
                       size="xl"
                       value={values.unit}
                       onChange={handleChange}

@@ -11,6 +11,7 @@ import routes from '@/lib/routes';
 import { readFileToDataUrl } from '@/utils';
 import { useUsers } from '@/hooks/Users';
 import { Textarea } from '@/components/ui/textarea';
+import useProfessions from '@/hooks/Users/useProfessions';
 
 const validationSchema = Yup.object().shape({
   bio: Yup.string()
@@ -44,13 +45,37 @@ export default function ProfileSetup() {
     loading,
   } = useUsers();
 
+  // const initialValues = {
+  //   bio: '',
+  //   portfolioLink: '',
+  //   socialMediaUrl: '',
+  //   professionalHeadshot: null as File | null,
+  //   cv: null as File | null,
+  //   awardsAndCertifications: null as File | null,
+  //   // new
+  //   firstName: '',
+  //   lastName: '',
+  //   phoneNumber: '',
+  //   profession: '',
+  //   professionId: '',
+  // };
+
+  const onboarding = creativeOnboardingData?.data;
+
+  console.log(onboarding, 'onboarding');
+
   const initialValues = {
-    bio: '',
-    portfolioLink: '',
-    socialMediaUrl: '',
+    bio: onboarding?.bio ?? '',
+    portfolioLink: onboarding?.portfolioLink ?? '',
+    socialMediaUrl: onboarding?.scocialMediaUrl ?? '',
     professionalHeadshot: null as File | null,
     cv: null as File | null,
     awardsAndCertifications: null as File | null,
+
+    firstName: onboarding?.firstName ?? '',
+    lastName: onboarding?.lastName ?? '',
+    phoneNumber: onboarding?.phoneNumber ?? '',
+    professionId: onboarding?.professionId ?? '',
   };
 
   const formik = useFormik({
@@ -62,6 +87,10 @@ export default function ProfileSetup() {
         professionalHeadshot: values?.professionalHeadshot,
         portfolioLink: values?.portfolioLink,
         socialMedialUrl: values?.socialMediaUrl,
+        firstName: values?.firstName,
+        lastName: values?.lastName,
+        phoneNumber: values?.phoneNumber,
+        professionId: values?.professionId,
         cv: values?.cv,
         awardsAndCertifications: values?.awardsAndCertifications,
         currentStep: 1,
@@ -102,7 +131,7 @@ export default function ProfileSetup() {
 
   const headshotRef = useRef<HTMLInputElement | null>(null);
   const cvRef = useRef<HTMLInputElement | null>(null);
-  const awardsRef = useRef<HTMLInputElement | null>(null);
+  // const awardsRef = useRef<HTMLInputElement | null>(null);
 
   const {
     handleBlur,
@@ -152,19 +181,12 @@ export default function ProfileSetup() {
 
   useEffect(() => {
     if (creativeOnboardingData?.data) {
-      formik.setFieldValue('bio', creativeOnboardingData.data.bio || '');
-      formik.setFieldValue(
-        'portfolio',
-        creativeOnboardingData.data.portfolioLink || '',
-      );
       formik.setFieldValue('cv', creativeOnboardingData.data.cvUrl || '');
-      formik.setFieldValue(
-        'socialMediaUrl',
-        creativeOnboardingData.data.scocialMediaUrl || '',
-      );
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [creativeOnboardingData?.data]);
+
+  const { professions } = useProfessions();
 
   return (
     <div className="app_get_started_professional_details py-6 px-4 flex flex-col gap-14 ">
@@ -179,24 +201,24 @@ export default function ProfileSetup() {
           className="snap-start shrink-0"
         />
         <ProgressStatus
-          label="BVN Verification"
+          label="ID Verification"
           className="snap-start shrink-0"
         />
-        <ProgressStatus
+        {/* <ProgressStatus
           label="NIN verification"
           className="snap-start shrink-0"
-        />
+        /> */}
         <ProgressStatus
           label="Address verification"
           className="snap-start shrink-0"
         />
-        <ProgressStatus label="Select plan" className="snap-start shrink-0" />
+        {/* <ProgressStatus label="Select plan" className="snap-start shrink-0" /> */}
         <ProgressStatus label="Finish" className="snap-start shrink-0" />
       </div>
 
       {/* <ProgressStatus label="Team setup" /> */}
 
-      <div className="app_get_started_professional_details__form flex flex-col gap-10">
+      <div className="app_get_started_professional_details__form flex flex-col gap-10  !max-w-[600px]">
         <h3 className="app_get_started_professional_details__form__title !font-bold">
           Profile Setup
         </h3>
@@ -204,6 +226,105 @@ export default function ProfileSetup() {
           <div>
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
               <div className="flex flex-col gap-8">
+                <div className="space-y-2">
+                  <p className="font-semibold text-[14px]">Your Name</p>
+                  <div className="flex flex-col sm:flex-row w-full sm:items-center justify-between gap-6">
+                    <div className="w-full">
+                      <Input
+                        name="firstName"
+                        type="text"
+                        placeholder="First Name"
+                        size="lg"
+                        value={values.firstName}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        errors={errors}
+                        touched={touched}
+                      />
+                    </div>
+
+                    <div className="w-full">
+                      <Input
+                        name="lastName"
+                        type="text"
+                        placeholder="Last Name"
+                        size="lg"
+                        value={values.lastName}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        errors={errors}
+                        touched={touched}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex flex-col sm:flex-row w-full sm:items-center justify-between gap-6">
+                  <div className="w-full">
+                    <Input
+                      name="phoneNumber"
+                      label="Phone Number"
+                      type="text"
+                      placeholder="(+234)"
+                      size="lg"
+                      value={values.phoneNumber}
+                      onChange={(e) => {
+                        const digitsOnly = e.target.value.replace(/\D/g, '');
+                        setFieldValue('phoneNumber', digitsOnly);
+                      }}
+                      onBlur={handleBlur}
+                      errors={errors}
+                      touched={touched}
+                    />
+                  </div>
+
+                  <div className="w-full">
+                    <div className="space-y-2">
+                      <p className="font-medium text-[14px]">Your profession</p>
+                      <div className="relative w-full">
+                        <select
+                          name="professionId"
+                          value={values.professionId}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          className="app_input_con__lbl !border-b !rounded-none px-3 pt-3 pb-3 !border-b-slate-200 w-full appearance-none !text-base"
+                        >
+                          <option value="" className="app_input_con__lbl">
+                            Select profession
+                          </option>
+                          {professions?.map((profession) => (
+                            <option
+                              key={profession.id}
+                              value={profession.id}
+                              className="app_input_con__lbl"
+                            >
+                              {profession.name}
+                            </option>
+                          ))}
+                        </select>
+
+                        {/* Custom arrow */}
+                        <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2">
+                          <svg
+                            className="w-5 h-5 text-gray-400"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M19 9l-7 7-7-7"
+                            />
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
                 <div className="">
                   <Textarea
                     name="bio"
@@ -222,144 +343,161 @@ export default function ProfileSetup() {
                   />
                 </div>
 
-                <div className="">
-                  <Input
-                    name="portfolioLink"
-                    type="text"
-                    label="Portfolio Link (Optional)"
-                    placeholder="Enter portfolio Link"
-                    size="lg"
-                    value={values.portfolioLink}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    errors={errors}
-                    touched={touched}
-                  />
+                <div className="flex  flex-col sm:flex-row w-full sm:items-center justify-between gap-6">
+                  <div className="w-full">
+                    <Input
+                      name="portfolioLink"
+                      type="text"
+                      label="Portfolio Link (Optional)"
+                      placeholder="Enter portfolio Link"
+                      size="lg"
+                      value={values.portfolioLink}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      errors={errors}
+                      touched={touched}
+                    />
+                  </div>
+
+                  <div className="w-full">
+                    <Input
+                      name="socialMediaUrl"
+                      type="text"
+                      id="social"
+                      label="Preferred Social Media Profile"
+                      placeholder="Enter profile URL"
+                      size="lg"
+                      value={values.socialMediaUrl}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      errors={errors}
+                      touched={touched}
+                    />
+                  </div>
                 </div>
 
-                <div className="">
-                  <Input
-                    name="socialMediaUrl"
-                    type="text"
-                    id='social'
-                    label="Preferred Social Media Profile"
-                    placeholder="Enter profile URL"
-                    size="lg"
-                    value={values.socialMediaUrl}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    errors={errors}
-                    touched={touched}
-                  />
-                </div>
-
-                {values.professionalHeadshot ||
-                previewUrl.professionalHeadshot ? (
-                  <div>
-                    <p className="app_input_con__lbl mb-5">
-                      Professional headshot
-                    </p>
-                    <div className="flex flex-col items-center gap-2 border p-4 rounded-md bg-gray-50">
-                      {previewUrl.professionalHeadshot && (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={previewUrl.professionalHeadshot}
-                          alt="Preview"
-                          className="w-32 h-32 object-cover rounded-md"
-                        />
-                      )}
-                      <p className="text-sm text-gray-700">
-                        {typeof values.professionalHeadshot === 'string'
-                          ? values.professionalHeadshot
-                          : values.professionalHeadshot?.name}
-                      </p>
+                <div className="flex  flex-col sm:flex-row w-full sm:items-center justify-between gap-6">
+                  <div className="w-full">
+                    {values.professionalHeadshot ||
+                    previewUrl.professionalHeadshot ? (
+                      <div>
+                        <p className="app_input_con__lbl mb-5">
+                          Professional headshot
+                        </p>
+                        <div className="flex flex-col items-center gap-2 border p-4 rounded-md bg-gray-50">
+                          {previewUrl.professionalHeadshot && (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img
+                              src={previewUrl.professionalHeadshot}
+                              alt="Preview"
+                              className="w-32 h-32 object-cover rounded-md"
+                            />
+                          )}
+                          <p className="text-sm text-gray-700">
+                            {typeof values.professionalHeadshot === 'string'
+                              ? values.professionalHeadshot
+                              : values.professionalHeadshot?.name}
+                          </p>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              handleRemoveFile(
+                                'professionalHeadshot',
+                                headshotRef,
+                              )
+                            }
+                            className="text-red-500 underline text-sm"
+                          >
+                            Remove
+                          </button>
+                        </div>
+                        <p className="text-red-500 text-sm">
+                          This field is required
+                        </p>
+                      </div>
+                    ) : (
+                      <div>
+                        <p className="app_input_con__lbl mb-5">
+                          Professional headshot
+                        </p>
+                        <button
+                          type="button"
+                          onClick={() => headshotRef.current?.click()}
+                          className="border border-dashed border-gray-300 rounded-md w-full"
+                        >
+                          <div className="app_upload_con py-5 px-4 flex flex-col gap-3 items-center">
+                            <Upload />
+                            <div className="flex flex-col gap-1">
+                              <p className="app_upload_con__title">
+                                Your photo
+                              </p>
+                              <p className="app_upload_con__description">
+                                PDF, PNG, JPG, GIF | 10MB max.
+                              </p>
+                            </div>
+                          </div>
+                        </button>
+                      </div>
+                    )}
+                    <input
+                      ref={headshotRef}
+                      className="hidden"
+                      type="file"
+                      accept="image/*,.pdf"
+                      onChange={(e) =>
+                        handleFileChange(e, 'professionalHeadshot')
+                      }
+                    />
+                  </div>
+                  <div className="w-full">
+                    <div className="mb-5">
+                      <label htmlFor="">Curriculum Vitae</label>
+                    </div>
+                    {values.cv ? (
+                      <div className="flex flex-col items-center gap-2 border p-4 rounded-md bg-gray-50">
+                        <p className="text-sm text-gray-700">
+                          {typeof values.cv === 'string'
+                            ? values.cv
+                            : values.cv?.name}
+                        </p>
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveFile('cv', cvRef)}
+                          className="text-red-500 underline text-sm"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    ) : (
                       <button
                         type="button"
-                        onClick={() =>
-                          handleRemoveFile('professionalHeadshot', headshotRef)
-                        }
-                        className="text-red-500 underline text-sm"
+                        onClick={() => cvRef.current?.click()}
+                        className="border border-dashed border-gray-300 rounded-md w-full"
                       >
-                        Remove
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  <div>
-                    <p className="app_input_con__lbl mb-5">
-                      Professional headshot
-                    </p>
-                    <button
-                      type="button"
-                      onClick={() => headshotRef.current?.click()}
-                      className="border border-dashed border-gray-300 rounded-md w-full"
-                    >
-                      <div className="app_upload_con py-5 px-4 flex flex-col gap-3 items-center">
-                        <Upload />
-                        <div className="flex flex-col gap-1">
-                          <p className="app_upload_con__title">Your photo</p>
-                          <p className="app_upload_con__description">
-                            PDF, PNG, JPG, GIF | 10MB max.
-                          </p>
+                        <div className="app_upload_con py-5 px-4 flex flex-col gap-3 items-center">
+                          <Upload />
+                          <div className="flex flex-col gap-1">
+                            <p className="app_upload_con__title !font-bold">
+                              Upload your CV
+                            </p>
+                            <p className="app_upload_con__description">
+                              PDF, PNG, JPG, GIF | 10MB max.
+                            </p>
+                          </div>
                         </div>
-                      </div>
-                    </button>
+                      </button>
+                    )}
+                    <input
+                      ref={cvRef}
+                      className="hidden"
+                      type="file"
+                      accept=".png,.doc,.pdf,.gif,.jpg,.jpeg,image/png,image/jpeg,image/gif,application/pdf,application/msword"
+                      onChange={(e) => handleFileChange(e, 'cv')}
+                    />
                   </div>
-                )}
-                <input
-                  ref={headshotRef}
-                  className="hidden"
-                  type="file"
-                  accept="image/*,.pdf"
-                  onChange={(e) => handleFileChange(e, 'professionalHeadshot')}
-                />
-
-                <div>
-                  <label htmlFor="">Curriculum Vitae</label>
                 </div>
-                {values.cv ? (
-                  <div className="flex flex-col items-center gap-2 border p-4 rounded-md bg-gray-50">
-                    <p className="text-sm text-gray-700">
-                      {typeof values.cv === 'string'
-                        ? values.cv
-                        : values.cv?.name}
-                    </p>
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveFile('cv', cvRef)}
-                      className="text-red-500 underline text-sm"
-                    >
-                      Remove
-                    </button>
-                  </div>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={() => cvRef.current?.click()}
-                    className="border border-dashed border-gray-300 rounded-md w-full"
-                  >
-                    <div className="app_upload_con py-5 px-4 flex flex-col gap-3 items-center">
-                      <Upload />
-                      <div className="flex flex-col gap-1">
-                        <p className="app_upload_con__title !font-bold">
-                          Upload your CV
-                        </p>
-                        <p className="app_upload_con__description">
-                          PDF, PNG, JPG, GIF | 10MB max.
-                        </p>
-                      </div>
-                    </div>
-                  </button>
-                )}
-                <input
-                  ref={cvRef}
-                  className="hidden"
-                  type="file"
-                 accept=".png,.doc,.pdf,.gif,.jpg,.jpeg,image/png,image/jpeg,image/gif,application/pdf,application/msword"
-                  onChange={(e) => handleFileChange(e, 'cv')}
-                />
 
-                <div>
+                {/* <div>
                   <label htmlFor="">Awards/Certifications (Optional)</label>
                 </div>
                 {values.awardsAndCertifications ||
@@ -415,17 +553,18 @@ export default function ProfileSetup() {
                   onChange={(e) =>
                     handleFileChange(e, 'awardsAndCertifications')
                   }
-                />
+                /> */}
               </div>
+              <hr className="my-4" />
 
-              <div className="pt-4 flex">
+              <div className="pt-4 flex justify-end">
                 <div className="">
                   <Button
                     size="xl"
                     backgroundColor="primary-blue-500"
                     className="w-full py-3 px-12"
                     isLoading={loading}
-                     disabled={!(isValid && dirty)}
+                    disabled={!(isValid && dirty)}
                   >
                     Save & Continue
                   </Button>

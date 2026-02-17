@@ -59,17 +59,62 @@ interface SidebarProps {
   userData?: User | any;
 }
 
+// const SidebarItem = ({
+//   item,
+//   toggleMenu,
+// }: {
+//   item: ISidebarItem;
+//   toggleMenu?: () => void;
+// }) => {
+//   const { isActive } = useIsActive();
+//   const activeCN = isActive(item?.href, item.label === 'Dashboard')
+//     ? 'active'
+//     : '';
+
+//   return (
+//     <div className={`app_dash_main__aside__links__item ${activeCN}`}>
+//       <Link
+//         className="app_dash_main__aside__links__item__a"
+//         href={item.href}
+//         onClick={toggleMenu}
+//       >
+//         <div className="app_dash_main__aside__links__item__ctt">
+//           {item.icon}
+//           <p className="app_dash_main__aside__links__item__ctt__p">
+//             {item.label}
+//           </p>
+//         </div>
+//       </Link>
+//     </div>
+//   );
+// };
+
 const SidebarItem = ({
   item,
   toggleMenu,
 }: {
-  item: ISidebarItem;
+  item: ISidebarItem & { disabled?: boolean };
   toggleMenu?: () => void;
 }) => {
   const { isActive } = useIsActive();
   const activeCN = isActive(item?.href, item.label === 'Dashboard')
     ? 'active'
     : '';
+
+  if (item.disabled) {
+    return (
+      <div
+        className={`app_dash_main__aside__links__item cursor-not-allowed !text-gray-400`}
+      >
+        <div className="app_dash_main__aside__links__item__ctt !text-gray-400">
+          {item.icon}
+          <p className="app_dash_main__aside__links__item__ctt__p !text-gray-400">
+            {item.label}
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={`app_dash_main__aside__links__item ${activeCN}`}>

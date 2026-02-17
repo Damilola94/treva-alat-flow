@@ -6,7 +6,7 @@ import queries from '@/services/queries/auth';
 import routes from '@/lib/routes';
 import { useRouter } from 'next/navigation';
 import { Header } from '@/components/shared/onboarding';
-import { Pill } from '@/components/shared';
+import { Clientlogo, Freelancerlogo, Pill } from '@/components/shared';
 import {
   storeValues,
   useAppDispatch,
@@ -37,9 +37,11 @@ export default function Page() {
       setFormData(values);
       dispatch(storeValues({ actorType: values?.onboardingType }));
       if (values.onboardingType === OnboardingType.Creative) {
-        rt.push(routes.creatives.onboarding.inputEmail.path);
+        // rt.push(routes.creatives.onboarding.inputEmail.path);
+        rt.push(routes.register.createAccount.path);
       } else {
-        rt.push(routes.client.onboarding.personalDetails.path);
+        // rt.push(routes.client.onboarding.personalDetails.path);
+        rt.push(routes.register.createAccount.path);
       }
     },
   });
@@ -60,9 +62,9 @@ export default function Page() {
           <div>
             <form onSubmit={handleSubmit} className="flex flex-col gap-8">
               <h3 className="app_auth_login__title">
-                What type of account do you want?
+                Join as a client or freelancer
               </h3>
-              <div className="flex flex-col gap-8">
+              <div className="flex flex-col gap-8 mt-5">
                 <div className="flex gap-2">
                   <Pill
                     // eslint-disable-next-line @typescript-eslint/no-misused-promises
@@ -73,9 +75,19 @@ export default function Page() {
                       )
                     }
                     active={values.onboardingType === OnboardingType.Creative}
-                    className="w-full"
+                    className="w-full min-h-[120px] flex flex-col justify-center items-center"
                   >
-                    Creative
+                    <div className="flex flex-col space-y-4">
+                      <Freelancerlogo />
+                      <div className="text-start mb-4">
+                        <p className="font-bold text-[#333333] text-sm">
+                          Freelancer
+                        </p>
+                        <p className="text-[#808080] text-sm">
+                          I&apos;m looking for freelance work
+                        </p>
+                      </div>
+                    </div>
                   </Pill>
 
                   <Pill
@@ -87,9 +99,19 @@ export default function Page() {
                       )
                     }
                     active={values.onboardingType === OnboardingType.Client}
-                    className="w-full"
+                    className="w-full min-h-[120px] flex flex-col justify-center items-center"
                   >
-                    Client
+                    <div className="flex flex-col space-y-4">
+                      <Clientlogo />
+                      <div className="text-start mb-4">
+                        <p className="font-bold text-[#333333] text-sm">
+                          Client
+                        </p>
+                        <p className="text-[#808080] text-sm">
+                          I&apos;m looking to hire freelancers.
+                        </p>
+                      </div>
+                    </div>
                   </Pill>
                 </div>
               </div>
@@ -99,9 +121,9 @@ export default function Page() {
                   size="xl"
                   isLoading={isLoading}
                   backgroundColor="primary-blue-500"
-                  className="w-full app_auth_login__btn"
+                  className="w-full app_auth_login__btn mt-10"
                 >
-                  Next
+                  Create Account
                 </Button>
               </div>
             </form>

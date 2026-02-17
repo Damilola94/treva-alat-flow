@@ -1,8 +1,9 @@
 'use client';
 import React, { useState } from 'react';
-import Image, { type StaticImageData } from 'next/image';
+import { type StaticImageData } from 'next/image';
 import { useRouter } from 'next/navigation';
 import { Loader2, X } from 'lucide-react';
+import { CreateProjectLogo } from '../svgs';
 
 interface IProps {
   item: {
@@ -38,7 +39,7 @@ export function CreateProjectCard(props: IProps) {
   };
 
   return (
-    <div className="project_management_card flex flex-col gap-4 relative">
+    <div className="project_management_card flex flex-col gap-4 relative sm:min-w-[400px]">
       <button
         className="absolute top-4 right-4 p-2 rounded-full bg-gray-200 hover:bg-gray-300"
         onClick={onClose}
@@ -47,26 +48,23 @@ export function CreateProjectCard(props: IProps) {
       </button>
 
       <div className="project_management_card__bg">
-        <Image
-          src={item?.img}
-          alt="take a tour"
-          className="w-full"
-          width={100}
-          height={100}
-          unoptimized
-        />
+        <div className="flex justify-center items-center py-6">
+          <CreateProjectLogo />
+        </div>
       </div>
       <div className={'flex flex-col gap-9 justify-between flex-1'}>
         <div className="project_management_card__ctt">
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 py-2">
             <p className="project_management_card__ctt__title">{item?.title}</p>
           </div>
           <div className="grid grid-cols-2 gap-6">
             {item?.createProject.map((project, index) => (
               <div
                 key={index}
-                className={`project_management_card__ctt__option ${
-                  selectedProject === project.title ? 'selected' : ''
+                className={`project_management_card__ctt__option min-h-[120px] flex flex-col !justify-center cursor-pointer ${
+                  selectedProject === project.title
+                    ? 'selected'
+                    : 'bg-[#F9FAFB]'
                 }`}
                 onClick={() => {
                   setSelectedProject(project.title);
@@ -75,11 +73,11 @@ export function CreateProjectCard(props: IProps) {
                 <div className="">{project.icon}</div>
                 <div className="">
                   <h3 className="project_management_card__ctt__option__title">
-                    {project.title}
+                    {project.title} Project
                   </h3>
-                  <p className="project_management_card__ctt__option__details">
+                  {/* <p className="project_management_card__ctt__option__details">
                     {project.details}
-                  </p>
+                  </p> */}
                 </div>
               </div>
             ))}
@@ -87,10 +85,10 @@ export function CreateProjectCard(props: IProps) {
         </div>
         <div className="project_management_card__action mb-10">
           <button
-            className={`project_management_card__action__btn1 flex items-center justify-center gap-2 ${
+            className={`project_management_card__action__btn1 flex items-center justify-center gap-2 !py-4 ${
               selectedProject
                 ? 'bg-[#7B37F0] text-white'
-                : 'bg-gray-400 cursor-not-allowed'
+                : '!bg-[#F6F6F6] cursor-not-allowed !text-[#888888] !font-bold'
             }`}
             type="button"
             disabled={!selectedProject || isLoading}

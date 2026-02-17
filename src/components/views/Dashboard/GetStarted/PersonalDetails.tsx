@@ -71,6 +71,9 @@ export default function PersonalDetails() {
     city: '',
     state: '',
     socialMediaUrl: '',
+    firstName: '',
+    lastName: '',
+    phoneNumber: '',
   };
 
   const formik = useFormik({
@@ -114,7 +117,7 @@ export default function PersonalDetails() {
         )?.label || '';
       setState(state);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userOnboardingData?.data?.stateId]);
 
   const {
@@ -184,21 +187,21 @@ export default function PersonalDetails() {
         )?.label || '';
       setState(state);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userOnboardingData?.data]);
 
   return (
     <div className="app_get_started_professional_details py-6 px-4 flex flex-col gap-14">
       <div className="flex justify-center items-center gap-4">
         <ProgressStatus label="Profile Setup" checked />
-        <ProgressStatus label="BVN Verification" />
-        <ProgressStatus label="NIN Verification" />
+        <ProgressStatus label="ID Verification" />
+        {/* <ProgressStatus label="NIN Verification" /> */}
         <ProgressStatus label="Address Verification" />
         <ProgressStatus label="Finish" />
         {/* <ProgressStatus label="Team setup" /> */}
       </div>
 
-      <div className="app_get_started_professional_details__form flex flex-col gap-10">
+      <div className="app_get_started_professional_details__form flex flex-col gap-10 !max-w-[600px]">
         <h3 className="app_get_started_professional_details__form__title">
           Profile Setup
         </h3>
@@ -213,6 +216,57 @@ export default function PersonalDetails() {
                   accept=".pdf,.png,.jpg,.jpeg,.gif"
                   onChange={handleFileChange}
                 />
+
+                <div className="space-y-2">
+                  <p className="font-semibold text-[14px]">Name</p>
+                  <div className="flex flex-col sm:flex-row w-full sm:items-center justify-between gap-6">
+                    <div className="w-full">
+                      <Input
+                        name="firstName"
+                        type="text"
+                        placeholder="First Name"
+                        size="lg"
+                        value={values.firstName}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        errors={errors}
+                        touched={touched}
+                      />
+                    </div>
+
+                    <div className="w-full">
+                      <Input
+                        name="lastName"
+                        type="text"
+                        placeholder="Last Name"
+                        size="lg"
+                        value={values.lastName}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        errors={errors}
+                        touched={touched}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="w-full">
+                  <Input
+                    name="phoneNumber"
+                    label="Phone Number"
+                    type="text"
+                    placeholder="(+234)"
+                    size="lg"
+                    value={values.phoneNumber}
+                    onChange={(e) => {
+                      const digitsOnly = e.target.value.replace(/\D/g, '');
+                      setFieldValue('phoneNumber', digitsOnly);
+                    }}
+                    onBlur={handleBlur}
+                    errors={errors}
+                    touched={touched}
+                  />
+                </div>
 
                 <div className="">
                   <Textarea
@@ -232,23 +286,41 @@ export default function PersonalDetails() {
                   />
                 </div>
 
-                <div className="">
-                  <Input
-                    name="socialMediaUrl"
-                    type="text"
-                    id="social"
-                    label="Preferred Social Media Profile"
-                    placeholder="Enter profile URL"
-                    size="lg"
-                    value={values.socialMediaUrl}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    errors={errors}
-                    touched={touched}
-                  />
+                <div className="flex  flex-col sm:flex-row w-full sm:items-center justify-between gap-6">
+                  <div className="w-full">
+                    <Input
+                      name="websiteUrl"
+                      type="text"
+                      id="website"
+                      label="Website (Optional)"
+                      placeholder="Enter website"
+                      size="lg"
+                      value={values.websiteUrl}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      errors={errors}
+                      touched={touched}
+                    />
+                  </div>
+
+                  <div className="w-full">
+                    <Input
+                      name="socialMediaUrl"
+                      type="text"
+                      id="social"
+                      label="Preferred Social Media Profile"
+                      placeholder="Enter profile URL"
+                      size="lg"
+                      value={values.socialMediaUrl}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      errors={errors}
+                      touched={touched}
+                    />
+                  </div>
                 </div>
 
-                <div>
+                {/* <div>
                   <SelectField
                     name="state"
                     label="State"
@@ -289,23 +361,7 @@ export default function PersonalDetails() {
                     errors={errors}
                     touched={touched}
                   />
-                </div>
-
-                <div className="">
-                  <Input
-                    name="websiteUrl"
-                    type="text"
-                    id="website"
-                    label="Website (Optional)"
-                    placeholder="Enter website"
-                    size="lg"
-                    value={values.websiteUrl}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    errors={errors}
-                    touched={touched}
-                  />
-                </div>
+                </div> */}
 
                 {values.photo || previewUrl ? (
                   <div>
@@ -354,8 +410,9 @@ export default function PersonalDetails() {
                   </div>
                 )}
               </div>
+              <hr className="mt-6 mb-2" />
 
-              <div className="pt-4 flex">
+              <div className="pt-4 flex justify-end">
                 <div className="">
                   <Button
                     size="xl"

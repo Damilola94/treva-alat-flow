@@ -27,9 +27,7 @@ export const authService = userServiceApiSlice.injectEndpoints({
     }),
 
     forgotPassword: builder.mutation({
-      query: (
-        values,
-      ) => ({
+      query: (values) => ({
         url: endpoints.auth.forgotPassword,
         method: REQUEST_METHODS.POST,
         body: values,
@@ -76,6 +74,19 @@ export const authService = userServiceApiSlice.injectEndpoints({
       ) => response,
     }),
 
+    resendVerification: builder.mutation({
+      query: (
+        values: ITrevaUserService['schemas']['ResendVerifyAccountCommand'],
+      ) => ({
+        url: endpoints.auth.resendVerification,
+        method: REQUEST_METHODS.POST,
+        body: values,
+      }),
+      transformResponse: (
+        response: ITrevaUserService['schemas']['StringBaseResponse'],
+      ) => response,
+    }),
+
     changePassword: builder.mutation({
       query: (values) => ({
         url: endpoints.auth.changePassword,
@@ -97,4 +108,5 @@ export const {
   useResetPasswordMutation,
   useChangePasswordMutation,
   useVerifyAccountMutation,
+  useResendVerificationMutation,
 } = authService;
