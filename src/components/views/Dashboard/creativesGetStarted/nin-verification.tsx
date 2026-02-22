@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { ProgressStatus } from '@/components/shared/dashboard/get-started';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Camera } from '@/components/shared';
@@ -58,9 +57,18 @@ export default function NinVerification() {
         } else {
           errorToast(response?.message || 'Something went wrong');
         }
-      } catch (error) {
-        const message = getErrorMessage(error);
-        errorToast(message || 'Something went wrong');
+        // } catch (error) {
+        //   const message = getErrorMessage(error);
+        //   errorToast(message || 'Something went wrong');
+        // }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (error: any) {
+        const message =
+          error?.data?.message ||
+          error?.message ||
+          getErrorMessage(error) ||
+          'Something went wrong';
+        errorToast(message);
       }
     },
     validationSchema,

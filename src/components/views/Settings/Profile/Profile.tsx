@@ -15,6 +15,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useProfile, useUsers } from '@/hooks/Users';
 import { getAvatar, getFullName } from '@/lib/utils';
+import { usePathname } from 'next/navigation';
 import {
   errorToast,
   handleErrors,
@@ -28,6 +29,8 @@ import Image from 'next/image';
 import { useEffect, useMemo, useState } from 'react';
 
 const Profile = () => {
+  const pathname = usePathname();
+  const isCreative = pathname.includes('/creatives/');
   const { data, refetch } = useProfile();
   const userData = useMemo(() => data?.data || null, [data]);
   const { userId } = useAppSelector((state) => state?.auth);
@@ -44,8 +47,10 @@ const Profile = () => {
     lastName: userData?.lastName ?? '',
     phoneNumber: userData?.phoneNumber ?? '',
     bio: userData?.bio ?? '',
-    portfolioLink: userData?.portfolioLink ?? '',
-    websiteUrl: userData?.websiteUrl ?? '',
+    ...(isCreative && {
+      portfolioLink: userData?.portfolioLink ?? '',
+      websiteUrl: userData?.websiteUrl ?? '',
+    }),
     picture: userData?.profilePicture ?? '',
   };
   const formik = useFormik({
@@ -206,39 +211,52 @@ const Profile = () => {
                 errors={errors}
                 touched={touched}
               />
-              <div className="flex flex-col text-[#6D6D6D] gap-2">
-                Profession
-                <span className="text-[#262626] font-bold">
-                  {userData?.profession || '--'}
-                </span>
-              </div>
-              <div className="flex flex-col text-[#6D6D6D] gap-2">
-                Location
-                <span className="text-[#262626] font-bold">
-                  {userData?.userAddresses?.[0]?.state},{' '}
-                  {userData?.userAddresses?.[0]?.country}
-                </span>
-              </div>
-              <Input
-                name="portfolioLink"
-                placeholder="Portfolio Link"
-                label="Portfolio Link "
-                value={values.portfolioLink}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                errors={errors}
-                touched={touched}
-              />
-              <Input
-                name="websiteUrl"
-                placeholder="Website Url"
-                label="Website Url"
-                value={values.websiteUrl}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                errors={errors}
-                touched={touched}
-              />
+              {isCreative && (
+                <>
+                  <div className="flex flex-col text-[#6D6D6D] gap-2">
+                    Profession
+                    <span className="text-[#262626] font-bold">
+                      {userData?.profession || '--'}
+                    </span>
+                  </div>
+                  <div className="flex flex-col text-[#6D6D6D] gap-2">
+                    Location
+                    <span className="text-[#262626] font-bold">
+                      {userData?.userAddresses?.[0]?.state},{' '}
+                      {userData?.userAddresses?.[0]?.country}
+                    </span>
+                  </div>
+                  <Input
+                    name="portfolioLink"
+                    placeholder="Portfolio Link"
+                    label="Portfolio Link "
+                    value={values.portfolioLink}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    errors={errors}
+                    touched={touched}
+                  />
+                  <Input
+                    name="websiteUrl"
+                    placeholder="Website Url"
+                    label="Website Url"
+                    value={values.websiteUrl}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    errors={errors}
+                    touched={touched}
+                  />
+                </>
+              )}
+              {!isCreative && (
+                <div className="flex flex-col text-[#6D6D6D] gap-2">
+                  Location
+                  <span className="text-[#262626] font-bold">
+                    {userData?.userAddresses?.[0]?.state},{' '}
+                    {userData?.userAddresses?.[0]?.country}
+                  </span>
+                </div>
+              )}
               <div className="flex flex-col text-[#6D6D6D] gap-2">
                 Social Media
                 <div className="flex flex-wrap gap-3">
@@ -333,40 +351,61 @@ const Profile = () => {
                 </span>
               </div>
 
-              <div className="flex flex-col text-[#6D6D6D] gap-2">
-                Profession
-                <span className="text-[#262626] font-bold">
-                  {userData?.profession || '--'}
-                </span>
-              </div>
-              <div className="flex flex-col text-[#6D6D6D] gap-2">
-                Location
-                <span className="text-[#262626] font-bold">
-                  {userData?.userAddresses &&
-                  userData?.userAddresses?.length > 0 ? (
-                    <>
-                      {userData?.userAddresses?.[0]?.state},{' '}
-                      {userData?.userAddresses?.[0]?.country}
-                    </>
-                  ) : (
-                    <>--</>
-                  )}
-                </span>
-              </div>
+              {isCreative && (
+                <>
+                  <div className="flex flex-col text-[#6D6D6D] gap-2">
+                    Profession
+                    <span className="text-[#262626] font-bold">
+                      {userData?.profession || '--'}
+                    </span>
+                  </div>
+                  <div className="flex flex-col text-[#6D6D6D] gap-2">
+                    Location
+                    <span className="text-[#262626] font-bold">
+                      {userData?.userAddresses &&
+                      userData?.userAddresses?.length > 0 ? (
+                        <>
+                          {userData?.userAddresses?.[0]?.state},{' '}
+                          {userData?.userAddresses?.[0]?.country}
+                        </>
+                      ) : (
+                        <>--</>
+                      )}
+                    </span>
+                  </div>
 
-              <div className="flex flex-col text-[#6D6D6D] gap-2">
-                Portfolio Link
-                <span className="text-[#262626] font-bold">
-                  {userData?.portfolioLink || '--'}
-                </span>
-              </div>
+                  <div className="flex flex-col text-[#6D6D6D] gap-2">
+                    Portfolio Link
+                    <span className="text-[#262626] font-bold">
+                      {userData?.portfolioLink || '--'}
+                    </span>
+                  </div>
 
-              <div className="flex flex-col text-[#6D6D6D] gap-2">
-                Website Url
-                <span className="text-[#262626] font-bold">
-                  {userData?.websiteUrl || '--'}
-                </span>
-              </div>
+                  <div className="flex flex-col text-[#6D6D6D] gap-2">
+                    Website Url
+                    <span className="text-[#262626] font-bold">
+                      {userData?.websiteUrl || '--'}
+                    </span>
+                  </div>
+                </>
+              )}
+
+              {!isCreative && (
+                <div className="flex flex-col text-[#6D6D6D] gap-2">
+                  Location
+                  <span className="text-[#262626] font-bold">
+                    {userData?.userAddresses &&
+                    userData?.userAddresses?.length > 0 ? (
+                      <>
+                        {userData?.userAddresses?.[0]?.state},{' '}
+                        {userData?.userAddresses?.[0]?.country}
+                      </>
+                    ) : (
+                      <>--</>
+                    )}
+                  </span>
+                </div>
+              )}
 
               <div className="flex flex-col text-[#6D6D6D] gap-2">
                 Social Media

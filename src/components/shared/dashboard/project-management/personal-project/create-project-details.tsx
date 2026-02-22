@@ -196,6 +196,7 @@ export function PersonalProjectDetails(props: IProps) {
                       isLoading={isLoading}
                       backgroundColor="primary-blue-500"
                       className="w-1/2 app_auth_login__btn gap-2"
+                      disabled={isLoading || !values.title || !values.description || !values.expectedDeliveryDate || !values.priority}
                     >
                       Save and Continue
                     </Button>

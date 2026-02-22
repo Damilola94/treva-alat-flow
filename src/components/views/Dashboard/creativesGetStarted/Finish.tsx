@@ -34,7 +34,7 @@ export default function Finish() {
               size="xl"
               backgroundColor="primary-blue-500"
               className="w-full py-3 px-12"
-               onClick={() => saveCreativeOnboarding({ currentStep: 6 })}
+               onClick={() => saveCreativeOnboarding({ currentStep: 4 })}
               isLoading={loading}
             >
               Next

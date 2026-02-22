@@ -3,6 +3,7 @@
 import { Suspense, useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import {
+  Footer,
   Header,
   Sidebar,
   SubscribeToPlan,
@@ -131,6 +132,9 @@ function Main({ children }: { children: React.ReactNode }) {
           <div className="app_dash_main__ctt__mn w-full">
             <div className="app_dashboard_page">{children}</div>
           </div>
+          <div className="fixed bottom-0 w-[1230px]">
+            <Footer />
+            </div>
         </div>
       </div>
     </main>

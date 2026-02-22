@@ -65,7 +65,7 @@ export default function Sidebar() {
   return (
     <>
       {/* mobile */}
-        <div className="md:hidden flex justify-between items-center px-4 py-5 border-b bg-white sticky top-0 z-50">
+        <div className="md:hidden flex justify-between items-center px-4 py-5 border-b bg-white sticky top-0 z-100">
           <ul className="flex gap-6">
             {menuItems.map((item) => {
               const isActive = pathname === item.href;

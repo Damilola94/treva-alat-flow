@@ -25,13 +25,10 @@ const SideModal: React.FC<ModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed font-spaceGrotesk inset-0 bg-black bg-opacity-50 z-50 overflow-hidden">
-      {/* Overlay that closes the modal when clicked */}
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 overflow-hidden ">
       <div className="absolute inset-0" onClick={onClose} />
 
-      {/* Modal container positioned on the right */}
-      <div className="absolute right-0 top-0 h-full bg-[#fff] rounded-l-lg w-full max-w-lg overflow-y-auto flex flex-col">
-        {/* Modal Header */}
+      <div className="absolute right- md:right-5 top-5 bottom-5 bg-[#fff] rounded-[16px] w-full max-w-[430px] overflow-y-auto flex flex-col">
         <div
           style={{
             backgroundImage: usebg ? 'url(/media/images/projectmanagement/top-image-create-project.png)' : '',
@@ -54,7 +51,6 @@ const SideModal: React.FC<ModalProps> = ({
           {title && <h2 className="text-2xl font-bold">{title}</h2>}
         </div>
 
-        {/* Modal Content - Accepts children */}
         <div className="p-6 flex-1 overflow-y-auto">{children}</div>
 
         {/* Modal Footer */}

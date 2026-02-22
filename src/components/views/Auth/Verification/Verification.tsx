@@ -10,6 +10,8 @@ import { clearValues, useAppDispatch } from '@/store';
 import { getErrorMessage } from '@/utils';
 import { useRouter } from 'next/navigation';
 import { MiniLoader } from '@/components/shared';
+import SuccessImage from '../../../../../public/media/images/auth/marked-success.png';
+import Image from 'next/image';
 
 export default function Verification() {
   const dispatch = useAppDispatch();
@@ -69,6 +71,7 @@ export default function Verification() {
       <Header />
       <div className="app_auth_login_container__upper">
         <div className="app_auth_login">
+          <Image src={SuccessImage} alt="Success" className="w-24 h-24 mx-auto" />
           <div className="flex flex-col gap-8">
             <h3 className="app_auth_login__title">
               {verified ? 'Verification successful' : 'Verification Failed'}
@@ -90,7 +93,7 @@ export default function Verification() {
                     router.push(routes.auth.signIn.path);
                   }}
                 >
-                  Sign in
+                  Proceed to Onboarding
                 </Button>
               )}
             </div>

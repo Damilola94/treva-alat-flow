@@ -8,7 +8,6 @@ import {
   Pill,
   CenterModal,
   SideModal,
-  Delete,
 } from '@/components/shared';
 import { Avatar } from '@/components/shared/avatar';
 import SearchInput from '@/components/ui/SearchInput';
@@ -20,21 +19,21 @@ import projectManagement from '@/lib/assets/project-management';
 import { numberFormat } from '@/lib/numbers';
 import { formatDate } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
-import { Fragment, useEffect, useMemo, useState } from 'react';
+import React, { Fragment, useEffect, useMemo, useState } from 'react';
 import { Input } from '@/components/ui/input';
-import { SmallAvatar, SmallHome } from '@/app/assets/svgs';
-import { Copy, Plus } from 'lucide-react';
+import { Copy, Loader2} from 'lucide-react';
 import { useBeneficiaryManagement, useCommon } from '@/hooks/Projects';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
 import { Button } from '@/components/ui/button';
 import {
-  useDeleteBeneficiaryMutation,
+  useBankNameEnquiryMutation,
   useGetTransactionsQuery,
 } from '@/services/paymentService';
-import { errorToast, successToast } from '@/services';
+import { errorToast } from '@/services';
 import { getErrorMessage } from '@/utils';
 import Select from 'react-select';
+import { WithdrawalFlowManager } from '@/components/shared/project-management/wallet-flow-manager';
 
 type TransactionTab = 'All' | 'Credit' | 'Debit';
 type ViewTab = 'Transaction History' | 'Invoice';
@@ -45,7 +44,6 @@ interface InvoiceParams {
   searchKey?: string;
 }
 
-// Tabs config
 const transactionTabOptions = [
   { label: 'All', value: 'All' },
   { label: 'Credit', value: 'Credit' },
@@ -68,7 +66,6 @@ export default function Page() {
   const [copied, setCopied] = useState(false);
   const [activeTransactionTab, setActiveTransactionTab] =
     useState<TransactionTab>('All');
-  const [withdraw, toggleWithdraw] = useState(false);
   const [addFunds, toggleAddFunds] = useState(false);
   const [addAccount, toggleAddAccount] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -76,10 +73,8 @@ export default function Page() {
     'Transaction History',
   );
   const [, setSelected] = useState<string | null>(null);
-  const [isDecisionModalOpen, setIsDecisionModalOpen] = useState(false);
-  const [accountToDelete, setAccountToDelete] = useState<string | null>(null);
-  const [withdrawAmount, setWithdrawAmount] = useState('');
-  const [selectedBeneficiary, setSelectedBeneficiary] = useState<any>(null);
+  const [isAddingBeneficiary, setIsAddingBeneficiary] = useState(false);
+  const [isWithdrawFlowOpen, setIsWithdrawFlowOpen] = useState(false);
 
   const [pagination, setPagination] = useState({
     pageIndex: 0,
@@ -110,19 +105,15 @@ export default function Page() {
 
   const { allInvoicesData } = useInvoices(params);
   const { myWalletData } = usePaymentService(params);
-  const {
-    addWithdrawFunds,
-    addWithdrawResponse,
-    loading: withdrawing,
-  } = usePaymentService(params);
+  const { addWithdrawResponse } = usePaymentService(params);
   const { myCommonData } = useCommon();
   const { beneficiaryData, refetch } = useBeneficiaryManagement(params);
-  const { addBeneficiary, addBeneficiaryResponse, loading } =
-    useBeneficiaryManagement();
-  const [triggerDelete, { isLoading }] = useDeleteBeneficiaryMutation();
+  const { addBeneficiary, addBeneficiaryResponse } = useBeneficiaryManagement();
   const walletId = myWalletData?.data?.accountNumber ?? '';
   // const { myTransactions } = usePaymentService(params);
   const { data: myTransactions } = useGetTransactionsQuery(walletId);
+  const [bankNameEnquiryTrigger, { isLoading: bankNameLoading }] =
+    useBankNameEnquiryMutation();
 
   const transactionData = useMemo(
     () => (Array.isArray(myTransactions?.data) ? myTransactions.data : []),
@@ -146,16 +137,6 @@ export default function Page() {
     return label.includes(input) || value.includes(input);
   };
 
-  const handleWithdrawFunds = async () => {
-    const walletId = myWalletData?.data?.accountNumber;
-    const payload = {
-      beneficiaryAccountNumber: selectedBeneficiary.accountNumber,
-      amount: Number(withdrawAmount),
-      walletId: walletId,
-    };
-    addWithdrawFunds(payload);
-  };
-
   const handleCopy = () => {
     if (!myWalletData?.data?.accountNumber) return;
     navigator.clipboard
@@ -164,26 +145,6 @@ export default function Page() {
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
       });
-  };
-
-  const handleDelete = async (accountNumber?: string | null) => {
-    if (!accountNumber) {
-      errorToast('Invalid account number');
-      return;
-    }
-    try {
-      const response = await triggerDelete(accountNumber).unwrap();
-      if (response?.isSuccess) {
-        successToast(response?.message || 'Account deleted successfully');
-        await refetch();
-        setIsDecisionModalOpen(false);
-      } else {
-        errorToast(response?.message || 'Something went wrong');
-      }
-    } catch (error) {
-      const message = getErrorMessage(error);
-      errorToast(message || 'Something went wrong');
-    }
   };
 
   const filteredCounts = {
@@ -196,12 +157,17 @@ export default function Page() {
   const formik = useFormik({
     initialValues,
     onSubmit: async (values) => {
+      setIsAddingBeneficiary(true);
       const payload = {
         name: values?.name,
         bankCode: values?.bankCode,
         accountNumber: values?.accountNumber,
       };
-      addBeneficiary(payload);
+      try {
+        await addBeneficiary(payload);
+      } finally {
+        setIsAddingBeneficiary(false);
+      }
     },
     validationSchema,
   });
@@ -217,6 +183,32 @@ export default function Page() {
     dirty,
     isValid,
   } = formik;
+
+    React.useEffect(() => {
+      const ac = values.accountNumber?.toString() || '';
+      const bc = values.bankCode;
+      if (ac.length !== 10 || !bc || values.name) return;
+  
+      const timer = setTimeout(async () => {
+        try {
+          const resp = await bankNameEnquiryTrigger({
+            accountNumber: ac,
+            bankCode: String(bc),
+          }).unwrap();
+          if (resp?.isSuccess && resp?.data) {
+            setFieldValue('name', resp.data);
+          } else if (resp && !resp.isSuccess) {
+            errorToast(resp?.message || 'Could not get beneficiary account name');
+          }
+        } catch (e) {
+          const msg = getErrorMessage(e) || 'Failed to resolve account name';
+          errorToast(msg);
+        }
+      }, 500);
+  
+      return () => clearTimeout(timer);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [values.accountNumber, values.bankCode]);
 
   useEffect(() => {
     if (addBeneficiaryResponse?.isSuccess) {
@@ -344,7 +336,9 @@ export default function Page() {
           <div className="flex gap-3">
             <button
               className="text-[#E7E7E7] font-bold border border-[#F1F1F1] rounded-full flex items-center justify-center p-4 gap-4 hover:border-[#FFF]"
-              onClick={() => toggleWithdraw(true)}
+              onClick={() => {
+                setIsWithdrawFlowOpen(true);
+              }}
             >
               <ArrowRightUp />
               <span>Withdraw Funds</span>
@@ -356,6 +350,17 @@ export default function Page() {
               <PlusBlack />
               <span>Add Funds</span>
             </button>
+            <WithdrawalFlowManager
+              isOpen={isWithdrawFlowOpen}
+              onClose={() => setIsWithdrawFlowOpen(false)}
+              wallet={myWalletData?.data}
+              beneficiaries={beneficiaryData?.data || []}
+              refetchBeneficiaries={refetch}
+              onAddAccount={() => {
+                setIsWithdrawFlowOpen(false);
+                toggleAddAccount(true);
+              }}
+            />
           </div>
         </div>
       </div>
@@ -466,12 +471,16 @@ export default function Page() {
             <span className="text-[#808080]">Account Number</span>
             <div className="flex items-center gap-2">
               <span className="font-semibold">
-                {myWalletData?.data?.accountNumber}
+                {myWalletData?.data?.accountNumber || 'N/A'}
               </span>
-              <Copy
-                className="w-4 h-4 cursor-pointer hover:text-primary"
+              <button
+                type="button"
                 onClick={handleCopy}
-              />
+                className="p-0 m-0"
+                aria-label="Copy account number"
+              >
+                <Copy />
+              </button>
               {copied && (
                 <span className="text-sm text-green-500">Copied!</span>
               )}
@@ -480,8 +489,12 @@ export default function Page() {
           <div className="flex justify-between items-center">
             <span className="text-[#808080]">Bank</span>
             <span className="font-semibold">
-              {myWalletData?.data?.bankName}{' '}
+              {myWalletData?.data?.bankName || 'N/A'}
             </span>
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="text-[#808080]">Account Name</span>
+            <span className="font-semibold">Geegs - IDEAx Labs</span>
           </div>
         </div>
       </CenterModal>
@@ -536,7 +549,7 @@ export default function Page() {
               />
             </div>
 
-            <div>
+            <div className="relative">
               <Input
                 name="name"
                 type="text"
@@ -546,9 +559,15 @@ export default function Page() {
                 onBlur={handleBlur}
                 errors={errors}
                 touched={touched}
-                placeholder="Enter account name"
+                placeholder="Account Name"
                 className="mt-10"
+                disabled
               />
+              {bankNameLoading && (
+                <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                  <Loader2 size={18} className="animate-spin text-[#7B37F0]" />
+                </div>
+              )}
             </div>
 
             <div className="flex gap-4 w-full mt-32">
@@ -558,13 +577,13 @@ export default function Page() {
                 backgroundColor="transparent"
                 color="primary-blue-500"
                 className="w-full hover:bg-transparent app_auth_login__btn border border-[#F1F1F1]"
-                onClick={() => toggleWithdraw(true)}
+                onClick={() => toggleAddAccount(false)}
               >
                 Close
               </Button>
               <Button
                 size="md"
-                isLoading={loading}
+                isLoading={isAddingBeneficiary}
                 type="submit"
                 backgroundColor="primary-blue-500"
                 className="w-full app_auth_login__btn"
@@ -576,155 +595,6 @@ export default function Page() {
           </form>
         </div>
       </SideModal>
-
-      {/* withdraw funds side modal */}
-      <SideModal
-        isOpen={withdraw}
-        onClose={() => {
-          toggleWithdraw(false);
-        }}
-        title="Withdraw Funds"
-        showFooter
-        usebg
-        footerChildren={
-          <div className="w-full gap-5">
-            <button
-              disabled={
-                !selectedBeneficiary ||
-                !withdrawAmount ||
-                !Number(withdrawAmount)
-              }
-              className={`border p-5 rounded-full w-full ${
-                selectedBeneficiary && withdrawAmount
-                  ? 'bg-[#7B37F0] text-white'
-                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              }`}
-              onClick={handleWithdrawFunds}
-            >
-              {withdrawing ? 'Processing...' : 'Withdraw'}
-            </button>
-          </div>
-        }
-      >
-        <div className="space-y-10">
-          <div>
-            {/* <Input placeholder="Withdrawal Amount" /> */}
-            <Input
-              placeholder="Withdrawal Amount"
-              type="number"
-              value={withdrawAmount}
-              onChange={(e) => {
-                setWithdrawAmount(e.target.value);
-              }}
-            />
-            <div>
-              <p className="font-semibold mt-3">
-                {numberFormat(myWalletData?.data?.availableBalance)}
-              </p>
-            </div>
-          </div>
-          <div className="space-y-5">
-            <div className="flex items-center justify-between">
-              <p className="font-semibold ">Select Bank Account</p>
-              <button
-                className="flex items-center rounded-2xl p-2 gap-1 border border-black"
-                onClick={() => {
-                  toggleWithdraw(false);
-                  toggleAddAccount(true);
-                }}
-              >
-                <Plus className="w-5 h-5" />
-                <p>Add Account</p>
-              </button>
-            </div>
-            {Array.isArray(beneficiaryData?.data) &&
-              beneficiaryData.data.map((item: any) => (
-                <div
-                  // className="border p-4 rounded-lg border-[#888888]"
-                  key={item?.id || item?.accountNumber}
-                  onClick={() => {
-                    setSelectedBeneficiary(item);
-                  }}
-                  className={`p-4 border rounded cursor-pointer ${
-                    selectedBeneficiary?.accountNumber === item.accountNumber
-                      ? 'border-blue-500 bg-blue-50'
-                      : 'border-gray-300'
-                  }`}
-                >
-                  <div className="flex items-center justify-between">
-                    <p className="font-semibold text-xl text-[#333333]">
-                      {item?.accountNumber}
-                    </p>
-                    <div
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setIsDecisionModalOpen(true);
-                        setAccountToDelete(item?.accountNumber)
-                      }}
-                      className="cursor-pointer"
-                    >
-                      <Delete />
-                    </div>
-                  </div>
-                  <div className="text-[#262626] space-y-3 mt-5">
-                    <p className="flex items-center gap-3">
-                      <span>
-                        <SmallHome />
-                      </span>
-                      {item?.bankName}
-                    </p>
-                    <p className="flex items-center gap-3">
-                      <SmallAvatar />
-                      {item?.name}
-                    </p>
-                  </div>
-                </div>
-              ))}
-          </div>
-        </div>
-      </SideModal>
-
-      {/* delete modal */}
-      <CenterModal
-        headerImageType={3}
-        isOpen={isDecisionModalOpen}
-        onClose={() => {
-          setIsDecisionModalOpen(false);
-          setAccountToDelete(null);
-        }}
-        showFooter
-        footerChildren={
-          <div className="w-full flex items-center gap-5">
-            <button
-              className="border p-3 rounded-full w-full border-[#F1F1F1] text-[#7B37F0]"
-              onClick={() => {
-                setIsDecisionModalOpen(false);
-                setAccountToDelete(null);
-              }}
-            >
-              Cancel
-            </button>
-            <button
-              className="border p-3 bg-[#F9403A] rounded-full w-full border-[#F1F1F1] text-[#fff] disabled:opacity-50"
-              onClick={() =>
-                handleDelete(accountToDelete)
-              }
-              disabled={!accountToDelete || isLoading}
-              type="button"
-            >
-              {isLoading ? 'Deleting...' : 'Delete'}
-            </button>
-
-          </div>
-        }
-      >
-        <div className="flex flex-col items-center justify-center gap-4">
-          <p className="font-semibold">
-            Are you sure you want to delete account?
-          </p>
-          <p>Account will be deleted permanently</p>
-        </div>
-      </CenterModal>
     </div>
   );
 }

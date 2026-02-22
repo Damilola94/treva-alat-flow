@@ -776,6 +776,8 @@ export interface components {
             availableBalance?: number;
             bankName?: string | null;
             currency?: string | null;
+            walletName?: string | null;
+            isWalletPinSetup?: boolean;
         };
         WalletModelBaseResponse: {
             isSuccess?: boolean;

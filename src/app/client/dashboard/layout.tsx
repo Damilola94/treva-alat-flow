@@ -101,7 +101,7 @@ function Main({ children }: { children: React.ReactNode }) {
   if (!mounted) return null;
 
   return (
-    <main className="app_dash_main flex-col">
+    <main className="app_dash_main flex-col !min-h-screen">
       <div className="app_dash_main flex-1 relative">
         <div className="z-50 md:relative fixed top-0">
           <Sidebar
@@ -111,16 +111,18 @@ function Main({ children }: { children: React.ReactNode }) {
           />
         </div>
         <div className="app_dash_main__ctt">
+
           <Header showBackArrow={shouldShowBackArrow} />
           <div className="app_dash_main__ctt__mn w-full">
+          <div className="flex-1 flex flex-col w-full">
             <div className="app_dashboard_page">{children}</div>
-            {false && (
-              <div className="fixed bottom-0 w-full">
-                <Footer />
-              </div>
-            )}
+          <div className="fixed bottom-0 w-[1230px] ">
+            {/* w-full bg-white border-t */}
+            <Footer />
+            </div>
           </div>
         </div>
+      </div>
       </div>
     </main>
   );

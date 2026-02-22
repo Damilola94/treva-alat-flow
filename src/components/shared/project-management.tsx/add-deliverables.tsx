@@ -173,6 +173,7 @@ export function AddDeliverables(props: IProps) {
                       touched={touched}
                     />
 
+                    <div>
                     <Input
                       name="endDate"
                       type="date"
@@ -186,13 +187,17 @@ export function AddDeliverables(props: IProps) {
                       min={todayStr}
                       // max={maxEndDateStr}
                     />
+                    <p className="text-[#E7211B] text-[11px]">
+                      You can’t select beyond 3 months
+                    </p>
+                    </div>
                   </div>
 
                   <div className="flex gap-5">
                     <Input
                       name="unitAmount"
                       type="number"
-                      placeholder="Unit Amount"
+                      placeholder="Quantity"
                       size="xl"
                       value={values.unitAmount}
                       onChange={handleChange}

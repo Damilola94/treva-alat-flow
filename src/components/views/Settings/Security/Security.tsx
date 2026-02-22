@@ -27,8 +27,8 @@ const Security = () => {
   const [triggerChangePassword, { isLoading }] = useChangePasswordMutation();
   const initialValues = {
     currentPassword: '',
-    newPassword: '.',
-    confirmNewPassword: '.',
+    newPassword: '',
+    confirmNewPassword: '',
   };
   const formik = useFormik({
     initialValues,
@@ -99,6 +99,8 @@ const Security = () => {
           touched={touched}
         />
       </div>
+
+      <p className='text-[#B0B0B0] text-sm mb-12 '>8 characters or longer. Combine upper and lowercase letters and numbers.</p>
 
       <div className="flex justify-end">
         <Button

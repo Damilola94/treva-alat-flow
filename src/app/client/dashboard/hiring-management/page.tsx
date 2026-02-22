@@ -117,6 +117,7 @@ export default function Page() {
           );
         })}
       </div>
+
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
         <div className="flex items-center gap-3">
           <div className="relative">
@@ -210,8 +211,8 @@ export default function Page() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
         {creatives.map((user) => (
           <div
-            key={user?.id}
-            className="bg-white border border-[#E7E7E7] rounded-lg p-5 mb-5"
+          key={user?.id}
+          className="bg-white border border-[#E7E7E7] rounded-lg p-5 mb-5"
           >
             <div className="flex items-center gap-3">
               <Avatar
@@ -258,7 +259,7 @@ export default function Page() {
           </div>
         ))}
       </div>
-      <div className="bg-white app_table__pagination">
+      <div className=" app_table__pagination !border-none">
         <Pagination
           paginate={{
             pageCount: creativesPageData?.totalPages || 0,

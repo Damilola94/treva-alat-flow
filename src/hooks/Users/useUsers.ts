@@ -152,10 +152,15 @@ const useUsers = () => {
         setSaveOnboardingResponse(response);
       } else {
         errorToast(response?.message || 'Something went wrong');
+        setSaveOnboardingResponse(response);
       }
     } catch (error) {
       const message = getErrorMessage(error);
       errorToast(message || 'Something went wrong');
+      setSaveOnboardingResponse({
+        isSuccess: false,
+        message: message || 'Something went wrong',
+      });
     }
   };
 

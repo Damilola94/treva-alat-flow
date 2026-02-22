@@ -8,15 +8,15 @@ export const PAYMENT_SERVICE_BASE_API_URL =
   process.env.NEXT_PUBLIC_PAYMENT_SERVICE_API_URL;
 
 export const REQUEST_METHODS = {
-  GET: 'GET',
-  POST: 'POST',
-  PUT: 'PUT',
-  PATCH: 'PATCH',
-  DELETE: 'DELETE',
-  HEAD: 'HEAD',
-  OPTIONS: 'OPTIONS',
-  TRACE: 'TRACE',
-  CONNECT: 'CONNECT',
+  GET: "GET",
+  POST: "POST",
+  PUT: "PUT",
+  PATCH: "PATCH",
+  DELETE: "DELETE",
+  HEAD: "HEAD",
+  OPTIONS: "OPTIONS",
+  TRACE: "TRACE",
+  CONNECT: "CONNECT",
 };
 
 export const endpoints = {
@@ -39,37 +39,37 @@ export const endpoints = {
   },
 
   professions: {
-    getProfessions: '/professions',
+    getProfessions: "/professions",
   },
 
   subscription: {
-    getAllSubs: '/subscriptions',
+    getAllSubs: "/subscriptions",
     getSubById: (subscriptionId: string) => `/subscriptions/${subscriptionId}`,
   },
 
   users: {
-    saveClientOnboarding: '/users/save-client-onboarding',
-    saveCreativeOnboarding: '/users/save-creative-onboarding',
-    getClientOnboarding: '/users/client-onboarding-record',
-    getCreativeOnboarding: '/users/creative-onboarding-record',
-    getUserProfile: '/users/my-profile',
-    getHiriingStatistics: '/users/my-hiring-statistics',
-    getCreatives: '/users/creatives',
+    saveClientOnboarding: "/users/save-client-onboarding",
+    saveCreativeOnboarding: "/users/save-creative-onboarding",
+    getClientOnboarding: "/users/client-onboarding-record",
+    getCreativeOnboarding: "/users/creative-onboarding-record",
+    getUserProfile: "/users/my-profile",
+    getHiriingStatistics: "/users/my-hiring-statistics",
+    getCreatives: "/users/creatives",
     getCreativesById: (userId: string) => `/users/creative-detail/${userId}`,
     getUserRatings: (userId: string) => `/users/${userId}/ratings`,
-    updateUserProfile: '/users/update-profile',
+    updateUserProfile: "/users/update-profile",
     deleteUserProfile: (userId: string) => `/users/${userId}/delete`,
   },
 
   selfieVerification: {
-    bvn: '/selfieverification/verify-bvn',
-    nin: '/selfieverification/verify-nin',
-    callback: '/selfieverification/callback',
+    bvn: "/selfieverification/verify-bvn",
+    nin: "/selfieverification/verify-nin",
+    callback: "/selfieverification/callback",
   },
 
   userFavorites: {
-    getAllFavorites: '/userfavorites/client-user-favorites-creative',
-    addFavorite: '/userfavorites/add-client-favorite-creative',
+    getAllFavorites: "/userfavorites/client-user-favorites-creative",
+    addFavorite: "/userfavorites/add-client-favorite-creative",
     deleteFavorite: (creativeUserId: string) =>
       `/userfavorites/remove-client-favorite-creative/${creativeUserId}`,
   },
@@ -86,14 +86,14 @@ export const endpoints = {
       `/projects/${projectId}/agreements/${agreementId}`,
   },
   projects: {
-    getAllProjects: '/projects',
-    createProject: '/projects',
+    getAllProjects: "/projects",
+    createProject: "/projects",
     getProjectById: (projectId: string) => `/projects/${projectId}`,
     updateProject: (projectId: string) => `/projects/${projectId}`,
     deleteProject: (projectId: string) => `/projects/${projectId}`,
     rateProject: (projectId: string) => `/projects/${projectId}/rate`,
-    getCreativeHires: '/projects/hired-creative-users',
-    dashboardSummaryCount: '/projects/dashboard-summary-count',
+    getCreativeHires: "/projects/hired-creative-users",
+    dashboardSummaryCount: "/projects/dashboard-summary-count",
   },
   deliverables: {
     getDeliverables: (projectId: string) =>
@@ -113,17 +113,17 @@ export const endpoints = {
     getDeliverableTaskById: (
       projectId: string,
       deliverableId: string,
-      taskId: string,
+      taskId: string
     ) => `/projects/${projectId}/deliverables/${deliverableId}/tasks/${taskId}`,
     updateDeliverableTask: (
       projectId: string,
       deliverableId: string,
-      taskId: string,
+      taskId: string
     ) => `/projects/${projectId}/deliverables/${deliverableId}/tasks/${taskId}`,
     deleteDeliverableTask: (
       projectId: string,
       deliverableId: string,
-      taskId: string,
+      taskId: string
     ) => `/projects/${projectId}/deliverables/${deliverableId}/tasks/${taskId}`,
   },
   paymentSchedules: {
@@ -154,19 +154,19 @@ export const endpoints = {
     createComment: (projectId: string) => `/projects/${projectId}/comments`,
   },
   clientManagement: {
-    getMyClients: '/clientmanagement/my-clients',
+    getMyClients: "/clientmanagement/my-clients",
     addClient: `/clientmanagement/create-client`,
     updateClient: `/clientmanagement/update-client`,
     deleteClient: `/clientmanagement/delete-client`,
   },
   invoices: {
-    getInvoice: '/invoices',
+    getInvoice: "/invoices",
     getMyInvoice: (invoiceId: string) => `/invoices/${invoiceId}`,
     addInvoice: (invoiceId: string) => `/invoices/${invoiceId}/pay`,
   },
   notifications: {
-    getNotifications: '/notifications',
-    getNotificationCount: '/notifications/unread-count',
+    getNotifications: "/notifications",
+    getNotificationCount: "/notifications/unread-count",
     readNotification: (notificationId: number) =>
       `/notifications/${notificationId}/read`,
   },
@@ -184,10 +184,15 @@ export const endpoints = {
     getMyWallets: `/wallets/my-wallet`,
     getTransactions: (walletId: string) => `wallets/${walletId}/transactions`,
     addWithdrawFunds: (walletId: string) => `wallets/${walletId}/withdraw-fund`,
+    sendOtp: "/wallets/otp/send",
+    verifyOtp: "/wallets/otp/verify",
+    resendOtp: "/wallets/otp/resend",
+    setPin: "/wallets/pin/set",
   },
   beneficiaryManagement: {
     getBeneficiarymanagement: `/beneficiarymanagement/all`,
     addBeneficiary: `/beneficiarymanagement/create`,
+    bankNameEnquiry: `/beneficiarymanagement/bank-name-enquiry`,
     deleteBeneficiary: (accountNumber: string) =>
       `/beneficiarymanagement/delete/${accountNumber}`,
   },

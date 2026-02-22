@@ -14,7 +14,7 @@ body {
   padding: 0;
   height: 100%;
   font-size: 0.9rem !important; // 14px
-  font-family: var(--second-family);
+  font-family: var(--second-family) !important;
   overflow: hidden;
 }
 

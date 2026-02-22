@@ -10,9 +10,11 @@
   text-align: center;
 
   &--active {
-    border: 1px solid var(--primary-blue-500, #262626);
+    border: 1px solid #262626;
     box-shadow: 0px 4px 20px 0px #0000000D;
-    color: var(--primary-blue-500);
+    // color: var(--primary-blue-500);
+    font-weight: 700;
+    color: #262626;
   }
 
   &--md {

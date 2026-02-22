@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
-import { Label, Pill, Table } from '@/components/shared';
+import { Label, MiniLoader, Pill, Table } from '@/components/shared';
 import { Avatar } from '@/components/shared/avatar';
 import SearchInput from '@/components/ui/SearchInput';
 import { invoiceTabs } from '@/constants';
@@ -9,9 +9,7 @@ import { useInvoices } from '@/hooks/Projects/useProjects';
 import projectManagement from '@/lib/assets/project-management';
 import { numberFormat } from '@/lib/numbers';
 import { formatDate } from '@/lib/utils';
-import { Loader2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
-
 
 interface InvoiceParams {
   status?: string;
@@ -28,7 +26,9 @@ export default function Page() {
   });
   const { allInvoicesData, loading } = useInvoices(params);
 
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(
+    invoiceTabs?.[0]?.value ?? null,
+  );
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 50,
@@ -41,6 +41,15 @@ export default function Page() {
       pageSize: pagination?.pageSize,
     }));
   }, [pagination]);
+
+  useEffect(() => {
+    if (!selectedCategory && invoiceTabs?.length) {
+      const first = invoiceTabs[0].value;
+      setSelectedCategory(first);
+      handleParamChange({ status: first === 'All' ? undefined : first });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [invoiceTabs]);
 
   const handleParamChange = (param: Partial<InvoiceParams>) => {
     setParams((prev) => ({
@@ -89,7 +98,7 @@ export default function Page() {
         <span>{formatDate(row.original.paymentSchedule?.dueDate)}</span>
       ),
     },
-     {
+    {
       header: 'Status',
       accessorKey: 'status',
       cell: ({ row }: any) => (
@@ -103,6 +112,10 @@ export default function Page() {
       ),
     },
   ];
+
+  if (loading) {
+    return <MiniLoader message="Loading" />;
+  }
 
   return (
     <div className="app_dashboard_page app_dashboard_home !p-8">
@@ -132,20 +145,15 @@ export default function Page() {
           }}
         />
       </div>
-      {loading ? (
-        <div className="text-center flex justify-center items-center">
-          <Loader2 size={18} className="animate-spin" />
-        </div>
-      ) : (
-        <Table
-          columns={invoiceHeaders}
-          emptyTitle="No Invoices Yet"
-          emptyMessage="Invoices will be added here"
-          data={allInvoicesData?.data || []}
-          pagination={pagination}
-          setPagination={setPagination}
-        />
-      )}
+      
+      <Table
+        columns={invoiceHeaders}
+        emptyTitle="No Invoices Yet"
+        emptyMessage="Invoices will be added here"
+        data={allInvoicesData?.data || []}
+        pagination={pagination}
+        setPagination={setPagination}
+      />
     </div>
   );
 }

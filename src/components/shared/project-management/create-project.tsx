@@ -1,9 +1,10 @@
 'use client';
 import React, { useState } from 'react';
-import { type StaticImageData } from 'next/image';
+import Image, { type StaticImageData } from 'next/image';
 import { useRouter } from 'next/navigation';
 import { Loader2, X } from 'lucide-react';
 import { CreateProjectLogo } from '../svgs';
+import Topimage from '../../../../public/media/images/projectmanagement/top-image-create-project.png';
 
 interface IProps {
   item: {
@@ -39,36 +40,46 @@ export function CreateProjectCard(props: IProps) {
   };
 
   return (
-    <div className="project_management_card flex flex-col gap-4 relative sm:min-w-[400px]">
-      <button
-        className="absolute top-4 right-4 p-2 rounded-full bg-gray-200 hover:bg-gray-300"
-        onClick={onClose}
-      >
-        <X className="w-5 h-5 text-gray-700" />
-      </button>
+    <div className="project_management_card flex flex-col relative sm:min-w-[450px] bg-white overflow-hidden rounded-[24px]  shadow-xl">
+      
+      {/* 2. Header Section with Image */}
+      <div className="relative w- h-40">
+        <Image 
+          src={Topimage} 
+          alt="Header Background" 
+          fill
+          className=""
+          priority
+        />
+    
+        <button
+          className="absolute top-4 right-4 p-1.5 hover:bg-black/20 transition-colors z-10"
+          onClick={onClose}
+        >
+          <X className="w-7 h-7 text-[#262626] font-bold" />
+        </button>
+      </div>
 
-      <div className="project_management_card__bg">
-        <div className="flex justify-center items-center py-6">
-          <CreateProjectLogo />
+      <div className="flex justify-center items-center -mt-20 relative z-20">
+        <div className=" p-2 rounded-full shadow-sm">
+           <CreateProjectLogo />
         </div>
       </div>
-      <div className={'flex flex-col gap-9 justify-between flex-1'}>
-        <div className="project_management_card__ctt">
-          <div className="flex flex-col gap-2 py-2">
-            <p className="project_management_card__ctt__title">{item?.title}</p>
-          </div>
-          <div className="grid grid-cols-2 gap-6">
+
+      <div className="flex flex-col gap-6 px-8 pb-8 mt-4">
+        <div className="project_management_card__ctt text-center">
+          <h2 className="text-2xl font-bold text-[#101828] mb-8">{item?.title}</h2>
+          
+          <div className="grid grid-cols-2 gap-4">
             {item?.createProject.map((project, index) => (
               <div
                 key={index}
-                className={`project_management_card__ctt__option min-h-[120px] flex flex-col !justify-center cursor-pointer ${
+                className={`flex flex-col items-center justify-center p-6 rounded-2xl border-2 transition-all cursor-pointer ${
                   selectedProject === project.title
-                    ? 'selected'
-                    : 'bg-[#F9FAFB]'
+                    ? 'border-[#7B37F0] bg-[#F9F5FF]'
+                    : 'border-gray-100 bg-[#F9FAFB] hover:border-gray-200'
                 }`}
-                onClick={() => {
-                  setSelectedProject(project.title);
-                }}
+                onClick={() => setSelectedProject(project.title)}
               >
                 <div className="">{project.icon}</div>
                 <div className="">
@@ -83,7 +94,8 @@ export function CreateProjectCard(props: IProps) {
             ))}
           </div>
         </div>
-        <div className="project_management_card__action mb-10">
+
+        <div className="mt-4">
           <button
             className={`project_management_card__action__btn1 flex items-center justify-center gap-2 !py-4 ${
               selectedProject
@@ -95,17 +107,11 @@ export function CreateProjectCard(props: IProps) {
             onClick={async () => {
               if (selectedProject && projectPaths[selectedProject]) {
                 setIsLoading(true);
-                rt.push(
-                  `${projectPaths[selectedProject]}?type=${selectedProject}`,
-                );
+                rt.push(`${projectPaths[selectedProject]}?type=${selectedProject}`);
               }
             }}
           >
-            {isLoading ? (
-              <Loader2 size={18} className="animate-spin" />
-            ) : (
-              item?.btnText1
-            )}
+            {isLoading ? <Loader2 size={18} className="animate-spin" /> : item?.btnText1 || 'Proceed'}
           </button>
         </div>
       </div>

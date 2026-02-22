@@ -1906,7 +1906,7 @@ export interface components {
         /** @enum {string} */
         InvoiceStatusEnums: "Closed" | "Due" | "Pending";
         /** @enum {string} */
-        MonthEnums: "April" | "August" | "December" | "February" | "January" | "July" | "June" | "March" | "May" | "November" | "October" | "September";
+        MonthEnums: "April" | "August" | "December" | "February" | "January" | "July" | "June" | "March" | "May" | "None" | "November" | "October" | "September";
         MyClientModel: {
             name?: string | null;
             email?: string | null;

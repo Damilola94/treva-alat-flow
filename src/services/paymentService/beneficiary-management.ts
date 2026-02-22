@@ -27,6 +27,17 @@ export const beneficiaryManagementService = paymentServiceApiSlice.injectEndpoin
       ) => response,
     }),
 
+    bankNameEnquiry: builder.mutation({
+      query: (values: { accountNumber: string; bankCode: string }) => ({
+        url: endpoints.beneficiaryManagement.bankNameEnquiry,
+        method: REQUEST_METHODS.POST,
+        body: values,
+      }),
+      transformResponse: (
+        response: ITrevaPaymentService['schemas']['StringBaseResponse'],
+      ) => response,
+    }),
+
     deleteBeneficiary: builder.mutation({
       query: (accountNumber: string) => ({
         url: endpoints.beneficiaryManagement.deleteBeneficiary(accountNumber),
@@ -42,5 +53,6 @@ export const beneficiaryManagementService = paymentServiceApiSlice.injectEndpoin
 export const {
   useGetBeneficiaryQuery,
   useAddBeneficiaryMutation,
+  useBankNameEnquiryMutation,
   useDeleteBeneficiaryMutation,
 } = beneficiaryManagementService;

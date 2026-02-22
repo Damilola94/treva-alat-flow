@@ -5,7 +5,6 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import queries from '@/services/queries/auth';
 import routes from '@/lib/routes';
 import { useRouter } from 'next/navigation';
 import { Header } from '@/components/shared/onboarding';
@@ -208,7 +207,7 @@ export default function Page() {
                 >
                   Create Account
                 </Button>
-                <p className="mt-3 text-xs">
+                <p className="mt-3 text-sm text-[#4F4F4F]">
                   By clicking &lsquo;Create account&rsquo; , you agree to the
                   <span className="text-purple-500">Privacy Policy</span> and
                   <span className="text-purple-500">Term of use</span> of the

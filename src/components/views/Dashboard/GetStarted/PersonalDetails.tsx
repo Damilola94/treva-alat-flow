@@ -5,10 +5,10 @@ import * as Yup from 'yup';
 import { ProgressStatus } from '@/components/shared/dashboard/get-started';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { SelectField, Upload } from '@/components/shared';
+import { Upload } from '@/components/shared';
 import { useRouter } from 'next/navigation';
 import routes from '@/lib/routes';
-import { useCities, useStates, useUsers } from '@/hooks/Users';
+import { useStates, useUsers } from '@/hooks/Users';
 import { readFileToDataUrl } from '@/utils';
 import { Textarea } from '@/components/ui/textarea';
 
@@ -38,10 +38,11 @@ export default function PersonalDetails() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const router = useRouter();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [state, setState] = useState('');
 
   const { stateData } = useStates({ country: 'Nigeria' });
-  const { citiesData } = useCities({ state: state });
+  // const { citiesData } = useCities({ state: state });
   const { saveClientOnboarding, saveOnboardingResponse, userOnboardingData } =
     useUsers();
 
@@ -54,14 +55,14 @@ export default function PersonalDetails() {
     );
   }, [stateData]);
 
-  const citiesOptions = useMemo(() => {
-    return (
-      citiesData?.data?.map((state) => ({
-        label: state.name ?? '',
-        value: state.id ?? '',
-      })) ?? []
-    );
-  }, [citiesData]);
+  // const citiesOptions = useMemo(() => {
+  //   return (
+  //     citiesData?.data?.map((state) => ({
+  //       label: state.name ?? '',
+  //       value: state.id ?? '',
+  //     })) ?? []
+  //   );
+  // }, [citiesData]);
 
   const initialValues = {
     bio: '',

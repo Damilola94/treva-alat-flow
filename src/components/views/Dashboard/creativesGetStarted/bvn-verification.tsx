@@ -60,9 +60,18 @@ export default function BvnVerification() {
         } else {
           errorToast(response?.message || 'Something went wrong');
         }
-      } catch (error) {
-        const message = getErrorMessage(error);
-        errorToast(message || 'Something went wrong');
+        // } catch (error) {
+        //   const message = getErrorMessage(error);
+        //   errorToast(message || 'Something went wrong');
+        // }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (error: any) {
+        const message =
+          error?.data?.message ||
+          error?.message ||
+          getErrorMessage(error) ||
+          'Something went wrong';
+        errorToast(message);
       }
     },
     validationSchema,
@@ -90,6 +99,7 @@ export default function BvnVerification() {
         setIsSuccess(true);
       } else {
         errorToast(response?.message || 'Something went wrong');
+        console.log(errorToast(response?.message || 'Something went wrong'));
       }
     } catch (error) {
       const message = getErrorMessage(error);
@@ -116,6 +126,7 @@ export default function BvnVerification() {
       };
       handleCallback(payload);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

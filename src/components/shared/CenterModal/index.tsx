@@ -7,6 +7,7 @@ interface ModalProps {
   showFooter?: boolean
   onClose: () => void
   title?: string
+  subtitle?: React.ReactNode
   children: React.ReactNode
   footerChildren?: React.ReactNode
   actionText?: string
@@ -19,6 +20,7 @@ const CenterModal: React.FC<ModalProps> = ({
   onClose,
   showFooter,
   title,
+  subtitle,
   children,
   footerChildren,
 }) => {
@@ -36,10 +38,10 @@ const CenterModal: React.FC<ModalProps> = ({
       : ''
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4 font-spaceGrotesk">
-      <div className="absolute inset-0 " onClick={onClose} />
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+      <div className="absolute inset-0 cursor-pointer" onClick={onClose} />
       <div
-        className="relative z-10 flex w-full max-w-lg flex-col overflow-hidden rounded-lg bg-white"
+        className="relative z-10 flex w-full max-w-[338px] flex-col overflow-hidden rounded-[16px] bg-white"
         onClick={(e) => {
           e.stopPropagation()
         }}
@@ -52,12 +54,12 @@ const CenterModal: React.FC<ModalProps> = ({
                 ? '110%'
                 : headerImageType === 2
                 ? '100%'
-                : 'contain',
+                : 'cover',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
             backgroundColor: '#fff',
              marginTop:
-              headerImageType === 2 ? '-10px' : headerImageType === 3 || headerImageType === 4 ? '50px' : '16px',
+              headerImageType === 2 ? '-35px' : headerImageType === 3 || headerImageType === 4 ? '50px' : '-14px',
             paddingTop:
               headerImageType === 3 || headerImageType === 4 ? '40px' : '16px',
             paddingBottom:
@@ -88,11 +90,22 @@ const CenterModal: React.FC<ModalProps> = ({
               className={`font-bold ${
                 headerImageType === 3 || headerImageType === 4
                   ? 'text-xl mt-4 text-center'
-                  : 'text-2xl'
+                  : 'text-2xl mt-16'
               }`}
             >
               {title}
             </h2>
+          )}
+          {subtitle && (
+            <p
+              className={`text-sm text-[#6D6D6D] ${
+                headerImageType === 3 || headerImageType === 4
+                  ? 'text-center mt-2'
+                  : 'mt-2'
+              }`}
+            >
+              {subtitle}
+            </p>
           )}
         </div>
 

@@ -62,7 +62,6 @@ export default function ProfileSetup() {
 
   const onboarding = creativeOnboardingData?.data;
 
-  console.log(onboarding, 'onboarding');
 
   const initialValues = {
     bio: onboarding?.bio ?? '',

@@ -15,7 +15,7 @@ const titleArray = [
 
 const detailsArray = [
   'Geegs streamlines business operations, reducing administrative tasks so you can focus son your creative work.',
-  'Simplify transactions and communication with Treva, improving client interactions and your professional image.',
+  'Simplify transactions and communication with Geegs, improving client interactions and your professional image.',
   'Geegs offers industry-specific tools and a supportive community, tailored to the needs of creative professionals.',
 ];
 
