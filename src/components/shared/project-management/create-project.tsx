@@ -81,10 +81,15 @@ export function CreateProjectCard(props: IProps) {
                 }`}
                 onClick={() => setSelectedProject(project.title)}
               >
-                <div className="mb-3 scale-125">{project.icon}</div>
-                <h3 className="font-semibold text-gray-900 text-sm">
-                  {project.title} Project
-                </h3>
+                <div className="">{project.icon}</div>
+                <div className="">
+                  <h3 className="project_management_card__ctt__option__title">
+                    {project.title} Project
+                  </h3>
+                  {/* <p className="project_management_card__ctt__option__details">
+                    {project.details}
+                  </p> */}
+                </div>
               </div>
             ))}
           </div>
@@ -92,10 +97,10 @@ export function CreateProjectCard(props: IProps) {
 
         <div className="mt-4">
           <button
-            className={`w-full py-4 rounded-full font-bold transition-all flex items-center justify-center gap-2 ${
+            className={`project_management_card__action__btn1 flex items-center justify-center gap-2 !py-4 ${
               selectedProject
-                ? 'bg-[#7B37F0] text-white hover:bg-[#6929D1]'
-                : 'bg-[#F6F6F6] text-[#888888] cursor-not-allowed'
+                ? 'bg-[#7B37F0] text-white'
+                : '!bg-[#F6F6F6] cursor-not-allowed !text-[#888888] !font-bold'
             }`}
             type="button"
             disabled={!selectedProject || isLoading}

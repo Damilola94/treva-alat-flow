@@ -16,6 +16,7 @@ import {
 } from '@/services';
 import { getErrorMessage } from '@/utils';
 import { ImagePlaceholder } from '@/app/assets/svgs';
+import NinVerification from './nin-verification';
 
 const validationSchema = Yup.object().shape({
   bvn: Yup.string()
@@ -274,7 +275,7 @@ ${idType === 'NIN' ? 'border-[#7B37F0]' : 'border-gray-300 '}
                 )}
                 <hr className="my-4" />
 
-                <div className="pt-4 flex">
+                <div className="pt-4 flex justify-end">
                   <div className="">
                     <Button
                       size="xl"
@@ -292,6 +293,7 @@ ${idType === 'NIN' ? 'border-[#7B37F0]' : 'border-gray-300 '}
             </div>
           </div>
         )}
+        {idType === 'NIN' && <NinVerification />}
       </div>
     </div>
   );

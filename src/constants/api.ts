@@ -22,14 +22,14 @@ export const REQUEST_METHODS = {
 export const endpoints = {
   // user service
   auth: {
-    login: "/auth/login",
-    register: "/auth/register",
-    forgotPassword: "/auth/forgot-password",
-    resetPassword: "/auth/reset-password",
-    refreshToken: "/auth/refresh-token",
-    verifyAccount: "/auth/verify-account",
-    resendVerification: "/auth/resend-email-verification",
-    changePassword: "/auth/change-password",
+    login: '/auth/login',
+    register: '/auth/register',
+    forgotPassword: '/auth/forgot-password',
+    resetPassword: '/auth/reset-password',
+    refreshToken: '/auth/refresh-token',
+    verifyAccount: '/auth/verify-account',
+    resendVerification: '/auth/resend-email-verification',
+    changePassword: '/auth/change-password',
   },
 
   location: {
