@@ -3,6 +3,7 @@
 import { Suspense, useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import {
+  Footer,
   Header,
   Sidebar,
   SubscribeToPlan,
@@ -23,6 +24,7 @@ import {
 } from '@/components/shared';
 import { ChatIcon, Notifications } from '@/app/assets/svgs';
 import { useProfile } from '@/hooks/Users';
+import { useAppSelector } from '@/store';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -35,10 +37,19 @@ function Main({ children }: { children: React.ReactNode }) {
   // const { data } = queries.read();
   const { data } = useProfile();
 
+  const isOnboardingCompleted = useAppSelector(
+    (state) => state.auth.isOnboardingCompleted,
+  );
+
   const creativeMenuItems = [
+    // {
+    //   label: 'Get Started',
+    //   href: routes.creatives.dashboard.getStarted.path,
+    //   icon: <GlobeAlt />,
+    // },
     {
-      label: 'Get started',
-      href: routes.creatives.dashboard.getStarted.path,
+      label: 'Profile Onboarding',
+      href: routes.creatives.dashboard.getStarted.personalDetails.path,
       icon: <GlobeAlt />,
     },
     {
@@ -75,10 +86,18 @@ function Main({ children }: { children: React.ReactNode }) {
     {
       label: 'Settings',
       href: routes.creatives.dashboard.settings.profile.path,
-      icon: <Settings/>
+      icon: <Settings />,
     },
     { label: 'Reviews and Feedback', href: '#', icon: <Like /> },
-  ].filter((item) => item.href !== '#');
+  ]
+    .filter((item) => item.href !== '#')
+    .map((item) => ({
+      ...item,
+      disabled: !isOnboardingCompleted && item.label !== 'Profile Onboarding',
+    }))
+    .filter(
+      (item) => !(isOnboardingCompleted && item.label === 'Profile Onboarding'),
+    );
 
   useEffect(() => {
     setMounted(true);
@@ -99,8 +118,8 @@ function Main({ children }: { children: React.ReactNode }) {
         <div className="app_dash_main__ctt">
           {pathname === '/dashboard/get-started' ? (
             <SubscribeToPlan />
-            // <></>
           ) : (
+            // <></>
             // <SubscribeToPlanLeft />
             <></>
           )}
@@ -113,6 +132,9 @@ function Main({ children }: { children: React.ReactNode }) {
           <div className="app_dash_main__ctt__mn w-full">
             <div className="app_dashboard_page">{children}</div>
           </div>
+          <div className="fixed bottom-0 w-[1230px]">
+            <Footer />
+            </div>
         </div>
       </div>
     </main>

@@ -71,6 +71,16 @@ const nextConfig = {
         destination: `/${namespace}/auth/sign-in`,
         permanent: false,
       },
+      // {
+      //   source: '/',
+      //   destination: '/onboarding-type',
+      //   permanent: false,
+      // },
+      // {
+      //   source: `/${namespace}`,
+      //   destination: `/${namespace}/onboarding-type`,
+      //   permanent: false,
+      // },
     ];
   },
   async rewrites() {

@@ -10,6 +10,7 @@ interface IAuth {
   expiry: string;
   userId: string;
   email: string;
+  isOnboardingCompleted: boolean;
 }
 
 const accessToken = getCookie('_tk');
@@ -21,6 +22,7 @@ const initialState: IAuth = {
   expiry: '',
   userId: '',
   email: '',
+  isOnboardingCompleted: false,
 };
 
 export const authSlice = createSlice({
@@ -37,9 +39,12 @@ export const authSlice = createSlice({
     },
 
     logout: () => initialState,
+    setOnboardingStatus: (state, action) => {
+      state.isOnboardingCompleted = action.payload;
+    },
   },
 });
 
-export const { logout, loginSuccess } = authSlice.actions;
+export const { logout, loginSuccess, setOnboardingStatus } = authSlice.actions;
 
 export default authSlice.reducer;

@@ -15,6 +15,7 @@ import { Button } from '@/components/ui/button';
 import EmptyState from '../EmptyState';
 import { ArrowRight, EmptyTable } from '@/app/assets/svgs';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Next, Previous } from '../svgs';
 
 interface TableProps<T> {
   columns: Array<ColumnDef<T>>;
@@ -96,7 +97,7 @@ const Table = <T,>({
     <div
       className={`${
         styles.container
-      } flex flex-col font-spaceGrotesk relative rounded ${
+      } flex flex-col relative rounded ${
         !loading && (!data || data?.length === 0)
           ? '!bg-transparent'
           : '!bg-white'
@@ -135,7 +136,6 @@ const Table = <T,>({
               <thead className="sticky text-sm top-0 bg-[#A5A6F6]">
                 {table.getHeaderGroups().map((headerGroup) => (
                   <tr key={headerGroup.id}>
-                    <th>#</th>
                     {headerGroup.headers.map((header) => {
                       return (
                         <th key={header.id} colSpan={header.colSpan}>
@@ -161,7 +161,7 @@ const Table = <T,>({
                     ))}
                   </>
                 ) : (
-                  table.getRowModel().rows.map((row, index) => {
+                  table.getRowModel().rows.map((row) => {
                     return (
                       <tr
                         key={row.id}
@@ -175,10 +175,6 @@ const Table = <T,>({
                         // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
                         onClick={() => onRowClick && onRowClick(row.original)}
                       >
-                        <td>
-                          {pagination.pageIndex * pagination.pageSize +
-                            (index + 1)}
-                        </td>
                         {row.getVisibleCells().map((cell) => {
                           return (
                             <td key={cell.id}>
@@ -221,7 +217,7 @@ const Table = <T,>({
                     table.previousPage();
                   }}
                 >
-                  Previous
+                  <Previous/>
                 </button>
 
                 {/* Current page (active) */}
@@ -248,7 +244,7 @@ const Table = <T,>({
                     table.nextPage();
                   }}
                 >
-                  Next
+                  <Next />
                 </button>
               </div>
             </div>

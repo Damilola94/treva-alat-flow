@@ -4,7 +4,6 @@ import React, { useEffect, useMemo, useState } from 'react';
 
 import {
   AnimatedModal,
-  Pill,
   PlusIcon,
   RenderIf,
   Table,
@@ -101,13 +100,13 @@ export default function ClientManagement() {
     setSearch(e.target.value);
   };
 
-  const clearSearch = () => {
-    setSearch('');
-    setParams((prev) => ({
-      ...prev,
-      searchKey: '',
-    }));
-  };
+  // const clearSearch = () => {
+  //   setSearch('');
+  //   setParams((prev) => ({
+  //     ...prev,
+  //     searchKey: '',
+  //   }));
+  // };
 
   const onDelete = (id: string) => {
     setDeleteClientId(id);
@@ -311,14 +310,9 @@ export default function ClientManagement() {
         <div className="app_dashboard_home__task__hdr flex flex-col md:flex-row ">
           {/* md:flex-wrap gap-4 mt-4 */}
           <div className="">
-            <Pill
-              size="md"
-              active={search === ''}
-              onClick={clearSearch}
-              className="whitespace-nowrap"
-            >
-              All Clients
-            </Pill>
+            <p className='border border-[#7B37F0] text-[#7B37F0] font-bold rounded-full px-5 py-3 '>
+              All Client
+            </p>
           </div>
 
           <div className="flex gap-4">

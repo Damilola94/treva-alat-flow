@@ -1,8 +1,9 @@
-import authBg1 from '../../../public/media/images/auth/auth-bg1.png'
-import authBg2 from '../../../public/media/images/auth/auth-bg2.png'
-import authBg3 from '../../../public/media/images/auth/auth-bg3.png'
-import markedSuccess from '../../../public/media/images/auth/marked-success.png'
+import authBg1 from '../../../public/media/images/auth/auth-bg1.png';
+import authBg2 from '../../../public/media/images/auth/auth-bg2.png';
+import authBg3 from '../../../public/media/images/auth/auth-bg3.png';
+import authBgNew from '../../../public/media/images/auth/authbgNew.png';
+import markedSuccess from '../../../public/media/images/auth/marked-success.png';
 
-const auth = { authBg1, authBg2, authBg3, markedSuccess }
+const auth = { authBg1, authBg2, authBg3, authBgNew, markedSuccess };
 
-export default auth
+export default auth;

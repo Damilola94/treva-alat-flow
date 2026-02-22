@@ -18,14 +18,14 @@
   padding: 22px 17px;
 
   &__label {
-    font-family: var(--font-family);
+    font-family: var(--second-family);
     font-weight: 900;
     font-size: 14px;
     color: var(--neutral-colours-white);
   }
 
   &__grade {
-    font-family: var(--font-family);
+    font-family: var(--second-family);
     font-weight: 500;
     font-size: 96px;
     color: var(--neutral-colours-white);
@@ -38,7 +38,7 @@
     padding: 0.25rem 0.75rem;
 
     &__text {
-      font-family: var(--font-family);
+      font-family: var(--second-family);
       font-weight: 700;
       font-size: 20px;
       color: var(--neutral-colours-white);

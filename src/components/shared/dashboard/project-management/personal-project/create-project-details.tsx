@@ -7,12 +7,12 @@ import { Button } from '@/components/ui/button';
 import { Pill } from '@/components/shared';
 import { type InitialStep1Values } from '@/app/creatives/dashboard/project-management/personal-project/create/page';
 import { useCreateProjectMutation } from '@/services';
-import {  useAppDispatch, useAppSelector } from '@/store';
+import { useAppDispatch, useAppSelector } from '@/store';
 import { storeValues } from '@/store/slices/project';
 
 interface IProps {
-  handleNext: (formData: InitialStep1Values) => void
-  setProjectId: (id: string) => void
+  handleNext: (formData: InitialStep1Values) => void;
+  setProjectId: (id: string) => void;
 }
 
 enum AccountType {
@@ -21,19 +21,34 @@ enum AccountType {
   High = 'high',
 }
 
-export function PersonalProjectDetails (props: IProps) {
+export function PersonalProjectDetails(props: IProps) {
   const { handleNext, setProjectId } = props;
-  const dispatch = useAppDispatch()
-  const { title, description, expectedDeliveryDate, priority } = useAppSelector((state) => state?.project)
+  const dispatch = useAppDispatch();
+  const { title, description, expectedDeliveryDate, priority } = useAppSelector(
+    (state) => state?.project,
+  );
+
+  const today = new Date();
+
+  const tomorrow = new Date();
+  tomorrow.setDate(today.getDate() + 1);
+
+  const maxDate = new Date(today);
+  maxDate.setMonth(today.getMonth() + 3);
+
+  // Format for input[type="date"]
+  const tomorrowStr = tomorrow.toISOString().split('T')[0];
 
   const validationSchema = Yup.object().shape({
-  title: Yup.string().required('Please enter a project title'),
-  description: Yup.string().required('Please enter a project description'),
-  expectedDeliveryDate: Yup.date()
-    .min(new Date(), 'Expected delivery date must be in the future')
-    .required('Please enter an expected delivery date'),
-  priority: Yup.string().required('Please select a priority'),
-});
+    title: Yup.string().required('Please enter a project title'),
+    description: Yup.string().required('Please enter a project description'),
+    expectedDeliveryDate: Yup.date()
+      // .min(new Date(), 'Expected delivery date must be in the future')
+      .min(today, 'Expected delivery date must be in the future')
+      .max(maxDate, "You can't choose a date exceeding 3 months")
+      .required('Please enter an expected delivery date'),
+    priority: Yup.string().required('Please select a priority'),
+  });
 
   const [createProject, { isLoading }] = useCreateProjectMutation();
 
@@ -43,25 +58,24 @@ export function PersonalProjectDetails (props: IProps) {
     expectedDeliveryDate: expectedDeliveryDate,
     priority: priority,
     type: 'Personal',
-  }; 
+  };
 
   type InitialValues = ReturnType<() => typeof initialValues>;
 
-const onSubmit = async (_values: InitialValues) => {
-  try {
-    const response = await createProject(_values).unwrap();
-    if (response?.data?.id) {
-      dispatch(storeValues(_values))
-      setProjectId(response.data.id);
-      handleNext(_values);
-    } else {
-      console.warn('Project ID not found. Cannot proceed to next step.');
+  const onSubmit = async (_values: InitialValues) => {
+    try {
+      const response = await createProject(_values).unwrap();
+      if (response?.data?.id) {
+        dispatch(storeValues(_values));
+        setProjectId(response.data.id);
+        handleNext(_values);
+      } else {
+        console.warn('Project ID not found. Cannot proceed to next step.');
+      }
+    } catch (error) {
+      console.error('Failed to create project:', error);
     }
-  } catch (error) {
-    console.error('Failed to create project:', error);
-  }
-};
-
+  };
 
   return (
     <div className="app_get_started_professional_details py-6 px-4 flex flex-col gap-14">
@@ -129,7 +143,12 @@ const onSubmit = async (_values: InitialValues) => {
                         onBlur={handleBlur}
                         errors={errors}
                         touched={touched}
+                        // min={today.toISOString().split('T')[0]} // today
+                        min={tomorrowStr}
                       />
+                      <p className="text-[#E7211B] text-[11px]">
+                        You can&apos;t choose a date exceeding 3 months
+                      </p>
                     </div>
                   </div>
                   <div className="flex flex-col gap-8 my-5">
@@ -177,6 +196,7 @@ const onSubmit = async (_values: InitialValues) => {
                       isLoading={isLoading}
                       backgroundColor="primary-blue-500"
                       className="w-1/2 app_auth_login__btn gap-2"
+                      disabled={isLoading || !values.title || !values.description || !values.expectedDeliveryDate || !values.priority}
                     >
                       Save and Continue
                     </Button>

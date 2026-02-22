@@ -25,7 +25,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { Check, ListFilter} from 'lucide-react';
+import { Check, ListFilter } from 'lucide-react';
 import projectManagement from '@/lib/assets/project-management';
 import { BinGray, EditPencilGray } from '@/components/shared/svgs';
 import { popoverItems, priorityItems, statusItems } from '@/constants';
@@ -44,7 +44,7 @@ interface ProjectQueryParams {
 }
 
 const createAProject = {
-  img: projectManagement.topImageProject,
+  img: projectManagement.createImg,
   title: 'Add new project',
   createProject: [
     {
@@ -93,9 +93,12 @@ export default function Page() {
     searchKey: '',
   });
 
-  const { allProjectsData, loading, refetchAllProjects } = useProjects(params);  
+  const { allProjectsData, loading, refetchAllProjects } = useProjects(params);
 
-const projectData = useMemo(() => allProjectsData?.data || [], [allProjectsData?.data],)
+  const projectData = useMemo(
+    () => allProjectsData?.data || [],
+    [allProjectsData?.data],
+  );
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -117,14 +120,13 @@ const projectData = useMemo(() => allProjectsData?.data || [], [allProjectsData?
       pageNumber: pagination?.pageIndex + 1,
       pageSize: pagination?.pageSize,
     }));
-
   }, [pagination]);
 
   const handleParamChange = (param: Partial<ProjectQueryParams>) => {
     setParams((prev) => ({
       ...prev,
       ...param,
-      pageNumber: 1
+      pageNumber: 1,
     }));
   };
 
@@ -155,11 +157,10 @@ const projectData = useMemo(() => allProjectsData?.data || [], [allProjectsData?
   };
 
   useEffect(() => {
-  projectData.forEach(project => {
-    router.prefetch(`/creatives/dashboard/project-management/${project.id}`);
-  });
-}, [projectData, router]);
-
+    projectData.forEach((project) => {
+      router.prefetch(`/creatives/dashboard/project-management/${project.id}`);
+    });
+  }, [projectData, router]);
 
   const columns = [
     {
@@ -263,7 +264,6 @@ const projectData = useMemo(() => allProjectsData?.data || [], [allProjectsData?
           />
         </AnimatedModal>
       </RenderIf>
-
       <RenderIf condition={!addProjectForm}>
         <AnimatedModal
           isOpen={!addProjectForm}
@@ -274,7 +274,6 @@ const projectData = useMemo(() => allProjectsData?.data || [], [allProjectsData?
           <AddProject onClose={handleProjectFormClose} />
         </AnimatedModal>
       </RenderIf>
-
       {false && (
         <RenderIf condition={takeATour}>
           <AnimatedModal
@@ -287,7 +286,6 @@ const projectData = useMemo(() => allProjectsData?.data || [], [allProjectsData?
           </AnimatedModal>
         </RenderIf>
       )}
-
       <RenderIf condition={deleteForm}>
         <AnimatedModal
           isOpen={true}
@@ -308,7 +306,6 @@ const projectData = useMemo(() => allProjectsData?.data || [], [allProjectsData?
           )}
         </AnimatedModal>
       </RenderIf>
-
       <div className="app_dashboard_home__task app_dashboard_page__px">
         <div className="app_dashboard_home__task__hdr flex-wrap gap-2 mt-4">
           <div className="flex gap-2">
@@ -336,9 +333,7 @@ const projectData = useMemo(() => allProjectsData?.data || [], [allProjectsData?
                       }}
                     >
                       {item.label}
-                      <RenderIf
-                        condition={selectedCategory === item.value}
-                      >
+                      <RenderIf condition={selectedCategory === item.value}>
                         <Check />
                       </RenderIf>
                     </button>
@@ -373,11 +368,7 @@ const projectData = useMemo(() => allProjectsData?.data || [], [allProjectsData?
                       }}
                     >
                       {item.label}
-                      <RenderIf
-                        condition={
-                          selectedCategory === item.value
-                        }
-                      >
+                      <RenderIf condition={selectedCategory === item.value}>
                         <Check />
                       </RenderIf>
                     </button>
@@ -410,11 +401,7 @@ const projectData = useMemo(() => allProjectsData?.data || [], [allProjectsData?
                       }}
                     >
                       {item.label}
-                      <RenderIf
-                        condition={
-                          selectedCategory === item.value
-                        }
-                      >
+                      <RenderIf condition={selectedCategory === item.value}>
                         <Check />
                       </RenderIf>
                     </button>
@@ -445,23 +432,23 @@ const projectData = useMemo(() => allProjectsData?.data || [], [allProjectsData?
         </div>
 
         <div className="app_dashboard_home__task__ctt">
-            <Table
-              columns={columns}
-              data={projectData}
-              emptyTitle="No project yet"
-              emptyMessage='Click "add project" button to get started'
-              pagination={pagination}
-              setPagination={setPagination}
-              onRowClick={(row) =>
-                router.push(`/creatives/dashboard/project-management/${row.id}`)
-              }
-              manualPagination={true}
-              pageCount={
+          <Table
+            columns={columns}
+            data={projectData}
+            emptyTitle="No project yet"
+            emptyMessage='Click "add project" button to get started'
+            pagination={pagination}
+            setPagination={setPagination}
+            onRowClick={(row) =>
+              router.push(`/creatives/dashboard/project-management/${row.id}`)
+            }
+            manualPagination={true}
+            pageCount={
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               ((allProjectsData?.metaData as any)?.totalPages as number) ?? 1
-              }
-              loading={loading}
-            />
+            }
+            loading={loading}
+          />
         </div>
       </div>
     </div>

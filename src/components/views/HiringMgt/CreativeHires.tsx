@@ -90,7 +90,7 @@ const CreativeHires = () => {
 
             <div className="mt-6 flex items-center justify-between">
               <button
-                className="text-sm font-bold text-[#7B37F0] border border-[#7B37F0] hover:bg-[#F5F3FF] px-3 py-1.5 rounded-full flex items-center gap-1"
+                className="text-sm font-bold text-[#a20e24] border border-[#7B37F0] hover:bg-[#F5F3FF] px-3 py-1.5 rounded-full flex items-center gap-1"
                 onClick={() => {
                   user?.id && handleUserClick(user?.id);
                 }}

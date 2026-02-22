@@ -21,18 +21,18 @@ interface FormData {
 }
 
 const validationSchema = Yup.object().shape({
-    fullName: Yup.string()
-      .required('Please put in your first and last name')
-      .test(
-        'full-name',
-        'Please enter at least two words (first and last name)',
-        (value) => {
-          if (!value) return false;
-          const words = value.trim().split(/\s+/);
-          return words.length >= 2;
-        },
-      ),
-  });
+  fullName: Yup.string()
+    .required('Please put in your first and last name')
+    .test(
+      'full-name',
+      'Please enter at least two words (first and last name)',
+      (value) => {
+        if (!value) return false;
+        const words = value.trim().split(/\s+/);
+        return words.length >= 2;
+      },
+    ),
+});
 
 export default function Page() {
   const { fullName } = useAppSelector((state) => state?.register);

@@ -1,5 +1,5 @@
 'use client';
-import { CenterModal, Table } from '@/components/shared';
+import { CenterModal, MiniLoader, Table } from '@/components/shared';
 import { Button } from '@/components/ui/button';
 import { invoiceEnum } from '@/constants';
 import { useInvoicesById } from '@/hooks/Projects/useProjects';
@@ -7,7 +7,6 @@ import { numberFormat } from '@/lib/numbers';
 import routes from '@/lib/routes';
 import { errorToast, successToast, useCreateInvoiceMutation } from '@/services';
 import { getErrorMessage } from '@/utils';
-import { Loader2 } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import { useMemo, useState } from 'react';
 
@@ -90,6 +89,10 @@ export default function Page() {
     pageSize: 50,
   });
 
+  if (loading) {
+    return <MiniLoader message="Loading" />;
+  }
+
   return (
     <div className="app_get_started_professional_details py-6 px-4 flex flex-col gap-14">
       <CenterModal
@@ -156,11 +159,6 @@ export default function Page() {
 
           <div className="w-full text-left relative rounded-xl overflow-auto ">
             <div className="shadow-sm md:overflow-hidden ">
-              {loading ? (
-                <div className="text-center flex justify-center items-center">
-                  <Loader2 size={18} className="animate-spin" />
-                </div>
-              ) : (
                 <Table
                   columns={deliverableHeaders}
                   emptyTitle="No deliverable Yet"
@@ -169,7 +167,6 @@ export default function Page() {
                   pagination={pagination}
                   setPagination={setPagination}
                 />
-              )}
               <hr className="bg-[#E5E5E5] mt-6" />
             </div>
           </div>

@@ -21,6 +21,7 @@ interface IAddWithdraw {
   beneficiaryAccountNumber: string;
   amount: number;
   walletId?: string | null | undefined;
+  pin: string;
 }
 
 const usePaymentService = (params: IParams) => {

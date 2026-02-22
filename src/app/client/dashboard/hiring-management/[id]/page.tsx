@@ -124,8 +124,7 @@ export default function CreativeProfile() {
     { label: '1', key: 'oneCount' },
   ] as const;
 
-  // In a real app, you would fetch the creative data based on the ID
-  // For now, we'll use the mock data
+  console.log('Reviews Data:', creativeReviews);
 
   if (isLoading || isFetching || fetchingReviews || loadingReviews) {
     return (
@@ -163,6 +162,7 @@ export default function CreativeProfile() {
                       <span className="text-sm bg-[#00DAD933] text-[#262626] px-5 py-1 rounded-full">
                         {creativeData?.userProfession?.profession?.name}
                       </span>
+                      <p>{creativeData?.userAddresses?.[0]?.state}</p>
                     </div>
                     {creativeData?.userAddresses &&
                       creativeData?.userAddresses?.length > 0 && (
@@ -198,7 +198,7 @@ export default function CreativeProfile() {
                     >
                       <Heart
                         fill={
-                          creativeData?.isCreativeFavorited ? 'red' : '#000'
+                          creativeData?.isCreativeFavorited ? 'red' : '#fff'
                         }
                         stroke={
                           creativeData?.isCreativeFavorited ? 'red' : '#000'
@@ -333,58 +333,15 @@ export default function CreativeProfile() {
               </div>
             )}
 
-            {activeTab === 'Reviews' && (
-              <div>
-                <div className="flex flex-col md:flex-row md:items-start gap-8 mb-8">
-                  <div className="md:w-1/2">
-                    <h2 className="text-xl font-semibold mb-6">
-                      {[
-                        creativeReviews?.summary?.fiveCount,
-                        creativeReviews?.summary?.fourCount,
-                        creativeReviews?.summary?.threeCount,
-                        creativeReviews?.summary?.twoCount,
-                        creativeReviews?.summary?.oneCount,
-                      ]?.reduce((a, b) => (a ?? 0) + (b ?? 0), 0)}{' '}
-                      Reviews
-                      <span className="ml-2 inline-flex items-center">
-                        <Star className="h-4 w-4 fill-current text-[#262626]" />
-                        <span className="ml-1">
-                          {creativeReviews?.summary?.averageRating}
-                        </span>
-                        <span className="text-sm text-gray-500 ml-1">
-                          ({creativeReviews?.summary?.totalReviews})
-                        </span>
-                      </span>
-                    </h2>
-
-                    <div className="space-y-3">
-                      {starLevels.map(({ label, key }) => {
-                        const count = creativeReviews?.summary?.[key] || 0;
-                        const total =
-                          creativeReviews?.summary?.totalReviews || 1;
-                        const percentage = (count / total) * 100;
-
-                        return (
-                          <div key={key} className="flex items-center gap-3">
-                            <div className="w-20 text-sm">{label} Stars</div>
-                            <div className="flex-grow h-2 bg-gray-200 rounded-full overflow-hidden">
-                              <div
-                                className="h-full bg-[#262626] rounded-full"
-                                style={{ width: `${percentage}%` }}
-                              ></div>
-                            </div>
-                            <div className="text-sm text-gray-500 w-8">
-                              ({count})
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-6">
-                  {creativeReviews?.ratings?.map((review) => (
+           {activeTab === 'Reviews' && (
+  <div className="max-w-7xl mx-auto py-4">
+    <div className="flex flex-col lg:flex-row gap-12 items-start">
+      
+      {/* LEFT COLUMN: Review List */}
+      <div className="flex-1 w-full space-y-6">
+        {creativeReviews?.ratings && creativeReviews.ratings.length > 0 ? (
+          <>
+            {creativeReviews?.ratings?.map((review) => (
                     <div
                       key={review?.ratedByUser?.id}
                       className="border border-[#D1D1D1] rounded-lg p-5 "
@@ -434,9 +391,9 @@ export default function CreativeProfile() {
                       <p className="text-gray-700">{review?.review}</p>
                     </div>
                   ))}
-                </div>
-                <div className="bg-white app_table__pagination">
-                  <Pagination
+
+            <div className="pt-8">
+               <Pagination
                     paginate={{
                       // eslint-disable-next-line @typescript-eslint/no-explicit-any
                       pageCount:
@@ -453,9 +410,64 @@ export default function CreativeProfile() {
 
                     // handlePageClick={handlePageClick}
                   />
+            </div>
+          </>
+        ) : (
+          <div className="text-center py-20 text-gray-400 border border-dashed rounded-[24px]">
+            No reviews available yet.
+          </div>
+        )}
+      </div>
+
+      {/* RIGHT COLUMN: Summary Stats (Sticky) */}
+      <div className="w-full lg:w-[380px] lg:sticky lg:top-8 bg-white p-2">
+        <div className="mb-8">
+          <div className="flex items-center gap-3 mb-6">
+            <h2 className="text-2xl font-bold text-[#262626]">
+              {creativeReviews?.summary?.totalReviews || 0} Reviews
+            </h2>
+            <div className="flex items-center gap-1">
+              <Star className="h-5 w-5 fill-current text-[#262626]" />
+              <span className="text-xl font-bold">
+                {creativeReviews?.summary?.averageRating || 0}
+              </span>
+              <span className="text-gray-400 font-medium">
+                ({creativeReviews?.summary?.totalReviews || 0})
+              </span>
+            </div>
+          </div>
+
+          {/* Star Progress Bars */}
+          <div className="space-y-4">
+            {starLevels.map(({ label, key }) => {
+              const count = creativeReviews?.summary?.[key] || 0;
+              const total = creativeReviews?.summary?.totalReviews || 1;
+              const percentage = (count / total) * 100;
+
+              return (
+                <div key={key} className="flex items-center gap-4">
+                  <div className="w-16 text-sm font-bold text-[#262626]">
+                    {label} Stars
+                  </div>
+                  <div className="flex-grow h-2 bg-[#F2F2F2] rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-[#262626] transition-all duration-500"
+                      style={{ width: `${percentage}%` }}
+                    />
+                  </div>
+                  <div className="w-8 text-sm font-medium text-gray-400 text-right">
+                    ({count})
+                  </div>
                 </div>
-              </div>
-            )}
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+)}
           </div>
         </div>
       </div>

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { endpoints, REQUEST_METHODS } from "@/constants";
 import { paymentServiceApiSlice } from "@/store";
 import { ITrevaPaymentService } from "@/types";
@@ -14,13 +15,34 @@ export const wallet = paymentServiceApiSlice.injectEndpoints({
         response: ITrevaPaymentService["schemas"]["WalletModelBaseResponse"]
       ) => response,
     }),
+    sendWalletOtp: builder.mutation<any, void>({
+      query: () => ({
+        url: endpoints.wallets.sendOtp,
+        method: REQUEST_METHODS.POST,
+        body: {},
+      }),
+    }),
+    verifyWalletOtp: builder.mutation<any, { otp: string }>({
+      query: (body) => ({
+        url: endpoints.wallets.verifyOtp,
+        method: REQUEST_METHODS.POST,
+        body,
+      }),
+    }),
+    setWalletPin: builder.mutation<any, { pin: string; confirmPin: string }>({
+      query: (body) => ({
+        url: endpoints.wallets.setPin,
+        method: REQUEST_METHODS.POST,
+        body,
+      }),
+    }),
     addWithdrawFunds: builder.mutation({
-      query: ({walletId, ...values}) => ({
+      query: ({ walletId, ...values }) => ({
         url: endpoints.wallets.addWithdrawFunds(walletId),
         method: REQUEST_METHODS.POST,
         body: {
           ...values,
-          walletId
+          walletId,
         },
       }),
       transformResponse: (
@@ -49,4 +71,11 @@ export const wallet = paymentServiceApiSlice.injectEndpoints({
     }),
   }),
 });
-export const { useGetMyWalletQuery, useGetTransactionsQuery, useAddWithdrawFundsMutation } = wallet;
+export const {
+  useGetMyWalletQuery,
+  useGetTransactionsQuery,
+  useAddWithdrawFundsMutation,
+  useSendWalletOtpMutation,
+  useSetWalletPinMutation,
+  useVerifyWalletOtpMutation,
+} = wallet;
