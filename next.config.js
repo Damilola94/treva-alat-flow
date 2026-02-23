@@ -61,26 +61,26 @@ const nextConfig = {
   },
   async redirects() {
     return [
-      // {
-      //   source: '/',
-      //   destination: '/auth/sign-in',
-      //   permanent: false,
-      // },
-      // {
-      //   source: `/${namespace}`,
-      //   destination: `/${namespace}/auth/sign-in`,
-      //   permanent: false,
-      // },
       {
         source: '/',
-        destination: '/onboarding-type',
+        destination: '/auth/sign-in',
         permanent: false,
       },
       {
         source: `/${namespace}`,
-        destination: `/${namespace}/onboarding-type`,
+        destination: `/${namespace}/auth/sign-in`,
         permanent: false,
-      },
+      }
+      // {
+      //   source: '/',
+      //   destination: '/onboarding-type',
+      //   permanent: false,
+      // },
+      // {
+      //   source: `/${namespace}`,
+      //   destination: `/${namespace}/onboarding-type`,
+      //   permanent: false,
+      // },
       // {
       //   source: '/',
       //   destination: '/onboarding-type',
