@@ -143,6 +143,7 @@ export default function Page() {
   const [addProjectForm, setAddProjectForm] = useState(true);
   const { data } = useProfile();
   const userData = useMemo(() => data?.data || null, [data]);
+  console.log('userData', userData);
   const { creativeOnboardingData } = useUsers();
 
   const { myWalletData } = usePaymentService(params);
@@ -640,7 +641,7 @@ export default function Page() {
             </div>
             <div className="flex justify-between items-center">
               <span className="text-[#808080]">Account Name</span>
-              <span className="font-semibold">Geegs - IDEAx Labs</span>
+              <span className="font-semibold">{myWalletData?.data?.walletName || 'N/A'}</span>
             </div>
           </div>
         </CenterModal>

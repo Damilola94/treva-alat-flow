@@ -32,7 +32,6 @@ export default function AddressVerification() {
 
   const { stateData } = useStates({ country: 'Nigeria' });
   const { citiesData } = useCities({ state: state });
-  console.log('citiesData', citiesData);
 
   const stateOptions = useMemo(() => {
     return (
@@ -43,6 +42,7 @@ export default function AddressVerification() {
     );
   }, [stateData]);
 
+
   const citiesOptions = useMemo(() => {
     return (
       citiesData?.data?.map((state) => ({
@@ -51,6 +51,7 @@ export default function AddressVerification() {
       })) ?? []
     );
   }, [citiesData]);
+
 
   const {
     saveCreativeOnboarding,
@@ -84,7 +85,7 @@ export default function AddressVerification() {
         stateId: values?.state,
         landmark: values?.landmark,
         address: values?.address,
-        currentStep: 4,
+        currentStep: 3,
       };
       saveCreativeOnboarding(payload);
     },
@@ -200,15 +201,14 @@ export default function AddressVerification() {
                 </div>
                 <div className="w-full">
                   <SelectField
-                    name="lga"
+                    name="city"
                     label="LGA"
                     options={citiesOptions}
                     placeholder="Select LGA"
                     onChange={(option) => {
                       setFieldValue('city', option.value);
-                      setState(option?.label);
                     }}
-                    value={values?.state}
+                    value={values?.city}
                   />
                 </div>
               </div>

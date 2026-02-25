@@ -17,7 +17,7 @@ const validationSchema = Yup.object().shape({
   bio: Yup.string()
     .max(500, 'Bio cannot be more than 500 characters')
     .nullable(),
-  professionalHeadshot: Yup.mixed().nullable(),
+ professionalHeadshot: Yup.mixed().required('Professional headshot is required'),
   socialMediaUrl: Yup.string()
     .url('Must be a valid social media URL')
     .nullable()
@@ -45,22 +45,8 @@ export default function ProfileSetup() {
     loading,
   } = useUsers();
 
-  // const initialValues = {
-  //   bio: '',
-  //   portfolioLink: '',
-  //   socialMediaUrl: '',
-  //   professionalHeadshot: null as File | null,
-  //   cv: null as File | null,
-  //   awardsAndCertifications: null as File | null,
-  //   // new
-  //   firstName: '',
-  //   lastName: '',
-  //   phoneNumber: '',
-  //   profession: '',
-  //   professionId: '',
-  // };
-
   const onboarding = creativeOnboardingData?.data;
+  const { professions } = useProfessions();
 
 
   const initialValues = {
@@ -74,7 +60,8 @@ export default function ProfileSetup() {
     firstName: onboarding?.firstName ?? '',
     lastName: onboarding?.lastName ?? '',
     phoneNumber: onboarding?.phoneNumber ?? '',
-    professionId: onboarding?.professionId ?? '',
+    professionId: onboarding?.professionId ?? professions?.[0]?.name ?? '',
+    professionalHeadshotUrl: onboarding?.professionalHeadshotUrl ?? '',
   };
 
   const formik = useFormik({
@@ -184,8 +171,6 @@ export default function ProfileSetup() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [creativeOnboardingData?.data]);
-
-  const { professions } = useProfessions();
 
   return (
     <div className="app_get_started_professional_details py-6 px-4 flex flex-col gap-14 ">
@@ -410,9 +395,11 @@ export default function ProfileSetup() {
                             Remove
                           </button>
                         </div>
+                        {touched.professionalHeadshot && errors.professionalHeadshot &&(
                         <p className="text-red-500 text-sm">
-                          This field is required
+                          {errors.professionalHeadshot}
                         </p>
+                        )}
                       </div>
                     ) : (
                       <div>
