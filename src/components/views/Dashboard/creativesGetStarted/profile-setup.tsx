@@ -31,12 +31,12 @@ const validationSchema = Yup.object().shape({
 });
 
 export default function ProfileSetup() {
+  const router = useRouter();
   const [previewUrl, setPreviewUrl] = useState<Record<string, string | null>>({
     professionalHeadshot: null,
     cv: null,
     awardsAndCertifications: null,
   });
-  const router = useRouter();
 
   const {
     saveCreativeOnboarding,
@@ -47,7 +47,6 @@ export default function ProfileSetup() {
 
   const onboarding = creativeOnboardingData?.data;
   const { professions } = useProfessions();
-
 
   const initialValues = {
     bio: onboarding?.bio ?? '',

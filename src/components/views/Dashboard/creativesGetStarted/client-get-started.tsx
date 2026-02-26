@@ -18,14 +18,14 @@ export default function CreativesGetStarted() {
 
   useEffect(() => {
     if (
-      onboardingStatus?.isCompleted ||
+      data?.data?.isCompleted ||
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (creativeOnboardingError as any)?.data?.message ===
       'CreativeOnboarding not found or already completed.'
     ) {
       setOnboardingComplete(true);      
     }
-  }, [onboardingStatus, creativeOnboardingError]);
+  }, [onboardingStatus, creativeOnboardingError, data]);
 
   return (
     <div className="app_get_started flex flex-col gap-10 pb-10 mb-10 px-4">

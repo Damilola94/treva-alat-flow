@@ -76,7 +76,7 @@ export const authService = userServiceApiSlice.injectEndpoints({
 
     resendVerification: builder.mutation({
       query: (
-        values: ITrevaUserService['schemas']['ResendVerifyAccountCommand'],
+        values: ITrevaUserService['schemas']['ResendEmailVerificationCommand'],
       ) => ({
         url: endpoints.auth.resendVerification,
         method: REQUEST_METHODS.POST,

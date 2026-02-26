@@ -1,121 +1,39 @@
 'use client';
+import { ArrowRight } from '@/components/shared';
+import { useState } from 'react';
+import SetPassword from './setPassword';
+import SetPin from './setPin';
 
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import {
-  errorToast,
-  successToast,
-  useChangePasswordMutation,
-} from '@/services';
-import { getErrorMessage } from '@/utils';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
+type SecurityView = 'default' | 'password' | 'pin';
 
-const validationSchema = Yup.object().shape({
-  currentPassword: Yup.string()
-    .min(8, 'Password must be at least 8 characters')
-    .required('CurrentPassword is required'),
-  newPassword: Yup.string()
-    .min(8, 'Password must be at least 8 characters')
-    .required('Password is required'),
-  confirmNewPassword: Yup.string()
-    .oneOf([Yup.ref('newPassword')], 'Passwords must match')
-    .required('Confirm password is required'),
-});
+export default function Security() {
+  const [view, setView] = useState<SecurityView>('default');
 
-const Security = () => {
-  const [triggerChangePassword, { isLoading }] = useChangePasswordMutation();
-  const initialValues = {
-    currentPassword: '',
-    newPassword: '',
-    confirmNewPassword: '',
-  };
-  const formik = useFormik({
-    initialValues,
-    onSubmit: async (values) => {
-      try {
-        const response = await triggerChangePassword(values).unwrap();
-        if (response?.isSuccess) {
-          successToast(response?.data || 'Password changed successfully');
-        } else {
-          errorToast(response?.message || getErrorMessage(response));
-        }
-      } catch (error) {
-        errorToast(getErrorMessage(error));
-      }
-    },
-    validationSchema,
-  });
-
-  const {
-    handleBlur,
-    handleChange,
-    handleSubmit,
-    values,
-    isValid,
-    dirty,
-    touched,
-    errors,
-  } = formik;
-
-  return (
-    <div>
-      <h2 className="mb-8">Set new password</h2>
-      <div className="mb-10 max-w-sm">
-        <Input
-          name="currentPassword"
-          type="password"
-          placeholder="Current password"
-          value={values.currentPassword}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          errors={errors}
-          touched={touched}
-        />
-      </div>
-
-      <div className="mb-10 max-w-sm">
-        <Input
-          name="newPassword"
-          type="password"
-          placeholder="New password"
-          value={values.newPassword}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          errors={errors}
-          touched={touched}
-        />
-      </div>
-
-      <div className="mb-10 max-w-sm">
-        <Input
-          placeholder="Confirm password"
-          type="password"
-          name="confirmNewPassword"
-          value={values.confirmNewPassword}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          errors={errors}
-          touched={touched}
-        />
-      </div>
-
-      <p className='text-[#B0B0B0] text-sm mb-12 '>8 characters or longer. Combine upper and lowercase letters and numbers.</p>
-
-      <div className="flex justify-end">
-        <Button
-          className="app_auth_login__btn"
-          size="md"
-          backgroundColor="primary-blue-500"
-          onClick={() => handleSubmit()}
-          disabled={!(dirty && isValid)}
-          isLoading={isLoading}
-        >
-          Save Changes
-        </Button>
-      </div>
+  return <div>
+    {view === 'default' && (
+  <div className="space-y-6">
+    <div className="flex justify-between items-center">
+      <p className='font-medium text-[14px]'>Set new password</p>
+      <button        
+      className="font-bold text-[#7B37F0] flex items-center gap-1"
+        onClick={() => setView('password')}
+      >
+        Set Password <ArrowRight stroke='#7B37F0'/>
+      </button>
     </div>
-  );
-};
 
-export default Security;
+    <div className='flex justify-between items-center text-center'>
+      <p className='font-medium text-[14px]'>Rest PIN code</p>
+        <button        
+      className="font-bold text-[#7B37F0] flex items-center gap-1"
+        onClick={() => setView('pin')}
+      >
+        Set PIN <ArrowRight stroke='#7B37F0'/>
+      </button>
+    </div>
+    </div>
+    )}
+    {view === 'password' && <SetPassword onBack={() => setView('default')} />}
+    {view === 'pin' && <SetPin onBack={() => setView('default')} />}
+    </div>;
+}

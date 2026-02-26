@@ -42,7 +42,7 @@ const Favorites = () => {
   };
 
   const favorites = useMemo(
-    () => favoriteData?.data || [],
+    () =>( favoriteData?.data ? [favoriteData.data] : []),
     [favoriteData?.data],
   );
 

@@ -81,7 +81,7 @@ export default function AddressVerification() {
         buildingNo: values?.buildingNumber,
         apartment: values?.apartment,
         street: values?.street,
-        cityId: values?.city,
+        lgaId: values?.city,
         stateId: values?.state,
         landmark: values?.landmark,
         address: values?.address,
@@ -153,22 +153,6 @@ export default function AddressVerification() {
                   />
                 </div>
 
-                {/* <div className="">
-                  <Input
-                    name="apartment"
-                    type="text"
-                    label="Apartment"
-                    // required
-                    placeholder="e.g 3B, Suite 201"
-                    size="lg"
-                    value={values.apartment}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    errors={errors}
-                    touched={touched}
-                  />
-                </div> */}
-
                 <div className="w-full">
                   <Input
                     name="street"
@@ -213,18 +197,6 @@ export default function AddressVerification() {
                 </div>
               </div>
 
-              {/* <div>
-                <SelectField
-                  name="city"
-                  label="City"
-                  options={citiesOptions}
-                  placeholder="Select city"
-                  onChange={(option) => {
-                    setFieldValue('state', option.value);
-                  }}
-                  value={values?.city}
-                />
-              </div> */}
 
               <div className="">
                 <Input
@@ -241,22 +213,6 @@ export default function AddressVerification() {
                   touched={touched}
                 />
               </div>
-              {/* 
-              <div className="">
-                <Input
-                  name="address"
-                  type="text"
-                  label="Enter Full Address*"
-                  required
-                  placeholder="e.g No 5, Adeniran street off Anthony street Lagos, Nigeria"
-                  size="lg"
-                  value={values.address}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  errors={errors}
-                  touched={touched}
-                />
-              </div> */}
             </div>
             <div className="pt-4 flex justify-end">
               <div className="">

@@ -376,14 +376,14 @@ const Profile = () => {
 
                   <div className="flex flex-col text-[#6D6D6D] gap-2">
                     Portfolio Link
-                    <span className="text-[#262626] font-bold">
+                    <span className="text-[#262626] font-bold truncate max-w-[250px] block">
                       {userData?.portfolioLink || '--'}
                     </span>
                   </div>
 
                   <div className="flex flex-col text-[#6D6D6D] gap-2">
                     Website Url
-                    <span className="text-[#262626] font-bold">
+                    <span className="text-[#262626] font-bold truncate max-w-[250px] block">
                       {userData?.websiteUrl || '--'}
                     </span>
                   </div>

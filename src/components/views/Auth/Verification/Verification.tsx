@@ -21,7 +21,7 @@ export default function Verification() {
   const [verified, setVerified] = useState(false);
   const [token, setToken] = useState('');
   const [email, setEmail] = useState('');
-  const [triggerVerify, { data, isLoading: verificationLoading }] =
+  const [triggerVerify, { isLoading: verificationLoading }] =
     useVerifyAccountMutation();
 
   useEffect(() => {
@@ -71,7 +71,7 @@ export default function Verification() {
     <div className="app_auth_login_container">
       <Header />
       <div className="app_auth_login_container__upper">
-        <div className="app_auth_login">
+        <div className="app_auth_login !flex !flex-col !items-center text-center ">
           {verified ? (
             <Image src={SuccessImage} alt="Success" className="w-24 h-24 mx-auto" unoptimized />
           ) : (
@@ -85,7 +85,7 @@ export default function Verification() {
               <p className="app_auth_verification__p">
                 {verified
                   ? 'Congratulations, your email has been verified successfully'
-                  : data?.message || 'Your link has expired'}
+                  : 'Your link has expired'}
               </p>
 
               {verified && (
