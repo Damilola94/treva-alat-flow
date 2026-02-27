@@ -12,12 +12,15 @@ import { readFileToDataUrl } from '@/utils';
 import { useUsers } from '@/hooks/Users';
 import { Textarea } from '@/components/ui/textarea';
 import useProfessions from '@/hooks/Users/useProfessions';
+import { Loader2 } from 'lucide-react';
 
 const validationSchema = Yup.object().shape({
   bio: Yup.string()
     .max(500, 'Bio cannot be more than 500 characters')
     .nullable(),
-  professionalHeadshot: Yup.mixed().nullable(),
+  professionalHeadshot: Yup.mixed().required(
+    'Professional headshot is required',
+  ),
   socialMediaUrl: Yup.string()
     .url('Must be a valid social media URL')
     .nullable()
@@ -31,12 +34,12 @@ const validationSchema = Yup.object().shape({
 });
 
 export default function ProfileSetup() {
+  const router = useRouter();
   const [previewUrl, setPreviewUrl] = useState<Record<string, string | null>>({
     professionalHeadshot: null,
     cv: null,
     awardsAndCertifications: null,
   });
-  const router = useRouter();
 
   const {
     saveCreativeOnboarding,
@@ -45,23 +48,8 @@ export default function ProfileSetup() {
     loading,
   } = useUsers();
 
-  // const initialValues = {
-  //   bio: '',
-  //   portfolioLink: '',
-  //   socialMediaUrl: '',
-  //   professionalHeadshot: null as File | null,
-  //   cv: null as File | null,
-  //   awardsAndCertifications: null as File | null,
-  //   // new
-  //   firstName: '',
-  //   lastName: '',
-  //   phoneNumber: '',
-  //   profession: '',
-  //   professionId: '',
-  // };
-
   const onboarding = creativeOnboardingData?.data;
-
+  const { professions } = useProfessions();
 
   const initialValues = {
     bio: onboarding?.bio ?? '',
@@ -74,7 +62,8 @@ export default function ProfileSetup() {
     firstName: onboarding?.firstName ?? '',
     lastName: onboarding?.lastName ?? '',
     phoneNumber: onboarding?.phoneNumber ?? '',
-    professionId: onboarding?.professionId ?? '',
+    professionId: onboarding?.professionId ?? professions?.[0]?.name ?? '',
+    professionalHeadshotUrl: onboarding?.professionalHeadshotUrl ?? '',
   };
 
   const formik = useFormik({
@@ -107,30 +96,22 @@ export default function ProfileSetup() {
   }, [saveOnboardingResponse]);
 
   useEffect(() => {
-    const url = creativeOnboardingData?.data?.professionalHeadshotUrl ?? null;
-    if (url) {
-      setPreviewUrl((p) => ({ ...p, professionalHeadshot: url }));
-    }
-  }, [creativeOnboardingData?.data?.professionalHeadshotUrl]);
+  setPreviewUrl({
+    professionalHeadshot: creativeOnboardingData?.data?.professionalHeadshotUrl ?? null,
+    cv: creativeOnboardingData?.data?.cvUrl ?? null,
+    awardsAndCertifications: creativeOnboardingData?.data?.awardsAndCertificationsUrl ?? null,
+  });
 
-  useEffect(() => {
-    const url = creativeOnboardingData?.data?.cvUrl ?? null;
-    if (url) {
-      setPreviewUrl((p) => ({ ...p, cv: url }));
-    }
-  }, [creativeOnboardingData?.data?.cvUrl]);
-
-  useEffect(() => {
-    const url =
-      creativeOnboardingData?.data?.awardsAndCertificationsUrl ?? null;
-    if (url) {
-      setPreviewUrl((p) => ({ ...p, awardsAndCertifications: url }));
-    }
-  }, [creativeOnboardingData?.data?.awardsAndCertificationsUrl]);
+  if (creativeOnboardingData?.data) {
+    // If you want to treat existing URLs as "filled" in Formik
+    formik.setFieldValue('professionalHeadshot', creativeOnboardingData.data.professionalHeadshotUrl || null);
+    formik.setFieldValue('cv', creativeOnboardingData.data.cvUrl || null);
+  }
+// eslint-disable-next-line react-hooks/exhaustive-deps
+}, [creativeOnboardingData?.data]);
 
   const headshotRef = useRef<HTMLInputElement | null>(null);
   const cvRef = useRef<HTMLInputElement | null>(null);
-  // const awardsRef = useRef<HTMLInputElement | null>(null);
 
   const {
     handleBlur,
@@ -184,8 +165,6 @@ export default function ProfileSetup() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [creativeOnboardingData?.data]);
-
-  const { professions } = useProfessions();
 
   return (
     <div className="app_get_started_professional_details py-6 px-4 flex flex-col gap-14 ">
@@ -392,11 +371,11 @@ export default function ProfileSetup() {
                               className="w-32 h-32 object-cover rounded-md"
                             />
                           )}
-                          <p className="text-sm text-gray-700">
+                          {/* <p className="text-sm text-gray-700">
                             {typeof values.professionalHeadshot === 'string'
                               ? values.professionalHeadshot
                               : values.professionalHeadshot?.name}
-                          </p>
+                          </p> */}
                           <button
                             type="button"
                             onClick={() =>
@@ -410,9 +389,12 @@ export default function ProfileSetup() {
                             Remove
                           </button>
                         </div>
-                        <p className="text-red-500 text-sm">
-                          This field is required
-                        </p>
+                        {touched.professionalHeadshot &&
+                          errors.professionalHeadshot && (
+                            <p className="text-red-500 text-sm">
+                              {errors.professionalHeadshot}
+                            </p>
+                          )}
                       </div>
                     ) : (
                       <div>
@@ -561,11 +543,12 @@ export default function ProfileSetup() {
                   <Button
                     size="xl"
                     backgroundColor="primary-blue-500"
-                    className="w-full py-3 px-12"
-                    isLoading={loading}
-                    disabled={!(isValid && dirty)}
+                    className="w-full py-3 px-12 flex items-center justify-center gap-2 "
+                    // isLoading={loading}
+                    disabled={!(isValid && dirty) || loading}
                   >
-                    Save & Continue
+                    {loading && <Loader2 size={18} className="animate-spin" />}
+                    <span>Save & Continue</span>
                   </Button>
                 </div>
               </div>

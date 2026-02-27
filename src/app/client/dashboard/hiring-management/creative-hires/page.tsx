@@ -10,19 +10,19 @@ export async function generateMetadata(): Promise<Metadata> {
   const pageUrl = `${fullHost}/client/dashboard/hiring-management/creative-hires`;
 
   return {
-    title: 'Creative Hires - Hiring | Treva by Wema',
+    title: 'Creative Hires - Hiring | Geegs by Wema',
     description: 'View your hired creatives',
     keywords: ['favorites', 'hiring', 'creatives', 'Treva'],
     openGraph: {
-      title: 'Creative Hires - Hiring | Treva by Wema',
+      title: 'Creative Hires - Hiring | Geegs by Wema',
       description: 'View your hired creatives',
       url: pageUrl,
-      siteName: 'Treva by Wema',
+      siteName: 'Geegs by Wema',
       type: 'website',
     },
     twitter: {
       card: 'summary_large_image',
-      title: 'Creative Hires - Hiring | Treva by Wema',
+      title: 'Creative Hires - Hiring | Geegs by Wema',
       description: 'View your hired creatives',
       images: [`${fullHost}/images/og-dashboard.png`],
     },

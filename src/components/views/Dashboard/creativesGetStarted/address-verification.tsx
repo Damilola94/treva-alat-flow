@@ -9,6 +9,7 @@ import routes from '@/lib/routes';
 import { useRouter } from 'next/navigation';
 import { SelectField } from '@/components/shared';
 import * as Yup from 'yup';
+import { Loader2 } from 'lucide-react';
 
 const validationSchema = Yup.object().shape({
   buildingNumber: Yup.string()
@@ -32,7 +33,6 @@ export default function AddressVerification() {
 
   const { stateData } = useStates({ country: 'Nigeria' });
   const { citiesData } = useCities({ state: state });
-  console.log('citiesData', citiesData);
 
   const stateOptions = useMemo(() => {
     return (
@@ -43,6 +43,7 @@ export default function AddressVerification() {
     );
   }, [stateData]);
 
+
   const citiesOptions = useMemo(() => {
     return (
       citiesData?.data?.map((state) => ({
@@ -51,6 +52,7 @@ export default function AddressVerification() {
       })) ?? []
     );
   }, [citiesData]);
+
 
   const {
     saveCreativeOnboarding,
@@ -80,11 +82,11 @@ export default function AddressVerification() {
         buildingNo: values?.buildingNumber,
         apartment: values?.apartment,
         street: values?.street,
-        cityId: values?.city,
+        lgaId: values?.city,
         stateId: values?.state,
         landmark: values?.landmark,
         address: values?.address,
-        currentStep: 4,
+        currentStep: 3,
       };
       saveCreativeOnboarding(payload);
     },
@@ -152,22 +154,6 @@ export default function AddressVerification() {
                   />
                 </div>
 
-                {/* <div className="">
-                  <Input
-                    name="apartment"
-                    type="text"
-                    label="Apartment"
-                    // required
-                    placeholder="e.g 3B, Suite 201"
-                    size="lg"
-                    value={values.apartment}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    errors={errors}
-                    touched={touched}
-                  />
-                </div> */}
-
                 <div className="w-full">
                   <Input
                     name="street"
@@ -200,31 +186,18 @@ export default function AddressVerification() {
                 </div>
                 <div className="w-full">
                   <SelectField
-                    name="lga"
+                    name="city"
                     label="LGA"
                     options={citiesOptions}
                     placeholder="Select LGA"
                     onChange={(option) => {
                       setFieldValue('city', option.value);
-                      setState(option?.label);
                     }}
-                    value={values?.state}
+                    value={values?.city}
                   />
                 </div>
               </div>
 
-              {/* <div>
-                <SelectField
-                  name="city"
-                  label="City"
-                  options={citiesOptions}
-                  placeholder="Select city"
-                  onChange={(option) => {
-                    setFieldValue('state', option.value);
-                  }}
-                  value={values?.city}
-                />
-              </div> */}
 
               <div className="">
                 <Input
@@ -241,32 +214,19 @@ export default function AddressVerification() {
                   touched={touched}
                 />
               </div>
-              {/* 
-              <div className="">
-                <Input
-                  name="address"
-                  type="text"
-                  label="Enter Full Address*"
-                  required
-                  placeholder="e.g No 5, Adeniran street off Anthony street Lagos, Nigeria"
-                  size="lg"
-                  value={values.address}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  errors={errors}
-                  touched={touched}
-                />
-              </div> */}
             </div>
+            
             <div className="pt-4 flex justify-end">
               <div className="">
                 <Button
                   size="xl"
                   backgroundColor="primary-blue-500"
-                  className="w-full py-3 px-12"
-                  isLoading={loading}
+                  className="w-full py-3 px-12 flex items-center justify-center gap-2"
+                  // isLoading={loading}
+                  disabled={loading}
                 >
-                  Save & Continue
+                {loading && <Loader2 size={18} className="animate-spin" />}
+  <span>Save & Continue</span>
                 </Button>
               </div>
             </div>

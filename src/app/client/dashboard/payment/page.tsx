@@ -8,11 +8,13 @@ import {
   Pill,
   CenterModal,
   SideModal,
+  Copy,
+  MiniLoader,
 } from '@/components/shared';
 import { Avatar } from '@/components/shared/avatar';
 import SearchInput from '@/components/ui/SearchInput';
 import TabSelector from '@/components/shared/TabSelector';
-import { invoiceTabs } from '@/constants';
+import { clientDashboardTasks, invoiceTabs } from '@/constants';
 import usePaymentService from '@/hooks/Projects/usePayment';
 import { useInvoices } from '@/hooks/Projects/useProjects';
 import projectManagement from '@/lib/assets/project-management';
@@ -21,7 +23,7 @@ import { formatDate } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 import React, { Fragment, useEffect, useMemo, useState } from 'react';
 import { Input } from '@/components/ui/input';
-import { Copy, Loader2} from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { useBeneficiaryManagement, useCommon } from '@/hooks/Projects';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
@@ -37,6 +39,10 @@ import { WithdrawalFlowManager } from '@/components/shared/project-management/wa
 
 type TransactionTab = 'All' | 'Credit' | 'Debit';
 type ViewTab = 'Transaction History' | 'Invoice';
+const transactionTypeMap = {
+  Credit: 2,
+  Debit: 1,
+};
 interface InvoiceParams {
   status?: string;
   pageNumber?: number;
@@ -68,7 +74,7 @@ export default function Page() {
     useState<TransactionTab>('All');
   const [addFunds, toggleAddFunds] = useState(false);
   const [addAccount, toggleAddAccount] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(clientDashboardTasks?.[0]?.value ?? null);
   const [activeViewTab, setActiveViewTab] = useState<ViewTab>(
     'Transaction History',
   );
@@ -104,14 +110,15 @@ export default function Page() {
   });
 
   const { allInvoicesData } = useInvoices(params);
-  const { myWalletData } = usePaymentService(params);
+  const { myWalletData, refetch:refetchWallet } = usePaymentService(params);
   const { addWithdrawResponse } = usePaymentService(params);
   const { myCommonData } = useCommon();
   const { beneficiaryData, refetch } = useBeneficiaryManagement(params);
   const { addBeneficiary, addBeneficiaryResponse } = useBeneficiaryManagement();
   const walletId = myWalletData?.data?.accountNumber ?? '';
   // const { myTransactions } = usePaymentService(params);
-  const { data: myTransactions } = useGetTransactionsQuery(walletId);
+  const { data: myTransactions, isLoading: loading } =
+    useGetTransactionsQuery(walletId);
   const [bankNameEnquiryTrigger, { isLoading: bankNameLoading }] =
     useBankNameEnquiryMutation();
 
@@ -149,9 +156,8 @@ export default function Page() {
 
   const filteredCounts = {
     All: transactionData.length,
-    Credit: transactionData.filter((d) => d.transactionType === 'Credit')
-      .length,
-    Debit: transactionData.filter((d) => d.transactionType === 'Debit').length,
+    Credit: transactionData.filter((d) => d.transactionType === 2).length,
+    Debit: transactionData.filter((d) => d.transactionType === 1).length,
   };
 
   const formik = useFormik({
@@ -184,31 +190,31 @@ export default function Page() {
     isValid,
   } = formik;
 
-    React.useEffect(() => {
-      const ac = values.accountNumber?.toString() || '';
-      const bc = values.bankCode;
-      if (ac.length !== 10 || !bc || values.name) return;
-  
-      const timer = setTimeout(async () => {
-        try {
-          const resp = await bankNameEnquiryTrigger({
-            accountNumber: ac,
-            bankCode: String(bc),
-          }).unwrap();
-          if (resp?.isSuccess && resp?.data) {
-            setFieldValue('name', resp.data);
-          } else if (resp && !resp.isSuccess) {
-            errorToast(resp?.message || 'Could not get beneficiary account name');
-          }
-        } catch (e) {
-          const msg = getErrorMessage(e) || 'Failed to resolve account name';
-          errorToast(msg);
+  React.useEffect(() => {
+    const ac = values.accountNumber?.toString() || '';
+    const bc = values.bankCode;
+    if (ac.length !== 10 || !bc || values.name) return;
+
+    const timer = setTimeout(async () => {
+      try {
+        const resp = await bankNameEnquiryTrigger({
+          accountNumber: ac,
+          bankCode: String(bc),
+        }).unwrap();
+        if (resp?.isSuccess && resp?.data) {
+          setFieldValue('name', resp.data);
+        } else if (resp && !resp.isSuccess) {
+          errorToast(resp?.message || 'Could not get beneficiary account name');
         }
-      }, 500);
-  
-      return () => clearTimeout(timer);
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [values.accountNumber, values.bankCode]);
+      } catch (e) {
+        const msg = getErrorMessage(e) || 'Failed to resolve account name';
+        errorToast(msg);
+      }
+    }, 500);
+
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [values.accountNumber, values.bankCode]);
 
   useEffect(() => {
     if (addBeneficiaryResponse?.isSuccess) {
@@ -218,6 +224,7 @@ export default function Page() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addBeneficiaryResponse]);
+
   useEffect(() => {
     if (addWithdrawResponse?.isSuccess) {
       refetch && refetch();
@@ -239,8 +246,8 @@ export default function Page() {
 
   const tractionHeaders = [
     {
-      header: 'Description',
-      accessorKey: 'narration',
+      header: 'Sender',
+      accessorKey: 'sourceAccountName',
     },
     {
       header: 'Amount',
@@ -323,6 +330,10 @@ export default function Page() {
     },
   ];
 
+  if (loading) {
+    return <MiniLoader message="Loading" />;
+  }
+
   return (
     <div className="app_dashboard_page app_dashboard_home">
       <div className="invoice_payment_bg">
@@ -356,6 +367,7 @@ export default function Page() {
               wallet={myWalletData?.data}
               beneficiaries={beneficiaryData?.data || []}
               refetchBeneficiaries={refetch}
+              refetchWallet={refetchWallet}
               onAddAccount={() => {
                 setIsWithdrawFlowOpen(false);
                 toggleAddAccount(true);
@@ -398,21 +410,25 @@ export default function Page() {
               activeClass="bg-[#26A17B] text-white"
               inactiveClass="bg-white text-[#262626]"
             />
-            <Table
-              columns={tractionHeaders}
-              emptyTitle="No transaction Yet"
-              emptyMessage="Transactions will be added here"
-              data={transactionData.filter(
-                (d) =>
+            {loading ? (
+              <div className="text-center mt-10 flex justify-center items-center">
+                <MiniLoader message="loading" />
+              </div>
+            ) : (
+              <Table
+                columns={tractionHeaders}
+                emptyTitle="No transaction Yet"
+                emptyMessage="Transactions will be added here"
+                data={transactionData.filter((d) =>
                   activeTransactionTab === 'All'
                     ? true
-                    : d.transactionType === activeTransactionTab,
-                // : d.transactionType?.toLowerCase() === activeTransactionTab.toLowerCase()
-              )}
-              // data={transactionData}
-              pagination={pagination}
-              setPagination={setPagination}
-            />
+                    : d.transactionType ===
+                      transactionTypeMap[activeTransactionTab],
+                )}
+                pagination={pagination}
+                setPagination={setPagination}
+              />
+            )}
           </Fragment>
         ) : (
           <Fragment>
@@ -494,7 +510,9 @@ export default function Page() {
           </div>
           <div className="flex justify-between items-center">
             <span className="text-[#808080]">Account Name</span>
-            <span className="font-semibold">Geegs - IDEAx Labs</span>
+            <span className="font-semibold">
+              {myWalletData?.data?.walletName || 'N/A'}
+            </span>
           </div>
         </div>
       </CenterModal>

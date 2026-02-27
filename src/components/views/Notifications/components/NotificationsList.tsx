@@ -97,9 +97,16 @@ const NotificationList: React.FC<{
         <div className="space-y-8 border border-[#E7E7E7] bg-white pt-5 rounded-xl">
           {grouped.map((group) => (
             <div key={group.dateLabel}>
-              <div className="text-center text-xs text-gray-400 mb-4">
-                {group.dateLabel}
+              <div className="flex items-center mb-4">
+                <div className="flex-1 h-px bg-gray-200" />
+
+                <span className="px-3 text-xs text-gray-400 whitespace-nowrap">
+                  {group.dateLabel}
+                </span>
+
+                <div className="flex-1 h-px bg-gray-200" />
               </div>
+
               <div className="">
                 {group.items.map((item) => (
                   <div

@@ -69,7 +69,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>((args, ref) => {
 
         <RenderIf condition={type === 'password'}>
           <button
-            className="app_input_eye"
+            className="app_input_eye !text-gray-500"
             onClick={() => {
               setShowPassword((prev) => !prev);
             }}

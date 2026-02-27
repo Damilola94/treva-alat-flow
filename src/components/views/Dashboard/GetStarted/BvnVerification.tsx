@@ -17,6 +17,7 @@ import {
 import { getErrorMessage } from '@/utils';
 import { ImagePlaceholder } from '@/app/assets/svgs';
 import NinVerification from './NinVerification';
+import { Loader2 } from 'lucide-react';
 
 const validationSchema = Yup.object().shape({
   bvn: Yup.string()
@@ -138,7 +139,7 @@ export default function BvnVerification() {
 
   useEffect(() => {
     if (saveOnboardingResponse?.isSuccess) {
-      router.push(routes.client.dashboard.getStarted.ninVerification.path);
+      router.push(routes.client.dashboard.getStarted.addressVerification.path);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [saveOnboardingResponse]);
@@ -259,12 +260,15 @@ ${idType === 'NIN' ? 'border-[#7B37F0]' : 'border-gray-300 '}
                     <Button
                       size="xl"
                       backgroundColor="primary-blue-500"
-                      className="w-full py-3 px-12"
+                      className="w-full py-3 px-12 flex items-center justify-center gap-2"
                       onClick={() => saveClientOnboarding({ currentStep: 2 })}
-                      disabled={!isSuccess || callbackLoading}
-                      isLoading={loading}
+                      disabled={!isSuccess || callbackLoading || loading}
+                      // isLoading={loading}
                     >
-                      Save & Continue
+                      {loading && (
+                        <Loader2 size={18} className="animate-spin" />
+                      )}
+                      <span>Save & Continue</span>
                     </Button>
                   </div>
                 </div>

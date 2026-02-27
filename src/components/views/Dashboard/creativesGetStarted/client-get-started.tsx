@@ -1,31 +1,45 @@
 'use client';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { dashboardCards } from '@/constants';
-import { useProfile, useUsers } from '@/hooks/Users';
+import { useProfile } from '@/hooks/Users';
 import { CreativesGetStartedCard } from './components/CreativesGetStartedCard';
+import routes from '@/lib/routes';
+import { useRouter } from 'next/navigation';
 
 export default function CreativesGetStarted() {
-  const { data } = useProfile();
+  // const { data } = useProfile();
 
-  const [showSteps, setShowSteps] = useState(false);
-  const { creativeOnboardingData, creativeOnboardingError } = useUsers();
-  const [onboardingComplete, setOnboardingComplete] = useState(false);
+  // const [showSteps, setShowSteps] = useState(false);
+  // const { creativeOnboardingData, creativeOnboardingError } = useUsers();
+  // const [onboardingComplete, setOnboardingComplete] = useState(false);
 
-  const onboardingStatus = useMemo(
-    () => creativeOnboardingData?.data || null,
-    [creativeOnboardingData],
-  );
+  // const onboardingStatus = useMemo(
+  //   () => creativeOnboardingData?.data || null,
+  //   [creativeOnboardingData],
+  // );
 
-  useEffect(() => {
-    if (
-      onboardingStatus?.isCompleted ||
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (creativeOnboardingError as any)?.data?.message ===
-      'CreativeOnboarding not found or already completed.'
-    ) {
-      setOnboardingComplete(true);      
-    }
-  }, [onboardingStatus, creativeOnboardingError]);
+  // useEffect(() => {
+  //   if (
+  //     data?.data?.isCompleted ||
+  //     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  //     (creativeOnboardingError as any)?.data?.message ===
+  //     'CreativeOnboarding not found or already completed.'
+  //   ) {
+  //     setOnboardingComplete(true);      
+  //   }
+  // }, [onboardingStatus, creativeOnboardingError, data]);
+
+   const { data } = useProfile();
+    const router = useRouter();
+    const [showSteps, setShowSteps] = useState(false);
+  
+    const onboardingComplete = data?.data?.isCompleted ?? false;
+  
+    useEffect(() => {
+      if (onboardingComplete) {
+        router.push(routes.creatives.dashboard.entry.path);
+      }
+    }, [onboardingComplete, router]);
 
   return (
     <div className="app_get_started flex flex-col gap-10 pb-10 mb-10 px-4">

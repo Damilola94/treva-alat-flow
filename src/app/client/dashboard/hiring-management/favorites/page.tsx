@@ -10,14 +10,14 @@ export async function generateMetadata(): Promise<Metadata> {
   const pageUrl = `${fullHost}/client/dashboard/hiring-management/favorites`;
 
   return {
-    title: 'Favorites - Hiring | Treva by Wema',
+    title: 'Favorites - Hiring | Geegs by Wema',
     description: 'Explore your favorite hires',
     keywords: ['favorites', 'hiring', 'creatives', 'Treva'],
     openGraph: {
       title: 'Favorites - Hiring | Treva',
       description: 'Explore your favorite hires',
       url: pageUrl,
-      siteName: 'Treva by Wema',
+      siteName: 'Geegs by Wema',
       type: 'website',
     },
     twitter: {

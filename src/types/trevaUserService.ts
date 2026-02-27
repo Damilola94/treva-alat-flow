@@ -4,1936 +4,1974 @@
  */
 
 export interface paths {
-  '/api/v1/addressverification/feedback': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Address Verification Feedback */
-    post: {
-      parameters: {
-        query?: never;
-        header?: never;
-        path?: never;
-        cookie?: never;
-      };
-      requestBody?: {
-        content: {
-          'application/json-patch+json': components['schemas']['AddressVerificationFeedbackCommand'];
-          'application/json': components['schemas']['AddressVerificationFeedbackCommand'];
-          'text/json': components['schemas']['AddressVerificationFeedbackCommand'];
-          'application/*+json': components['schemas']['AddressVerificationFeedbackCommand'];
+    "/api/v1/addressverification/feedback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-      };
-      responses: {
-        /** @description OK */
-        200: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'text/plain': components['schemas']['BooleanBaseResponse'];
-            'application/json': components['schemas']['BooleanBaseResponse'];
-            'text/json': components['schemas']['BooleanBaseResponse'];
-          };
+        get?: never;
+        put?: never;
+        /** Address Verification Feedback */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json-patch+json": components["schemas"]["AddressVerificationFeedbackCommand"];
+                    "application/json": components["schemas"]["AddressVerificationFeedbackCommand"];
+                    "text/json": components["schemas"]["AddressVerificationFeedbackCommand"];
+                    "application/*+json": components["schemas"]["AddressVerificationFeedbackCommand"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["BooleanBaseResponse"];
+                        "application/json": components["schemas"]["BooleanBaseResponse"];
+                        "text/json": components["schemas"]["BooleanBaseResponse"];
+                    };
+                };
+            };
         };
-      };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/auth/register': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Register a new Treva account */
-    post: {
-      parameters: {
-        query?: never;
-        header?: never;
-        path?: never;
-        cookie?: never;
-      };
-      requestBody?: {
-        content: {
-          'application/json-patch+json': components['schemas']['RegisterCommand'];
-          'application/json': components['schemas']['RegisterCommand'];
-          'text/json': components['schemas']['RegisterCommand'];
-          'application/*+json': components['schemas']['RegisterCommand'];
+    "/api/v1/auth/register": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-      };
-      responses: {
-        /** @description OK */
-        200: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'text/plain': components['schemas']['StringBaseResponse'];
-            'application/json': components['schemas']['StringBaseResponse'];
-            'text/json': components['schemas']['StringBaseResponse'];
-          };
+        get?: never;
+        put?: never;
+        /** Register a new Treva account */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json-patch+json": components["schemas"]["RegisterCommand"];
+                    "application/json": components["schemas"]["RegisterCommand"];
+                    "text/json": components["schemas"]["RegisterCommand"];
+                    "application/*+json": components["schemas"]["RegisterCommand"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["StringBaseResponse"];
+                        "application/json": components["schemas"]["StringBaseResponse"];
+                        "text/json": components["schemas"]["StringBaseResponse"];
+                    };
+                };
+            };
         };
-      };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/auth/login': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Login to your account */
-    post: {
-      parameters: {
-        query?: never;
-        header?: never;
-        path?: never;
-        cookie?: never;
-      };
-      requestBody?: {
-        content: {
-          'application/json-patch+json': components['schemas']['LoginCommand'];
-          'application/json': components['schemas']['LoginCommand'];
-          'text/json': components['schemas']['LoginCommand'];
-          'application/*+json': components['schemas']['LoginCommand'];
+    "/api/v1/auth/login": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-      };
-      responses: {
-        /** @description OK */
-        200: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'text/plain': components['schemas']['LoginModelBaseResponse'];
-            'application/json': components['schemas']['LoginModelBaseResponse'];
-            'text/json': components['schemas']['LoginModelBaseResponse'];
-          };
+        get?: never;
+        put?: never;
+        /** Login to your account */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json-patch+json": components["schemas"]["LoginCommand"];
+                    "application/json": components["schemas"]["LoginCommand"];
+                    "text/json": components["schemas"]["LoginCommand"];
+                    "application/*+json": components["schemas"]["LoginCommand"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["LoginModelBaseResponse"];
+                        "application/json": components["schemas"]["LoginModelBaseResponse"];
+                        "text/json": components["schemas"]["LoginModelBaseResponse"];
+                    };
+                };
+            };
         };
-      };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/auth/forgot-password': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Initiate forgot password procedure */
-    post: {
-      parameters: {
-        query?: never;
-        header?: never;
-        path?: never;
-        cookie?: never;
-      };
-      requestBody?: {
-        content: {
-          'application/json-patch+json': components['schemas']['ForgotPasswordCommand'];
-          'application/json': components['schemas']['ForgotPasswordCommand'];
-          'text/json': components['schemas']['ForgotPasswordCommand'];
-          'application/*+json': components['schemas']['ForgotPasswordCommand'];
+    "/api/v1/auth/forgot-password": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-      };
-      responses: {
-        /** @description OK */
-        200: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'text/plain': components['schemas']['StringBaseResponse'];
-            'application/json': components['schemas']['StringBaseResponse'];
-            'text/json': components['schemas']['StringBaseResponse'];
-          };
+        get?: never;
+        put?: never;
+        /** Initiate forgot password procedure */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json-patch+json": components["schemas"]["ForgotPasswordCommand"];
+                    "application/json": components["schemas"]["ForgotPasswordCommand"];
+                    "text/json": components["schemas"]["ForgotPasswordCommand"];
+                    "application/*+json": components["schemas"]["ForgotPasswordCommand"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["StringBaseResponse"];
+                        "application/json": components["schemas"]["StringBaseResponse"];
+                        "text/json": components["schemas"]["StringBaseResponse"];
+                    };
+                };
+            };
         };
-      };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/auth/reset-password': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Reset your account password */
-    post: {
-      parameters: {
-        query?: never;
-        header?: never;
-        path?: never;
-        cookie?: never;
-      };
-      requestBody?: {
-        content: {
-          'application/json-patch+json': components['schemas']['ResetPasswordCommand'];
-          'application/json': components['schemas']['ResetPasswordCommand'];
-          'text/json': components['schemas']['ResetPasswordCommand'];
-          'application/*+json': components['schemas']['ResetPasswordCommand'];
+    "/api/v1/auth/reset-password": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-      };
-      responses: {
-        /** @description OK */
-        200: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'text/plain': components['schemas']['StringBaseResponse'];
-            'application/json': components['schemas']['StringBaseResponse'];
-            'text/json': components['schemas']['StringBaseResponse'];
-          };
+        get?: never;
+        put?: never;
+        /** Reset your account password */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json-patch+json": components["schemas"]["ResetPasswordCommand"];
+                    "application/json": components["schemas"]["ResetPasswordCommand"];
+                    "text/json": components["schemas"]["ResetPasswordCommand"];
+                    "application/*+json": components["schemas"]["ResetPasswordCommand"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["StringBaseResponse"];
+                        "application/json": components["schemas"]["StringBaseResponse"];
+                        "text/json": components["schemas"]["StringBaseResponse"];
+                    };
+                };
+            };
         };
-      };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/auth/refresh-token': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Refresh your access token */
-    post: {
-      parameters: {
-        query?: never;
-        header?: never;
-        path?: never;
-        cookie?: never;
-      };
-      requestBody?: {
-        content: {
-          'application/json-patch+json': components['schemas']['RefreshTokenCommand'];
-          'application/json': components['schemas']['RefreshTokenCommand'];
-          'text/json': components['schemas']['RefreshTokenCommand'];
-          'application/*+json': components['schemas']['RefreshTokenCommand'];
+    "/api/v1/auth/refresh-token": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-      };
-      responses: {
-        /** @description OK */
-        200: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'text/plain': components['schemas']['LoginModelBaseResponse'];
-            'application/json': components['schemas']['LoginModelBaseResponse'];
-            'text/json': components['schemas']['LoginModelBaseResponse'];
-          };
+        get?: never;
+        put?: never;
+        /** Refresh your access token */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json-patch+json": components["schemas"]["RefreshTokenCommand"];
+                    "application/json": components["schemas"]["RefreshTokenCommand"];
+                    "text/json": components["schemas"]["RefreshTokenCommand"];
+                    "application/*+json": components["schemas"]["RefreshTokenCommand"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["LoginModelBaseResponse"];
+                        "application/json": components["schemas"]["LoginModelBaseResponse"];
+                        "text/json": components["schemas"]["LoginModelBaseResponse"];
+                    };
+                };
+            };
         };
-      };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/auth/verify-account': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Verify user account */
-    post: {
-      parameters: {
-        query?: never;
-        header?: never;
-        path?: never;
-        cookie?: never;
-      };
-      requestBody?: {
-        content: {
-          'application/json-patch+json': components['schemas']['VerifyAccountCommand'];
-          'application/json': components['schemas']['VerifyAccountCommand'];
-          'text/json': components['schemas']['VerifyAccountCommand'];
-          'application/*+json': components['schemas']['VerifyAccountCommand'];
+    "/api/v1/auth/verify-account": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-      };
-      responses: {
-        /** @description OK */
-        200: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'text/plain': components['schemas']['StringBaseResponse'];
-            'application/json': components['schemas']['StringBaseResponse'];
-            'text/json': components['schemas']['StringBaseResponse'];
-          };
+        get?: never;
+        put?: never;
+        /** Verify user account */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json-patch+json": components["schemas"]["VerifyAccountCommand"];
+                    "application/json": components["schemas"]["VerifyAccountCommand"];
+                    "text/json": components["schemas"]["VerifyAccountCommand"];
+                    "application/*+json": components["schemas"]["VerifyAccountCommand"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["StringBaseResponse"];
+                        "application/json": components["schemas"]["StringBaseResponse"];
+                        "text/json": components["schemas"]["StringBaseResponse"];
+                    };
+                };
+            };
         };
-      };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/auth/change-password': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Change your account password */
-    post: {
-      parameters: {
-        query?: never;
-        header?: never;
-        path?: never;
-        cookie?: never;
-      };
-      requestBody?: {
-        content: {
-          'application/json-patch+json': components['schemas']['ChangePasswordCommand'];
-          'application/json': components['schemas']['ChangePasswordCommand'];
-          'text/json': components['schemas']['ChangePasswordCommand'];
-          'application/*+json': components['schemas']['ChangePasswordCommand'];
+    "/api/v1/auth/change-password": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-      };
-      responses: {
-        /** @description OK */
-        200: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'text/plain': components['schemas']['StringBaseResponse'];
-            'application/json': components['schemas']['StringBaseResponse'];
-            'text/json': components['schemas']['StringBaseResponse'];
-          };
+        get?: never;
+        put?: never;
+        /** Change your account password */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json-patch+json": components["schemas"]["ChangePasswordCommand"];
+                    "application/json": components["schemas"]["ChangePasswordCommand"];
+                    "text/json": components["schemas"]["ChangePasswordCommand"];
+                    "application/*+json": components["schemas"]["ChangePasswordCommand"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["StringBaseResponse"];
+                        "application/json": components["schemas"]["StringBaseResponse"];
+                        "text/json": components["schemas"]["StringBaseResponse"];
+                    };
+                };
+            };
         };
-      };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/locations/states': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Get states */
-    get: {
-      parameters: {
-        query?: {
-          Country?: string;
-          PageNumber?: number;
-          PageSize?: number;
-          SearchKey?: string;
+    "/api/v1/auth/resend-email-verification": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        header?: never;
-        path?: never;
-        cookie?: never;
-      };
-      requestBody?: never;
-      responses: {
-        /** @description OK */
-        200: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'text/plain': components['schemas']['StateModelPagedListBaseResponse'];
-            'application/json': components['schemas']['StateModelPagedListBaseResponse'];
-            'text/json': components['schemas']['StateModelPagedListBaseResponse'];
-          };
+        get?: never;
+        put?: never;
+        /** Resend email verification token */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json-patch+json": components["schemas"]["ResendEmailVerificationCommand"];
+                    "application/json": components["schemas"]["ResendEmailVerificationCommand"];
+                    "text/json": components["schemas"]["ResendEmailVerificationCommand"];
+                    "application/*+json": components["schemas"]["ResendEmailVerificationCommand"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["BooleanBaseResponse"];
+                        "application/json": components["schemas"]["BooleanBaseResponse"];
+                        "text/json": components["schemas"]["BooleanBaseResponse"];
+                    };
+                };
+            };
         };
-      };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/locations/cities': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Get cities */
-    get: {
-      parameters: {
-        query?: {
-          State?: string;
-          PageNumber?: number;
-          PageSize?: number;
-          SearchKey?: string;
+    "/api/v1/locations/states": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        header?: never;
-        path?: never;
-        cookie?: never;
-      };
-      requestBody?: never;
-      responses: {
-        /** @description OK */
-        200: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'text/plain': components['schemas']['CityModelPagedListBaseResponse'];
-            'application/json': components['schemas']['CityModelPagedListBaseResponse'];
-            'text/json': components['schemas']['CityModelPagedListBaseResponse'];
-          };
+        /** Get states */
+        get: {
+            parameters: {
+                query?: {
+                    Country?: string;
+                    PageNumber?: number;
+                    PageSize?: number;
+                    SearchKey?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["StateModelPagedListBaseResponse"];
+                        "application/json": components["schemas"]["StateModelPagedListBaseResponse"];
+                        "text/json": components["schemas"]["StateModelPagedListBaseResponse"];
+                    };
+                };
+            };
         };
-      };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/professions': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Get all professions */
-    get: {
-      parameters: {
-        query?: never;
-        header?: never;
-        path?: never;
-        cookie?: never;
-      };
-      requestBody?: never;
-      responses: {
-        /** @description OK */
-        200: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'text/plain': components['schemas']['ProfessionModelIEnumerableBaseResponse'];
-            'application/json': components['schemas']['ProfessionModelIEnumerableBaseResponse'];
-            'text/json': components['schemas']['ProfessionModelIEnumerableBaseResponse'];
-          };
+    "/api/v1/locations/lga": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-      };
-    };
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/selfieverification/verify-bvn': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Generate User Selfie Verification Link for BVN */
-    post: {
-      parameters: {
-        query?: never;
-        header?: never;
-        path?: never;
-        cookie?: never;
-      };
-      requestBody?: {
-        content: {
-          'application/json-patch+json': components['schemas']['GenerateUserBVNSelfieLinkCommand'];
-          'application/json': components['schemas']['GenerateUserBVNSelfieLinkCommand'];
-          'text/json': components['schemas']['GenerateUserBVNSelfieLinkCommand'];
-          'application/*+json': components['schemas']['GenerateUserBVNSelfieLinkCommand'];
+        /** Get lgas */
+        get: {
+            parameters: {
+                query?: {
+                    State?: string;
+                    PageNumber?: number;
+                    PageSize?: number;
+                    SearchKey?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["CityModelPagedListBaseResponse"];
+                        "application/json": components["schemas"]["CityModelPagedListBaseResponse"];
+                        "text/json": components["schemas"]["CityModelPagedListBaseResponse"];
+                    };
+                };
+            };
         };
-      };
-      responses: {
-        /** @description OK */
-        200: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'text/plain': components['schemas']['UserDocumentModelBaseResponse'];
-            'application/json': components['schemas']['UserDocumentModelBaseResponse'];
-            'text/json': components['schemas']['UserDocumentModelBaseResponse'];
-          };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/professions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-      };
-    };
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/selfieverification/verify-nin': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Generate User Selfie Verification Link for NIN */
-    post: {
-      parameters: {
-        query?: never;
-        header?: never;
-        path?: never;
-        cookie?: never;
-      };
-      requestBody?: {
-        content: {
-          'application/json-patch+json': components['schemas']['GenerateUserNINSelfieLinkCommand'];
-          'application/json': components['schemas']['GenerateUserNINSelfieLinkCommand'];
-          'text/json': components['schemas']['GenerateUserNINSelfieLinkCommand'];
-          'application/*+json': components['schemas']['GenerateUserNINSelfieLinkCommand'];
+        /** Get all professions */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ProfessionModelIEnumerableBaseResponse"];
+                        "application/json": components["schemas"]["ProfessionModelIEnumerableBaseResponse"];
+                        "text/json": components["schemas"]["ProfessionModelIEnumerableBaseResponse"];
+                    };
+                };
+            };
         };
-      };
-      responses: {
-        /** @description OK */
-        200: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'text/plain': components['schemas']['UserDocumentModelBaseResponse'];
-            'application/json': components['schemas']['UserDocumentModelBaseResponse'];
-            'text/json': components['schemas']['UserDocumentModelBaseResponse'];
-          };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/selfieverification/verify-bvn": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-      };
-    };
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/selfieverification/callback': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Selfie Verification Callback */
-    post: {
-      parameters: {
-        query?: never;
-        header?: never;
-        path?: never;
-        cookie?: never;
-      };
-      requestBody?: {
-        content: {
-          'application/json-patch+json': components['schemas']['SelfieCallbackCommand'];
-          'application/json': components['schemas']['SelfieCallbackCommand'];
-          'text/json': components['schemas']['SelfieCallbackCommand'];
-          'application/*+json': components['schemas']['SelfieCallbackCommand'];
+        get?: never;
+        put?: never;
+        /** Generate User Selfie Verification Link for BVN */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json-patch+json": components["schemas"]["GenerateUserBVNSelfieCommand"];
+                    "application/json": components["schemas"]["GenerateUserBVNSelfieCommand"];
+                    "text/json": components["schemas"]["GenerateUserBVNSelfieCommand"];
+                    "application/*+json": components["schemas"]["GenerateUserBVNSelfieCommand"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["UserDocumentModelBaseResponse"];
+                        "application/json": components["schemas"]["UserDocumentModelBaseResponse"];
+                        "text/json": components["schemas"]["UserDocumentModelBaseResponse"];
+                    };
+                };
+            };
         };
-      };
-      responses: {
-        /** @description OK */
-        200: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'text/plain': components['schemas']['SelfieCallbackModelBaseResponse'];
-            'application/json': components['schemas']['SelfieCallbackModelBaseResponse'];
-            'text/json': components['schemas']['SelfieCallbackModelBaseResponse'];
-          };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/selfieverification/verify-nin": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-      };
-    };
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/subscriptions/{subscriptionId}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Get Subscription by ID */
-    get: {
-      parameters: {
-        query?: never;
-        header?: never;
-        path: {
-          subscriptionId: string;
+        get?: never;
+        put?: never;
+        /** Generate User Selfie Verification Link for NIN */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json-patch+json": components["schemas"]["GenerateUserNINSelfieCommand"];
+                    "application/json": components["schemas"]["GenerateUserNINSelfieCommand"];
+                    "text/json": components["schemas"]["GenerateUserNINSelfieCommand"];
+                    "application/*+json": components["schemas"]["GenerateUserNINSelfieCommand"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["UserDocumentModelBaseResponse"];
+                        "application/json": components["schemas"]["UserDocumentModelBaseResponse"];
+                        "text/json": components["schemas"]["UserDocumentModelBaseResponse"];
+                    };
+                };
+            };
         };
-        cookie?: never;
-      };
-      requestBody?: never;
-      responses: {
-        /** @description OK */
-        200: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'text/plain': components['schemas']['SubscriptionModelBaseResponse'];
-            'application/json': components['schemas']['SubscriptionModelBaseResponse'];
-            'text/json': components['schemas']['SubscriptionModelBaseResponse'];
-          };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/selfieverification/callback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-      };
-    };
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/subscriptions': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Get All Subscriptions */
-    get: {
-      parameters: {
-        query?: {
-          Name?: string;
-          Amount?: number;
-          PageNumber?: number;
-          PageSize?: number;
-          SearchKey?: string;
+        get?: never;
+        put?: never;
+        /** Selfie Verification Callback */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json-patch+json": components["schemas"]["SelfieCallbackCommand"];
+                    "application/json": components["schemas"]["SelfieCallbackCommand"];
+                    "text/json": components["schemas"]["SelfieCallbackCommand"];
+                    "application/*+json": components["schemas"]["SelfieCallbackCommand"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["SelfieCallbackModelBaseResponse"];
+                        "application/json": components["schemas"]["SelfieCallbackModelBaseResponse"];
+                        "text/json": components["schemas"]["SelfieCallbackModelBaseResponse"];
+                    };
+                };
+            };
         };
-        header?: never;
-        path?: never;
-        cookie?: never;
-      };
-      requestBody?: never;
-      responses: {
-        /** @description OK */
-        200: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'text/plain': components['schemas']['SubscriptionModelPagedListBaseResponse'];
-            'application/json': components['schemas']['SubscriptionModelPagedListBaseResponse'];
-            'text/json': components['schemas']['SubscriptionModelPagedListBaseResponse'];
-          };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/subscriptions/{subscriptionId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-      };
-    };
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/userfavorites/client-user-favorites-creative': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Get client favorite creatives */
-    get: {
-      parameters: {
-        query?: {
-          ProfessionId?: string;
-          Rating?: number;
-          PageNumber?: number;
-          PageSize?: number;
-          SearchKey?: string;
+        /** Get Subscription by ID */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    subscriptionId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["SubscriptionModelBaseResponse"];
+                        "application/json": components["schemas"]["SubscriptionModelBaseResponse"];
+                        "text/json": components["schemas"]["SubscriptionModelBaseResponse"];
+                    };
+                };
+            };
         };
-        header?: never;
-        path?: never;
-        cookie?: never;
-      };
-      requestBody?: never;
-      responses: {
-        /** @description OK */
-        200: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'text/plain': components['schemas']['UserFavoriteModelBaseResponse'];
-            'application/json': components['schemas']['UserFavoriteModelBaseResponse'];
-            'text/json': components['schemas']['UserFavoriteModelBaseResponse'];
-          };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/subscriptions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-      };
-    };
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/userfavorites/add-client-favorite-creative': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Add client favorite creative */
-    post: {
-      parameters: {
-        query?: never;
-        header?: never;
-        path?: never;
-        cookie?: never;
-      };
-      requestBody?: {
-        content: {
-          'application/json-patch+json': components['schemas']['CreateClientUserFavoriteCommand'];
-          'application/json': components['schemas']['CreateClientUserFavoriteCommand'];
-          'text/json': components['schemas']['CreateClientUserFavoriteCommand'];
-          'application/*+json': components['schemas']['CreateClientUserFavoriteCommand'];
+        /** Get All Subscriptions */
+        get: {
+            parameters: {
+                query?: {
+                    Name?: string;
+                    Amount?: number;
+                    PageNumber?: number;
+                    PageSize?: number;
+                    SearchKey?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["SubscriptionModelPagedListBaseResponse"];
+                        "application/json": components["schemas"]["SubscriptionModelPagedListBaseResponse"];
+                        "text/json": components["schemas"]["SubscriptionModelPagedListBaseResponse"];
+                    };
+                };
+            };
         };
-      };
-      responses: {
-        /** @description OK */
-        200: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'text/plain': components['schemas']['BooleanBaseResponse'];
-            'application/json': components['schemas']['BooleanBaseResponse'];
-            'text/json': components['schemas']['BooleanBaseResponse'];
-          };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/userfavorites/client-user-favorites-creative": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-      };
-    };
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/userfavorites/remove-client-favorite-creative/{creativeUserId}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post?: never;
-    /** Remove client favorite creative */
-    delete: {
-      parameters: {
-        query?: never;
-        header?: never;
-        path: {
-          creativeUserId: string;
+        /** Get client favorite creatives */
+        get: {
+            parameters: {
+                query?: {
+                    ProfessionId?: string;
+                    Rating?: number;
+                    PageNumber?: number;
+                    PageSize?: number;
+                    SearchKey?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["UserFavoriteModelBaseResponse"];
+                        "application/json": components["schemas"]["UserFavoriteModelBaseResponse"];
+                        "text/json": components["schemas"]["UserFavoriteModelBaseResponse"];
+                    };
+                };
+            };
         };
-        cookie?: never;
-      };
-      requestBody?: never;
-      responses: {
-        /** @description OK */
-        200: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'text/plain': components['schemas']['BooleanBaseResponse'];
-            'application/json': components['schemas']['BooleanBaseResponse'];
-            'text/json': components['schemas']['BooleanBaseResponse'];
-          };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/userfavorites/add-client-favorite-creative": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-      };
-    };
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/users/save-client-onboarding': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Save client onboarding */
-    post: {
-      parameters: {
-        query?: never;
-        header?: never;
-        path?: never;
-        cookie?: never;
-      };
-      requestBody?: {
-        content: {
-          'multipart/form-data': {
-            /** Format: binary */
-            Photo?: string;
-            /** Format: uuid */
-            StateId?: string;
-            /** Format: uuid */
-            CityId?: string;
-            Address?: string;
-            SocialMediaUrl?: string;
-            Bio?: string;
-            PhoneNumber?: string;
-            /** Format: int32 */
-            CurrentStep?: number;
-            BuildingNumber?: string;
-            Apartment?: string;
-            Street?: string;
-            City?: string;
-            Town?: string;
-            State?: string;
-            Lga?: string;
-            Lcda?: string;
-            Landmark?: string;
-            AdditionalInformation?: string;
-            Country?: string;
-            FullAddress?: string;
-            PostalCode?: string;
-          };
+        get?: never;
+        put?: never;
+        /** Add client favorite creative */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json-patch+json": components["schemas"]["CreateClientUserFavoriteCommand"];
+                    "application/json": components["schemas"]["CreateClientUserFavoriteCommand"];
+                    "text/json": components["schemas"]["CreateClientUserFavoriteCommand"];
+                    "application/*+json": components["schemas"]["CreateClientUserFavoriteCommand"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["BooleanBaseResponse"];
+                        "application/json": components["schemas"]["BooleanBaseResponse"];
+                        "text/json": components["schemas"]["BooleanBaseResponse"];
+                    };
+                };
+            };
         };
-      };
-      responses: {
-        /** @description OK */
-        200: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'text/plain': components['schemas']['UnitBaseResponse'];
-            'application/json': components['schemas']['UnitBaseResponse'];
-            'text/json': components['schemas']['UnitBaseResponse'];
-          };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/userfavorites/remove-client-favorite-creative/{creativeUserId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-      };
-    };
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/users/client-onboarding-record': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Get client onboarding */
-    get: {
-      parameters: {
-        query?: never;
-        header?: never;
-        path?: never;
-        cookie?: never;
-      };
-      requestBody?: never;
-      responses: {
-        /** @description OK */
-        200: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'text/plain': components['schemas']['TempClientOnboardingModelBaseResponse'];
-            'application/json': components['schemas']['TempClientOnboardingModelBaseResponse'];
-            'text/json': components['schemas']['TempClientOnboardingModelBaseResponse'];
-          };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Remove client favorite creative */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    creativeUserId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["BooleanBaseResponse"];
+                        "application/json": components["schemas"]["BooleanBaseResponse"];
+                        "text/json": components["schemas"]["BooleanBaseResponse"];
+                    };
+                };
+            };
         };
-      };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/users/save-creative-onboarding': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Save creative onboarding */
-    post: {
-      parameters: {
-        query?: never;
-        header?: never;
-        path?: never;
-        cookie?: never;
-      };
-      requestBody?: {
-        content: {
-          'multipart/form-data': {
-            /** Format: binary */
-            Cv?: string;
-            /** Format: binary */
-            AwardsAndCertifications?: string;
-            /** Format: binary */
-            ProfessionalHeadshot?: string;
-            PortfolioLink?: string;
-            ScocialMediaUrl?: string;
-            Bio?: string;
-            /** Format: uuid */
-            SubscriptionId?: string;
-            /** Format: int32 */
-            CurrentStep?: number;
-            PhoneNumber?: string;
-            BuildingNumber?: string;
-            Apartment?: string;
-            Street?: string;
-            City?: string;
-            Town?: string;
-            State?: string;
-            Lga?: string;
-            Lcda?: string;
-            Landmark?: string;
-            AdditionalInformation?: string;
-            Country?: string;
-            FullAddress?: string;
-            PostalCode?: string;
-          };
+    "/api/v1/users/save-client-onboarding": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-      };
-      responses: {
-        /** @description OK */
-        200: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'text/plain': components['schemas']['UnitBaseResponse'];
-            'application/json': components['schemas']['UnitBaseResponse'];
-            'text/json': components['schemas']['UnitBaseResponse'];
-          };
+        get?: never;
+        put?: never;
+        /** Save client onboarding */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "multipart/form-data": {
+                        /** Format: binary */
+                        ProfessionalHeadshot?: string;
+                        StateId: string;
+                        LGAId: string;
+                        Address?: string;
+                        SocialMediaUrl?: string;
+                        Bio?: string;
+                        PhoneNumber?: string;
+                        /** Format: int32 */
+                        CurrentStep?: number;
+                        WebsiteUrl?: string;
+                        FirstName?: string;
+                        LastName?: string;
+                        BuildingNumber?: string;
+                        Apartment?: string;
+                        Street?: string;
+                        City?: string;
+                        Landmark?: string;
+                        AdditionalInformation?: string;
+                        Country?: string;
+                        PostalCode?: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["UnitBaseResponse"];
+                        "application/json": components["schemas"]["UnitBaseResponse"];
+                        "text/json": components["schemas"]["UnitBaseResponse"];
+                    };
+                };
+            };
         };
-      };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/users/creative-onboarding-record': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Get creative onboarding */
-    get: {
-      parameters: {
-        query?: never;
-        header?: never;
-        path?: never;
-        cookie?: never;
-      };
-      requestBody?: never;
-      responses: {
-        /** @description OK */
-        200: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'text/plain': components['schemas']['TempCreativeOnboardingModelBaseResponse'];
-            'application/json': components['schemas']['TempCreativeOnboardingModelBaseResponse'];
-            'text/json': components['schemas']['TempCreativeOnboardingModelBaseResponse'];
-          };
+    "/api/v1/users/client-onboarding-record": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-      };
-    };
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/users/creatives': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Get creatives */
-    get: {
-      parameters: {
-        query?: {
-          ProfessionId?: string;
-          Rating?: number;
-          PageNumber?: number;
-          PageSize?: number;
-          SearchKey?: string;
+        /** Get client onboarding */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["TempClientOnboardingModelBaseResponse"];
+                        "application/json": components["schemas"]["TempClientOnboardingModelBaseResponse"];
+                        "text/json": components["schemas"]["TempClientOnboardingModelBaseResponse"];
+                    };
+                };
+            };
         };
-        header?: never;
-        path?: never;
-        cookie?: never;
-      };
-      requestBody?: never;
-      responses: {
-        /** @description OK */
-        200: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'text/plain': components['schemas']['UserCreativeModelPagedListBaseResponse'];
-            'application/json': components['schemas']['UserCreativeModelPagedListBaseResponse'];
-            'text/json': components['schemas']['UserCreativeModelPagedListBaseResponse'];
-          };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/users/save-creative-onboarding": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-      };
-    };
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/users/creative-detail/{userId}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Get creative detail by id */
-    get: {
-      parameters: {
-        query?: never;
-        header?: never;
-        path: {
-          userId: string;
+        get?: never;
+        put?: never;
+        /** Save creative onboarding */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "multipart/form-data": {
+                        /** Format: binary */
+                        Cv?: string;
+                        /** Format: binary */
+                        AwardsAndCertifications?: string;
+                        /** Format: binary */
+                        ProfessionalHeadshot?: string;
+                        StateId: string;
+                        LGAId: string;
+                        FirstName?: string;
+                        LastName?: string;
+                        PortfolioLink?: string;
+                        ScocialMediaUrl?: string;
+                        Bio?: string;
+                        /** Format: int32 */
+                        CurrentStep?: number;
+                        PhoneNumber?: string;
+                        /** Format: uuid */
+                        ProfessionId?: string;
+                        ProfessionName?: string;
+                        BuildingNumber?: string;
+                        Apartment?: string;
+                        Street?: string;
+                        City?: string;
+                        Landmark?: string;
+                        AdditionalInformation?: string;
+                        Country?: string;
+                        PostalCode?: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["UnitBaseResponse"];
+                        "application/json": components["schemas"]["UnitBaseResponse"];
+                        "text/json": components["schemas"]["UnitBaseResponse"];
+                    };
+                };
+            };
         };
-        cookie?: never;
-      };
-      requestBody?: never;
-      responses: {
-        /** @description OK */
-        200: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'text/plain': components['schemas']['UserCreativeDetailModelBaseResponse'];
-            'application/json': components['schemas']['UserCreativeDetailModelBaseResponse'];
-            'text/json': components['schemas']['UserCreativeDetailModelBaseResponse'];
-          };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/users/creative-onboarding-record": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-      };
-    };
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/users/{userId}/ratings': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Get user ratings */
-    get: {
-      parameters: {
-        query?: {
-          PageNumber?: number;
-          PageSize?: number;
-          SearchKey?: string;
+        /** Get creative onboarding */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["TempCreativeOnboardingModelBaseResponse"];
+                        "application/json": components["schemas"]["TempCreativeOnboardingModelBaseResponse"];
+                        "text/json": components["schemas"]["TempCreativeOnboardingModelBaseResponse"];
+                    };
+                };
+            };
         };
-        header?: never;
-        path: {
-          userId: string;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/users/creatives": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        cookie?: never;
-      };
-      requestBody?: never;
-      responses: {
-        /** @description OK */
-        200: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'text/plain': components['schemas']['UserRatingModelBaseResponse'];
-            'application/json': components['schemas']['UserRatingModelBaseResponse'];
-            'text/json': components['schemas']['UserRatingModelBaseResponse'];
-          };
+        /** Get creatives */
+        get: {
+            parameters: {
+                query?: {
+                    ProfessionId?: string;
+                    Rating?: number;
+                    PageNumber?: number;
+                    PageSize?: number;
+                    SearchKey?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["UserCreativeModelPagedListBaseResponse"];
+                        "application/json": components["schemas"]["UserCreativeModelPagedListBaseResponse"];
+                        "text/json": components["schemas"]["UserCreativeModelPagedListBaseResponse"];
+                    };
+                };
+            };
         };
-      };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/users/my-hiring-statistics': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Get hiring statistics */
-    get: {
-      parameters: {
-        query?: never;
-        header?: never;
-        path?: never;
-        cookie?: never;
-      };
-      requestBody?: never;
-      responses: {
-        /** @description OK */
-        200: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'text/plain': components['schemas']['HiringStatisticsModelBaseResponse'];
-            'application/json': components['schemas']['HiringStatisticsModelBaseResponse'];
-            'text/json': components['schemas']['HiringStatisticsModelBaseResponse'];
-          };
+    "/api/v1/users/creative-detail/{userId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-      };
-    };
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/users/my-profile': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Get user profile */
-    get: {
-      parameters: {
-        query?: never;
-        header?: never;
-        path?: never;
-        cookie?: never;
-      };
-      requestBody?: never;
-      responses: {
-        /** @description OK */
-        200: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'text/plain': components['schemas']['UserModelBaseResponse'];
-            'application/json': components['schemas']['UserModelBaseResponse'];
-            'text/json': components['schemas']['UserModelBaseResponse'];
-          };
+        /** Get creative detail by id */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    userId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["UserCreativeDetailModelBaseResponse"];
+                        "application/json": components["schemas"]["UserCreativeDetailModelBaseResponse"];
+                        "text/json": components["schemas"]["UserCreativeDetailModelBaseResponse"];
+                    };
+                };
+            };
         };
-      };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/users/update-profile': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    /** Update user profile */
-    put: {
-      parameters: {
-        query?: never;
-        header?: never;
-        path?: never;
-        cookie?: never;
-      };
-      requestBody?: {
-        content: {
-          'multipart/form-data': {
-            FirstName?: string;
-            LastName?: string;
-            MiddleName?: string;
-            PhoneNumber?: string;
-            Bio?: string;
-            WebsiteUrl?: string;
-            /** Format: binary */
-            Picture?: string;
-            AllowInAppNotifications?: boolean;
-            AllowEmailNotifications?: boolean;
-            AllowPushNotifications?: boolean;
-          };
+    "/api/v1/users/{userId}/ratings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-      };
-      responses: {
-        /** @description OK */
-        200: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'text/plain': components['schemas']['UserModelBaseResponse'];
-            'application/json': components['schemas']['UserModelBaseResponse'];
-            'text/json': components['schemas']['UserModelBaseResponse'];
-          };
+        /** Get user ratings */
+        get: {
+            parameters: {
+                query?: {
+                    PageNumber?: number;
+                    PageSize?: number;
+                    SearchKey?: string;
+                };
+                header?: never;
+                path: {
+                    userId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["UserRatingModelBaseResponse"];
+                        "application/json": components["schemas"]["UserRatingModelBaseResponse"];
+                        "text/json": components["schemas"]["UserRatingModelBaseResponse"];
+                    };
+                };
+            };
         };
-      };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/users/{userId}/delete': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post?: never;
-    /** Delete my account */
-    delete: {
-      parameters: {
-        query?: never;
-        header?: never;
-        path: {
-          userId: string;
+    "/api/v1/users/my-hiring-statistics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        cookie?: never;
-      };
-      requestBody?: never;
-      responses: {
-        /** @description OK */
-        200: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'text/plain': components['schemas']['BooleanBaseResponse'];
-            'application/json': components['schemas']['BooleanBaseResponse'];
-            'text/json': components['schemas']['BooleanBaseResponse'];
-          };
+        /** Get hiring statistics */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["HiringStatisticsModelBaseResponse"];
+                        "application/json": components["schemas"]["HiringStatisticsModelBaseResponse"];
+                        "text/json": components["schemas"]["HiringStatisticsModelBaseResponse"];
+                    };
+                };
+            };
         };
-      };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/users/my-referral-detail': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Gets logged in user's referral detail */
-    get: {
-      parameters: {
-        query?: never;
-        header?: never;
-        path?: never;
-        cookie?: never;
-      };
-      requestBody?: never;
-      responses: {
-        /** @description OK */
-        200: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'text/plain': components['schemas']['MyReferralDetailModelBaseResponse'];
-            'application/json': components['schemas']['MyReferralDetailModelBaseResponse'];
-            'text/json': components['schemas']['MyReferralDetailModelBaseResponse'];
-          };
+    "/api/v1/users/my-profile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-      };
-    };
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/users/my-referrals': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Gets logged in user's referrals */
-    get: {
-      parameters: {
-        query?: {
-          PageNumber?: number;
-          PageSize?: number;
-          SearchKey?: string;
+        /** Get user profile */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["UserModelBaseResponse"];
+                        "application/json": components["schemas"]["UserModelBaseResponse"];
+                        "text/json": components["schemas"]["UserModelBaseResponse"];
+                    };
+                };
+            };
         };
-        header?: never;
-        path?: never;
-        cookie?: never;
-      };
-      requestBody?: never;
-      responses: {
-        /** @description OK */
-        200: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'text/plain': components['schemas']['MyReferralModelPagedListBaseResponse'];
-            'application/json': components['schemas']['MyReferralModelPagedListBaseResponse'];
-            'text/json': components['schemas']['MyReferralModelPagedListBaseResponse'];
-          };
-        };
-      };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
+    "/api/v1/users/update-profile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Update user profile */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "multipart/form-data": {
+                        FirstName?: string;
+                        LastName?: string;
+                        MiddleName?: string;
+                        PhoneNumber?: string;
+                        Bio?: string;
+                        WebsiteUrl?: string;
+                        /** Format: binary */
+                        Picture?: string;
+                        AllowInAppNotifications?: boolean;
+                        AllowEmailNotifications?: boolean;
+                        AllowPushNotifications?: boolean;
+                    };
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["UserModelBaseResponse"];
+                        "application/json": components["schemas"]["UserModelBaseResponse"];
+                        "text/json": components["schemas"]["UserModelBaseResponse"];
+                    };
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/users/{userId}/delete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete my account */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    userId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["BooleanBaseResponse"];
+                        "application/json": components["schemas"]["BooleanBaseResponse"];
+                        "text/json": components["schemas"]["BooleanBaseResponse"];
+                    };
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/users/my-referral-detail": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Gets logged in user's referral detail */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["MyReferralDetailModelBaseResponse"];
+                        "application/json": components["schemas"]["MyReferralDetailModelBaseResponse"];
+                        "text/json": components["schemas"]["MyReferralDetailModelBaseResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/users/my-referrals": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Gets logged in user's referrals */
+        get: {
+            parameters: {
+                query?: {
+                    PageNumber?: number;
+                    PageSize?: number;
+                    SearchKey?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["MyReferralModelPagedListBaseResponse"];
+                        "application/json": components["schemas"]["MyReferralModelPagedListBaseResponse"];
+                        "text/json": components["schemas"]["MyReferralModelPagedListBaseResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
-  schemas: {
-    /** @enum {string} */
-    AccountTypeEnums: 'Company' | 'Individual';
-    /** @enum {string} */
-    ActorTypeEnums: 'Client' | 'Creative';
-    AddressVerificationFeedbackCommand: {
-      referenceId?: string | null;
-      feedbackMessage?: string | null;
-      isVerificationSuccessful?: boolean;
+    schemas: {
+        /** @enum {string} */
+        AccountTypeEnums: "Company" | "Individual";
+        /** @enum {string} */
+        ActorTypeEnums: "Client" | "Creative";
+        AddressVerificationFeedbackCommand: {
+            referenceId?: string | null;
+            feedbackMessage?: string | null;
+            isVerificationSuccessful?: boolean;
+        };
+        BooleanBaseResponse: {
+            isSuccess?: boolean;
+            statusCode?: string | null;
+            message?: string | null;
+            data?: boolean;
+            metaData?: unknown;
+        };
+        ChangePasswordCommand: {
+            currentPassword: string | null;
+            newPassword: string | null;
+            confirmNewPassword: string | null;
+        };
+        CityModel: {
+            /** Format: uuid */
+            id?: string;
+            name: string | null;
+        };
+        CityModelPagedListBaseResponse: {
+            isSuccess?: boolean;
+            statusCode?: string | null;
+            message?: string | null;
+            data?: components["schemas"]["CityModel"][] | null;
+            metaData?: unknown;
+        };
+        /** @enum {string} */
+        CompanySizeEnums: "ElevenToFifty" | "FiftyOneToTwoHundred" | "FiveHundredOneToThousand" | "NotSet" | "OneToTen" | "ThousandOneToTwoThousand" | "TwoHundredOneToFiveHundred" | "TwoThousandPlus";
+        CreateClientUserFavoriteCommand: {
+            creativeUserId: string | null;
+        };
+        ForgotPasswordCommand: {
+            email: string | null;
+        };
+        GenerateUserBVNSelfieCommand: {
+            bvn: string | null;
+        };
+        GenerateUserNINSelfieCommand: {
+            nin: string | null;
+        };
+        HiringStatisticsModel: {
+            /** Format: int32 */
+            hiredCreativeCount?: number;
+            /** Format: int32 */
+            publishedProjectCount?: number;
+            /** Format: int32 */
+            onboardedCreativeCount?: number;
+            /** Format: int32 */
+            favoriteCreativeCount?: number;
+        };
+        HiringStatisticsModelBaseResponse: {
+            isSuccess?: boolean;
+            statusCode?: string | null;
+            message?: string | null;
+            data?: components["schemas"]["HiringStatisticsModel"];
+            metaData?: unknown;
+        };
+        LoginCommand: {
+            email: string | null;
+            password: string | null;
+        };
+        LoginModel: {
+            email: string | null;
+            userId: string | null;
+            accessToken: string | null;
+            isOnboardingCompleted?: boolean;
+            /** Format: date-time */
+            expiry?: string;
+            refreshToken: string | null;
+            /** Format: date-time */
+            refreshTokenExpiry?: string;
+            roles?: string[] | null;
+        };
+        LoginModelBaseResponse: {
+            isSuccess?: boolean;
+            statusCode?: string | null;
+            message?: string | null;
+            data?: components["schemas"]["LoginModel"];
+            metaData?: unknown;
+        };
+        MyReferralDetailModel: {
+            referralCode?: string | null;
+        };
+        MyReferralDetailModelBaseResponse: {
+            isSuccess?: boolean;
+            statusCode?: string | null;
+            message?: string | null;
+            data?: components["schemas"]["MyReferralDetailModel"];
+            metaData?: unknown;
+        };
+        MyReferralModel: {
+            name?: string | null;
+            status?: string | null;
+        };
+        MyReferralModelPagedListBaseResponse: {
+            isSuccess?: boolean;
+            statusCode?: string | null;
+            message?: string | null;
+            data?: components["schemas"]["MyReferralModel"][] | null;
+            metaData?: unknown;
+        };
+        ProfessionModel: {
+            /** Format: uuid */
+            id?: string;
+            name?: string | null;
+        };
+        ProfessionModelIEnumerableBaseResponse: {
+            isSuccess?: boolean;
+            statusCode?: string | null;
+            message?: string | null;
+            data?: components["schemas"]["ProfessionModel"][] | null;
+            metaData?: unknown;
+        };
+        RatingModel: {
+            ratedUserId: string | null;
+            ratedByUser?: components["schemas"]["UserDto"];
+            /** Format: date-time */
+            createdDate?: string;
+            /** Format: int32 */
+            rating?: number;
+            review?: string | null;
+        };
+        RefreshTokenCommand: {
+            expiredToken: string | null;
+            refreshToken: string | null;
+        };
+        RegisterCommand: {
+            actorType?: components["schemas"]["ActorTypeEnums"];
+            accountType?: components["schemas"]["AccountTypeEnums"];
+            companySize?: components["schemas"]["CompanySizeEnums"];
+            companyName?: string | null;
+            email: string | null;
+            phoneNumber?: string | null;
+            agreedToTerms?: boolean;
+            password: string | null;
+            confirmPassword: string | null;
+            referralCode?: string | null;
+        };
+        ResendEmailVerificationCommand: {
+            email: string | null;
+        };
+        ResetPasswordCommand: {
+            email: string | null;
+            newPassword: string | null;
+            token: string | null;
+        };
+        SelfieCallbackCommand: {
+            success?: boolean;
+            c_id?: string | null;
+            id?: string | null;
+            id_type?: string | null;
+        };
+        SelfieCallbackModel: {
+            userId?: string | null;
+            documentType?: string | null;
+            isVerified?: boolean;
+            /** Format: date-time */
+            verifiedDate?: string | null;
+        };
+        SelfieCallbackModelBaseResponse: {
+            isSuccess?: boolean;
+            statusCode?: string | null;
+            message?: string | null;
+            data?: components["schemas"]["SelfieCallbackModel"];
+            metaData?: unknown;
+        };
+        StateModel: {
+            /** Format: uuid */
+            id?: string;
+            name: string | null;
+        };
+        StateModelPagedListBaseResponse: {
+            isSuccess?: boolean;
+            statusCode?: string | null;
+            message?: string | null;
+            data?: components["schemas"]["StateModel"][] | null;
+            metaData?: unknown;
+        };
+        StringBaseResponse: {
+            isSuccess?: boolean;
+            statusCode?: string | null;
+            message?: string | null;
+            data?: string | null;
+            metaData?: unknown;
+        };
+        SubscriptionFeatureModel: {
+            /** Format: uuid */
+            id?: string;
+            name?: string | null;
+            description?: string | null;
+        };
+        SubscriptionModel: {
+            /** Format: uuid */
+            id?: string;
+            title?: string | null;
+            subTitle?: string | null;
+            /** Format: double */
+            amount?: number;
+            /** Format: int32 */
+            durationInDays?: number;
+            currency?: string | null;
+            period?: string | null;
+            description?: string | null;
+            color?: string | null;
+            features?: components["schemas"]["SubscriptionFeatureModel"][] | null;
+        };
+        SubscriptionModelBaseResponse: {
+            isSuccess?: boolean;
+            statusCode?: string | null;
+            message?: string | null;
+            data?: components["schemas"]["SubscriptionModel"];
+            metaData?: unknown;
+        };
+        SubscriptionModelPagedListBaseResponse: {
+            isSuccess?: boolean;
+            statusCode?: string | null;
+            message?: string | null;
+            data?: components["schemas"]["SubscriptionModel"][] | null;
+            metaData?: unknown;
+        };
+        TempClientOnboardingModel: {
+            profilePicture?: string | null;
+            photoUrl?: string | null;
+            /** Format: uuid */
+            stateId?: string | null;
+            /** Format: uuid */
+            cityId?: string | null;
+            address?: string | null;
+            websiteUrl?: string | null;
+            socialMediaUrl?: string | null;
+            firstName?: string | null;
+            lastName?: string | null;
+            fullName?: string | null;
+            bvn?: string | null;
+            nin?: string | null;
+            bio?: string | null;
+            phoneNumber?: string | null;
+            buildingNumber?: string | null;
+            apartment?: string | null;
+            street?: string | null;
+            city?: string | null;
+            town?: string | null;
+            state?: string | null;
+            lga?: string | null;
+            lcda?: string | null;
+            /** Format: date-time */
+            dateVerified?: string | null;
+            landmark?: string | null;
+            additionalInformation?: string | null;
+            country?: string | null;
+            fullAddress?: string | null;
+            postalCode?: string | null;
+            /** Format: int32 */
+            currentStep?: number;
+            /** Format: int32 */
+            totalSteps?: number;
+            isCompleted?: boolean;
+            isNinVerified?: boolean;
+            isBvnVerified?: boolean;
+        };
+        TempClientOnboardingModelBaseResponse: {
+            isSuccess?: boolean;
+            statusCode?: string | null;
+            message?: string | null;
+            data?: components["schemas"]["TempClientOnboardingModel"];
+            metaData?: unknown;
+        };
+        TempCreativeOnboardingModel: {
+            cvUrl?: string | null;
+            portfolioLink?: string | null;
+            /** Format: uuid */
+            professionId?: string | null;
+            professionName?: string | null;
+            professionalHeadshotUrl?: string | null;
+            scocialMediaUrl?: string | null;
+            awardsAndCertificationsUrl?: string | null;
+            firstName?: string | null;
+            lastName?: string | null;
+            fullName?: string | null;
+            bvn?: string | null;
+            nin?: string | null;
+            tikTok?: string | null;
+            bio?: string | null;
+            /** Format: uuid */
+            subscriptionPlan?: string | null;
+            phoneNumber?: string | null;
+            buildingNumber?: string | null;
+            apartment?: string | null;
+            street?: string | null;
+            city?: string | null;
+            town?: string | null;
+            state?: string | null;
+            lga?: string | null;
+            lcda?: string | null;
+            /** Format: date-time */
+            dateVerified?: string | null;
+            landmark?: string | null;
+            additionalInformation?: string | null;
+            country?: string | null;
+            fullAddress?: string | null;
+            postalCode?: string | null;
+            /** Format: int32 */
+            currentStep?: number;
+            /** Format: int32 */
+            totalSteps?: number;
+            isCompleted?: boolean;
+            isNinVerified?: boolean;
+            isBvnVerified?: boolean;
+        };
+        TempCreativeOnboardingModelBaseResponse: {
+            isSuccess?: boolean;
+            statusCode?: string | null;
+            message?: string | null;
+            data?: components["schemas"]["TempCreativeOnboardingModel"];
+            metaData?: unknown;
+        };
+        Unit: Record<string, never>;
+        UnitBaseResponse: {
+            isSuccess?: boolean;
+            statusCode?: string | null;
+            message?: string | null;
+            data?: components["schemas"]["Unit"];
+            metaData?: unknown;
+        };
+        UserAddressModel: {
+            addressType?: string | null;
+            houseNumber?: string | null;
+            street?: string | null;
+            city?: string | null;
+            state?: string | null;
+            country?: string | null;
+        };
+        UserCreativeDetailModel: {
+            id?: string | null;
+            firstName: string | null;
+            lastName: string | null;
+            profilePicture?: string | null;
+            bio?: string | null;
+            portfolioLink?: string | null;
+            userProfession?: components["schemas"]["UserProfessionModel"];
+            userSocialMedias?: components["schemas"]["UserSocialMediaModel"][] | null;
+            userAddresses?: components["schemas"]["UserAddressModel"][] | null;
+            isCreativeFavorited?: boolean;
+        };
+        UserCreativeDetailModelBaseResponse: {
+            isSuccess?: boolean;
+            statusCode?: string | null;
+            message?: string | null;
+            data?: components["schemas"]["UserCreativeDetailModel"];
+            metaData?: unknown;
+        };
+        UserCreativeModel: {
+            id?: string | null;
+            name?: string | null;
+            profession?: string | null;
+            profilePicture?: string | null;
+            /** Format: double */
+            averageRating?: number;
+            /** Format: int32 */
+            totalRatings?: number;
+        };
+        UserCreativeModelPagedListBaseResponse: {
+            isSuccess?: boolean;
+            statusCode?: string | null;
+            message?: string | null;
+            data?: components["schemas"]["UserCreativeModel"][] | null;
+            metaData?: unknown;
+        };
+        UserDocumentModel: {
+            name?: string | null;
+            description?: string | null;
+            userId?: string | null;
+            type?: string | null;
+            data?: string | null;
+            url?: string | null;
+            isVerified?: boolean;
+            /** Format: date-time */
+            createdDate?: string | null;
+        };
+        UserDocumentModelBaseResponse: {
+            isSuccess?: boolean;
+            statusCode?: string | null;
+            message?: string | null;
+            data?: components["schemas"]["UserDocumentModel"];
+            metaData?: unknown;
+        };
+        UserDto: {
+            id: string | null;
+            firstName: string | null;
+            profilePicture?: string | null;
+            lastName: string | null;
+            email?: string | null;
+            /** Format: uuid */
+            actorId?: string;
+            readonly fullName?: string | null;
+            userProfession?: string | null;
+        };
+        UserFavoriteModel: {
+            id?: string | null;
+            name?: string | null;
+            profession?: string | null;
+            profilePicture?: string | null;
+            /** Format: double */
+            averageRating?: number;
+            /** Format: int32 */
+            totalRatings?: number;
+        };
+        UserFavoriteModelBaseResponse: {
+            isSuccess?: boolean;
+            statusCode?: string | null;
+            message?: string | null;
+            data?: components["schemas"]["UserFavoriteModel"];
+            metaData?: unknown;
+        };
+        UserModel: {
+            id?: string | null;
+            firstName: string | null;
+            middleName?: string | null;
+            lastName: string | null;
+            profilePicture?: string | null;
+            email?: string | null;
+            awardsAndCertificationsUrl?: string | null;
+            professionalHeadshotUrl?: string | null;
+            bio?: string | null;
+            phoneNumber?: string | null;
+            portfolioLink?: string | null;
+            websiteUrl?: string | null;
+            profession?: string | null;
+            allowInAppNotifications?: boolean;
+            allowEmailNotifications?: boolean;
+            allowPushNotifications?: boolean;
+            isCompleted?: boolean;
+            userSocialMedias?: components["schemas"]["UserSocialMediaModel"][] | null;
+            userAddresses?: components["schemas"]["UserAddressModel"][] | null;
+        };
+        UserModelBaseResponse: {
+            isSuccess?: boolean;
+            statusCode?: string | null;
+            message?: string | null;
+            data?: components["schemas"]["UserModel"];
+            metaData?: unknown;
+        };
+        UserProfessionModel: {
+            userId: string | null;
+            profession?: components["schemas"]["ProfessionModel"];
+        };
+        UserRatingModel: {
+            ratings: components["schemas"]["RatingModel"][] | null;
+            summary: components["schemas"]["UserRatingSummary"];
+        };
+        UserRatingModelBaseResponse: {
+            isSuccess?: boolean;
+            statusCode?: string | null;
+            message?: string | null;
+            data?: components["schemas"]["UserRatingModel"];
+            metaData?: unknown;
+        };
+        UserRatingSummary: {
+            userId?: string | null;
+            /** Format: int32 */
+            totalReviews?: number;
+            /** Format: int32 */
+            totalRating?: number;
+            /** Format: double */
+            averageRating?: number;
+            /** Format: int32 */
+            fiveCount?: number;
+            /** Format: int32 */
+            fourCount?: number;
+            /** Format: int32 */
+            threeCount?: number;
+            /** Format: int32 */
+            twoCount?: number;
+            /** Format: int32 */
+            oneCount?: number;
+        };
+        UserSocialMediaModel: {
+            url?: string | null;
+            username?: string | null;
+            socialMediaTypeName?: string | null;
+            socialMediaTypeIcon?: string | null;
+        };
+        VerifyAccountCommand: {
+            email: string | null;
+            token: string | null;
+        };
     };
-    BooleanBaseResponse: {
-      isSuccess?: boolean;
-      statusCode?: string | null;
-      message?: string | null;
-      data?: boolean;
-      metaData?: unknown;
-    };
-    ChangePasswordCommand: {
-      currentPassword: string | null;
-      newPassword: string | null;
-      confirmNewPassword: string | null;
-    };
-    CityModel: {
-      /** Format: uuid */
-      id?: string;
-      name: string | null;
-    };
-    CityModelPagedListBaseResponse: {
-      isSuccess?: boolean;
-      statusCode?: string | null;
-      message?: string | null;
-      data?: components['schemas']['CityModel'][] | null;
-      metaData?: unknown;
-    };
-    /** @enum {string} */
-    CompanySizeEnums:
-      | 'ElevenToFifty'
-      | 'FiftyOneToTwoHundred'
-      | 'FiveHundredOneToThousand'
-      | 'NotSet'
-      | 'OneToTen'
-      | 'ThousandOneToTwoThousand'
-      | 'TwoHundredOneToFiveHundred'
-      | 'TwoThousandPlus';
-    CreateClientUserFavoriteCommand: {
-      creativeUserId: string | null;
-    };
-    ForgotPasswordCommand: {
-      email: string | null;
-    };
-    GenerateUserBVNSelfieLinkCommand: {
-      bvn: string | null;
-    };
-    GenerateUserNINSelfieLinkCommand: {
-      nin: string | null;
-    };
-    HiringStatisticsModel: {
-      /** Format: int32 */
-      hiredCreativeCount?: number;
-      /** Format: int32 */
-      publishedProjectCount?: number;
-      /** Format: int32 */
-      onboardedCreativeCount?: number;
-      /** Format: int32 */
-      favoriteCreativeCount?: number;
-    };
-    HiringStatisticsModelBaseResponse: {
-      isSuccess?: boolean;
-      statusCode?: string | null;
-      message?: string | null;
-      data?: components['schemas']['HiringStatisticsModel'];
-      metaData?: unknown;
-    };
-    LoginCommand: {
-      email: string | null;
-      password: string | null;
-    };
-    LoginModel: {
-      email: string | null;
-      userId: string | null;
-      accessToken: string | null;
-      refreshToken: string | null;
-      /** Format: date-time */
-      expiry?: string;
-      roles?: string[] | null;
-      isOnboardingCompleted?: boolean;
-    };
-    LoginModelBaseResponse: {
-      isSuccess?: boolean;
-      statusCode?: string | null;
-      message?: string | null;
-      data?: components['schemas']['LoginModel'];
-      metaData?: unknown;
-    };
-    MyReferralDetailModel: {
-      referralCode?: string | null;
-    };
-    MyReferralDetailModelBaseResponse: {
-      isSuccess?: boolean;
-      statusCode?: string | null;
-      message?: string | null;
-      data?: components['schemas']['MyReferralDetailModel'];
-      metaData?: unknown;
-    };
-    MyReferralModel: {
-      name?: string | null;
-      status?: string | null;
-    };
-    MyReferralModelPagedListBaseResponse: {
-      isSuccess?: boolean;
-      statusCode?: string | null;
-      message?: string | null;
-      data?: components['schemas']['MyReferralModel'][] | null;
-      metaData?: unknown;
-    };
-    ProfessionModel: {
-      /** Format: uuid */
-      id?: string;
-      name?: string | null;
-    };
-    ProfessionModelIEnumerableBaseResponse: {
-      isSuccess?: boolean;
-      statusCode?: string | null;
-      message?: string | null;
-      data?: components['schemas']['ProfessionModel'][] | null;
-      metaData?: unknown;
-    };
-    RatingModel: {
-      ratedUserId: string | null;
-      ratedByUser?: components['schemas']['UserDto'];
-      /** Format: date-time */
-      createdDate?: string;
-      /** Format: int32 */
-      rating?: number;
-      review?: string | null;
-    };
-    RefreshTokenCommand: {
-      expiredToken: string | null;
-      refreshToken: string | null;
-    };
-    RegisterCommand: {
-      actorType?: components['schemas']['ActorTypeEnums'];
-      accountType?: components['schemas']['AccountTypeEnums'];
-      companySize?: components['schemas']['CompanySizeEnums'];
-      companyName?: string | null;
-      email: string | null;
-      firstName: string | null;
-      lastName: string | null;
-      middleName?: string | null;
-      countryCode?: string | null;
-      phoneNumber?: string | null;
-      agreedToTerms?: boolean;
-      password: string | null;
-      /** Format: uuid */
-      professionId?: string | null;
-      referralCode?: string | null;
-    };
-    ResetPasswordCommand: {
-      email: string | null;
-      newPassword: string | null;
-      token: string | null;
-    };
-    SelfieCallbackCommand: {
-      success?: boolean;
-      c_id?: string | null;
-      id?: string | null;
-      id_type?: string | null;
-    };
-    SelfieCallbackModel: {
-      userId?: string | null;
-      documentType?: string | null;
-      isVerified?: boolean;
-      /** Format: date-time */
-      verifiedDate?: string | null;
-    };
-    SelfieCallbackModelBaseResponse: {
-      isSuccess?: boolean;
-      statusCode?: string | null;
-      message?: string | null;
-      data?: components['schemas']['SelfieCallbackModel'];
-      metaData?: unknown;
-    };
-    StateModel: {
-      /** Format: uuid */
-      id?: string;
-      name: string | null;
-    };
-    StateModelPagedListBaseResponse: {
-      isSuccess?: boolean;
-      statusCode?: string | null;
-      message?: string | null;
-      data?: components['schemas']['StateModel'][] | null;
-      metaData?: unknown;
-    };
-    StringBaseResponse: {
-      isSuccess?: boolean;
-      statusCode?: string | null;
-      message?: string | null;
-      data?: string | null;
-      metaData?: unknown;
-    };
-    SubscriptionFeatureModel: {
-      /** Format: uuid */
-      id?: string;
-      name?: string | null;
-      description?: string | null;
-    };
-    SubscriptionModel: {
-      /** Format: uuid */
-      id?: string;
-      title?: string | null;
-      subTitle?: string | null;
-      /** Format: double */
-      amount?: number;
-      /** Format: int32 */
-      durationInDays?: number;
-      currency?: string | null;
-      period?: string | null;
-      description?: string | null;
-      color?: string | null;
-      features?: components['schemas']['SubscriptionFeatureModel'][] | null;
-    };
-    SubscriptionModelBaseResponse: {
-      isSuccess?: boolean;
-      statusCode?: string | null;
-      message?: string | null;
-      data?: components['schemas']['SubscriptionModel'];
-      metaData?: unknown;
-    };
-    SubscriptionModelPagedListBaseResponse: {
-      isSuccess?: boolean;
-      statusCode?: string | null;
-      message?: string | null;
-      data?: components['schemas']['SubscriptionModel'][] | null;
-      metaData?: unknown;
-    };
-    TempClientOnboardingModel: {
-      photoUrl?: string | null;
-      /** Format: uuid */
-      stateId?: string | null;
-      /** Format: uuid */
-      cityId?: string | null;
-      address?: string | null;
-      websiteUrl?: string | null;
-      socialMediaUrl?: string | null;
-      bvn?: string | null;
-      nin?: string | null;
-      bio?: string | null;
-      phoneNumber?: string | null;
-      buildingNumber?: string | null;
-      apartment?: string | null;
-      street?: string | null;
-      city?: string | null;
-      town?: string | null;
-      state?: string | null;
-      lga?: string | null;
-      lcda?: string | null;
-      /** Format: date-time */
-      dateVerified?: string | null;
-      landmark?: string | null;
-      additionalInformation?: string | null;
-      country?: string | null;
-      fullAddress?: string | null;
-      postalCode?: string | null;
-      /** Format: int32 */
-      currentStep?: number;
-      /** Format: int32 */
-      totalSteps?: number;
-      isCompleted?: boolean;
-      isNinVerified?: boolean;
-      isBvnVerified?: boolean;
-    };
-    TempClientOnboardingModelBaseResponse: {
-      isSuccess?: boolean;
-      statusCode?: string | null;
-      message?: string | null;
-      data?: components['schemas']['TempClientOnboardingModel'];
-      metaData?: unknown;
-    };
-    TempCreativeOnboardingModel: {
-      cvUrl?: string | null;
-      portfolioLink?: string | null;
-      professionalHeadshotUrl?: string | null;
-      scocialMediaUrl?: string | null;
-      awardsAndCertificationsUrl?: string | null;
-      bvn?: string | null;
-      nin?: string | null;
-      tikTok?: string | null;
-      bio?: string | null;
-      /** Format: uuid */
-      subscriptionPlan?: string | null;
-      phoneNumber?: string | null;
-      firstName?: string | null;
-      lastName?: string | null;
-      professionId?: string | null;
-      buildingNumber?: string | null;
-      apartment?: string | null;
-      street?: string | null;
-      city?: string | null;
-      town?: string | null;
-      state?: string | null;
-      lga?: string | null;
-      lcda?: string | null;
-      /** Format: date-time */
-      dateVerified?: string | null;
-      landmark?: string | null;
-      additionalInformation?: string | null;
-      country?: string | null;
-      fullAddress?: string | null;
-      postalCode?: string | null;
-      /** Format: int32 */
-      currentStep?: number;
-      /** Format: int32 */
-      totalSteps?: number;
-      isCompleted?: boolean;
-      isNinVerified?: boolean;
-      isBvnVerified?: boolean;
-    };
-    TempCreativeOnboardingModelBaseResponse: {
-      isSuccess?: boolean;
-      statusCode?: string | null;
-      message?: string | null;
-      data?: components['schemas']['TempCreativeOnboardingModel'];
-      metaData?: unknown;
-    };
-    Unit: Record<string, never>;
-    UnitBaseResponse: {
-      isSuccess?: boolean;
-      statusCode?: string | null;
-      message?: string | null;
-      data?: components['schemas']['Unit'];
-      metaData?: unknown;
-    };
-    UserAddressModel: {
-      addressType?: string | null;
-      houseNumber?: string | null;
-      street?: string | null;
-      city?: string | null;
-      state?: string | null;
-      country?: string | null;
-    };
-    UserCreativeDetailModel: {
-      id?: string | null;
-      firstName: string | null;
-      lastName: string | null;
-      profilePicture?: string | null;
-      bio?: string | null;
-      portfolioLink?: string | null;
-      userProfession?: components['schemas']['UserProfessionModel'];
-      userSocialMedias?: components['schemas']['UserSocialMediaModel'][] | null;
-      userAddresses?: components['schemas']['UserAddressModel'][] | null;
-      isCreativeFavorited?: boolean;
-    };
-    UserCreativeDetailModelBaseResponse: {
-      isSuccess?: boolean;
-      statusCode?: string | null;
-      message?: string | null;
-      data?: components['schemas']['UserCreativeDetailModel'];
-      metaData?: unknown;
-    };
-    UserCreativeModel: {
-      id?: string | null;
-      name?: string | null;
-      profession?: string | null;
-      profilePicture?: string | null;
-      /** Format: double */
-      averageRating?: number;
-      /** Format: int32 */
-      totalRatings?: number;
-    };
-    UserCreativeModelPagedListBaseResponse: {
-      isSuccess?: boolean;
-      statusCode?: string | null;
-      message?: string | null;
-      data?: components['schemas']['UserCreativeModel'][] | null;
-      metaData?: unknown;
-    };
-    UserDocumentModel: {
-      name?: string | null;
-      description?: string | null;
-      userId?: string | null;
-      type?: string | null;
-      data?: string | null;
-      url?: string | null;
-      isVerified?: boolean;
-      /** Format: date-time */
-      createdDate?: string | null;
-    };
-    UserDocumentModelBaseResponse: {
-      isSuccess?: boolean;
-      statusCode?: string | null;
-      message?: string | null;
-      data?: components['schemas']['UserDocumentModel'];
-      metaData?: unknown;
-    };
-    UserDto: {
-      id: string | null;
-      firstName: string | null;
-      profilePicture?: string | null;
-      lastName: string | null;
-      email?: string | null;
-      /** Format: uuid */
-      actorId?: string;
-      readonly fullName?: string | null;
-      userProfession?: string | null;
-    };
-    UserFavoriteModel: {
-      id?: string | null;
-      name?: string | null;
-      profession?: string | null;
-      profilePicture?: string | null;
-      /** Format: double */
-      averageRating?: number;
-      /** Format: int32 */
-      totalRatings?: number;
-    };
-    UserFavoriteModelBaseResponse: {
-      isSuccess?: boolean;
-      statusCode?: string | null;
-      message?: string | null;
-      data?: components['schemas']['UserFavoriteModel'][];
-      metaData?: unknown;
-    };
-    UserModel: {
-      id?: string | null;
-      firstName: string | null;
-      middleName?: string | null;
-      lastName: string | null;
-      profilePicture?: string | null;
-      email?: string | null;
-      awardsAndCertificationsUrl?: string | null;
-      professionalHeadshotUrl?: string | null;
-      bio?: string | null;
-      phoneNumber?: string | null;
-      portfolioLink?: string | null;
-      websiteUrl?: string | null;
-      profession?: string | null;
-      allowInAppNotifications?: boolean;
-      allowEmailNotifications?: boolean;
-      allowPushNotifications?: boolean;
-      userSocialMedias?: components['schemas']['UserSocialMediaModel'][] | null;
-      userAddresses?: components['schemas']['UserAddressModel'][] | null;
-    };
-    UserModelBaseResponse: {
-      isSuccess?: boolean;
-      statusCode?: string | null;
-      message?: string | null;
-      data?: components['schemas']['UserModel'];
-      metaData?: unknown;
-    };
-    UserProfessionModel: {
-      userId: string | null;
-      profession?: components['schemas']['ProfessionModel'];
-    };
-    UserRatingModel: {
-      ratings: components['schemas']['RatingModel'][] | null;
-      summary: components['schemas']['UserRatingSummary'];
-    };
-    UserRatingModelBaseResponse: {
-      isSuccess?: boolean;
-      statusCode?: string | null;
-      message?: string | null;
-      data?: components['schemas']['UserRatingModel'];
-      metaData?: unknown;
-    };
-    UserRatingSummary: {
-      userId?: string | null;
-      /** Format: int32 */
-      totalReviews?: number;
-      /** Format: int32 */
-      totalRating?: number;
-      /** Format: double */
-      averageRating?: number;
-      /** Format: int32 */
-      fiveCount?: number;
-      /** Format: int32 */
-      fourCount?: number;
-      /** Format: int32 */
-      threeCount?: number;
-      /** Format: int32 */
-      twoCount?: number;
-      /** Format: int32 */
-      oneCount?: number;
-    };
-    UserSocialMediaModel: {
-      url?: string | null;
-      username?: string | null;
-      socialMediaTypeName?: string | null;
-      socialMediaTypeIcon?: string | null;
-    };
-    VerifyAccountCommand: {
-      email: string | null;
-      token: string | null;
-    };
-    ResendVerifyAccountCommand: {
-      email: string | null;
-    };
-  };
-  responses: never;
-  parameters: never;
-  requestBodies: never;
-  headers: never;
-  pathItems: never;
+    responses: never;
+    parameters: never;
+    requestBodies: never;
+    headers: never;
+    pathItems: never;
 }
 export type $defs = Record<string, never>;
 export type operations = Record<string, never>;

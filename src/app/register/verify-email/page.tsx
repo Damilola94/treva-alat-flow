@@ -40,7 +40,7 @@ export default function Page() {
           <div>
             <div className="flex flex-col gap-8">
               <div className="flex flex-col gap-8">
-                <p className="app_auth_verification__p">
+                <p className="app_auth_verification__p !text-[#262626]">
                   We have sent an email to
                   <br />
                   <span className="app_auth_verification__p__span">

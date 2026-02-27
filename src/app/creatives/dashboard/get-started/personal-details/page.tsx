@@ -10,7 +10,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const pageUrl = `${fullHost}/creatives/dashboard/get-started/personal-details`;
 
   return {
-    title: 'Profile Setup - Get Started | Treva by Wema',
+    title: 'Profile Setup - Get Started | Geegs by Wema',
     description:
       'Start your journey on Treva. Set up your profile and explore features.',
     keywords: ['get started', 'dashboard', 'setup', 'Treva'],
@@ -18,12 +18,12 @@ export async function generateMetadata(): Promise<Metadata> {
       title: 'Profile Setup - Get Started| Treva',
       description: 'Set up your profile and explore features on Treva.',
       url: pageUrl,
-      siteName: 'Treva by Wema',
+      siteName: 'Geegs by Wema',
       type: 'website',
     },
     twitter: {
       card: 'summary_large_image',
-      title: 'Profile Setup - Get Started | Treva by Wema',
+      title: 'Profile Setup - Get Started | Geegs by Wema',
       description: 'Set up your profile and explore features on Treva.',
       images: [`${fullHost}/images/og-dashboard.png`],
     },

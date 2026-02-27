@@ -1,15 +1,6 @@
 'use client';
 import { EditSmall } from '@/app/assets/svgs';
-import {
-  CenterModal,
-  CloseX,
-  Edit,
-  Facebook,
-  Instagram,
-  Linkedin,
-  TikTok,
-  Twitter,
-} from '@/components/shared';
+import {CenterModal,CloseX,Edit} from '@/components/shared';
 import { Avatar } from '@/components/shared/avatar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -25,7 +16,6 @@ import {
 import { useAppSelector } from '@/store';
 import { getErrorMessage, handleLogoutRedirect } from '@/utils';
 import { useFormik } from 'formik';
-import Image from 'next/image';
 import { useEffect, useMemo, useState } from 'react';
 
 const Profile = () => {
@@ -236,6 +226,7 @@ const Profile = () => {
                     errors={errors}
                     touched={touched}
                   />
+                  {!isCreative && (
                   <Input
                     name="websiteUrl"
                     placeholder="Website Url"
@@ -246,6 +237,7 @@ const Profile = () => {
                     errors={errors}
                     touched={touched}
                   />
+                  )}
                 </>
               )}
               {!isCreative && (
@@ -260,65 +252,7 @@ const Profile = () => {
               <div className="flex flex-col text-[#6D6D6D] gap-2">
                 Social Media
                 <div className="flex flex-wrap gap-3">
-                  {userData?.userSocialMedias?.map((socials, index) => {
-                    if (!socials?.username) return null;
-                    const name = socials?.socialMediaTypeName;
-                    const iconUrl = socials?.socialMediaTypeIcon;
-
-                    let IconComponent = null;
-
-                    if (!iconUrl) {
-                      if (name === 'LinkedIn') {
-                        IconComponent = (
-                          <Linkedin className="h-5 w-5 text-gray-700" />
-                        );
-                      } else if (name === 'Instagram') {
-                        IconComponent = (
-                          <Instagram className="h-5 w-5 text-gray-700" />
-                        );
-                      } else if (name === 'X') {
-                        IconComponent = (
-                          <Twitter
-                            fill="#000000"
-                            stroke="#000000"
-                            className="h-5 w-5 text-gray-700"
-                          />
-                        );
-                      } else if (name === 'Facebook') {
-                        IconComponent = (
-                          <Facebook
-                            fill="#000000"
-                            stroke="#000000"
-                            className="h-5 w-5 text-gray-700"
-                          />
-                        );
-                      } else if (name === 'TikTok') {
-                        IconComponent = (
-                          <TikTok
-                            fill="#000000"
-                            stroke="#000000"
-                            className="h-5 w-5 text-gray-700"
-                          />
-                        );
-                      }
-                    }
-
-                    return (
-                      <div key={index} className="flex items-center gap-2">
-                        {IconComponent}
-                        {iconUrl && (
-                          <Image
-                            src={iconUrl}
-                            alt={name || 'Social icon'}
-                            width={22}
-                            height={22}
-                            unoptimized
-                          />
-                        )}
-                        <span>{socials?.username}</span>
-                      </div>
-                    );
-                  })}
+                 {userData?.userSocialMedias?.[0]?.url}
                 </div>
               </div>
             </>
@@ -376,14 +310,14 @@ const Profile = () => {
 
                   <div className="flex flex-col text-[#6D6D6D] gap-2">
                     Portfolio Link
-                    <span className="text-[#262626] font-bold">
+                    <span className="text-[#262626] font-bold truncate max-w-[250px] block">
                       {userData?.portfolioLink || '--'}
                     </span>
                   </div>
 
                   <div className="flex flex-col text-[#6D6D6D] gap-2">
                     Website Url
-                    <span className="text-[#262626] font-bold">
+                    <span className="text-[#262626] font-bold truncate max-w-[250px] block">
                       {userData?.websiteUrl || '--'}
                     </span>
                   </div>
@@ -410,65 +344,7 @@ const Profile = () => {
               <div className="flex flex-col text-[#6D6D6D] gap-2">
                 Social Media
                 <div className="flex flex-wrap gap-3">
-                  {userData?.userSocialMedias?.map((socials, index) => {
-                    if (!socials?.username) return null;
-                    const name = socials?.socialMediaTypeName;
-                    const iconUrl = socials?.socialMediaTypeIcon;
-
-                    let IconComponent = null;
-
-                    if (!iconUrl) {
-                      if (name === 'LinkedIn') {
-                        IconComponent = (
-                          <Linkedin className="h-5 w-5 text-gray-700" />
-                        );
-                      } else if (name === 'Instagram') {
-                        IconComponent = (
-                          <Instagram className="h-5 w-5 text-gray-700" />
-                        );
-                      } else if (name === 'X') {
-                        IconComponent = (
-                          <Twitter
-                            fill="#000000"
-                            stroke="#000000"
-                            className="h-5 w-5 text-gray-700"
-                          />
-                        );
-                      } else if (name === 'Facebook') {
-                        IconComponent = (
-                          <Facebook
-                            fill="#000000"
-                            stroke="#000000"
-                            className="h-5 w-5 text-gray-700"
-                          />
-                        );
-                      } else if (name === 'TikTok') {
-                        IconComponent = (
-                          <TikTok
-                            fill="#000000"
-                            stroke="#000000"
-                            className="h-5 w-5 text-gray-700"
-                          />
-                        );
-                      }
-                    }
-
-                    return (
-                      <div key={index} className="flex items-center gap-2">
-                        {IconComponent}
-                        {iconUrl && (
-                          <Image
-                            src={iconUrl}
-                            alt={name || 'Social icon'}
-                            width={22}
-                            height={22}
-                            unoptimized
-                          />
-                        )}
-                        <span>{socials?.username}</span>
-                      </div>
-                    );
-                  })}
+                 {userData?.websiteUrl}
                 </div>
               </div>
             </>

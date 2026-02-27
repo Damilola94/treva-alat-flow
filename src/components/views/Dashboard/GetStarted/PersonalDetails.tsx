@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { ProgressStatus } from '@/components/shared/dashboard/get-started';
@@ -8,22 +8,16 @@ import { Button } from '@/components/ui/button';
 import { Upload } from '@/components/shared';
 import { useRouter } from 'next/navigation';
 import routes from '@/lib/routes';
-import { useStates, useUsers } from '@/hooks/Users';
+import { useUsers } from '@/hooks/Users';
 import { readFileToDataUrl } from '@/utils';
 import { Textarea } from '@/components/ui/textarea';
+import { Loader2 } from 'lucide-react';
 
 const validationSchema = Yup.object().shape({
   bio: Yup.string()
     .max(500, 'Bio cannot be more than 500 characters')
     .nullable(),
   photo: Yup.mixed().nullable(), // optional
-  state: Yup.string()
-    .typeError('State is required')
-    .required('State is required'),
-  city: Yup.string().typeError('City is required').required('City is required'),
-  address: Yup.string()
-    .required('Address is required')
-    .min(5, 'Address must be at least 5 characters'),
   websiteUrl: Yup.string()
     .url('Must be a valid website URL')
     .nullable()
@@ -38,57 +32,33 @@ export default function PersonalDetails() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const router = useRouter();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [state, setState] = useState('');
 
-  const { stateData } = useStates({ country: 'Nigeria' });
-  // const { citiesData } = useCities({ state: state });
-  const { saveClientOnboarding, saveOnboardingResponse, userOnboardingData } =
+  const { saveClientOnboarding, saveOnboardingResponse, userOnboardingData, loading } =
     useUsers();
-
-  const stateOptions = useMemo(() => {
-    return (
-      stateData?.data?.map((state) => ({
-        label: state.name ?? '',
-        value: state.id ?? '',
-      })) ?? []
-    );
-  }, [stateData]);
-
-  // const citiesOptions = useMemo(() => {
-  //   return (
-  //     citiesData?.data?.map((state) => ({
-  //       label: state.name ?? '',
-  //       value: state.id ?? '',
-  //     })) ?? []
-  //   );
-  // }, [citiesData]);
+  const onboarding = userOnboardingData?.data;
 
   const initialValues = {
-    bio: '',
-    photo: null as File | null,
-    address: '',
-    websiteUrl: '',
-    city: '',
-    state: '',
-    socialMediaUrl: '',
-    firstName: '',
-    lastName: '',
-    phoneNumber: '',
+    bio: onboarding?.bio || '',
+    photo: onboarding?.photoUrl || null,
+    websiteUrl: onboarding?.websiteUrl || '',
+    socialMediaUrl: onboarding?.socialMediaUrl || '',
+    firstName: onboarding?.firstName ?? '',
+    lastName: onboarding?.lastName ?? '',
+    phoneNumber: onboarding?.phoneNumber || '',
   };
 
   const formik = useFormik({
     initialValues,
-    enableReinitialize: true, // this is important
+    enableReinitialize: true,
     onSubmit: (values) => {
       const payload = {
         bio: values?.bio,
-        photo: values?.photo,
-        stateId: values?.state,
-        cityId: values?.city,
-        address: values?.address,
+        professionalHeadshot: values?.photo,
         websiteUrl: values?.websiteUrl,
         socialMediaUrl: values?.socialMediaUrl,
+        firstName: values?.firstName,
+        lastName: values?.lastName,
+        phoneNumber: values?.phoneNumber,
         currentStep: 1,
       };
       saveClientOnboarding(payload);
@@ -105,21 +75,10 @@ export default function PersonalDetails() {
   }, [saveOnboardingResponse]);
 
   useEffect(() => {
-    if (userOnboardingData?.data?.photoUrl) {
-      setPreviewUrl(userOnboardingData?.data.photoUrl);
+    if (userOnboardingData?.data?.profilePicture) {
+      setPreviewUrl(userOnboardingData?.data.profilePicture);
     }
-  }, [userOnboardingData?.data?.photoUrl]);
-
-  useEffect(() => {
-    if (userOnboardingData?.data?.stateId) {
-      const state =
-        stateOptions?.find(
-          (x) => x?.value === userOnboardingData?.data?.stateId,
-        )?.label || '';
-      setState(state);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userOnboardingData?.data?.stateId]);
+  }, [userOnboardingData?.data?.profilePicture]);
 
   const {
     handleBlur,
@@ -168,25 +127,14 @@ export default function PersonalDetails() {
   useEffect(() => {
     if (userOnboardingData?.data) {
       formik.setFieldValue('bio', userOnboardingData.data.bio || '');
-      formik.setFieldValue('address', userOnboardingData.data.address || '');
       formik.setFieldValue(
         'websiteUrl',
         userOnboardingData.data.websiteUrl || '',
       );
-      formik.setFieldValue('city', userOnboardingData.data.cityId || '');
-      formik.setFieldValue('state', userOnboardingData.data.stateId || '');
       formik.setFieldValue(
         'socialMediaUrl',
         userOnboardingData.data.socialMediaUrl || '',
       );
-    }
-
-    if (userOnboardingData?.data?.stateId) {
-      const state =
-        stateOptions?.find(
-          (x) => x?.value === userOnboardingData?.data?.stateId,
-        )?.label || '';
-      setState(state);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userOnboardingData?.data]);
@@ -219,11 +167,11 @@ export default function PersonalDetails() {
                 />
 
                 <div className="space-y-2">
-                  <p className="font-semibold text-[14px]">Name</p>
                   <div className="flex flex-col sm:flex-row w-full sm:items-center justify-between gap-6">
                     <div className="w-full">
                       <Input
                         name="firstName"
+                        label="First Name"
                         type="text"
                         placeholder="First Name"
                         size="lg"
@@ -239,6 +187,7 @@ export default function PersonalDetails() {
                       <Input
                         name="lastName"
                         type="text"
+                        label="Last Name"
                         placeholder="Last Name"
                         size="lg"
                         value={values.lastName}
@@ -321,49 +270,6 @@ export default function PersonalDetails() {
                   </div>
                 </div>
 
-                {/* <div>
-                  <SelectField
-                    name="state"
-                    label="State"
-                    options={stateOptions}
-                    placeholder="Select State"
-                    onChange={(option) => {
-                      setFieldValue('state', option.value, true);
-                      setState(option?.label);
-                    }}
-                    value={values?.state}
-                  />
-                </div>
-
-                <div>
-                  <SelectField
-                    name="city"
-                    label="LGA"
-                    options={citiesOptions}
-                    placeholder="Select LGA"
-                    onChange={(option) => {
-                      setFieldValue('city', option.value, true);
-                    }}
-                    value={values?.city}
-                  />
-                </div>
-
-                <div className="">
-                  <Input
-                    name="address"
-                    type="text"
-                    id="address"
-                    label="Enter Address"
-                    placeholder="House No./Street"
-                    size="lg"
-                    value={values.address}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    errors={errors}
-                    touched={touched}
-                  />
-                </div> */}
-
                 {values.photo || previewUrl ? (
                   <div>
                     <p className="app_input_con__lbl mb-5">Profile Photo</p>
@@ -376,11 +282,11 @@ export default function PersonalDetails() {
                           className="w-32 h-32 object-cover rounded-md"
                         />
                       )}
-                      <p className="text-sm text-gray-700">
+                      {/* <p className="text-sm text-gray-700">
                         {typeof values?.photo === 'string'
                           ? values?.photo
                           : values?.photo?.name}
-                      </p>
+                      </p> */}
                       <button
                         type="button"
                         onClick={handleRemoveFile}
@@ -418,10 +324,11 @@ export default function PersonalDetails() {
                   <Button
                     size="xl"
                     backgroundColor="primary-blue-500"
-                    className="w-full py-3 px-12"
-                    disabled={!(isValid && dirty)}
+                    className="w-full py-3 px-12 flex items-center justify-center gap-2"
+                    disabled={!(isValid && dirty) || loading}
                   >
-                    Save & Continue
+                    {loading && <Loader2 size={18} className="animate-spin" />}
+                    <span>Save & Continue</span>
                   </Button>
                 </div>
               </div>

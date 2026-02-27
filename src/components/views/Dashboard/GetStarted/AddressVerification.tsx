@@ -9,6 +9,7 @@ import routes from '@/lib/routes';
 import { useRouter } from 'next/navigation';
 import { SelectField } from '@/components/shared';
 import * as Yup from 'yup';
+import { Loader2 } from 'lucide-react';
 
 const validationSchema = Yup.object().shape({
   buildingNumber: Yup.string()
@@ -19,9 +20,6 @@ const validationSchema = Yup.object().shape({
     .required('Street is required')
     .max(100, 'Street name is too long'),
   landmark: Yup.string().optional(),
-  address: Yup.string()
-    .required('Address is required')
-    .max(200, 'Address is too long'),
   city: Yup.string().required('City is required'),
   state: Yup.string().required('State is required'),
 });
@@ -59,13 +57,11 @@ export default function AddressVerification() {
   } = useUsers();
 
   const initialValues = {
-    buildingNumber: '',
-    city: '',
-    state: '',
-    apartment: '',
-    street: '',
-    landmark: '',
-    address: '',
+    buildingNumber: userOnboardingData?.data?.buildingNumber || '',
+    city: userOnboardingData?.data?.city || '',
+    state: userOnboardingData?.data?.state || '',
+    street: userOnboardingData?.data?.street || '',
+    landmark: userOnboardingData?.data?.landmark || '',
   };
 
   const formik = useFormik({
@@ -74,13 +70,11 @@ export default function AddressVerification() {
     onSubmit: (values) => {
       const payload = {
         buildingNo: values?.buildingNumber,
-        apartment: values?.apartment,
         street: values?.street,
-        cityId: values?.city,
+        lgaId: values?.city,
         stateId: values?.state,
         landmark: values?.landmark,
-        address: values?.address,
-        currentStep: 4,
+        currentStep: 3,
       };
       saveClientOnboarding(payload);
     },
@@ -105,7 +99,6 @@ export default function AddressVerification() {
         'buildingNumber',
         userOnboardingData.data.buildingNumber || '',
       );
-      setFieldValue('apartment', userOnboardingData.data.apartment || '');
       setFieldValue('street', userOnboardingData.data.street || '');
       setFieldValue('landmark', userOnboardingData.data.landmark || '');
       setFieldValue('address', userOnboardingData.data.address || '');
@@ -166,22 +159,6 @@ export default function AddressVerification() {
                   />
                 </div>
 
-                {/* <div className="">
-                             <Input
-                               name="apartment"
-                               type="text"
-                               label="Apartment"
-                               // required
-                               placeholder="e.g 3B, Suite 201"
-                               size="lg"
-                               value={values.apartment}
-                               onChange={handleChange}
-                               onBlur={handleBlur}
-                               errors={errors}
-                               touched={touched}
-                             />
-                           </div> */}
-
                 <div className="w-full">
                   <Input
                     name="street"
@@ -198,53 +175,6 @@ export default function AddressVerification() {
                   />
                 </div>
               </div>
-              {/* <div className="">
-                <Input
-                  name="buildingNumber"
-                  type="text"
-                  label="Building No"
-                  required
-                  placeholder="e.g 15, Block A"
-                  size="lg"
-                  value={values.buildingNumber}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  errors={errors}
-                  touched={touched}
-                />
-              </div>
-
-              <div className="">
-                <Input
-                  name="apartment"
-                  type="text"
-                  label="Apartment"
-                  // required
-                  placeholder="e.g 3B, Suite 201"
-                  size="lg"
-                  value={values.apartment}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  errors={errors}
-                  touched={touched}
-                />
-              </div>
-
-              <div className="">
-                <Input
-                  name="street"
-                  type="text"
-                  label="Street"
-                  required
-                  placeholder="e.g Adeniran Ogunsanya Street"
-                  size="lg"
-                  value={values.street}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  errors={errors}
-                  touched={touched}
-                />
-              </div> */}
 
               <div className="flex flex-col sm:flex-row w-full sm:items-center justify-between gap-4">
                 <div className="w-full">
@@ -262,60 +192,19 @@ export default function AddressVerification() {
                 </div>
                 <div className="w-full">
                   <SelectField
-                    name="lga"
+                    name="city"
                     label="LGA"
                     options={citiesOptions}
                     placeholder="Select LGA"
                     onChange={(option) => {
                       setFieldValue('city', option.value);
-                      setState(option?.label);
                     }}
-                    value={values?.state}
+                    value={values?.city}
                   />
                 </div>
               </div>
-              {/* 
-              <div>
-                <SelectField
-                  name="state"
-                  label="State"
-                  options={stateOptions}
-                  placeholder="Select State"
-                  onChange={(option) => {
-                    setFieldValue('state', option.value);
-                    setState(option?.label);
-                  }}
-                  value={values?.state}
-                />
-              </div>
 
-              <div>
-                <SelectField
-                  name="city"
-                  label="City"
-                  options={citiesOptions}
-                  placeholder="Select city"
-                  onChange={(option) => {
-                    setFieldValue('city', option.value);
-                  }}
-                  value={values?.city}
-                />
-              </div>
-
-              <div>
-                <SelectField
-                  name="lga"
-                  label="LGA"
-                  options={stateOptions}
-                  placeholder="Select LGA"
-                  onChange={(option) => {
-                    setFieldValue('state', option.value);
-                    setState(option?.label);
-                  }}
-                  value={values?.state}
-                />
-              </div> */}
-
+            <div className="flex flex-col sm:flex-row w-full sm:items-center justify-between gap-4">
               <div className="">
                 <Input
                   name="landmark"
@@ -331,22 +220,22 @@ export default function AddressVerification() {
                   touched={touched}
                 />
               </div>
-              {/* 
-              <div className="">
-                <Input
-                  name="address"
+              {/* <div>
+                  <Input
+                  name="country"
                   type="text"
-                  label="Enter Full Address*"
+                  label="Country"
                   required
-                  placeholder="e.g No 5, Adeniran street off Anthony street Lagos, Nigeria"
+                  placeholder="e.g Nigeria"
                   size="lg"
-                  value={values.address}
+                  value={values.country}
                   onChange={handleChange}
                   onBlur={handleBlur}
                   errors={errors}
                   touched={touched}
                 />
               </div> */}
+              </div>
             </div>
 
             <div className="pt-4 flex justify-end">
@@ -355,11 +244,14 @@ export default function AddressVerification() {
                   type="submit"
                   size="xl"
                   backgroundColor="primary-blue-500"
-                  className="w-full py-3 px-12"
-                  isLoading={loading}
-                  disabled={!(dirty && isValid)}
+                  className="w-full py-3 px-12 flex items-center justify-center gap-2"
+                  // isLoading={loading}
+                  disabled={!(dirty && isValid) || loading}
                 >
-                  Save & Continue
+                  {loading && (
+                        <Loader2 size={18} className="animate-spin" />
+                      )}
+                      <span>Save & Continue</span>
                 </Button>
               </div>
             </div>

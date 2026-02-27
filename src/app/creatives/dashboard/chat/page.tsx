@@ -10,7 +10,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const pageUrl = `${fullHost}/creatives/dashboard/chat`;
 
   return {
-    title: 'Chat - Creative | Treva by Wema',
+    title: 'Chat - Creative | Geegs by Wema',
     description:
       'Stay connected with seamless, real-time messaging on Treva. Chat securely and collaborate effortlessly with your network.',
     keywords: [
@@ -19,19 +19,19 @@ export async function generateMetadata(): Promise<Metadata> {
       'dashboard',
       'setup',
       'Treva',
-      'Treva by Wema',
+      'Geegs by Wema',
     ],
     openGraph: {
-      title: 'Chat - Creative | Treva by Wema',
+      title: 'Chat - Creative | Geegs by Wema',
       description:
         'Stay connected with seamless, real-time messaging on Treva. Chat securely and collaborate effortlessly with your network.',
       url: pageUrl,
-      siteName: 'Treva by Wema',
+      siteName: 'Geegs by Wema',
       type: 'website',
     },
     twitter: {
       card: 'summary_large_image',
-      title: 'Creative Chat| Treva by Wema',
+      title: 'Creative Chat| Geegs by Wema',
       description:
         'Stay connected with seamless, real-time messaging on Treva. Chat securely and collaborate effortlessly with your network.',
       images: [`${fullHost}/images/og-dashboard.png`],

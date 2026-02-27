@@ -97,7 +97,7 @@ export default function Dashboard() {
   const userData = useMemo(() => data?.data || null, [data]);
   const { userOnboardingData } = useUsers();
   const { allProjectsData, loading } = useProjects(params);
-  const { myWalletData } = usePaymentService(params);
+  const { myWalletData, refetch: refetchWallet } = usePaymentService(params);
   const { myCommonData } = useCommon();
   const { dashboardSummaryCountData } = useDashboardSummaryCount();
   const { beneficiaryData, refetch } = useBeneficiaryManagement(params);
@@ -370,6 +370,7 @@ export default function Dashboard() {
                   wallet={myWalletData?.data}
                   beneficiaries={beneficiaryData?.data || []}
                   refetchBeneficiaries={refetch}
+                  refetchWallet={refetchWallet}
                   onAddAccount={() => {
                     setIsWithdrawFlowOpen(false);
                     toggleAddAccount(true);
@@ -538,7 +539,7 @@ export default function Dashboard() {
             </div>
             <div className="flex justify-between items-center">
               <span className="text-[#808080]">Account Name</span>
-              <span className="font-semibold">Geegs - IDEAx Labs</span>
+              <span className="font-semibold">{myWalletData?.data?.walletName || 'N/A'}</span>
             </div>
           </div>
         </CenterModal>

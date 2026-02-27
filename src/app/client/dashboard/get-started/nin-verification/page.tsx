@@ -10,7 +10,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const pageUrl = `${fullHost}/client/dashboard/get-started/nin-verification`;
 
   return {
-    title: 'NIN Verification - Get Started | Treva by Wema',
+    title: 'NIN Verification - Get Started | Geegs by Wema',
     description:
       'Start your journey on Treva. Set up your profile and explore features.',
     keywords: ['get started', 'dashboard', 'setup', 'Treva'],
@@ -18,12 +18,12 @@ export async function generateMetadata(): Promise<Metadata> {
       title: 'NIN Verification - Get Started| Treva',
       description: 'Set up your profile and explore features on Treva.',
       url: pageUrl,
-      siteName: 'Treva by Wema',
+      siteName: 'Geegs by Wema',
       type: 'website',
     },
     twitter: {
       card: 'summary_large_image',
-      title: 'NIN Verification - Get Started | Treva by Wema',
+      title: 'NIN Verification - Get Started | Geegs by Wema',
       description: 'Set up your profile and explore features on Treva.',
       images: [`${fullHost}/images/og-dashboard.png`],
     },

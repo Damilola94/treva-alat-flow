@@ -28,6 +28,7 @@ export type Chat = {
 
 const BigChatWindow = () => {
   const { userId } = useAppSelector((state) => state?.auth);
+  // const userToken = useAppSelector((state) => state.auth);
   const [params, setParams] = useState({ searchKey: '' });
   // const [, setSelectedChatId] = useState('');
   const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
