@@ -9,6 +9,7 @@ import routes from '@/lib/routes';
 import { useRouter } from 'next/navigation';
 import { SelectField } from '@/components/shared';
 import * as Yup from 'yup';
+import { Loader2 } from 'lucide-react';
 
 const validationSchema = Yup.object().shape({
   buildingNumber: Yup.string()
@@ -214,15 +215,18 @@ export default function AddressVerification() {
                 />
               </div>
             </div>
+            
             <div className="pt-4 flex justify-end">
               <div className="">
                 <Button
                   size="xl"
                   backgroundColor="primary-blue-500"
-                  className="w-full py-3 px-12"
-                  isLoading={loading}
+                  className="w-full py-3 px-12 flex items-center justify-center gap-2"
+                  // isLoading={loading}
+                  disabled={loading}
                 >
-                  Save & Continue
+                {loading && <Loader2 size={18} className="animate-spin" />}
+  <span>Save & Continue</span>
                 </Button>
               </div>
             </div>

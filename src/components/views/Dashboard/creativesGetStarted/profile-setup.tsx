@@ -12,12 +12,15 @@ import { readFileToDataUrl } from '@/utils';
 import { useUsers } from '@/hooks/Users';
 import { Textarea } from '@/components/ui/textarea';
 import useProfessions from '@/hooks/Users/useProfessions';
+import { Loader2 } from 'lucide-react';
 
 const validationSchema = Yup.object().shape({
   bio: Yup.string()
     .max(500, 'Bio cannot be more than 500 characters')
     .nullable(),
- professionalHeadshot: Yup.mixed().required('Professional headshot is required'),
+  professionalHeadshot: Yup.mixed().required(
+    'Professional headshot is required',
+  ),
   socialMediaUrl: Yup.string()
     .url('Must be a valid social media URL')
     .nullable()
@@ -93,30 +96,22 @@ export default function ProfileSetup() {
   }, [saveOnboardingResponse]);
 
   useEffect(() => {
-    const url = creativeOnboardingData?.data?.professionalHeadshotUrl ?? null;
-    if (url) {
-      setPreviewUrl((p) => ({ ...p, professionalHeadshot: url }));
-    }
-  }, [creativeOnboardingData?.data?.professionalHeadshotUrl]);
+  setPreviewUrl({
+    professionalHeadshot: creativeOnboardingData?.data?.professionalHeadshotUrl ?? null,
+    cv: creativeOnboardingData?.data?.cvUrl ?? null,
+    awardsAndCertifications: creativeOnboardingData?.data?.awardsAndCertificationsUrl ?? null,
+  });
 
-  useEffect(() => {
-    const url = creativeOnboardingData?.data?.cvUrl ?? null;
-    if (url) {
-      setPreviewUrl((p) => ({ ...p, cv: url }));
-    }
-  }, [creativeOnboardingData?.data?.cvUrl]);
-
-  useEffect(() => {
-    const url =
-      creativeOnboardingData?.data?.awardsAndCertificationsUrl ?? null;
-    if (url) {
-      setPreviewUrl((p) => ({ ...p, awardsAndCertifications: url }));
-    }
-  }, [creativeOnboardingData?.data?.awardsAndCertificationsUrl]);
+  if (creativeOnboardingData?.data) {
+    // If you want to treat existing URLs as "filled" in Formik
+    formik.setFieldValue('professionalHeadshot', creativeOnboardingData.data.professionalHeadshotUrl || null);
+    formik.setFieldValue('cv', creativeOnboardingData.data.cvUrl || null);
+  }
+// eslint-disable-next-line react-hooks/exhaustive-deps
+}, [creativeOnboardingData?.data]);
 
   const headshotRef = useRef<HTMLInputElement | null>(null);
   const cvRef = useRef<HTMLInputElement | null>(null);
-  // const awardsRef = useRef<HTMLInputElement | null>(null);
 
   const {
     handleBlur,
@@ -376,11 +371,11 @@ export default function ProfileSetup() {
                               className="w-32 h-32 object-cover rounded-md"
                             />
                           )}
-                          <p className="text-sm text-gray-700">
+                          {/* <p className="text-sm text-gray-700">
                             {typeof values.professionalHeadshot === 'string'
                               ? values.professionalHeadshot
                               : values.professionalHeadshot?.name}
-                          </p>
+                          </p> */}
                           <button
                             type="button"
                             onClick={() =>
@@ -394,11 +389,12 @@ export default function ProfileSetup() {
                             Remove
                           </button>
                         </div>
-                        {touched.professionalHeadshot && errors.professionalHeadshot &&(
-                        <p className="text-red-500 text-sm">
-                          {errors.professionalHeadshot}
-                        </p>
-                        )}
+                        {touched.professionalHeadshot &&
+                          errors.professionalHeadshot && (
+                            <p className="text-red-500 text-sm">
+                              {errors.professionalHeadshot}
+                            </p>
+                          )}
                       </div>
                     ) : (
                       <div>
@@ -547,11 +543,12 @@ export default function ProfileSetup() {
                   <Button
                     size="xl"
                     backgroundColor="primary-blue-500"
-                    className="w-full py-3 px-12"
-                    isLoading={loading}
-                    disabled={!(isValid && dirty)}
+                    className="w-full py-3 px-12 flex items-center justify-center gap-2 "
+                    // isLoading={loading}
+                    disabled={!(isValid && dirty) || loading}
                   >
-                    Save & Continue
+                    {loading && <Loader2 size={18} className="animate-spin" />}
+                    <span>Save & Continue</span>
                   </Button>
                 </div>
               </div>

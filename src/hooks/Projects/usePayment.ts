@@ -39,6 +39,7 @@ const usePaymentService = (params: IParams) => {
   } = useGetMyWalletQuery({
     refetchOnMountOrArgChange: true,
     skip: !loggedIn,
+    pollingInterval: 10000,
   });
 
   const [triggerAddBeneficiary, { isLoading: addBeneficiaryLoading }] =

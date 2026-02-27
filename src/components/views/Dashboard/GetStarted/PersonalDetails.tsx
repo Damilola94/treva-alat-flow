@@ -11,19 +11,13 @@ import routes from '@/lib/routes';
 import { useUsers } from '@/hooks/Users';
 import { readFileToDataUrl } from '@/utils';
 import { Textarea } from '@/components/ui/textarea';
+import { Loader2 } from 'lucide-react';
 
 const validationSchema = Yup.object().shape({
   bio: Yup.string()
     .max(500, 'Bio cannot be more than 500 characters')
     .nullable(),
   photo: Yup.mixed().nullable(), // optional
-  state: Yup.string()
-    .typeError('State is required')
-    .required('State is required'),
-  city: Yup.string().typeError('City is required').required('City is required'),
-  address: Yup.string()
-    .required('Address is required')
-    .min(5, 'Address must be at least 5 characters'),
   websiteUrl: Yup.string()
     .url('Must be a valid website URL')
     .nullable()
@@ -38,28 +32,28 @@ export default function PersonalDetails() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const router = useRouter();
-  
-  const { saveClientOnboarding, saveOnboardingResponse, userOnboardingData } =
+
+  const { saveClientOnboarding, saveOnboardingResponse, userOnboardingData, loading } =
     useUsers();
   const onboarding = userOnboardingData?.data;
-  
+
   const initialValues = {
     bio: onboarding?.bio || '',
-    photo: null as File | null,
+    photo: onboarding?.photoUrl || null,
     websiteUrl: onboarding?.websiteUrl || '',
     socialMediaUrl: onboarding?.socialMediaUrl || '',
-    firstName: onboarding?.firstName || '',
-    lastName: onboarding?.lastName || '',
+    firstName: onboarding?.firstName ?? '',
+    lastName: onboarding?.lastName ?? '',
     phoneNumber: onboarding?.phoneNumber || '',
   };
 
   const formik = useFormik({
     initialValues,
-    enableReinitialize: true, 
+    enableReinitialize: true,
     onSubmit: (values) => {
       const payload = {
         bio: values?.bio,
-        photo: values?.photo,
+        professionalHeadshot: values?.photo,
         websiteUrl: values?.websiteUrl,
         socialMediaUrl: values?.socialMediaUrl,
         firstName: values?.firstName,
@@ -177,7 +171,7 @@ export default function PersonalDetails() {
                     <div className="w-full">
                       <Input
                         name="firstName"
-                        label='First Name'
+                        label="First Name"
                         type="text"
                         placeholder="First Name"
                         size="lg"
@@ -288,11 +282,11 @@ export default function PersonalDetails() {
                           className="w-32 h-32 object-cover rounded-md"
                         />
                       )}
-                      <p className="text-sm text-gray-700">
+                      {/* <p className="text-sm text-gray-700">
                         {typeof values?.photo === 'string'
                           ? values?.photo
                           : values?.photo?.name}
-                      </p>
+                      </p> */}
                       <button
                         type="button"
                         onClick={handleRemoveFile}
@@ -330,10 +324,11 @@ export default function PersonalDetails() {
                   <Button
                     size="xl"
                     backgroundColor="primary-blue-500"
-                    className="w-full py-3 px-12"
-                    disabled={!(isValid && dirty)}
+                    className="w-full py-3 px-12 flex items-center justify-center gap-2"
+                    disabled={!(isValid && dirty) || loading}
                   >
-                    Save & Continue
+                    {loading && <Loader2 size={18} className="animate-spin" />}
+                    <span>Save & Continue</span>
                   </Button>
                 </div>
               </div>

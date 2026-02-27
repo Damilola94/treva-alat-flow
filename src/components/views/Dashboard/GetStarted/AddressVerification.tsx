@@ -9,6 +9,7 @@ import routes from '@/lib/routes';
 import { useRouter } from 'next/navigation';
 import { SelectField } from '@/components/shared';
 import * as Yup from 'yup';
+import { Loader2 } from 'lucide-react';
 
 const validationSchema = Yup.object().shape({
   buildingNumber: Yup.string()
@@ -19,9 +20,6 @@ const validationSchema = Yup.object().shape({
     .required('Street is required')
     .max(100, 'Street name is too long'),
   landmark: Yup.string().optional(),
-  address: Yup.string()
-    .required('Address is required')
-    .max(200, 'Address is too long'),
   city: Yup.string().required('City is required'),
   state: Yup.string().required('State is required'),
 });
@@ -62,11 +60,8 @@ export default function AddressVerification() {
     buildingNumber: userOnboardingData?.data?.buildingNumber || '',
     city: userOnboardingData?.data?.city || '',
     state: userOnboardingData?.data?.state || '',
-    apartment: userOnboardingData?.data?.apartment || '',
     street: userOnboardingData?.data?.street || '',
     landmark: userOnboardingData?.data?.landmark || '',
-    address: userOnboardingData?.data?.address || '',
-    country: userOnboardingData?.data?.country || '',
   };
 
   const formik = useFormik({
@@ -75,13 +70,10 @@ export default function AddressVerification() {
     onSubmit: (values) => {
       const payload = {
         buildingNo: values?.buildingNumber,
-        apartment: values?.apartment,
         street: values?.street,
         lgaId: values?.city,
         stateId: values?.state,
         landmark: values?.landmark,
-        address: values?.address,
-        country: values?.country,
         currentStep: 3,
       };
       saveClientOnboarding(payload);
@@ -107,13 +99,11 @@ export default function AddressVerification() {
         'buildingNumber',
         userOnboardingData.data.buildingNumber || '',
       );
-      setFieldValue('apartment', userOnboardingData.data.apartment || '');
       setFieldValue('street', userOnboardingData.data.street || '');
       setFieldValue('landmark', userOnboardingData.data.landmark || '');
       setFieldValue('address', userOnboardingData.data.address || '');
       setFieldValue('city', userOnboardingData?.data?.cityId || '');
       setFieldValue('state', userOnboardingData?.data?.stateId || '');
-      setFieldValue('country', userOnboardingData.data.country || '');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userOnboardingData]);
@@ -230,7 +220,7 @@ export default function AddressVerification() {
                   touched={touched}
                 />
               </div>
-              <div>
+              {/* <div>
                   <Input
                   name="country"
                   type="text"
@@ -244,7 +234,7 @@ export default function AddressVerification() {
                   errors={errors}
                   touched={touched}
                 />
-              </div>
+              </div> */}
               </div>
             </div>
 
@@ -254,11 +244,14 @@ export default function AddressVerification() {
                   type="submit"
                   size="xl"
                   backgroundColor="primary-blue-500"
-                  className="w-full py-3 px-12"
-                  isLoading={loading}
-                  disabled={!(dirty && isValid)}
+                  className="w-full py-3 px-12 flex items-center justify-center gap-2"
+                  // isLoading={loading}
+                  disabled={!(dirty && isValid) || loading}
                 >
-                  Save & Continue
+                  {loading && (
+                        <Loader2 size={18} className="animate-spin" />
+                      )}
+                      <span>Save & Continue</span>
                 </Button>
               </div>
             </div>

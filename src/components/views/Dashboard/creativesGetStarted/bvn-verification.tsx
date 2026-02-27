@@ -17,6 +17,7 @@ import {
 import { getErrorMessage } from '@/utils';
 import { ImagePlaceholder } from '@/app/assets/svgs';
 import NinVerification from './nin-verification';
+import { Loader2 } from 'lucide-react';
 
 const validationSchema = Yup.object().shape({
   bvn: Yup.string()
@@ -106,6 +107,20 @@ export default function BvnVerification() {
       errorToast(message || 'SOmething went wrong');
     }
   };
+
+  const handleTakeSideEffect = async () => {
+  // Trigger validation manually
+  const validationErrors = await formik.validateForm();
+  
+  if (Object.keys(validationErrors).length > 0) {
+    // If there are errors (like BVN being required), show the toast
+    errorToast(validationErrors.bvn || "Please enter a valid 11-digit BVN");
+    return;
+  }
+
+  // If valid, proceed to submit
+  handleSubmit();
+};
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -266,8 +281,10 @@ ${idType === 'NIN' ? 'border-[#7B37F0]' : 'border-gray-300 '}
                 {!isSuccess && (
                   <button
                     className="border border-[#E5E5E8] rounded-lg p-4 flex items-center justify-center gap-2 mt-4"
-                    onClick={() => handleSubmit()}
+                    // onClick={() => handleSubmit()}
+                    onClick={handleTakeSideEffect}
                     disabled={isLoading || isSuccess}
+                    type="button"
                   >
                     <Camera />
                     Click to take a picture
@@ -280,12 +297,15 @@ ${idType === 'NIN' ? 'border-[#7B37F0]' : 'border-gray-300 '}
                     <Button
                       size="xl"
                       backgroundColor="primary-blue-500"
-                      className="w-full py-3 px-12"
+                      className="w-full py-3 px-12 flex items-center justify-center gap-2"
                       onClick={() => saveCreativeOnboarding({ currentStep: 2 })}
-                      disabled={!isSuccess || callbackLoading}
-                      isLoading={loading}
+                      disabled={!isSuccess || callbackLoading || loading}
+                      // isLoading={loading}
                     >
-                      Save & Continue
+                      {loading && (
+                        <Loader2 size={18} className="animate-spin" />
+                      )}
+                      <span>Save & Continue</span>
                     </Button>
                   </div>
                 </div>

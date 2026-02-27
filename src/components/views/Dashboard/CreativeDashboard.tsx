@@ -141,12 +141,11 @@ export default function Page() {
   const [addProject, setAddProject] = useState(true);
   const { allProjectsData, loading } = useProjects(params);
   const [addProjectForm, setAddProjectForm] = useState(true);
+
   const { data } = useProfile();
   const userData = useMemo(() => data?.data || null, [data]);
-  console.log('userData', userData);
   const { creativeOnboardingData } = useUsers();
-
-  const { myWalletData } = usePaymentService(params);
+  const { myWalletData, refetch: refetchWallet  } = usePaymentService(params);
   const { dashboardSummaryCountData } = useDashboardSummaryCount();
   const { myCommonData } = useCommon();
   const { beneficiaryData, refetch } = useBeneficiaryManagement(params);
@@ -345,6 +344,7 @@ export default function Page() {
                   wallet={myWalletData?.data}
                   beneficiaries={beneficiaryData?.data || []}
                   refetchBeneficiaries={refetch}
+                  refetchWallet={refetchWallet}
                   onAddAccount={() => {
                     setIsWithdrawFlowOpen(false);
                     toggleAddAccount(true);
@@ -360,7 +360,7 @@ export default function Page() {
         <div className="flex items-center justify-between w-full">
           <span className="text-sm lg:text-[24px]">
             {showBalance
-              ? numberFormat(wallet?.availableBalance ?? 0)
+              ? numberFormat(wallet?.availableBalance ?? 100)
               : `NGN ••••••`}
           </span>
           <button

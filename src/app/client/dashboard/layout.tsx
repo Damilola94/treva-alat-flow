@@ -36,7 +36,7 @@ function Main({ children }: { children: React.ReactNode }) {
   const { data } = useProfile();
 
   const isOnboardingCompleted = useAppSelector(
-    (state) => state.auth.isOnboardingCompleted,
+    (state) => state.auth.isOnboardingCompleted || data?.data?.isCompleted
   );
 
   const clientMenuItems = [

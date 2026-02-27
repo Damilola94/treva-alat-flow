@@ -1,14 +1,7 @@
 'use client';
 
-import {
-  Calendar,
-  FlagOutline,
-  CenterModal,
-  Label,
-  SideModal,
-  Check,
-} from '@/components/shared';
-import { Loader2, Send, Star } from 'lucide-react';
+import {Calendar,FlagOutline,CenterModal,Label,SideModal,Check, MiniLoader,} from '@/components/shared';
+import { Send, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { DeliverableTable } from '@/components/shared/client/dashboard/project-management/deliverable-table';
@@ -259,7 +252,7 @@ export default function Page() {
       >
         {loadingComment ? (
           <div className="text-center flex justify-center items-center">
-            <Loader2 size={18} className="animate-spin" />
+            <MiniLoader message='loading' />
           </div>
         ) : (
           <div className="flex flex-col space-y-6 p-1">
@@ -427,7 +420,7 @@ export default function Page() {
       </CenterModal>
       {loading ? (
         <div className="text-center flex justify-center items-center">
-          <Loader2 size={18} className="animate-spin" />
+          <MiniLoader message='loading' />
         </div>
       ) : (
         project && (

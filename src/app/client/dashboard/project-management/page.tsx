@@ -1,13 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
-import { Label, Pill, Table } from '@/components/shared';
+import { Label, MiniLoader, Pill, Table } from '@/components/shared';
 import SearchInput from '@/components/ui/SearchInput';
 import { clientDashboardTasks } from '@/constants';
 import { useProjects } from '@/hooks/Projects';
 import clientManagement from '@/lib/assets/client-management';
 import { numberFormat } from '@/lib/numbers';
 import { formatDate } from '@/lib/utils';
-import { Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
@@ -23,7 +22,7 @@ interface ProjectQueryParams {
 
 export default function Page() {
   const router = useRouter();
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(clientDashboardTasks?.[0]?.value ?? null);
 
   const [params, setParams] = useState<ProjectQueryParams>({
     // type: '2',
@@ -158,7 +157,7 @@ export default function Page() {
       </div>
       {loading ? (
         <div className="text-center flex justify-center items-center">
-          <Loader2 size={18} className="animate-spin" />
+          <MiniLoader message='loading' />
         </div>
       ) : (
         <Table

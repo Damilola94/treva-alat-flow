@@ -1702,6 +1702,7 @@ export interface components {
         };
         TempClientOnboardingModel: {
             profilePicture?: string | null;
+            photoUrl?: string | null;
             /** Format: uuid */
             stateId?: string | null;
             /** Format: uuid */

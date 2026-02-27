@@ -113,7 +113,7 @@ const Notifications = () => {
   return (
     <>
       <div className="p-6">
-        <div>
+        <div className='!mb-36'>
           <Tab
             variant="pill"
             value={activeTab}

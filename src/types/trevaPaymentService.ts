@@ -765,8 +765,8 @@ export interface components {
             status?: string | null;
             status_desc?: string | null;
         };
-        /** @enum {string} */
-        TransactionTypeEnums: "Credit" | "Debit";
+        /** @enum {number} */
+        TransactionTypeEnums: 2 | 1;
         UnblockAccountCommand: {
             accountnumber?: string | null;
         };

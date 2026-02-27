@@ -37,9 +37,10 @@ interface IProps {
   beneficiaries: any[];
   onAddAccount: () => void;
   refetchBeneficiaries: () => void;
+  refetchWallet: () => void;
 }
 
-export function WithdrawalFlowManager({isOpen,onClose,wallet,beneficiaries,onAddAccount,refetchBeneficiaries}: IProps) {
+export function WithdrawalFlowManager({isOpen,onClose,wallet,beneficiaries,onAddAccount,refetchBeneficiaries,refetchWallet}: IProps) {
 
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const pinRefs = useRef<(HTMLInputElement | null)[]>([]);
@@ -191,6 +192,7 @@ export function WithdrawalFlowManager({isOpen,onClose,wallet,beneficiaries,onAdd
       const response = await setWalletPin({ pin: newPin, confirmPin }).unwrap();
       if (response?.isSuccess) {
         successToast(response?.message || 'Wallet PIN set successfully');
+        await refetchWallet();
         setStep('PIN_SUCCESS');
       } else {
         errorToast(response?.message || 'Failed to set PIN, please try again');
@@ -426,7 +428,7 @@ export function WithdrawalFlowManager({isOpen,onClose,wallet,beneficiaries,onAdd
       <CenterModal isOpen={isOpen && step === 'PIN_SUCCESS'} onClose={onClose} headerImageType={0}>
         <div className="flex flex-col items-center py-10 gap-4 text-center">
           <div className="">
-            <Image src={Success} className='w-[78px]' alt="success" />
+            <Image src={Success} className='w-[78px]' alt="success" unoptimized />
           </div>
           <h3 className="text-xl font-bold">
             Your transaction PIN has been set successfully
@@ -566,7 +568,7 @@ export function WithdrawalFlowManager({isOpen,onClose,wallet,beneficiaries,onAdd
       <CenterModal isOpen={isOpen && step === 'SUCCESS'} onClose={onClose}>
         <div className="flex flex-col items-center py-10 gap-4 text-center">
           <div className="">
-            <Image src={Success} alt="success" className='w-[62px]' />
+            <Image src={Success} alt="success" className='w-[62px]' unoptimized />
           </div>
           <h3 className="text-2xl font-bold">Withdrawal Successful</h3>
         </div>

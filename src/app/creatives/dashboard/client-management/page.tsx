@@ -11,20 +11,20 @@ export async function generateMetadata(): Promise<Metadata> {
   const pageUrl = `${fullHost}/creatives/dashboard/client-management`;
 
   return {
-    title: 'Client Management | Treva by Wema',
+    title: 'Client Management | Geegs by Wema',
     description:
       'Start your journey on Treva. Set up your profile and explore features.',
     keywords: ['client management', 'dashboard', 'setup', 'Treva'],
     openGraph: {
-      title: 'Client Management | Treva by Wema',
+      title: 'Client Management | Geegs by Wema',
       description: 'Set up your profile and explore features on Treva.',
       url: pageUrl,
-      siteName: 'Treva by Wema',
+      siteName: 'Geegs by Wema',
       type: 'website',
     },
     twitter: {
       card: 'summary_large_image',
-      title: 'Client Management | Treva by Wema',
+      title: 'Client Management | Geegs by Wema',
       description: 'Set up your profile and explore features on Treva.',
       images: [`${fullHost}/images/og-dashboard.png`],
     },

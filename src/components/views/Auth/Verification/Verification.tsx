@@ -12,7 +12,7 @@ import { useRouter } from 'next/navigation';
 import { MiniLoader } from '@/components/shared';
 import SuccessImage from '../../../../../public/media/images/auth/marked-success.png';
 import Image from 'next/image';
-import ErrorImage from '@/app/assets/pngs/delete.png';
+import ErrorImage from '@/app/assets/pngs/error.png';
 
 export default function Verification() {
   const dispatch = useAppDispatch();
@@ -73,15 +73,15 @@ export default function Verification() {
       <div className="app_auth_login_container__upper">
         <div className="app_auth_login !flex !flex-col !items-center text-center ">
           {verified ? (
-            <Image src={SuccessImage} alt="Success" className="w-24 h-24 mx-auto" unoptimized />
+            <Image src={SuccessImage} alt="Success" className="w-24 h-24 mx-auto mb-[40px]" unoptimized />
           ) : (
-            <Image src={ErrorImage} alt="Error" className="w-24 h-24 mx-auto" unoptimized />
+            <Image src={ErrorImage} alt="Error" className="w-24 h-24 mx-auto mb-[40px]" unoptimized />
           )}
-          <div className="flex flex-col gap-8">
+          <div className="flex flex-col gap-8 !mt-10">
             <h3 className="app_auth_login__title">
               {verified ? 'Verification successful' : 'Verification Unsuccessful'}
             </h3>
-            <div className="flex flex-col gap-8">
+            <div className="flex flex-col gap-4 justify-center items-center">
               <p className="app_auth_verification__p">
                 {verified
                   ? 'Congratulations, your email has been verified successfully'

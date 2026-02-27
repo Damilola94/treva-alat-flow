@@ -1,31 +1,52 @@
 'use client';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { GetStartedCard } from './components/GetStartedCard';
 import { dashboardCards } from '@/constants';
-import { useProfile, useUsers } from '@/hooks/Users';
+import { useProfile } from '@/hooks/Users';
+import { useRouter } from 'next/navigation';
+import routes from '@/lib/routes';
 
 export default function GetStarted() {
-  const { data } = useProfile();
+  // const { data } = useProfile();
 
+  // const [showSteps, setShowSteps] = useState(false);
+  // const { userOnboardingData, clientOnboardingError } = useUsers();
+  // const router = useRouter();
+  // const [onboardingComplete, setOnboardingComplete] = useState(false);
+
+  // const onboardingStatus = useMemo(
+  //   () => userOnboardingData?.data || null,
+  //   [userOnboardingData],
+  // );
+
+//   useEffect(() => {
+//     if (
+//       onboardingStatus?.isCompleted ||
+//       // eslint-disable-next-line @typescript-eslint/no-explicit-any
+//       (clientOnboardingError as any)?.data?.message ===
+//         'ClientOnboarding not found or already completed.'
+//     ) {
+//       setOnboardingComplete(true);
+//     }
+//   }, [onboardingStatus, clientOnboardingError]);
+
+//   useEffect(() => {
+//   if (onboardingComplete) {
+//     router.push(routes.client.dashboard.entry.path);
+//   }
+// }, [onboardingComplete]);
+
+ const { data } = useProfile();
+  const router = useRouter();
   const [showSteps, setShowSteps] = useState(false);
-  const { userOnboardingData, clientOnboardingError } = useUsers();
-  const [onboardingComplete, setOnboardingComplete] = useState(false);
 
-  const onboardingStatus = useMemo(
-    () => userOnboardingData?.data || null,
-    [userOnboardingData],
-  );
+  const onboardingComplete = data?.data?.isCompleted ?? false;
 
   useEffect(() => {
-    if (
-      onboardingStatus?.isCompleted ||
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (clientOnboardingError as any)?.data?.message ===
-        'ClientOnboarding not found or already completed.'
-    ) {
-      setOnboardingComplete(true);
+    if (onboardingComplete) {
+      router.push(routes.client.dashboard.entry.path);
     }
-  }, [onboardingStatus, clientOnboardingError]);
+  }, [onboardingComplete, router]);
 
   return (
     <div className="app_get_started flex flex-col gap-10 pb-10 mb-10 px-4">

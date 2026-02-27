@@ -10,7 +10,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const pageUrl = `${fullHost}/client/dashboard/notifications`;
 
   return {
-    title: 'Notifications - Client | Treva by Wema',
+    title: 'Notifications - Client | Geegs by Wema',
     description: 'View Notifications',
     keywords: [
       'chat',
@@ -18,18 +18,18 @@ export async function generateMetadata(): Promise<Metadata> {
       'dashboard',
       'setup',
       'Treva',
-      'Treva by Wema',
+      'Geegs by Wema',
     ],
     openGraph: {
-      title: 'Notifications | Treva by Wema',
+      title: 'Notifications | Geegs by Wema',
       description: 'View Notifications',
       url: pageUrl,
-      siteName: 'Treva by Wema',
+      siteName: 'Geegs by Wema',
       type: 'website',
     },
     twitter: {
       card: 'summary_large_image',
-      title: 'Notifications - Client | Treva by Wema',
+      title: 'Notifications - Client | Geegs by Wema',
       description: 'View Notifications',
       images: [`${fullHost}/images/og-dashboard.png`],
     },

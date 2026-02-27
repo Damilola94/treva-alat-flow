@@ -1,21 +1,29 @@
 'use client';
 import { CheckCircle } from '@/components/shared';
 import { Button } from '@/components/ui/button';
-import { useUsers } from '@/hooks/Users';
+import { useProfile, useUsers } from '@/hooks/Users';
 import routes from '@/lib/routes';
 import { useRouter } from 'next/navigation';
-import React, { useEffect } from 'react';
+import React from 'react';
 
 export default function Finish() {
   const rt = useRouter();
-  const { saveClientOnboarding, saveOnboardingResponse, loading } = useUsers();
+  const { saveClientOnboarding, loading } = useUsers();
+  const { refetch } = useProfile(); 
 
-  useEffect(() => {
-    if (saveOnboardingResponse?.isSuccess) {
-      rt.push(routes.client.dashboard.entry.path);
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [saveOnboardingResponse]);
+  // useEffect(() => {
+  //   if (saveOnboardingResponse?.isSuccess) {
+  //     rt.push(routes.client.dashboard.entry.path);
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [saveOnboardingResponse]);
+
+  const handleNext = async () => {
+    await saveClientOnboarding({ currentStep: 4 }); 
+    await refetch();
+    rt.push(routes.client.dashboard.entry.path); 
+  };
+
 
   return (
     <div className="app_get_started_professional_details app_get_started_done py-6 px-4 h-full flex">
@@ -30,7 +38,8 @@ export default function Finish() {
               size="xl"
               backgroundColor="primary-blue-500"
               className="w-full py-3 px-12"
-              onClick={() => saveClientOnboarding({ currentStep: 4 })}
+             onClick={handleNext}
+              // onClick={() => saveClientOnboarding({ currentStep: 4 })}
               isLoading={loading}
             >
               Next

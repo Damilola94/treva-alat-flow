@@ -49,7 +49,6 @@ export default function RootLayout({
         <QueryClientProvider client={queryClient}>
           <CombinedProviders>{children}</CombinedProviders>
         </QueryClientProvider>
-        {/* ensure toast container is rendered after app content and above modals */}
         <ToastContainer
           position="top-right"
           newestOnTop

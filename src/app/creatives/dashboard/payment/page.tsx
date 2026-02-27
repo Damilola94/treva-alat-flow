@@ -145,7 +145,7 @@ export default function Page() {
           }}
         />
       </div>
-      
+      <div className='app_dashboard_home__task__ctt'>
       <Table
         columns={invoiceHeaders}
         emptyTitle="No Invoices Yet"
@@ -154,6 +154,8 @@ export default function Page() {
         pagination={pagination}
         setPagination={setPagination}
       />
+
+      </div>
     </div>
   );
 }
