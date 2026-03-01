@@ -1,6 +1,6 @@
-import { REQUEST_METHODS, endpoints } from '@/constants';
-import { projectServiceApiSlice } from '@/store/slices';
-import { ITrevaProjectService } from '@/types';
+import { REQUEST_METHODS, endpoints } from "@/constants";
+import { projectServiceApiSlice } from "@/store/slices";
+import { ITrevaProjectService } from "@/types";
 
 export const projectService = projectServiceApiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -10,8 +10,16 @@ export const projectService = projectServiceApiSlice.injectEndpoints({
         method: REQUEST_METHODS.GET,
         params: values,
       }),
+      providesTags: (result) => [
+        ...(result?.data?.map((project) => ({
+          type: "Project" as const,
+          id: project.id,
+        })) || []),
+        { type: "Projects", id: "LIST" },
+      ],
+
       transformResponse: (
-        response: ITrevaProjectService['schemas']['ProjectMiniModelPagedListBaseResponse'],
+        response: ITrevaProjectService["schemas"]["ProjectMiniModelPagedListBaseResponse"]
       ) => response,
     }),
 
@@ -22,7 +30,7 @@ export const projectService = projectServiceApiSlice.injectEndpoints({
         body: values,
       }),
       transformResponse: (
-        response: ITrevaProjectService['schemas']['ProjectModelBaseResponse'],
+        response: ITrevaProjectService["schemas"]["ProjectModelBaseResponse"]
       ) => response,
     }),
 
@@ -32,7 +40,7 @@ export const projectService = projectServiceApiSlice.injectEndpoints({
         method: REQUEST_METHODS.GET,
       }),
       transformResponse: (
-        response: ITrevaProjectService['schemas']['ProjectModelBaseResponse'],
+        response: ITrevaProjectService["schemas"]["ProjectModelBaseResponse"]
       ) => response,
     }),
 
@@ -42,8 +50,12 @@ export const projectService = projectServiceApiSlice.injectEndpoints({
         method: REQUEST_METHODS.PUT,
         body: values,
       }),
+      invalidatesTags: (result, error, { projectId }) => [
+        { type: "Project", id: projectId },
+        { type: "Projects", id: "LIST" },
+      ],
       transformResponse: (
-        response: ITrevaProjectService['schemas']['ProjectModelBaseResponse'],
+        response: ITrevaProjectService["schemas"]["ProjectModelBaseResponse"]
       ) => response,
     }),
 
@@ -52,8 +64,12 @@ export const projectService = projectServiceApiSlice.injectEndpoints({
         url: endpoints.projects.deleteProject(projectId),
         method: REQUEST_METHODS.DELETE,
       }),
+      invalidatesTags: (result, error,  projectId ) => [
+        { type: "Project", id: projectId },
+        { type: "Projects", id: "LIST" },
+      ],
       transformResponse: (
-        response: ITrevaProjectService['schemas']['ProjectModelBaseResponse'],
+        response: ITrevaProjectService["schemas"]["ProjectModelBaseResponse"]
       ) => response,
     }),
 
@@ -63,8 +79,9 @@ export const projectService = projectServiceApiSlice.injectEndpoints({
         method: REQUEST_METHODS.POST,
         body: values,
       }),
+      invalidatesTags: [{ type: "Projects", id: "LIST" }],
       transformResponse: (
-        response: ITrevaProjectService['schemas']['ProjectModelBaseResponse'],
+        response: ITrevaProjectService["schemas"]["ProjectModelBaseResponse"]
       ) => response,
     }),
 
@@ -75,7 +92,7 @@ export const projectService = projectServiceApiSlice.injectEndpoints({
         params: values,
       }),
       transformResponse: (
-        response: ITrevaProjectService['schemas']['DashboardSummaryCountModelBaseResponse'],
+        response: ITrevaProjectService["schemas"]["DashboardSummaryCountModelBaseResponse"]
       ) => response,
     }),
 
@@ -86,7 +103,7 @@ export const projectService = projectServiceApiSlice.injectEndpoints({
         params: params,
       }),
       transformResponse: (
-        response: ITrevaProjectService['schemas']['UserDtoPagedListBaseResponse'],
+        response: ITrevaProjectService["schemas"]["UserDtoPagedListBaseResponse"]
       ) => response,
     }),
   }),

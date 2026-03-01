@@ -123,6 +123,7 @@ export const paymentServiceApiSlice = createApi({
   reducerPath: 'payment-service-api-slice',
   baseQuery: baseQueryWithReAuth,
   endpoints: () => ({}),
+  tagTypes: ['MyWallet', 'Transactions'],
   keepUnusedDataFor: 0,
   refetchOnMountOrArgChange: true,
 });

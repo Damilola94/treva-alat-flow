@@ -10,6 +10,7 @@ export const notificationsService = chatServiceApiSlice.injectEndpoints({
         method: REQUEST_METHODS.GET,
         params: values,
       }),
+      providesTags: ['Notifications'],
       transformResponse: (
         response: ITrevaChatService['schemas']['NotificationModelPagedListBaseResponse'],
       ) => response,
@@ -20,6 +21,7 @@ export const notificationsService = chatServiceApiSlice.injectEndpoints({
         url: endpoints.notifications.getNotificationCount,
         method: REQUEST_METHODS.GET,
       }),
+      providesTags: ['NotificationCount'],
       transformResponse: (
         response: ITrevaChatService['schemas']['Int32BaseResponse'],
       ) => response,
@@ -30,6 +32,7 @@ export const notificationsService = chatServiceApiSlice.injectEndpoints({
         url: endpoints.notifications.readNotification(notificationId),
         method: REQUEST_METHODS.PUT,
       }),
+      invalidatesTags: ['Notifications', 'NotificationCount'],
       transformResponse: (
         response: ITrevaChatService['schemas']['UnitBaseResponse'],
       ) => response,

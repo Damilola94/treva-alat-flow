@@ -3,28 +3,11 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import {
-  ClientIcon,
-  PersonalIcon,
-  AnimatedModal,
-  PlusIcon,
-  RenderIf,
-  Table,
-  Label,
-  projectTypeMap,
-} from '@/components/shared';
+import {ClientIcon,PersonalIcon,AnimatedModal,PlusIcon,RenderIf,Table,Label,projectTypeMap,} from '@/components/shared';
 import { Button } from '@/components/ui/button';
-import {
-  CreateProjectCard,
-  TakeATour,
-  AddProject,
-} from '@/components/shared/project-management';
+import {CreateProjectCard,TakeATour,AddProject,} from '@/components/shared/project-management';
 import { DeleteProject } from '@/components/shared/dashboard/project-management/project-table/delete-project';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
+import {Popover,PopoverContent,PopoverTrigger,} from '@/components/ui/popover';
 import { Check, ListFilter } from 'lucide-react';
 import projectManagement from '@/lib/assets/project-management';
 import { BinGray, EditPencilGray } from '@/components/shared/svgs';
@@ -84,9 +67,6 @@ export default function Page() {
   const router = useRouter();
 
   const [params, setParams] = useState<ProjectQueryParams>({
-    // type: '2',
-    // status: '2',
-    // priority: '3',
     pageNumber: 0,
     pageSize: 50,
     currency: 'NGN',

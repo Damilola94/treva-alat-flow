@@ -36,10 +36,9 @@ const usePaymentService = (params: IParams) => {
     error,
     isError,
     refetch,
-  } = useGetMyWalletQuery({
+  } = useGetMyWalletQuery(undefined,{
     refetchOnMountOrArgChange: true,
     skip: !loggedIn,
-    pollingInterval: 10000,
   });
 
   const [triggerAddBeneficiary, { isLoading: addBeneficiaryLoading }] =
