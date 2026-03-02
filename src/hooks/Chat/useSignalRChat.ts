@@ -1,62 +1,76 @@
+'use client';
 import { useEffect, useRef, useState } from 'react';
 import * as signalR from '@microsoft/signalr';
+import { getCookie } from '@/utils';
 
-export const useSignalRChat = (
-  chatId: string | undefined,
-  token: string | undefined,
-) => {
+export type Message = {
+  id: string;
+  chatId: string;
+  userId: string;
+  content?: string;
+  attachments?: { id: string; fileName: string; filePathUrl?: string }[];
+  sentAt: string;
+};
+
+export const useChatSignalR = (chatId: string | undefined, userId: string | undefined) => {
   const connectionRef = useRef<signalR.HubConnection | null>(null);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [messages, setMessages] = useState<any[]>([]);
-  const [typingUsers, setTypingUsers] = useState<Set<string>>(new Set());
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [typingUsers, setTypingUsers] = useState<string[]>([]);
+  const [seenBy, setSeenBy] = useState<{ [msgId: string]: string[] }>({});
 
   useEffect(() => {
-    if (!chatId || !token) return;
+    if (!chatId || !userId) return;
 
     const connection = new signalR.HubConnectionBuilder()
-      .withUrl(`https://treva-api.wemabank.com/treva-chat-service/chatHub?chatId=${chatId}`, {
-        accessTokenFactory: () => token,
+      .withUrl(`${process.env.NEXT_PUBLIC_CHAT_SERVICE_API_URL}/chatHub`, {
+        accessTokenFactory: () => getCookie('_tk') || '',
       })
       .withAutomaticReconnect()
-      .configureLogging(signalR.LogLevel.Information)
       .build();
 
-    connection.start()
-      .then(() => console.log('SignalR connected'))
-      .catch(console.error);
+    connection.start().catch(console.error);
+    connectionRef.current = connection;
 
-    connection.on('ReceiveMessage', (msg) => {
+    // Incoming message
+    connection.on('ReceiveMessage', (msg: Message) => {
       setMessages((prev) => [...prev, msg]);
     });
 
-    connection.on('UserTyping', ({ userId }) => {
-      setTypingUsers((prev) => new Set(prev).add(userId));
-      setTimeout(() => {
-        setTypingUsers((prev) => {
-          const newSet = new Set(prev);
-          newSet.delete(userId);
-          return newSet;
-        });
-      }, 2000); // remove typing indicator after 2s
+    // Typing indicator
+    connection.on('UserTyping', (typingUserId: string) => {
+      if (!typingUsers.includes(typingUserId)) {
+        setTypingUsers((prev) => [...prev, typingUserId]);
+        setTimeout(() => setTypingUsers((prev) => prev.filter((id) => id !== typingUserId)), 3000);
+      }
     });
 
-    connectionRef.current = connection;
+    // Seen indicator
+    connection.on('MessageSeen', ({ messageId, seenUserId }: { messageId: string; seenUserId: string }) => {
+      setSeenBy((prev) => ({
+        ...prev,
+        [messageId]: prev[messageId] ? [...prev[messageId], seenUserId] : [seenUserId],
+      }));
+    });
+
+    // Join chat room
+    connection.invoke('JoinChat', chatId, userId).catch(console.error);
 
     return () => {
       connection.stop();
     };
-  }, [chatId, token]);
-
+  }, [chatId, userId, typingUsers]);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const sendMessage = (payload: { chatId: string; content: string; attachments?: any[] }) => {
-    connectionRef.current?.invoke('SendMessage', payload)
-      .catch(console.error);
-    setMessages((prev) => [...prev, { ...payload, temp: true }]);
+  const sendMessage = (msg: { content?: string; attachments?: any[] }) => {
+    connectionRef.current?.invoke('SendMessage', { ...msg, chatId, userId });
   };
 
   const sendTyping = () => {
-    connectionRef.current?.invoke('Typing', { chatId });
+    connectionRef.current?.invoke('Typing', chatId, userId);
   };
 
-  return { messages, sendMessage, sendTyping, typingUsers };
+  const markSeen = (messageId: string) => {
+    connectionRef.current?.invoke('MarkAsSeen', chatId, messageId, userId);
+  };
+
+  return { messages, sendMessage, typingUsers, sendTyping, markSeen, seenBy };
 };

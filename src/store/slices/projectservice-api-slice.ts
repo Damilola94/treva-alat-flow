@@ -123,6 +123,7 @@ export const projectServiceApiSlice = createApi({
   reducerPath: 'project-service-api-slice',
   baseQuery: baseQueryWithReAuth,
   endpoints: () => ({}),
+  tagTypes: ['Projects', 'Project'],
   keepUnusedDataFor: 0,
   refetchOnMountOrArgChange: true,
 });

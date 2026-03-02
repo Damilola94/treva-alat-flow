@@ -153,9 +153,10 @@ export default function Page() {
   const [bankNameEnquiryTrigger, { isLoading: bankNameLoading }] =
     useBankNameEnquiryMutation();
 
+    const wallet = myWalletData?.data;
+
   const [pagination, setPagination] = useState({pageIndex: 0,pageSize: 10,});
 
-  const wallet = myWalletData?.data;
 
   const summaryCount = dashboardSummaryCountData?.data;
 
@@ -360,7 +361,7 @@ export default function Page() {
         <div className="flex items-center justify-between w-full">
           <span className="text-sm lg:text-[24px]">
             {showBalance
-              ? numberFormat(wallet?.availableBalance ?? 100)
+              ? numberFormat(wallet?.availableBalance ?? 0)
               : `NGN ••••••`}
           </span>
           <button

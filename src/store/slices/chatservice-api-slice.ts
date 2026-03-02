@@ -122,6 +122,7 @@ const baseQueryWithReAuth: BaseQueryFn<
 export const chatServiceApiSlice = createApi({
   reducerPath: 'chat-service-api-slice',
   baseQuery: baseQueryWithReAuth,
+  tagTypes: ['Notifications', 'NotificationCount'],
   endpoints: () => ({}),
   keepUnusedDataFor: 0,
   refetchOnMountOrArgChange: true,

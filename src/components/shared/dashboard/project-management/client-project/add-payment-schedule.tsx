@@ -497,7 +497,7 @@ export function ProjectPaymentSchedule(props: IProps) {
                       <Money4 stroke="#6E50DB" />
                       Amount
                     </p>
-                    <p className="font-bold">{numberFormat(item.amount)}.00</p>
+                    <p className="font-bold">{numberFormat(item.amount)}</p>
                   </div>
                 </div>
               </div>

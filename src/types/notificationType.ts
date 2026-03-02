@@ -3,4 +3,6 @@ export enum NotificationTypeEnums {
   Message = 1,
   ProjectUpdate = 2,
   Reminder = 3,
+  Alert = 4,
+  
 }

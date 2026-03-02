@@ -12,6 +12,9 @@ import {
 import { resetProject } from '@/store/slices/project';
 import { useAppDispatch } from '@/store';
 import { numberFormat } from '@/lib/numbers';
+import Image from 'next/image';
+import Success from '@/app/assets/pngs/success.png';
+
 
 interface IProps {
   projectId: string;
@@ -79,9 +82,7 @@ export function ProjectReview(props: IProps) {
       header: 'Amount',
       accessorKey: 'amount',
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      cell: ({ row }: any) => (
-        <span>{numberFormat(row.original.amount)}</span>
-      ),
+      cell: ({ row }: any) => <span>{numberFormat(row.original.amount)}</span>,
     },
     {
       header: 'Due date',
@@ -109,9 +110,7 @@ export function ProjectReview(props: IProps) {
       header: 'Amount',
       accessorKey: 'total',
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      cell: ({ row }: any) => (
-        <span>{numberFormat(row.original.total)}</span>
-      ),
+      cell: ({ row }: any) => <span>{numberFormat(row.original.total)}</span>,
     },
   ];
 
@@ -154,7 +153,6 @@ export function ProjectReview(props: IProps) {
     <div className="app_get_started_professional_details py-6 px-4 flex flex-col gap-14">
       <div className="app_get_started_professional_details__form flex flex-col gap-10 !max-w-[700px] !mx-auto">
         <CenterModal
-          headerImageType={4}
           isOpen={isDecisionModalOpen}
           onClose={handleCloseModal}
           showFooter
@@ -175,7 +173,15 @@ export function ProjectReview(props: IProps) {
             </div>
           }
         >
-          <div className="flex flex-col items-center justify-center gap-4">
+          <div className="flex flex-col items-center justify-center gap-4 py-10">
+            <div className="">
+              <Image
+                src={Success}
+                className="w-[78px]"
+                alt="success"
+                unoptimized
+              />
+            </div>
             <p className="font-semibold">
               Are you sure you want to send this invoice
             </p>
@@ -186,21 +192,20 @@ export function ProjectReview(props: IProps) {
         </CenterModal>
 
         <CenterModal
-          headerImageType={4}
           isOpen={isDeleteModal}
           onClose={handleCloseModal}
           showFooter
           footerChildren={
             <div className="w-full flex items-center gap-5">
-              {false &&
-               <button
-                 className="w-full flex items-center justify-center text-[#7B37F0]"
-                onClick={handleCloseModal}
-               >
-                 <PlusIcon fill="#7B37F0" />
-                 New invoice
-               </button>
-          }
+              {false && (
+                <button
+                  className="w-full flex items-center justify-center text-[#7B37F0]"
+                  onClick={handleCloseModal}
+                >
+                  <PlusIcon fill="#7B37F0" />
+                  New invoice
+                </button>
+              )}
               <button
                 className="border p-3 bg-[#7B37F0] rounded-full w-full text-[#fff]"
                 onClick={handleDone}
@@ -211,6 +216,14 @@ export function ProjectReview(props: IProps) {
           }
         >
           <div className="flex flex-col items-center justify-center gap-4">
+            <div className="">
+              <Image
+                src={Success}
+                className="w-[78px]"
+                alt="success"
+                unoptimized
+              />
+            </div>
             <p className="font-semibold">
               Invoice has been sent to client successfully
             </p>

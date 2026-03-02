@@ -212,6 +212,7 @@ export function WithdrawalFlowManager({isOpen,onClose,wallet,beneficiaries,onAdd
       }).unwrap();
       if (response?.isSuccess) {
         successToast(response?.message || 'Withdrawal successful');
+        await refetchWallet();
         setStep('SUCCESS');
       } else {
         errorToast(response?.message || 'Withdrawal failed, please try again');

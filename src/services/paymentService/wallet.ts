@@ -10,6 +10,7 @@ export const wallet = paymentServiceApiSlice.injectEndpoints({
         url: endpoints.wallets.getMyWallets,
         method: REQUEST_METHODS.GET,
         params: values,
+        providesTags: ["MyWallet"],
       }),
       transformResponse: (
         response: ITrevaPaymentService["schemas"]["WalletModelBaseResponse"]
@@ -44,6 +45,7 @@ export const wallet = paymentServiceApiSlice.injectEndpoints({
           ...values,
           walletId,
         },
+        invalidatesTags: ["MyWallet"],
       }),
       transformResponse: (
         response: ITrevaPaymentService["schemas"]["WalletModelBaseResponse"]
