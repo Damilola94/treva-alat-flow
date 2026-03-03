@@ -33,3 +33,9 @@
 .Toastify__toast--error {
 	background: transparent !important;
 }
+.Toastify__close-button {
+  position: absolute !important;
+  top: 20px !important;
+  right: 10px !important;
+  align-self: unset !important;
+}
