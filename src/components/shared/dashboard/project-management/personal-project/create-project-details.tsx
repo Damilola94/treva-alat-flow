@@ -79,7 +79,7 @@ export function PersonalProjectDetails(props: IProps) {
 
   return (
     <div className="app_get_started_professional_details py-6 px-4 flex flex-col gap-14">
-      <div className="app_get_started_professional_details__form flex flex-col gap-10 !overflow-y-auto">
+      <div className="app_get_started_professional_details__form flex flex-col gap-10 !mb-28 !overflow-y-auto">
         <h3 className="app_get_started_professional_details__form__title">
           Project details
         </h3>
@@ -146,9 +146,6 @@ export function PersonalProjectDetails(props: IProps) {
                         // min={today.toISOString().split('T')[0]} // today
                         min={tomorrowStr}
                       />
-                      <p className="text-[#E7211B] text-[11px]">
-                        You can&apos;t choose a date exceeding 3 months
-                      </p>
                     </div>
                   </div>
                   <div className="flex flex-col gap-8 my-5">

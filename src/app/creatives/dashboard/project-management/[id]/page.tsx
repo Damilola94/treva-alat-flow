@@ -263,7 +263,7 @@ export default function Page() {
                 <div
                   key={comment.id}
                   className={`flex gap-3 rounded-lg p-3 ${
-                    comment.user.id === project?.creativeUser?.id
+                    comment.user?.id === project?.creativeUser?.id
                       ? 'bg-[#EEE4FF] border border-[#EEE4FF]'
                       : 'bg-white border border-gray-200'
                   }`}
@@ -271,18 +271,18 @@ export default function Page() {
                   <Avatar
                     size="sm"
                     className="h-8 w-8 rounded-full bg-muted"
-                    src={comment.user.avatar || clientManagement.femaleClient}
+                    src={comment.user?.avatar || clientManagement.femaleClient}
                   />
                   <div className="flex-1">
                     <div className="flex items-center justify-between">
                       <p className="text-sm font-medium">
                         {comment.user ? (
                           <span className="text-blue-600">
-                            {comment.user.firstName}
+                            {comment.user?.firstName}
                           </span>
                         ) : (
                           <span className="text-purple-600">
-                            {comment.user.lastName}
+                            {comment.user?.lastName}
                           </span>
                         )}
                       </p>

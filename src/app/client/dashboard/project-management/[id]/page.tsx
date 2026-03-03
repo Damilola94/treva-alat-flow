@@ -1,17 +1,30 @@
+// app/(client)/dashboard/projects/[id]/page.tsx
 'use client';
 
-import {Calendar,FlagOutline,CenterModal,Label,SideModal,Check, MiniLoader,} from '@/components/shared';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import Image from 'next/image';
+import { useParams } from 'next/navigation';
 import { Send, Star } from 'lucide-react';
+
+import {
+  Calendar,
+  FlagOutline,
+  CenterModal,
+  Label,
+  SideModal,
+  Check,
+  MiniLoader,
+} from '@/components/shared';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { DeliverableTable } from '@/components/shared/client/dashboard/project-management/deliverable-table';
-import { useProjectById } from '@/hooks/Projects';
-import Image from 'next/image';
-import clientManagement from '@/lib/assets/client-management';
-import { useParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
 import { Avatar } from '@/components/shared/avatar';
+import { ProjectProgressBar } from '@/components/shared/dashboard/progressbar';
+
+import clientManagement from '@/lib/assets/client-management';
+
+import { useProjectById, useDeliverable } from '@/hooks/Projects';
 import { useComment } from '@/hooks/Projects/useProjects';
+
 import { useCreateCommentMutation } from '@/services/projectService/comment';
 import {
   errorToast,
@@ -20,27 +33,77 @@ import {
   useUpdateProjectMutation,
 } from '@/services';
 import { getErrorMessage } from '@/utils';
-import { ProjectProgressBar } from '@/components/shared/dashboard/progressbar';
+import Success from '@/app/assets/pngs/success.png';
 import { statusEnum } from '@/constants';
+import { DeliverableTable } from '@/components/shared/client/dashboard/project-management/deliverable-table';
+
+type Deliverable = {
+  id: string;
+  name: string;
+  description?: string;
+  endDate?: string;
+  unit?: number;
+  unitAmount?: number;
+  total?: number;
+  status: number;
+};
+
+function toStatusCode(value: unknown): number | undefined {
+  if (typeof value === 'number' && Number.isFinite(value)) return value;
+
+  if (typeof value === 'string') {
+    const trimmed = value.trim();
+    if (!trimmed) return undefined;
+
+    const asNum = Number(trimmed);
+    if (!Number.isNaN(asNum) && Number.isFinite(asNum)) return asNum;
+
+    if (trimmed in statusEnum) {
+      return statusEnum[
+        trimmed as keyof typeof statusEnum
+      ] as unknown as number;
+    }
+
+    return undefined;
+  }
+
+  return undefined;
+}
+
+function toStatusLabel(value: unknown): string {
+  const code = toStatusCode(value);
+  if (typeof code === 'number') return statusEnum[code] ?? `Unknown(${code})`;
+  if (typeof value === 'string' && value.trim()) return value;
+  return 'Unknown';
+}
 
 export default function Page() {
   const { id } = useParams();
   const projectId = Array.isArray(id) ? id[0] : id;
 
-  // const {  }
+  const {
+    allProjectsByIdData,
+    loading: projectLoading,
+    refetchAllProjectsById,
+  } = useProjectById(projectId);
 
-  const { allProjectsByIdData, loading, refetchAllProjectsById } =
-    useProjectById(projectId);
   const { allCommentsData, refetchAllComments } = useComment(projectId);
+
+  const { allDeliverablesData, loading: deliverablesLoading } =
+    useDeliverable(projectId);
+
   const [triggerComment, { isLoading: loadingComment }] =
     useCreateCommentMutation();
-  const [createRating, { isLoading }] = useCreateRateProjectMutation();
-  const [updateProject, { isLoading: sending }] = useUpdateProjectMutation();
+  const [createRating, { isLoading: ratingLoading }] =
+    useCreateRateProjectMutation();
+  const [updateProject, { isLoading: updatingProject }] =
+    useUpdateProjectMutation();
 
-  const [showModal, setShowModal] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showRevisionModal, setShowRevisionModal] = useState(false);
   const [showRatingModal, setShowRatingModal] = useState(false);
   const [commentModal, setCommentModal] = useState(false);
+
   const [rating, setRating] = useState(0);
   const [hoveredRating, setHoveredRating] = useState(0);
   const [content, setContent] = useState('');
@@ -51,59 +114,151 @@ export default function Page() {
   const project = allProjectsByIdData?.data;
   const commentDetails = allCommentsData?.data;
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const projectStatusCode = useMemo(
+    () => toStatusCode(project?.status),
+    [project?.status],
+  );
+  const projectStatusLabel = useMemo(
+    () => toStatusLabel(project?.status),
+    [project?.status],
+  );
+
+  // const deliverables: Deliverable[] = useMemo(() => {
+  //   const raw = allDeliverablesData?.data;
+  //   return allDeliverablesData?.isSuccess && Array.isArray(raw) ? raw : [];
+  // }, [allDeliverablesData]);
+
+  const deliverables: Deliverable[] = useMemo(() => {
+  const raw = allDeliverablesData?.data;
+  return allDeliverablesData?.isSuccess && Array.isArray(raw)
+    ? (raw as unknown as Deliverable[])
+    : [];
+}, [allDeliverablesData]);
+
+  // const deliverableStatusSummary = useMemo(() => {
+  //   return deliverables.map((d) => {
+  //     const code = toStatusCode(d.status);
+  //     return {
+  //       id: d.id,
+  //       rawStatus: d.status,
+  //       rawType: typeof d.status,
+  //       code,
+  //       label: toStatusLabel(d.status),
+  //       isCompleted: code === statusEnum.Completed,
+  //     };
+  //   });
+  // }, [deliverables]);
+
+ 
+  const areAllDeliverablesCompleted = useMemo(() => {
+    if (deliverables.length === 0) return false;
+    return deliverables.every(
+      (d) => toStatusCode(d.status) === statusEnum.Completed,
+    );
+  }, [deliverables]);
+
+  const shouldShowConfirmCompletion = useMemo(() => {
+    if (!areAllDeliverablesCompleted) return false;
+    if (projectStatusCode == null) return false; 
+    return projectStatusCode !== statusEnum.Completed;
+  }, [areAllDeliverablesCompleted, projectStatusCode]);
+
+  const autoOpenedRef = useRef(false);
+  useEffect(() => {
+    if (shouldShowConfirmCompletion && !autoOpenedRef.current) {
+      autoOpenedRef.current = true;
+      setShowConfirmModal(true);
+    }
+  }, [shouldShowConfirmCompletion]);
+
+  const handleSubmitComment = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!content.trim()) return;
+
     try {
       await triggerComment({ content, projectId });
       setContent('');
       refetchAllComments();
-    } catch (error) {
-      errorToast('Failed to create comment:');
+    } catch {
+      errorToast('Failed to create comment');
     }
   };
+
+  // const handleProjectConfirmation = async () => {
+  //   try {
+  //     const response = await updateProject({
+  //       projectId,
+  //       body: { status: statusEnum.Completed },
+  //     }).unwrap();
+
+  //     setShowConfirmModal(false);
+  //     setShowRatingModal(true);
+  //     refetchAllProjectsById();
+
+  //     const responseStatusCode = toStatusCode(response?.data?.status);
+  //     if (response?.isSuccess && responseStatusCode === statusEnum.Completed) {
+  //       successToast('Project completed');
+  //     } else {
+  //       errorToast(response?.message || 'Failed to update status to completed');
+  //     }
+  //   } catch (error) {
+  //     errorToast(getErrorMessage(error) || 'Something went wrong');
+  //   }
+  // };
 
   const handleProjectConfirmation = async () => {
-    try {
-      const response = await updateProject({
-        projectId,
-        body: {
-          status: 4,
-        },
-      }).unwrap();
+  try {
+    const response = await updateProject({
+      projectId,
+      body: { status: statusEnum.Completed },
+    }).unwrap();
+
+    const responseStatusCode = toStatusCode(response?.data?.status);
+
+    if (response?.isSuccess && responseStatusCode === statusEnum.Completed) {
+      successToast('Project completed');
+
+      // ✅ wait for query to update UI
+      await refetchAllProjectsById();
+
+      setShowConfirmModal(false);
       setShowRatingModal(true);
-      setShowModal(false);
-      refetchAllProjectsById();
-
-      // if (response?.isSuccess && response?.data?.status === 4) {
-      if (response?.isSuccess && response?.data?.status === statusEnum[4]) {
-        successToast('Project completed');
-      } else {
-        errorToast(response?.message || 'Failed to update status to revision');
-      }
-    } catch (error) {
-      errorToast(getErrorMessage(error) || 'Something went wrong');
+      return;
     }
-  };
 
+    errorToast(response?.message || 'Failed to update status to completed');
+  } catch (error) {
+    errorToast(getErrorMessage(error) || 'Something went wrong');
+  }
+};
   const handleProjectRevision = async () => {
+    const trimmed = revisionRequestDescription.trim();
+    if (!trimmed) {
+      errorToast('Please describe what needs revision');
+      return;
+    }
+
     try {
       const response = await updateProject({
         projectId,
         body: {
-          status: 10,
-          revisionRequestDescription: revisionRequestDescription.trim(),
+          status: statusEnum.RequestingRevision,
+          revisionRequestDescription: trimmed,
         },
       }).unwrap();
+
       setShowRevisionModal(false);
-      setShowModal(false);
+      setShowConfirmModal(false);
       refetchAllProjectsById();
 
-      // if (response?.isSuccess && response?.data?.status === 10) {
-      if (response?.isSuccess && response?.data?.status === statusEnum[10]) {
-        successToast('Revision sent Successfully');
+      const responseStatusCode = toStatusCode(response?.data?.status);
+      if (
+        response?.isSuccess &&
+        responseStatusCode === statusEnum.RequestingRevision
+      ) {
+        successToast('Revision sent successfully');
       } else {
-        errorToast(response?.message || 'Failed to update status to revision');
+        errorToast(response?.message || 'Failed to request revision');
       }
     } catch (error) {
       errorToast(getErrorMessage(error) || 'Something went wrong');
@@ -112,8 +267,10 @@ export default function Page() {
 
   const handleRatingSubmit = async () => {
     if (rating === 0) {
-      return errorToast('Something went wrong');
+      errorToast('Please select a rating');
+      return;
     }
+
     try {
       const response = await createRating({
         rating,
@@ -121,23 +278,19 @@ export default function Page() {
         projectId,
         ProjectId: projectId,
       });
+
       successToast(response?.data?.message || 'Project rated');
       setShowRatingModal(false);
     } catch (error) {
-      const message = getErrorMessage(error);
-      errorToast(message || 'Something went wrong');
+      errorToast(getErrorMessage(error) || 'Something went wrong');
     }
   };
 
-  useEffect(() => {
-    const progress = allProjectsByIdData?.data?.metrics?.progressPercent;
-    if (progress === 100) {
-    }
-  }, [allProjectsByIdData?.data?.metrics?.progressPercent]);
+  const isBusy = projectLoading;
 
   return (
     <div className="app_dashboard_page app_dashboard_home">
-      {/* Combined Rating + Review Modal */}
+      {/* Rating Modal */}
       <CenterModal
         headerImageType={2}
         title=""
@@ -155,7 +308,6 @@ export default function Page() {
             </p>
           </div>
 
-          {/* Rating */}
           <div className="my-6 w-full">
             <div className="flex items-center justify-center space-x-2">
               {[1, 2, 3, 4, 5].map((star) => (
@@ -174,7 +326,6 @@ export default function Page() {
             </div>
           </div>
 
-          {/* Review */}
           <div className="w-full my-6">
             <p className="mb-2 text-sm text-gray-500">
               Leave a review (Optional)
@@ -183,21 +334,18 @@ export default function Page() {
               placeholder="Share your experience..."
               value={review}
               onChange={(e) => setReview(e.target.value)}
-              className="min-h-[] w-full rounded-md border border-gray-200 p-3 focus:border-[#7C3AED] focus:ring-1 focus:ring-[#7C3AED]"
+              className="w-full rounded-md border border-gray-200 p-3 focus:border-[#7C3AED] focus:ring-1 focus:ring-[#7C3AED]"
             />
           </div>
 
-          {/* Submit */}
           <div className="w-full flex items-center gap-5">
             <Button
               backgroundColor="treva-purple"
               size="xl"
               color="white"
               className="w-full"
-              onClick={() => {
-                handleRatingSubmit();
-              }}
-              isLoading={isLoading}
+              onClick={handleRatingSubmit}
+              isLoading={ratingLoading}
             >
               Submit
             </Button>
@@ -214,13 +362,11 @@ export default function Page() {
         </div>
       </CenterModal>
 
-      {/* comment modal */}
+      {/* Comments Side Modal */}
       <SideModal
         usebg
         isOpen={commentModal}
-        onClose={() => {
-          setCommentModal(false);
-        }}
+        onClose={() => setCommentModal(false)}
         title="Comments"
         showFooter
         footerChildren={
@@ -232,18 +378,15 @@ export default function Page() {
               className="w-[90%] resize-none"
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              disabled={loading}
-              wordCount={{
-                limit: 1000,
-                current: content.length,
-              }}
+              disabled={isBusy}
+              wordCount={{ limit: 1000, current: content.length }}
             />
             <Button
               size="md"
               className="bg-[#7C3AED] hover:bg-[#7C3AED] focus:bg-[#7C3AED] active:bg-[#7C3AED] absolute right-3 top-8 -translate-y-1/2"
               type="submit"
-              disabled={loading || !content.trim()}
-              onClick={handleSubmit}
+              disabled={isBusy || !content.trim()}
+              onClick={handleSubmitComment}
             >
               <Send className="h-5 w-5 text-white" />
             </Button>
@@ -252,7 +395,7 @@ export default function Page() {
       >
         {loadingComment ? (
           <div className="text-center flex justify-center items-center">
-            <MiniLoader message='loading' />
+            <MiniLoader message="loading" />
           </div>
         ) : (
           <div className="flex flex-col space-y-6 p-1">
@@ -262,7 +405,7 @@ export default function Page() {
                 <div
                   key={comment.id}
                   className={`flex gap-3 rounded-lg p-3 ${
-                    comment.user.id === project?.clientUser?.id
+                    comment.user?.id === project?.clientUser?.id
                       ? 'bg-[#EEE4FF] border border-[#EEE4FF]'
                       : 'bg-[#CCFFFF] border border-[#CCFFFF]'
                   }`}
@@ -270,26 +413,25 @@ export default function Page() {
                   <Avatar
                     size="sm"
                     className="h-8 w-8 rounded-full bg-muted"
-                    src={comment.user.avatar || clientManagement.femaleClient}
+                    src={comment.user?.avatar || clientManagement.femaleClient}
                   />
                   <div className="flex-1">
                     <div className="flex items-center justify-between">
                       <p className="text-sm font-medium">
-                        {comment.user ? (
-                          <span className="text-blue-600">
-                            {comment.user.firstName}
-                          </span>
-                        ) : (
-                          <span className="text-purple-600">
-                            {comment.user.lastName}
-                          </span>
-                        )}
+                        <span className="text-blue-600">
+                          {comment.user?.firstName ||
+                            comment.user?.lastName ||
+                            'User'}
+                        </span>
                       </p>
                       <span className="text-xs text-muted-foreground">
                         {comment.createdDate
                           ? new Date(comment.createdDate).toLocaleTimeString(
                               [],
-                              { hour: '2-digit', minute: '2-digit' },
+                              {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                              },
                             )
                           : ''}
                       </span>
@@ -297,7 +439,10 @@ export default function Page() {
                     <p
                       className="mt-1 text-sm text-gray-700"
                       dangerouslySetInnerHTML={{
-                        __html: comment.content.replace(/\n/g, '<br />'),
+                        __html: String(comment.content || '').replace(
+                          /\n/g,
+                          '<br />',
+                        ),
                       }}
                     />
                   </div>
@@ -310,63 +455,55 @@ export default function Page() {
         )}
       </SideModal>
 
-      {/* project completion modal */}
+      {/* Confirm Completion Modal */}
       <CenterModal
-        headerImageType={4}
+        headerImageType={0}
         title=""
-        isOpen={showModal}
-        onClose={() => {
-          setShowModal(false);
-        }}
+        isOpen={showConfirmModal}
+        onClose={() => setShowConfirmModal(false)}
+        showFooter
+        footerChildren= {
+          <div className="flex gap-5 w-full items-center">
+            <button 
+            onClick={() => setShowRevisionModal(true)}
+            className='border text-[12px] border-[#F1F1F1] text-[#7B37F0] rounded-full w-full font-bold p-3 '
+            >
+              Request Revision
+            </button>
+            <button
+            className='bg-[#7B37F0] text-[12px] text-white rounded-full w-full font-bold py-3 px-4'
+            onClick={handleProjectConfirmation}
+            >
+              Confirm Completion
+            </button>
+          </div>
+        }
       >
-        <div className="flex flex-col items-center justify-center p-6">
-          <div className="mb-6 text-center">
-            <h2 className="text-[21px] font-bold text-[#262626] mb-4">
+        <div className="flex flex-col items-center justify-center p-6 mx-auto">
+          <div className="mb- text-center flex flex-col items-center gap-4">
+            <Image
+              src={Success}
+              alt="Success"
+              className="w-[78px]"
+              unoptimized
+            />
+            <h2 className="text-[18px] font-bold text-[#262626]">
               Confirm Project Completion
             </h2>
-            <p>
+            <p className="text-[#888888]">
               By confirming, you acknowledge that the creative has completed the
               project to your satisfaction.
             </p>
           </div>
-
-          <div className="w-full flex items-center gap-5 ">
-            <Button
-              backgroundColor="transparent"
-              size="xl"
-              color="treva-purple"
-              className=" border border-[#F1F1F1]"
-              onClick={() => {
-                setShowRevisionModal(true);
-              }}
-            >
-              Request Revision
-            </Button>
-            <Button
-              backgroundColor="treva-purple"
-              color="white"
-              size="xl"
-              className=""
-              isLoading={sending}
-              // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-              onClick={() => {
-                handleProjectConfirmation();
-              }}
-            >
-              Confirm Completion
-            </Button>
-          </div>
         </div>
       </CenterModal>
 
-      {/* project revision */}
+      {/* Revision Modal */}
       <CenterModal
         headerImageType={2}
         title=""
         isOpen={showRevisionModal}
-        onClose={() => {
-          setShowRevisionModal(false);
-        }}
+        onClose={() => setShowRevisionModal(false)}
       >
         <div className="flex flex-col items-center justify-center p-6">
           <div className="mb-6 text-center">
@@ -374,12 +511,7 @@ export default function Page() {
               Request Revision
             </h2>
             <p>Tell the creative what needs to be changed.</p>
-            {/* <Textarea
-              placeholder="Enter revision notes (optional)"
-              value={revisionRequestDescription}
-              onChange={(e) => setRevisionRequestDescription(e.target.value)}
-              className="mt-4 w-full border border-gray-200 p-3 focus:border-[#7C3AED] focus:ring-1 focus:ring-[#7C3AED]"
-            /> */}
+
             <Textarea
               placeholder="Explain what needs to be revised..."
               value={revisionRequestDescription}
@@ -387,40 +519,37 @@ export default function Page() {
             />
           </div>
 
-          <div className="w-full flex items-center ">
+          <div className="w-full flex items-center gap-4">
             <Button
               backgroundColor="transparent"
               size="xl"
               color="treva-purple"
               className="w-full border border-[#F1F1F1]"
               onClick={() => {
-                setShowModal(true);
                 setShowRevisionModal(false);
+                setShowConfirmModal(true);
               }}
             >
               Cancel
             </Button>
+
             <Button
               backgroundColor="treva-purple"
               color="white"
               size="xl"
               className="w-full"
-              isLoading={sending}
-              // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-              onClick={() => {
-                handleProjectRevision();
-                // setShowRevisionModal(false);
-                // setShowModal(false);
-              }}
+              isLoading={updatingProject}
+              onClick={handleProjectRevision}
             >
               Request Revision
             </Button>
           </div>
         </div>
       </CenterModal>
-      {loading ? (
+
+      {projectLoading ? (
         <div className="text-center flex justify-center items-center">
-          <MiniLoader message='loading' />
+          <MiniLoader message="loading" />
         </div>
       ) : (
         project && (
@@ -435,11 +564,12 @@ export default function Page() {
                     <p className="text-[#888888] font-medium mt-3">
                       {project.description || 'Project description'}
                     </p>
+
                     <div className="flex items-center gap-3 mt-6">
                       <Image
                         src={
                           project.creativeUser?.profilePicture ||
-                          clientManagement?.femaleClient
+                          clientManagement.femaleClient
                         }
                         className="w-7 h-7 rounded-full object-cover"
                         alt=""
@@ -447,7 +577,7 @@ export default function Page() {
                         height={28}
                         unoptimized
                       />
-                      <p className="">
+                      <p>
                         {project.creativeUser
                           ? `${project.creativeUser.firstName} ${project.creativeUser.lastName}`
                           : "Creative's name"}
@@ -456,6 +586,7 @@ export default function Page() {
                   </div>
                 </div>
               </div>
+
               <div className="flex-shrink-0">
                 <button
                   className="border border-[#7C3AED] text-[#7C3AED] rounded-full px-4 py-2 flex items-center gap-2"
@@ -478,6 +609,7 @@ export default function Page() {
                       : ''}
                   </div>
                 </div>
+
                 <div className="flex items-center gap-1 mb-3 md:mb-0 md:gap-2">
                   <Calendar />
                   End:
@@ -489,6 +621,7 @@ export default function Page() {
                       : ''}
                   </div>
                 </div>
+
                 <div className="flex items-center gap-1 mb-3 md:mb-0 md:gap-2">
                   <FlagOutline />
                   Priority:
@@ -501,13 +634,11 @@ export default function Page() {
                   />
                 </div>
               </div>
-              {project.status === 'AwaitingClientConfirmation' ||
-              project.status === 'Completed' ? (
-                <p className="text-muted">
-                  {project.status === 'AwaitingClientConfirmation'
-                    ? 'Awaiting Client Confirmation'
-                    : 'Completed'}
-                </p>
+
+              {projectStatusCode != null &&
+              (projectStatusCode === statusEnum.AwaitingClientConfirmation ||
+                projectStatusCode === statusEnum.Completed) ? (
+                <p className="text-muted">{projectStatusLabel}</p>
               ) : (
                 <ProjectProgressBar
                   percent={
@@ -526,15 +657,19 @@ export default function Page() {
                 Deliverables
               </div>
             </div>
-            <DeliverableTable />
-            {project?.status === 'AwaitingClientConfirmation' && (
-              <div className="flex justify-center">
+
+            <DeliverableTable
+              deliverables={deliverables}
+              loading={deliverablesLoading}
+            />
+
+            {shouldShowConfirmCompletion && (
+              <div className="flex justify-center mt-6">
                 <Button
                   size="xl"
-                  isLoading={loading}
-                  // backgroundColor="primary-blue-500"
-                  className="border border-[#7B37F0] text-[#7B37F0] "
-                  onClick={() => setShowModal(true)}
+                  isLoading={deliverablesLoading}
+                  className="border border-[#7B37F0] text-[#7B37F0]"
+                  onClick={() => setShowConfirmModal(true)}
                 >
                   <Check />
                   Mark Project Completed

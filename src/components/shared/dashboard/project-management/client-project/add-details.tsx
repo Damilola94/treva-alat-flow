@@ -109,8 +109,8 @@ export function ProjectDetails(props: IProps) {
   };
 
   return (
-    <div className="app_get_started_professional_details flex flex-col gap-14 my-8">
-      <div className="app_get_started_professional_details__form flex flex-col gap-2 !overflow-y-auto">
+    <div className="app_get_started_professional_details flex flex-col gap-14 mb-60 mt-8">
+      <div className="app_get_started_professional_details__form flex flex-col gap-2 !mb-28 !overflow-y-auto">
         <h3 className="app_get_started_professional_details__form__title !font-bold !lg:text-2xl text-lg">
           Project details
         </h3>

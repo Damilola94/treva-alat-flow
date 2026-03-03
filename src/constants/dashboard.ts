@@ -1,45 +1,44 @@
-import clientManagement from '@/lib/assets/client-management';
-import dashboard from '@/lib/assets/dashboard';
-import routes from '@/lib/routes';
+import clientManagement from "@/lib/assets/client-management";
+import dashboard from "@/lib/assets/dashboard";
+import routes from "@/lib/routes";
 
 export const dashboardCards = [
   {
     id: 1,
     img: dashboard.getStartedCard,
-    title: 'Start a Tour',
+    title: "Start a Tour",
     details:
       "Welcome to Treva! Let's take a quick tour to help you get started and make the most of our features. Click 'Get started' to begin your journey!",
-    btnText: 'Start tour',
-    bottomInfo: '',
-    bg: 'linear-gradient(137deg, rgba(165, 166, 246, 0) 33.3%, #a5a6f6 100%)',
+    btnText: "Start tour",
+    bottomInfo: "",
+    bg: "linear-gradient(137deg, rgba(165, 166, 246, 0) 33.3%, #a5a6f6 100%)",
   },
 
   {
     id: 2,
     img: dashboard.getStartedCard2,
-    title: 'Complete onboarding',
+    title: "Complete onboarding",
     details:
       "You're almost there! Complete your onboarding to unlock the full potential of Treva and start achieving your goals today. Click ‘Get started’ to continue.",
-    btnText: 'Continue',
-    bottomInfo: '1/4 steps',
-    bg: 'linear-gradient(135deg, rgba(199, 255, 107, 0) 0%, #c7ff6b 100%)',
+    btnText: "Continue",
+    bottomInfo: "1/4 steps",
+    bg: "linear-gradient(135deg, rgba(199, 255, 107, 0) 0%, #c7ff6b 100%)",
   },
   {
     id: 3,
     img: dashboard.getStartedCard2,
-    title: 'Onboarding Completed',
-    details:
-      "Your Onboarding has been completed, Explore Treva",
-    btnText: 'Continue',
-    bottomInfo: '4/4 steps',
-    bg: 'linear-gradient(135deg, rgba(199, 255, 107, 0) 0%, #c7ff6b 100%)',
+    title: "Onboarding Completed",
+    details: "Your Onboarding has been completed, Explore Treva",
+    btnText: "Continue",
+    bottomInfo: "4/4 steps",
+    bg: "linear-gradient(135deg, rgba(199, 255, 107, 0) 0%, #c7ff6b 100%)",
   },
 ];
 
 export const clientOnboardingSteps = [
   {
     id: 1,
-    label: 'Profile Setup',
+    label: "Profile Setup",
     details:
       "You're almost there! Complete your onboarding to unlock the full potential of",
     href: routes.client.dashboard.getStarted.personalDetails.path,
@@ -47,7 +46,7 @@ export const clientOnboardingSteps = [
 
   {
     id: 2,
-    label: 'BVN Verification',
+    label: "BVN Verification",
     details:
       "You're almost there! Complete your onboarding to unlock the full potential of ",
     href: routes.client.dashboard.getStarted.bvnVerification.path,
@@ -55,7 +54,7 @@ export const clientOnboardingSteps = [
 
   {
     id: 3,
-    label: 'NIN Verification',
+    label: "NIN Verification",
     details:
       "You're almost there! Complete your onboarding to unlock the full potential of",
     href: routes.client.dashboard.getStarted.ninVerification.path,
@@ -63,7 +62,7 @@ export const clientOnboardingSteps = [
 
   {
     id: 4,
-    label: 'Address Verification',
+    label: "Address Verification",
     details:
       "You're almost there! Complete your onboarding to unlock the full potential of",
     href: routes.client.dashboard.getStarted.addressVerification.path,
@@ -73,7 +72,7 @@ export const clientOnboardingSteps = [
 export const creativesOnboardingSteps = [
   {
     id: 1,
-    label: 'Personal details',
+    label: "Personal details",
     details:
       "You're almost there! Complete your onboarding to unlock the full potential of",
     href: routes.creatives.dashboard.getStarted.personalDetails.path,
@@ -81,7 +80,7 @@ export const creativesOnboardingSteps = [
 
   {
     id: 2,
-    label: 'Verify your identity',
+    label: "Verify your identity",
     details:
       "You're almost there! Complete your onboarding to unlock the full potential of ",
     href: routes.creatives.dashboard.getStarted.bvnVerification.path,
@@ -89,7 +88,7 @@ export const creativesOnboardingSteps = [
 
   {
     id: 3,
-    label: 'Select plan',
+    label: "Select plan",
     details:
       "You're almost there! Complete your onboarding to unlock the full potential of",
     href: routes.creatives.dashboard.getStarted.selectPlan.path,
@@ -97,254 +96,265 @@ export const creativesOnboardingSteps = [
 ];
 
 export const clientDashboardTasks = [
-  { label: 'All Project', value: 'All' },
-  { label: 'Pending Project', value: 'Pending' },
-  { label: 'Completed Project', value: 'Completed' },
-  { label: 'Awaiting Confirmation', value: 'AwaitingClientConfirmation' },
+  { label: "All Project", value: "All" },
+  { label: "Pending Project", value: "Pending" },
+  { label: "Completed Project", value: "Completed" },
+  { label: "Awaiting Confirmation", value: "AwaitingClientConfirmation" },
 ];
 
 export const invoiceTabs = [
-  { label: 'All Invoice', value: 'All' },
-  { label: 'Pending Invoice', value: 'Pending' },
-  { label: 'Closed Invoice', value: 'Closed' },
-  { label: 'Due Invoice', value: 'Due' },
+  { label: "All Invoice", value: "All" },
+  { label: "Pending Invoice", value: "Pending" },
+  { label: "Closed Invoice", value: "Closed" },
+  { label: "Due Invoice", value: "Due" },
 ];
 
 export const transactionTabs = [
-  { label: 'All', value: 'All' },
-  { label: 'Credit', value: 'Credit' },
-  { label: 'Debit', value: 'Debit' },
+  { label: "All", value: "All" },
+  { label: "Credit", value: "Credit" },
+  { label: "Debit", value: "Debit" },
 ];
 
 export const popoverItems = [
-  { label: 'All Project', value: '' },
-  { label: 'Personal Project', value: 'Personal' },
-  { label: 'Client Project', value: 'Client' },
+  { label: "All Project", value: "" },
+  { label: "Personal Project", value: "Personal" },
+  { label: "Client Project", value: "Client" },
 ];
 
 export const priorityItems = [
-  { label: 'All', value: '' },
-  { label: 'Low', value: 'Low' },
-  { label: 'Medium', value: 'Medium' },
-  { label: 'High', value: 'High' },
+  { label: "All", value: "" },
+  { label: "Low", value: "Low" },
+  { label: "Medium", value: "Medium" },
+  { label: "High", value: "High" },
 ];
 
 export const statusItems = [
-  { label: 'All', value: '' },
-  { label: 'Pending', value: 'Pending' },
-  { label: 'Completed', value: 'Completed' },
-  { label: 'Due', value: 'Due' },
-  { label: 'Await confirmation', value: 'AwaitingClientConfirmation' },
+  { label: "All", value: "" },
+  { label: "Pending", value: "Pending" },
+  { label: "Completed", value: "Completed" },
+  { label: "Due", value: "Due" },
+  { label: "Await confirmation", value: "AwaitingClientConfirmation" },
 ];
 
 export const deliverableItems = [
-  { label: 'All', value: 'All' },
-  { label: 'Completed', value: 'Completed' },
+  { label: "All", value: "All" },
+  { label: "Completed", value: "Completed" },
 ];
 
-export const statusEnum: { [key: number]: string } = {
-  1: 'Active',
-  2: 'Pending',
-  3: 'InProgress',
-  4: 'Completed',
-  5: 'OnHold',
-  6: 'Cancelled',
-  7: 'Archieved',
-  8: 'Due',
-  9: 'AwaitingClientConfirmation',
-  10: 'RequestingRevision',
-};
+export enum statusEnum {
+  ToDo = 1,
+  Pending = 2,
+  InProgress = 3,
+  Completed = 4,
+  OnHold = 5,
+  Cancelled = 6,
+  Archived = 7,
+  Due = 8,
+  AwaitingClientConfirmation = 9,
+  RequestingRevision = 10,
+}
+
+export enum BillingEnum {
+  Pending = 0,
+  Due = 1,
+  Paid = 2,
+  Overdue = 3,
+  PartiallyPaid = 4,
+  Cancelled = 5,
+  Refunded = 6,
+  Failed = 7,
+}
 
 export const invoiceEnum: Record<number, string> = {
-  1: 'Pending',
-  2: 'Due',
-  3: 'Closed',
+  1: "Pending",
+  2: "Due",
+  3: "Closed",
 };
 
 export const mockProjects = [
   {
-    id: '1',
-    name: 'E-commerce Website Redesign',
-    creative: 'Alex Johnson',
-    budget: '10000',
-    startDate: 'June 15, 2020',
-    dueDate: 'June 15, 2023',
-    priority: 'High',
-    status: 'Completed',
+    id: "1",
+    name: "E-commerce Website Redesign",
+    creative: "Alex Johnson",
+    budget: "10000",
+    startDate: "June 15, 2020",
+    dueDate: "June 15, 2023",
+    priority: "High",
+    status: "Completed",
   },
   {
-    id: '2',
-    name: 'Summer Marketing Campaign',
-    creative: 'Sarah Miller',
-    budget: '10000',
-    startDate: 'June 15, 2020',
-    dueDate: 'July 1, 2023',
-    priority: 'Medium',
-    status: 'Pending',
+    id: "2",
+    name: "Summer Marketing Campaign",
+    creative: "Sarah Miller",
+    budget: "10000",
+    startDate: "June 15, 2020",
+    dueDate: "July 1, 2023",
+    priority: "Medium",
+    status: "Pending",
   },
   {
-    id: '3',
-    name: 'Product Packaging Design',
-    creative: 'Jamie Chen',
-    budget: '10000',
-    startDate: 'June 15, 2020',
-    dueDate: 'May 30, 2023',
-    priority: 'Low',
-    status: 'Due',
+    id: "3",
+    name: "Product Packaging Design",
+    creative: "Jamie Chen",
+    budget: "10000",
+    startDate: "June 15, 2020",
+    dueDate: "May 30, 2023",
+    priority: "Low",
+    status: "Due",
   },
   {
-    id: '4',
-    name: 'Brand Identity Refresh',
-    creative: 'Taylor Williams',
-    budget: '10000',
-    startDate: 'June 15, 2020',
-    dueDate: 'April 10, 2023',
-    priority: 'Low',
-    status: 'Completed',
+    id: "4",
+    name: "Brand Identity Refresh",
+    creative: "Taylor Williams",
+    budget: "10000",
+    startDate: "June 15, 2020",
+    dueDate: "April 10, 2023",
+    priority: "Low",
+    status: "Completed",
   },
   {
-    id: '5',
-    name: 'Mobile App UI/UX',
-    creative: 'Jordan Smith',
-    budget: '10000',
-    startDate: 'June 15, 2020',
-    dueDate: 'August 5, 2023',
-    priority: 'High',
-    status: 'Pending',
+    id: "5",
+    name: "Mobile App UI/UX",
+    creative: "Jordan Smith",
+    budget: "10000",
+    startDate: "June 15, 2020",
+    dueDate: "August 5, 2023",
+    priority: "High",
+    status: "Pending",
   },
   {
-    id: '6',
-    name: 'Social Media Graphics',
-    creative: 'Morgan Taylor',
-    budget: '10000',
-    startDate: 'June 15, 2020',
-    dueDate: 'June 28, 2023',
-    priority: 'Medium',
-    status: 'Due',
+    id: "6",
+    name: "Social Media Graphics",
+    creative: "Morgan Taylor",
+    budget: "10000",
+    startDate: "June 15, 2020",
+    dueDate: "June 28, 2023",
+    priority: "Medium",
+    status: "Due",
   },
 ];
 
 export const mockTransactions = [
   {
-    id: '1',
-    description: 'Project funding inflow',
+    id: "1",
+    description: "Project funding inflow",
     amount: 100000,
-    recipient: 'Wema Bank',
-    date: new Date('2023-04-14'),
-    type: 'Credit',
+    recipient: "Wema Bank",
+    date: new Date("2023-04-14"),
+    type: "Credit",
   },
   {
-    id: '2',
-    description: 'Project funding inflow',
+    id: "2",
+    description: "Project funding inflow",
     amount: 100000,
-    recipient: 'Wema Bank',
-    date: new Date('2023-04-14'),
-    type: 'Debit',
+    recipient: "Wema Bank",
+    date: new Date("2023-04-14"),
+    type: "Debit",
   },
   {
-    id: '3',
-    description: 'Project funding inflow',
+    id: "3",
+    description: "Project funding inflow",
     amount: 100000,
-    recipient: 'Wema Bank',
-    date: new Date('2023-04-14'),
-    type: 'Debit',
+    recipient: "Wema Bank",
+    date: new Date("2023-04-14"),
+    type: "Debit",
   },
   {
-    id: '4',
-    description: 'Project funding inflow',
+    id: "4",
+    description: "Project funding inflow",
     amount: 100000,
-    recipient: 'Wema Bank',
-    date: new Date('2023-04-14'),
-    type: 'Credit',
+    recipient: "Wema Bank",
+    date: new Date("2023-04-14"),
+    type: "Credit",
   },
   {
-    id: '5',
-    description: 'Salary payment',
+    id: "5",
+    description: "Salary payment",
     amount: 250000,
-    recipient: 'GTBank',
-    date: new Date('2023-04-10'),
-    type: 'Debit',
+    recipient: "GTBank",
+    date: new Date("2023-04-10"),
+    type: "Debit",
   },
   {
-    id: '6',
-    description: 'Client payment',
+    id: "6",
+    description: "Client payment",
     amount: 350000,
-    recipient: 'First Bank',
-    date: new Date('2023-04-05'),
-    type: 'Credit',
+    recipient: "First Bank",
+    date: new Date("2023-04-05"),
+    type: "Credit",
   },
   {
-    id: '7',
-    description: 'Office supplies',
+    id: "7",
+    description: "Office supplies",
     amount: 45000,
-    recipient: 'Office Depot',
-    date: new Date('2023-04-02'),
-    type: 'Debit',
+    recipient: "Office Depot",
+    date: new Date("2023-04-02"),
+    type: "Debit",
   },
   {
-    id: '8',
-    description: 'Consulting fee',
+    id: "8",
+    description: "Consulting fee",
     amount: 200000,
-    recipient: 'Access Bank',
-    date: new Date('2023-03-28'),
-    type: 'Credit',
+    recipient: "Access Bank",
+    date: new Date("2023-03-28"),
+    type: "Credit",
   },
   {
-    id: '9',
-    description: 'Equipment purchase',
+    id: "9",
+    description: "Equipment purchase",
     amount: 180000,
-    recipient: 'Tech Store',
-    date: new Date('2023-03-25'),
-    type: 'Debit',
+    recipient: "Tech Store",
+    date: new Date("2023-03-25"),
+    type: "Debit",
   },
   {
-    id: '10',
-    description: 'Marketing campaign',
+    id: "10",
+    description: "Marketing campaign",
     amount: 120000,
-    recipient: 'Ad Agency',
-    date: new Date('2023-03-20'),
-    type: 'Debit',
+    recipient: "Ad Agency",
+    date: new Date("2023-03-20"),
+    type: "Debit",
   },
 ];
 
 export const mockInvoices = [
   {
     id: 1,
-    projectName: 'Website Redesign',
-    client: 'Acme Corporation',
-    amount: '₦ 250,000',
-    dueDate: 'May 15, 2025',
-    status: 'Completed',
+    projectName: "Website Redesign",
+    client: "Acme Corporation",
+    amount: "₦ 250,000",
+    dueDate: "May 15, 2025",
+    status: "Completed",
   },
   {
     id: 2,
-    projectName: 'Mobile App Development',
-    client: 'TechStart Inc.',
-    amount: '₦ 450,000',
-    dueDate: 'June 10, 2025',
-    status: 'Pending',
+    projectName: "Mobile App Development",
+    client: "TechStart Inc.",
+    amount: "₦ 450,000",
+    dueDate: "June 10, 2025",
+    status: "Pending",
   },
   {
     id: 3,
-    projectName: 'Brand Identity Design',
-    client: 'Green Ventures',
-    amount: '₦ 180,000',
-    dueDate: 'May 5, 2025',
-    status: 'Due',
+    projectName: "Brand Identity Design",
+    client: "Green Ventures",
+    amount: "₦ 180,000",
+    dueDate: "May 5, 2025",
+    status: "Due",
   },
   {
     id: 4,
-    projectName: 'SEO Optimization',
-    client: 'Global Solutions',
-    amount: '₦ 120,000',
-    dueDate: 'July 20, 2025',
-    status: 'Completed',
+    projectName: "SEO Optimization",
+    client: "Global Solutions",
+    amount: "₦ 120,000",
+    dueDate: "July 20, 2025",
+    status: "Completed",
   },
 ];
 
 export const mockComments = [
   {
-    id: '1',
+    id: "1",
     author: {
       name: "Client's Name",
       avatar: clientManagement.femaleClient,
@@ -352,10 +362,10 @@ export const mockComments = [
     },
     content:
       "Can we hasten the duration of the project? I'd really like to get it done within the few days.",
-    timestamp: 'Time',
+    timestamp: "Time",
   },
   {
-    id: '2',
+    id: "2",
     author: {
       name: "Creative's Name",
       avatar: clientManagement.femaleClient,
@@ -363,10 +373,10 @@ export const mockComments = [
     },
     content:
       "Can we hasten the duration of the project? I'd really like to get it done within the few days.",
-    timestamp: 'Time',
+    timestamp: "Time",
   },
   {
-    id: '3',
+    id: "3",
     author: {
       name: "Client's Name",
       avatar: clientManagement.femaleClient,
@@ -374,10 +384,10 @@ export const mockComments = [
     },
     content:
       "Can we hasten the duration of the project? I'd really like to get it done within the few days.",
-    timestamp: 'Time',
+    timestamp: "Time",
   },
   {
-    id: '4',
+    id: "4",
     author: {
       name: "Creative's Name",
       avatar: clientManagement.femaleClient,
@@ -386,10 +396,10 @@ export const mockComments = [
     },
     content:
       "Can we hasten the duration of the project? I'd really like to get it done within the few days.",
-    timestamp: 'Time',
+    timestamp: "Time",
   },
   {
-    id: '5',
+    id: "5",
     author: {
       name: "Client's Name",
       avatar: clientManagement.femaleClient,
@@ -397,6 +407,6 @@ export const mockComments = [
     },
     content:
       "Can we hasten the duration of the project? I'd really like to get it done within the few days.",
-    timestamp: 'Time',
+    timestamp: "Time",
   },
 ];

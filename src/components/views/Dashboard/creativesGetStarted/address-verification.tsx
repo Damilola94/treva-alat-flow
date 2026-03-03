@@ -15,14 +15,10 @@ const validationSchema = Yup.object().shape({
   buildingNumber: Yup.string()
     .required('Building number is required')
     .max(10, 'Building number is too long'),
-  apartment: Yup.string().optional(),
   street: Yup.string()
     .required('Street is required')
     .max(100, 'Street name is too long'),
   landmark: Yup.string().optional(),
-  address: Yup.string()
-    .required('Address is required')
-    .max(200, 'Address is too long'),
   city: Yup.string().required('City is required'),
   state: Yup.string().required('State is required'),
 });
@@ -66,10 +62,8 @@ export default function AddressVerification() {
       buildingNumber: creativeOnboardingData?.data?.buildingNumber || '',
       city: creativeOnboardingData?.data?.city || '',
       state: creativeOnboardingData?.data?.state || '',
-      apartment: creativeOnboardingData?.data?.apartment || '',
       street: creativeOnboardingData?.data?.street || '',
       landmark: creativeOnboardingData?.data?.landmark || '',
-      address: creativeOnboardingData?.data?.fullAddress || '',
     }),
     [creativeOnboardingData?.data],
   );
@@ -80,12 +74,10 @@ export default function AddressVerification() {
     onSubmit: (values) => {
       const payload = {
         buildingNo: values?.buildingNumber,
-        apartment: values?.apartment,
         street: values?.street,
         lgaId: values?.city,
         stateId: values?.state,
         landmark: values?.landmark,
-        address: values?.address,
         currentStep: 3,
       };
       saveCreativeOnboarding(payload);
@@ -130,7 +122,7 @@ export default function AddressVerification() {
         <ProgressStatus label="Finish" className="snap-start shrink-0" />
       </div>
 
-      <div className="app_get_started_professional_details__form flex flex-col gap-10 !max-w-[600px] ">
+      <div className="app_get_started_professional_details__form flex flex-col gap-10 !mb-28 !max-w-[600px] ">
         <h3 className="app_get_started_professional_details__form__title !font-bold">
           Address Verification
         </h3>
@@ -204,7 +196,7 @@ export default function AddressVerification() {
                   name="landmark"
                   type="text"
                   label="Landmark"
-                  required
+                  // required
                   placeholder="e.g National Theathre, GTBank"
                   size="lg"
                   value={values.landmark}
@@ -219,10 +211,10 @@ export default function AddressVerification() {
             <div className="pt-4 flex justify-end">
               <div className="">
                 <Button
+                type='submit'
                   size="xl"
                   backgroundColor="primary-blue-500"
                   className="w-full py-3 px-12 flex items-center justify-center gap-2"
-                  // isLoading={loading}
                   disabled={loading}
                 >
                 {loading && <Loader2 size={18} className="animate-spin" />}

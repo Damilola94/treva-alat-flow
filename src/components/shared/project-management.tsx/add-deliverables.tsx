@@ -187,9 +187,9 @@ export function AddDeliverables(props: IProps) {
                       min={todayStr}
                       // max={maxEndDateStr}
                     />
-                    <p className="text-[#E7211B] text-[11px]">
+                    {/* <p className="text-[#E7211B] text-[11px]">
                       You can’t select beyond 3 months
-                    </p>
+                    </p> */}
                     </div>
                   </div>
 

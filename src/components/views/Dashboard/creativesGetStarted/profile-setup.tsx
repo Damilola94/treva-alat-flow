@@ -84,6 +84,7 @@ export default function ProfileSetup() {
         currentStep: 1,
       };
       saveCreativeOnboarding(payload);
+
     },
     validationSchema,
   });
@@ -196,7 +197,7 @@ export default function ProfileSetup() {
 
       {/* <ProgressStatus label="Team setup" /> */}
 
-      <div className="app_get_started_professional_details__form flex flex-col gap-10  !max-w-[600px]">
+      <div className="app_get_started_professional_details__form flex flex-col gap-10 !mb-28 !max-w-[600px]">
         <h3 className="app_get_started_professional_details__form__title !font-bold">
           Profile Setup
         </h3>

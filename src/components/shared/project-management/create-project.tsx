@@ -48,8 +48,9 @@ export function CreateProjectCard(props: IProps) {
           src={Topimage} 
           alt="Header Background" 
           fill
-          className=""
+          className="w-14"
           priority
+          unoptimized
         />
     
         <button
@@ -74,15 +75,15 @@ export function CreateProjectCard(props: IProps) {
             {item?.createProject.map((project, index) => (
               <div
                 key={index}
-                className={`flex flex-col items-center justify-center p-6 rounded-2xl border-2 transition-all cursor-pointer ${
+                className={`flex flex-col justify-center p-4 rounded-2xl border-2 transition-all cursor-pointer ${
                   selectedProject === project.title
                     ? 'border-[#7B37F0] bg-[#F9F5FF]'
                     : 'border-gray-100 bg-[#F9FAFB] hover:border-gray-200'
                 }`}
                 onClick={() => setSelectedProject(project.title)}
               >
-                <div className="">{project.icon}</div>
                 <div className="">
+                <div className="mb-5">{project.icon}</div>
                   <h3 className="project_management_card__ctt__option__title">
                     {project.title} Project
                   </h3>

@@ -248,7 +248,7 @@ export function ProjectPaymentSchedule(props: IProps) {
   }, [paymentScheduleData, dispatch]);
 
   return (
-    <div className="app_get_started_professional_details py-6 px-4 flex flex-col gap-14">
+    <div className="app_get_started_professional_details py-6 px-4 flex flex-col !mb-28 gap-14">
       <SideModal
         isOpen={addPaymentSchedule}
         onClose={() => {

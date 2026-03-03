@@ -252,7 +252,7 @@ export function ProjectDeliverables(props: IProps) {
         </Fragment>
       </RenderIf>
 
-      <div className="app_get_started_professional_details__form flex flex-col gap-10 !overflow-y-auto">
+      <div className="app_get_started_professional_details__form flex flex-col gap-10 !mb-28 !overflow-y-auto">
         <CenterModal
           headerImageType={3}
           isOpen={isDecisionModalOpen}

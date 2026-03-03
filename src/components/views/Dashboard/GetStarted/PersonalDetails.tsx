@@ -150,7 +150,7 @@ export default function PersonalDetails() {
         {/* <ProgressStatus label="Team setup" /> */}
       </div>
 
-      <div className="app_get_started_professional_details__form flex flex-col gap-10 !max-w-[600px]">
+      <div className="app_get_started_professional_details__form flex flex-col gap-10 !mb-28 !max-w-[600px]">
         <h3 className="app_get_started_professional_details__form__title">
           Profile Setup
         </h3>

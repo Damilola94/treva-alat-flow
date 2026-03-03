@@ -566,7 +566,7 @@ export function WithdrawalFlowManager({isOpen,onClose,wallet,beneficiaries,onAdd
       </CenterModal>
 
       {/* Step 8: Final Success */}
-      <CenterModal isOpen={isOpen && step === 'SUCCESS'} onClose={onClose}>
+      <CenterModal isOpen={isOpen && step === 'SUCCESS'} onClose={onClose} headerImageType={0}>
         <div className="flex flex-col items-center py-10 gap-4 text-center">
           <div className="">
             <Image src={Success} alt="success" className='w-[62px]' unoptimized />

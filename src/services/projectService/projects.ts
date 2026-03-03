@@ -21,6 +21,13 @@ export const projectService = projectServiceApiSlice.injectEndpoints({
       transformResponse: (
         response: ITrevaProjectService["schemas"]["ProjectMiniModelPagedListBaseResponse"]
       ) => response,
+      // providesTags: (result) => {
+      //   // Lets updates invalidate the list too
+      //   const listTag = { type: 'Project' as const, id: 'LIST' as const };
+      //   const items =
+      //     result?.data?.data?.map((p: any) => ({ type: 'Project' as const, id: p.id })) ?? [];
+      //   return [listTag, ...items];
+      // },
     }),
 
     createProject: builder.mutation({
@@ -32,6 +39,7 @@ export const projectService = projectServiceApiSlice.injectEndpoints({
       transformResponse: (
         response: ITrevaProjectService["schemas"]["ProjectModelBaseResponse"]
       ) => response,
+      invalidatesTags: [{ type: 'Project', id: 'LIST' }],
     }),
 
     getProjectById: builder.query({
@@ -39,21 +47,20 @@ export const projectService = projectServiceApiSlice.injectEndpoints({
         url: endpoints.projects.getProjectById(projectId),
         method: REQUEST_METHODS.GET,
       }),
+      providesTags: (_res, _err, projectId) => [{ type: 'Project', id: projectId }],
       transformResponse: (
         response: ITrevaProjectService["schemas"]["ProjectModelBaseResponse"]
       ) => response,
     }),
 
     updateProject: builder.mutation({
-      query: ({ projectId, ...values }) => ({
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      query: ({ projectId, body }: { projectId: string; body: any }) => ({
         url: endpoints.projects.updateProject(projectId),
         method: REQUEST_METHODS.PUT,
-        body: values,
+        body
       }),
-      invalidatesTags: (result, error, { projectId }) => [
-        { type: "Project", id: projectId },
-        { type: "Projects", id: "LIST" },
-      ],
+      invalidatesTags: (_res, _err, { projectId }) => [{ type: 'Project', id: projectId }],
       transformResponse: (
         response: ITrevaProjectService["schemas"]["ProjectModelBaseResponse"]
       ) => response,

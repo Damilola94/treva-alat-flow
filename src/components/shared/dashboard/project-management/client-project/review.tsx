@@ -153,6 +153,7 @@ export function ProjectReview(props: IProps) {
     <div className="app_get_started_professional_details py-6 px-4 flex flex-col gap-14">
       <div className="app_get_started_professional_details__form flex flex-col gap-10 !max-w-[700px] !mx-auto">
         <CenterModal
+        headerImageType={0}
           isOpen={isDecisionModalOpen}
           onClose={handleCloseModal}
           showFooter
@@ -224,7 +225,7 @@ export function ProjectReview(props: IProps) {
                 unoptimized
               />
             </div>
-            <p className="font-semibold">
+            <p className="font-semibold flex flex-col items-center justify-center ">
               Invoice has been sent to client successfully
             </p>
             <p className="text-[#888888]">

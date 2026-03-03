@@ -155,7 +155,7 @@ export default function BvnVerification() {
         {/* <ProgressStatus label="Team setup" /> */}
       </div>
 
-      <div className="app_get_started_professional_details__form flex flex-col gap-10">
+      <div className="app_get_started_professional_details__form flex flex-col gap-10 !mb-28">
         <div>
           <h3 className="app_get_started_professional_details__form__title !font-bold">
             ID Verification

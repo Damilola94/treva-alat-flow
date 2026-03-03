@@ -37,6 +37,16 @@ export const wallet = paymentServiceApiSlice.injectEndpoints({
         body,
       }),
     }),
+     changeWalletPin: builder.mutation({
+          query: (values) => ({
+            url: endpoints.wallets.resetPin,
+            method: REQUEST_METHODS.POST,
+            body: values,
+          }),
+          transformResponse: (
+            response: ITrevaPaymentService['schemas']['StringBaseResponse'],
+          ) => response,
+        }),
     addWithdrawFunds: builder.mutation({
       query: ({ walletId, ...values }) => ({
         url: endpoints.wallets.addWithdrawFunds(walletId),
@@ -80,4 +90,5 @@ export const {
   useSendWalletOtpMutation,
   useSetWalletPinMutation,
   useVerifyWalletOtpMutation,
+  useChangeWalletPinMutation,
 } = wallet;
