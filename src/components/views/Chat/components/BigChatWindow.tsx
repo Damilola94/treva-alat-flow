@@ -711,6 +711,8 @@ const BigChatWindow = () => {
   }, [chatByIdData]);
 
   return (
+    <div className=''>
+
     <div className="flex h-[calc(100dvh-110px)] overflow-hidden bg-white rounded-xl shadow-sm border border-gray-100">
       {/* ── Sidebar ── */}
       <aside
@@ -888,7 +890,7 @@ const BigChatWindow = () => {
                   </div>
                   <p className="text-gray-500 font-medium">No messages yet</p>
                   <p className="text-sm text-gray-400 mt-1">
-                    Say hello to start the conversation!
+                    Only clients can begin a chat
                   </p>
                 </div>
               ) : (
@@ -1184,6 +1186,8 @@ const BigChatWindow = () => {
         )}
       </main>
     </div>
+    </div>
+
   );
 };
 

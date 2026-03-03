@@ -267,7 +267,7 @@ export function WithdrawalFlowManager({isOpen,onClose,wallet,beneficiaries,onAdd
             No transaction PIN has been set
           </p>
           <p className="text-[#6D6D6D] mb-8 mt-2">
-            Click “Setup PIN” button to get started
+            Click “Proceed” and an OTP will be sent to you to get started
           </p>
           <Button
             className="w-full rounded-full bg-[#7B37F0] py-7 hover:bg-[#7B37F0]/90 "
@@ -566,7 +566,7 @@ export function WithdrawalFlowManager({isOpen,onClose,wallet,beneficiaries,onAdd
       </CenterModal>
 
       {/* Step 8: Final Success */}
-      <CenterModal isOpen={isOpen && step === 'SUCCESS'} onClose={onClose}>
+      <CenterModal isOpen={isOpen && step === 'SUCCESS'} onClose={onClose} headerImageType={0}>
         <div className="flex flex-col items-center py-10 gap-4 text-center">
           <div className="">
             <Image src={Success} alt="success" className='w-[62px]' unoptimized />

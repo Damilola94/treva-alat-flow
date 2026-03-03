@@ -19,7 +19,6 @@ const validationSchema = Yup.object().shape({
   street: Yup.string()
     .required('Street is required')
     .max(100, 'Street name is too long'),
-  landmark: Yup.string().optional(),
   city: Yup.string().required('City is required'),
   state: Yup.string().required('State is required'),
 });

@@ -56,9 +56,23 @@ export default function BvnVerification() {
           ...values,
         };
         const response = await triggerBvnVerify(payload).unwrap();
+        //  console.log('Response', response?.isSuccess)
+        // console.log('Response 2', response?.data?.url);
+        // console.log('response 3', response?.isSuccess && response?.data?.url);
         if (response?.isSuccess && response?.data?.url) {
+          // console.log('Response', response?.isSuccess);
+          // console.log('Response 2', response?.data?.url);
+          // console.log('response 3', response?.isSuccess && response?.data?.url);
+
           window.location.href = response?.data?.url;
+        } else if (!response?.isSuccess && !response?.data) {
+          console.log('error 1');
+          alert(response?.message || 'Something went wrong')
+
+          errorToast(response?.message || 'Something went wrong');
         } else {
+          console.log('error 2');
+          alert(response?.message || 'Something went wrong')
           errorToast(response?.message || 'Something went wrong');
         }
         // } catch (error) {
@@ -108,19 +122,49 @@ export default function BvnVerification() {
     }
   };
 
-  const handleTakeSideEffect = async () => {
-  // Trigger validation manually
+  // const handleTakeSideEffect = async () => {
+  //   // Trigger validation manually
+  //   const validationErrors = await formik.validateForm();
+
+  //   if (Object.keys(validationErrors).length > 0) {
+  //     // If there are errors (like BVN being required), show the toast
+  //     errorToast(validationErrors.bvn || 'Please enter a valid 11-digit BVN');
+  //     return;
+  //   }
+
+  //   // If valid, proceed to submit
+  //   handleSubmit();
+  // };
+
+const handleTakeSideEffect = async () => {
   const validationErrors = await formik.validateForm();
-  
+
   if (Object.keys(validationErrors).length > 0) {
-    // If there are errors (like BVN being required), show the toast
-    errorToast(validationErrors.bvn || "Please enter a valid 11-digit BVN");
+    errorToast(validationErrors.bvn || 'Please enter a valid 11-digit BVN');
     return;
   }
 
-  // If valid, proceed to submit
-  handleSubmit();
+  // Call your submit logic directly
+  try {
+    const payload = { ...formik.values };
+    const response = await triggerBvnVerify(payload).unwrap();
+
+    if (response?.isSuccess && response?.data?.url) {
+      window.location.href = response?.data?.url;
+    } else {
+      errorToast(response?.message || 'Something went wrong');
+    }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    const message =
+      error?.data?.message ||
+      error?.message ||
+      getErrorMessage(error) ||
+      'Something went wrong';
+    errorToast(message);
+  }
 };
+
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -190,7 +234,7 @@ export default function BvnVerification() {
 
       {/* <ProgressStatus label="Team setup" /> */}
 
-      <div className="app_get_started_professional_details__form flex flex-col gap-10">
+      <div className="app_get_started_professional_details__form flex flex-col gap-10 !mb-28">
         <div>
           <h3 className="app_get_started_professional_details__form__title !font-bold">
             ID Verification

@@ -188,6 +188,7 @@ export const endpoints = {
     verifyOtp: "/wallets/otp/verify",
     resendOtp: "/wallets/otp/resend",
     setPin: "/wallets/pin/set",
+    resetPin: "/wallets/pin/reset"
   },
   beneficiaryManagement: {
     getBeneficiarymanagement: `/beneficiarymanagement/all`,

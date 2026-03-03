@@ -1,76 +1,45 @@
+/* ========================================================================
+   FILE: src/lib/signalr/chatHub.ts
+   ======================================================================== */
+
+
+/* ========================================================================
+   FILE: src/hooks/useSignalRChat.ts
+   ======================================================================== */
 'use client';
-import { useEffect, useRef, useState } from 'react';
-import * as signalR from '@microsoft/signalr';
-import { getCookie } from '@/utils';
 
-export type Message = {
-  id: string;
-  chatId: string;
-  userId: string;
-  content?: string;
-  attachments?: { id: string; fileName: string; filePathUrl?: string }[];
-  sentAt: string;
-};
+import { useEffect, useRef } from 'react';
+import config from '@/lib/config';
+import { getLocalStorage } from '@/services';
+import { registerChatHubListeners, startChatHub } from '@/lib/signalr/chatHub';
 
-export const useChatSignalR = (chatId: string | undefined, userId: string | undefined) => {
-  const connectionRef = useRef<signalR.HubConnection | null>(null);
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [typingUsers, setTypingUsers] = useState<string[]>([]);
-  const [seenBy, setSeenBy] = useState<{ [msgId: string]: string[] }>({});
+export function useSignalRChat() {
+  const mounted = useRef(false);
 
   useEffect(() => {
-    if (!chatId || !userId) return;
+    if (mounted.current) return;
+    mounted.current = true;
 
-    const connection = new signalR.HubConnectionBuilder()
-      .withUrl(`${process.env.NEXT_PUBLIC_CHAT_SERVICE_API_URL}/chatHub`, {
-        accessTokenFactory: () => getCookie('_tk') || '',
-      })
-      .withAutomaticReconnect()
-      .build();
-
-    connection.start().catch(console.error);
-    connectionRef.current = connection;
-
-    // Incoming message
-    connection.on('ReceiveMessage', (msg: Message) => {
-      setMessages((prev) => [...prev, msg]);
-    });
-
-    // Typing indicator
-    connection.on('UserTyping', (typingUserId: string) => {
-      if (!typingUsers.includes(typingUserId)) {
-        setTypingUsers((prev) => [...prev, typingUserId]);
-        setTimeout(() => setTypingUsers((prev) => prev.filter((id) => id !== typingUserId)), 3000);
-      }
-    });
-
-    // Seen indicator
-    connection.on('MessageSeen', ({ messageId, seenUserId }: { messageId: string; seenUserId: string }) => {
-      setSeenBy((prev) => ({
-        ...prev,
-        [messageId]: prev[messageId] ? [...prev[messageId], seenUserId] : [seenUserId],
-      }));
-    });
-
-    // Join chat room
-    connection.invoke('JoinChat', chatId, userId).catch(console.error);
-
-    return () => {
-      connection.stop();
+    const getJwt = () => {
+      const token = getLocalStorage(config.tokenKey);
+      return (token?.jwToken || token?.accessToken || null) as string | null;
     };
-  }, [chatId, userId, typingUsers]);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const sendMessage = (msg: { content?: string; attachments?: any[] }) => {
-    connectionRef.current?.invoke('SendMessage', { ...msg, chatId, userId });
-  };
 
-  const sendTyping = () => {
-    connectionRef.current?.invoke('Typing', chatId, userId);
-  };
+    (async () => {
+      // logs will show in console
+      await startChatHub(getJwt);
+      registerChatHubListeners();
+    })().catch((e) => {
+      console.log('❌ SignalR: init failed', e);
+    });
+  }, []);
+}
 
-  const markSeen = (messageId: string) => {
-    connectionRef.current?.invoke('MarkAsSeen', chatId, messageId, userId);
-  };
+/* ========================================================================
+   FILE: (your component) BigChatWindow.tsx
+   Add ONE line near the top of component body:
+   ======================================================================== */
+// import { useSignalRChat } from '@/hooks/useSignalRChat';
 
-  return { messages, sendMessage, typingUsers, sendTyping, markSeen, seenBy };
-};
+// inside BigChatWindow component:
+ // useSignalRChat();

@@ -11,13 +11,14 @@ import { Table } from '@/components/shared/Table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { EmptyStatus, PlusIcon } from '@/components/shared/svgs';
 import Link from 'next/link';
+import { BillingEnum } from '@/constants';
 
 interface BillingSchedule {
   id?: string;
   amount?: number;
   dueDate?: string;
   status?:
-    | 'Pending'
+    | 'Sad'
     | 'Due'
     | 'Cancelled'
     | 'Failed'
@@ -116,6 +117,7 @@ export function PaymentTable() {
         id: billing.id,
         amount: billing.amount,
         dueDate: billing.dueDate,
+        status: BillingEnum[billing.status] as BillingSchedule['status']
       }));
     }
     return [];
@@ -198,7 +200,6 @@ export function PaymentTable() {
     );
   }
 
-
   return (
     <div className="app_dashboard_home__task__cct">
       <div className="w-full text-left relative rounded-xl overflow-auto">
@@ -259,7 +260,8 @@ export function PaymentTable() {
                       <span>₦{totalRemaining.toLocaleString()}</span>
                     </p>
                   </div>
-                  <div className="border-[#E7E7E7] border-t flex flex-col gap-5">
+
+                  <div className="border-[#E7E7E7] border-t flex flex-col gap-5 !mb-28">
                     <p className="flex justify-between items-center mt-5">
                       Total payment due date{' '}
                       <span>

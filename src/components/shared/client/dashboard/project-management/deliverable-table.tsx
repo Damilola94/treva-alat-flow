@@ -1,97 +1,82 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+'use client';
+
 import { useMemo, useState } from 'react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Label } from '@/components/shared/Label';
-import { useParams } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
 import { Table } from '@/components/shared/Table';
-import { useDeliverable } from '@/hooks/Projects';
 import { formatDate } from '@/lib/utils';
 import { numberFormat } from '@/lib/numbers';
+import { statusEnum } from '@/constants';
 
-export function DeliverableTable() {
-  const { id } = useParams();
-  const projectId = Array.isArray(id) ? id[0] : id;
+type Deliverable = {
+  id: string;
+  name: string;
+  description?: string;
+  endDate?: string;
+  unit?: number;
+  unitAmount?: number;
+  total?: number;
+  status: number;
+};
+
+export function DeliverableTable({
+  deliverables,
+  loading,
+}: {
+  deliverables: Deliverable[];
+  loading: boolean;
+}) {
   const [activeTab, setActiveTab] = useState<'completed' | 'all'>('all');
+  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 4 });
 
-  const { allDeliverablesData, loading } = useDeliverable(projectId);
-  const [pagination, setPagination] = useState({
-    pageIndex: 0,
-    pageSize: 4,
-  });
   const headers = [
-    {
-      header: 'Deliverable name',
-      accessorKey: 'name',
-    },
-    {
-      header: 'Description',
-      accessorKey: 'description',
-    },
+    { header: 'Deliverable name', accessorKey: 'name' },
+    { header: 'Description', accessorKey: 'description' },
     {
       header: 'Due date',
       accessorKey: 'endDate',
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      cell: ({ row }: any) => {
-        const date = row.original.endDate;
-        return formatDate(date);
-      },
+      cell: ({ row }: any) => formatDate(row.original.endDate),
     },
-    {
-      header: 'Unit',
-      accessorKey: 'unit',
-    },
+    { header: 'Unit', accessorKey: 'unit' },
     {
       header: 'Unit Amount',
       accessorKey: 'unitAmount',
-       cell: ({ row }: any) => (
-              <span>{numberFormat(row.original.unitAmount)}</span>
-            ),
+      cell: ({ row }: any) => (
+        <span>{numberFormat(row.original.unitAmount)}</span>
+      ),
     },
     {
       header: 'Total Amount',
       accessorKey: 'total',
-       cell: ({ row }: any) => (
-              <span>{numberFormat(row.original.total)}</span>
-            ),
+      cell: ({ row }: any) => <span>{numberFormat(row.original.total)}</span>,
     },
     {
       header: 'Status',
       accessorKey: 'status',
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      cell: ({ row }: any) => {
-        const value = row.original.status;
-        return (
-          <div className="">
-            <Label type="status" value={value} />
-          </div>
-        );
-      },
+      cell: ({ row }: any) => (
+        <div>
+          {/* ✅ pass the number directly; Label maps it to string internally */}
+          <Label type="status" value={row.original.status} />
+        </div>
+      ),
     },
   ];
 
-  const allDeliverables = useMemo(() => {
-    return allDeliverablesData?.isSuccess && allDeliverablesData.data
-      ? allDeliverablesData.data
-      : [];
-  }, [allDeliverablesData?.isSuccess, allDeliverablesData?.data]);
-
   const completedDeliverables = useMemo(
-    () => allDeliverables.filter((d) => d.status === 'Completed'),
-    [allDeliverables],
+    () => deliverables.filter((d) => d.status === statusEnum.Completed),
+    [deliverables],
   );
 
-  // Table data based on tab
-  const tableBody =
-    activeTab === 'all' ? allDeliverables : completedDeliverables;
+  const tableBody = activeTab === 'all' ? deliverables : completedDeliverables;
 
   return (
     <div className="app_dashboard_home__task__cct">
       <Tabs
         value={activeTab}
-        onValueChange={(value) => {
-          setActiveTab(value as 'all' | 'completed');
-        }}
+        onValueChange={(value) => setActiveTab(value as 'all' | 'completed')}
         className="w-full mt-3"
       >
         <TabsList className="mb-4 gap-3">
@@ -105,9 +90,10 @@ export function DeliverableTable() {
           >
             All
             <span className="inline-flex items-center justify-center w-6 h-6 bg-gray-100 rounded-full text-sm text-black">
-              {allDeliverables.length}
+              {deliverables.length}
             </span>
           </TabsTrigger>
+
           <TabsTrigger
             value="completed"
             className="flex gap-2 rounded-full border-none"
@@ -135,7 +121,7 @@ export function DeliverableTable() {
             emptyTitle={
               activeTab === 'completed'
                 ? 'No completed deliverable'
-                : 'No deliverable Yet'
+                : 'No deliverable yet'
             }
             emptyMessage={
               activeTab === 'completed'

@@ -236,7 +236,7 @@ export default function NinVerification() {
     //   </div>
     // </div>
 
-    <div className="flex flex-col gap-4">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       <div className="flex flex-col gap-8">
         <div className="">
           <Input
@@ -310,6 +310,6 @@ export default function NinVerification() {
           </Button>
         </div>
       </div>
-    </div>
+    </form>
   );
 }

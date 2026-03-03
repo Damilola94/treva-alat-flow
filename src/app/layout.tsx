@@ -14,6 +14,7 @@ import { CombinedProviders } from '@/store';
 import { Space_Grotesk } from 'next/font/google';
 // import "./globals.css";
 import "../../public/scss/main.scss";
+import { useState } from 'react';
 
 // export const metadata: Metadata = {
 //   title: 'Geegs',
@@ -26,30 +27,37 @@ const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
 })
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: false,
-    },
-    mutations: {
-      retry: false,
-    },
-  },
-});
+// const queryClient = new QueryClient({
+//   defaultOptions: {
+//     queries: {
+//       retry: false,
+//     },
+//     mutations: {
+//       retry: false,
+//     },
+//   },
+// });
+
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+    const [queryClient] = useState(() => new QueryClient({
+    defaultOptions: {
+      queries: { retry: false },
+      mutations: { retry: false },
+    },
+  }));
   return (
     <html lang="en">
       <body suppressHydrationWarning className={`${spaceGrotesk.variable} font-sans antialiased bg-slate-950 text-white`}>
         <style type="text/css">{generateColorsCss()}</style>
         <QueryClientProvider client={queryClient}>
-          <CombinedProviders>{children}</CombinedProviders>
-        </QueryClientProvider>
-        <ToastContainer
+          <CombinedProviders>{children}
+
+                 <ToastContainer
           position="top-right"
           newestOnTop
           pauseOnFocusLoss={false}
@@ -67,6 +75,9 @@ export default function RootLayout({
           progressClassName="toast-progress"
           style={{ zIndex: 99999, pointerEvents: 'auto' }}
         />
+          </CombinedProviders>
+        </QueryClientProvider>
+   
       </body>
     </html>
   );

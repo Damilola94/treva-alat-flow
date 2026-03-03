@@ -4,7 +4,8 @@ import React from 'react';
 type PriorityLevel = 'High' | 'Medium' | 'Low'
 type StatusType = 'Pending' | 'Due' | 'Completed' | 'ToDo' | 'AwaitingClientConfirmation' | 'RequestingRevision' | 'Paid' |'Over due' | 'Closed'
 type TransactionType = 'Credit' | 'Debit'
-type LabelType = PriorityLevel | StatusType | TransactionType
+// type LabelType = PriorityLevel | StatusType | TransactionType
+type LabelType = PriorityLevel | StatusType | TransactionType | number
 
 interface LabelProps {
   type: 'priority' | 'status' | 'type'

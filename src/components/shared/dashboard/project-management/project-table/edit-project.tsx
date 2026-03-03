@@ -89,21 +89,40 @@ export function EditProject(props: IProps) {
 
   type InitialValues = ReturnType<() => typeof initialValues>;
 
-  const onSubmit = async (_values: InitialValues) => {
-   try {
-      const response = await updateProject(_values).unwrap();
-      if (response?.data?.id) {
-        dispatch(storeValues(_values))
-        setProjectId(response.data.id);
-        handleNext(_values);
-      } else {
+  // const onSubmit = async (_values: InitialValues) => {
+  //  try {
+  //     const response = await updateProject(_values).unwrap();
+  //     if (response?.data?.id) {
+  //       dispatch(storeValues(_values))
+  //       setProjectId(response.data.id);
+  //       handleNext(_values);
+  //     } else {
         
-        console.warn('Project ID not found. Cannot proceed to next step.');
-      }
-    } catch (error) {
-      console.error('Failed to create project:', error);
+  //       console.warn('Project ID not found. Cannot proceed to next step.');
+  //     }
+  //   } catch (error) {
+  //     console.error('Failed to create project:', error);
+  //   }
+  //   };
+
+  const onSubmit = async (_values: InitialValues) => {
+  try {
+    const response = await updateProject({
+      projectId: id,
+      body: _values,
+    }).unwrap();
+
+    if (response?.data?.id) {
+      dispatch(storeValues(_values));
+      setProjectId(response.data.id);
+      handleNext(_values);
+    } else {
+      console.warn('Project ID not found. Cannot proceed to next step.');
     }
-    };
+  } catch (error) {
+    console.error('Failed to update project:', error);
+  }
+};
 
   return (
     <div className="app_auth_login_container relative !overflow-y-auto">

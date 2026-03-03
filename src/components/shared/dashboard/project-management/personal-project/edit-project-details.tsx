@@ -62,7 +62,7 @@ export function EditProjectDetails(props: IProps) {
 
   const onSubmit = async (values: InitialValues) => {
     try {
-      const response = await updateProject({...values, projectId}).unwrap();
+      const response = await updateProject({body: values, projectId}).unwrap();
       if (response?.data?.id || projectId) {
         dispatch(storeValues(values));
         handleNext();

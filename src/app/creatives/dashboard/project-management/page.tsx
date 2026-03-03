@@ -1,20 +1,40 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useMemo, useEffect, useCallback } from 'react';
+import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
-import {ClientIcon,PersonalIcon,AnimatedModal,PlusIcon,RenderIf,Table,Label,projectTypeMap,} from '@/components/shared';
+
+import {
+  ClientIcon,
+  PersonalIcon,
+  AnimatedModal,
+  PlusIcon,
+  RenderIf,
+  Table,
+  Label,
+  projectTypeMap,
+} from '@/components/shared';
+
 import { Button } from '@/components/ui/button';
-import {CreateProjectCard,TakeATour,AddProject,} from '@/components/shared/project-management';
+import {
+  CreateProjectCard,
+  TakeATour,
+  AddProject,
+} from '@/components/shared/project-management';
+
 import { DeleteProject } from '@/components/shared/dashboard/project-management/project-table/delete-project';
-import {Popover,PopoverContent,PopoverTrigger,} from '@/components/ui/popover';
-import { Check, ListFilter } from 'lucide-react';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Check, ListFilter, Loader2 } from 'lucide-react';
+
 import projectManagement from '@/lib/assets/project-management';
 import { BinGray, EditPencilGray } from '@/components/shared/svgs';
 import { popoverItems, priorityItems, statusItems } from '@/constants';
 import { useProjects } from '@/hooks/Projects';
 import SearchInput from '@/components/ui/SearchInput';
 import { formatDate } from '@/lib/utils';
+
+import { useAppDispatch } from '@/store';
+import { resetProject } from '@/store/slices/project';
 
 interface ProjectQueryParams {
   type?: string;
@@ -63,8 +83,9 @@ const deleteProject = {
 };
 
 export default function Page() {
-  // const searchParams = useSearchParams();
   const router = useRouter();
+  const pathname = usePathname();
+  const dispatch = useAppDispatch();
 
   const [params, setParams] = useState<ProjectQueryParams>({
     pageNumber: 0,
@@ -80,7 +101,6 @@ export default function Page() {
     [allProjectsData?.data],
   );
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [takeATour, setTakeATour] = useState(true);
   const [addProject, setAddProject] = useState(true);
@@ -89,16 +109,24 @@ export default function Page() {
   const [deleteForm, setDeleteForm] = useState(false);
   const [deleteProjectId, setDeleteProjectId] = useState<string | null>(null);
 
+  // ✅ per-row loader state
+  const [navigatingRowId, setNavigatingRowId] = useState<string | null>(null);
+
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 10,
   });
 
+  // ✅ reset row loader when route changes (navigation completes)
+  useEffect(() => {
+    setNavigatingRowId(null);
+  }, [pathname]);
+
   useEffect(() => {
     setParams((prev) => ({
       ...prev,
-      pageNumber: pagination?.pageIndex + 1,
-      pageSize: pagination?.pageSize,
+      pageNumber: pagination.pageIndex + 1,
+      pageSize: pagination.pageSize,
     }));
   }, [pagination]);
 
@@ -111,6 +139,7 @@ export default function Page() {
   };
 
   const handleAddProjectClick = () => {
+    dispatch(resetProject());
     setAddProject(!addProject);
   };
 
@@ -124,6 +153,7 @@ export default function Page() {
   };
 
   const handleProjectFormClose = () => {
+    dispatch(resetProject());
     setAddProjectForm(!addProjectForm);
   };
 
@@ -136,8 +166,21 @@ export default function Page() {
     setDeleteForm(!deleteForm);
   };
 
+  // ✅ row click with per-row loader
+  const handleRowClick = useCallback(
+    (row: { id: string }) => {
+      // prevent re-clicking same row while navigating
+      if (navigatingRowId) return;
+
+      setNavigatingRowId(row.id);
+      router.push(`/creatives/dashboard/project-management/${row.id}`);
+    },
+    [router, navigatingRowId],
+  );
+
   useEffect(() => {
-    projectData.forEach((project) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    projectData.forEach((project: any) => {
       router.prefetch(`/creatives/dashboard/project-management/${project.id}`);
     });
   }, [projectData, router]);
@@ -146,6 +189,21 @@ export default function Page() {
     {
       header: 'Project name',
       accessorKey: 'title',
+      // ✅ show spinner inside project name for clicked row
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      cell: ({ row }: any) => {
+        const project = row.original;
+        const isRowLoading = navigatingRowId === project.id;
+
+        return (
+          <div className="flex items-center gap-2">
+            <span className={isRowLoading ? 'opacity-60' : ''}>
+              {project.title}
+            </span>
+            {isRowLoading && <Loader2 className="h-4 w-4 animate-spin" />}
+          </div>
+        );
+      },
     },
     {
       header: 'Project Type',
@@ -160,10 +218,7 @@ export default function Page() {
       header: 'Due date',
       accessorKey: 'expectedDeliveryDate',
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      cell: ({ row }: any) => {
-        const date = row.original.expectedDeliveryDate;
-        return formatDate(date);
-      },
+      cell: ({ row }: any) => formatDate(row.original.expectedDeliveryDate),
     },
     {
       header: 'Priority',
@@ -172,7 +227,7 @@ export default function Page() {
       cell: ({ row }: any) => {
         const value = row.original.priority;
         return (
-          <div className="">
+          <div>
             <Label type="priority" value={value} showIcon />
           </div>
         );
@@ -185,7 +240,7 @@ export default function Page() {
       cell: ({ row }: any) => {
         const value = row.original.status;
         return (
-          <div className="">
+          <div>
             <Label type="status" value={value} />
           </div>
         );
@@ -197,11 +252,14 @@ export default function Page() {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       cell: ({ row }: any) => {
         const project = row.original;
+        const isRowLoading = navigatingRowId === project.id;
+
         return (
           <div className="app_table__tbody__td__ctt flex gap-2">
             <Button
               variant="outline"
               size="icon"
+              disabled={!!navigatingRowId || isRowLoading}
               onClick={(e) => {
                 e.stopPropagation();
                 onDelete(project.id);
@@ -209,14 +267,17 @@ export default function Page() {
             >
               <BinGray className="h-4 w-4" />
             </Button>
+
             {project.type === 1 && (
               <Link
                 href={`/creatives/dashboard/project-management/personal-project/${project.id}/edit`}
-                onClick={(e) => {
-                  e.stopPropagation();
-                }}
+                onClick={(e) => e.stopPropagation()}
               >
-                <Button variant="outline" size="icon">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  disabled={!!navigatingRowId || isRowLoading}
+                >
                   <EditPencilGray className="h-4 w-4" />
                 </Button>
               </Link>
@@ -244,6 +305,7 @@ export default function Page() {
           />
         </AnimatedModal>
       </RenderIf>
+
       <RenderIf condition={!addProjectForm}>
         <AnimatedModal
           isOpen={!addProjectForm}
@@ -254,6 +316,7 @@ export default function Page() {
           <AddProject onClose={handleProjectFormClose} />
         </AnimatedModal>
       </RenderIf>
+
       {false && (
         <RenderIf condition={takeATour}>
           <AnimatedModal
@@ -266,38 +329,35 @@ export default function Page() {
           </AnimatedModal>
         </RenderIf>
       )}
+
       <RenderIf condition={deleteForm}>
         <AnimatedModal
           isOpen={true}
           from="middle"
-          onClose={onDelete}
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          onClose={onDelete as any}
           className="sm:max-w-[450px] h-[300px] p-0 mx-7 lg:mx-0"
         >
           {deleteProjectId && (
             <DeleteProject
               projectId={deleteProjectId}
               item={deleteProject}
-              handleClick={() => {
-                setDeleteForm(false);
-              }}
+              handleClick={() => setDeleteForm(false)}
               onClose={handleDeleteProject}
               refetchAllProjects={refetchAllProjects}
             />
           )}
         </AnimatedModal>
       </RenderIf>
+
       <div className="app_dashboard_home__task app_dashboard_page__px">
         <div className="app_dashboard_home__task__hdr flex-wrap gap-2 mt-4">
           <div className="flex gap-2">
             <div className="flex flex-wrap gap-2">
               <Popover>
                 <PopoverTrigger>
-                  <button
-                    type="button"
-                    className="app_dashboard_group_header__btn"
-                  >
-                    Project Type
-                    <ListFilter size={14} />
+                  <button type="button" className="app_dashboard_group_header__btn">
+                    Project Type <ListFilter size={14} />
                   </button>
                 </PopoverTrigger>
                 <PopoverContent className="app_popover__content">
@@ -308,7 +368,7 @@ export default function Page() {
                       onClick={() => {
                         setSelectedCategory(item.value);
                         handleParamChange({
-                          type: item?.value === 'All' ? undefined : item?.value,
+                          type: item.value === 'All' ? undefined : item.value,
                         });
                       }}
                     >
@@ -325,12 +385,8 @@ export default function Page() {
             <div className="flex flex-wrap gap-2">
               <Popover>
                 <PopoverTrigger>
-                  <button
-                    type="button"
-                    className="app_dashboard_group_header__btn"
-                  >
-                    Priority
-                    <ListFilter size={14} />
+                  <button type="button" className="app_dashboard_group_header__btn">
+                    Priority <ListFilter size={14} />
                   </button>
                 </PopoverTrigger>
                 <PopoverContent className="app_popover__content">
@@ -342,8 +398,7 @@ export default function Page() {
                       onClick={() => {
                         setSelectedCategory(item.value);
                         handleParamChange({
-                          priority:
-                            item?.value === 'All' ? undefined : item?.value,
+                          priority: item.value === 'All' ? undefined : item.value,
                         });
                       }}
                     >
@@ -356,15 +411,12 @@ export default function Page() {
                 </PopoverContent>
               </Popover>
             </div>
+
             <div className="flex flex-wrap gap-2">
               <Popover>
                 <PopoverTrigger>
-                  <button
-                    type="button"
-                    className="app_dashboard_group_header__btn"
-                  >
-                    Status
-                    <ListFilter size={14} />
+                  <button type="button" className="app_dashboard_group_header__btn">
+                    Status <ListFilter size={14} />
                   </button>
                 </PopoverTrigger>
                 <PopoverContent className="app_popover__content">
@@ -375,8 +427,7 @@ export default function Page() {
                       onClick={() => {
                         setSelectedCategory(item.value);
                         handleParamChange({
-                          status:
-                            item?.value === 'All' ? undefined : item?.value,
+                          status: item.value === 'All' ? undefined : item.value,
                         });
                       }}
                     >
@@ -394,10 +445,9 @@ export default function Page() {
           <div className="flex gap-2">
             <SearchInput
               placeholder="Search for Project"
-              onChange={(e) => {
-                handleParamChange({ searchKey: e.target.value });
-              }}
+              onChange={(e) => handleParamChange({ searchKey: e.target.value })}
             />
+
             <Button
               type="button"
               size="md"
@@ -419,9 +469,7 @@ export default function Page() {
             emptyMessage='Click "add project" button to get started'
             pagination={pagination}
             setPagination={setPagination}
-            onRowClick={(row) =>
-              router.push(`/creatives/dashboard/project-management/${row.id}`)
-            }
+            onRowClick={handleRowClick}
             manualPagination={true}
             pageCount={
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
