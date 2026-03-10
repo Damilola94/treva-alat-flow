@@ -1,89 +1,55 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
+import { HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 
-import {
-  HubConnection,
-  HubConnectionBuilder,
-  HubConnectionState,
-  LogLevel,
-} from '@microsoft/signalr';
+const SIGNALR_URL = "https://treva-api.wemabank.com/treva-chat-service/hubs/chat";
 
-const CHAT_HUB_URL = 'https://treva-api.wemabank.com/hubs/chat';
-
-let connection: HubConnection | null = null;
-let starting: Promise<void> | null = null;
-
-export function getOrCreateChatHub(getJwt: () => string | null) {
-  if (connection) return connection;
-
-  console.log('🔗 SignalR hub url:', CHAT_HUB_URL);
-  console.log('🔗 negotiate url:', `${CHAT_HUB_URL}/negotiate?negotiateVersion=1`);
-
-  connection = new HubConnectionBuilder()
-    .withUrl(CHAT_HUB_URL, {
-      accessTokenFactory: () => getJwt() ?? '',
+export function createChatHubConnection(accessToken?: string): HubConnection {
+  return new HubConnectionBuilder()
+    .withUrl(SIGNALR_URL, {
+      accessTokenFactory: () => accessToken || "",
     })
-    .withAutomaticReconnect()
     .configureLogging(LogLevel.Information)
+    .withAutomaticReconnect()
     .build();
-
-  connection.onreconnecting((err) => {
-    console.log('🔁 SignalR: reconnecting...', err?.message ?? err);
-  });
-
-  connection.onreconnected((connectionId) => {
-    console.log('✅ SignalR: reconnected. connectionId=', connectionId);
-  });
-
-  connection.onclose((err) => {
-    console.log('❌ SignalR: closed.', err?.message ?? err);
-  });
-
-  return connection;
 }
 
-export async function startChatHub(getJwt: () => string | null) {
-  const conn = getOrCreateChatHub(getJwt);
-
-  if (conn.state === HubConnectionState.Connected) {
-    console.log('✅ SignalR: already connected');
-    return;
+export function registerChatHubListeners(
+  connection: HubConnection,
+  listeners: {
+    onUserOnline?: (payload: any) => void,
+    onUserOffline?: (payload: any) => void,
+    onTypingIndicator?: (payload: any) => void,
+    onMessagesRead?: (payload: any) => void,
+    onChatStarted?: (payload: any) => void,
+    onChatUpdated?: (payload: any) => void,
   }
-
-  if (!starting) {
-    console.log('⏳ SignalR: starting connection...');
-    starting = conn
-      .start()
-      .then(() => console.log('✅ SignalR: connected'))
-      .catch((err) => {
-        console.log('❌ SignalR: start failed', err);
-        throw err;
-      })
-      .finally(() => {
-        starting = null;
-      });
-  }
-
-  await starting;
+) {
+  if (!connection) throw new Error('SignalR connection not initialized');
+  if (listeners.onUserOnline) connection.on('UserOnline', listeners.onUserOnline);
+  if (listeners.onUserOffline) connection.on('UserOffline', listeners.onUserOffline);
+  if (listeners.onTypingIndicator) connection.on('TypingIndicator', listeners.onTypingIndicator);
+  if (listeners.onMessagesRead) connection.on('MessagesRead', listeners.onMessagesRead);
+  if (listeners.onChatStarted) connection.on('ChatStarted', listeners.onChatStarted);
+  if (listeners.onChatUpdated) connection.on('ChatUpdated', listeners.onChatUpdated);
 }
 
-export function registerChatHubListeners() {
-  if (!connection) throw new Error('SignalR not initialized. Call startChatHub() first.');
-
-  console.log('🧩 SignalR: registering listeners');
-
-  connection.on('ChatStarted', (payload) => console.log('📩 ChatStarted', payload));
-  connection.on('UserOnline', (payload) => console.log('🟢 UserOnline', payload));
-  connection.on('UserOffline', (payload) => console.log('⚫ UserOffline', payload));
-  connection.on('TypingIndicator', (payload) => console.log('✍️ TypingIndicator', payload));
-  connection.on('MessagesRead', (payload) => console.log('✅ MessagesRead', payload));
-}
-
-export async function sendTypingIndicator(chatId: string, isTyping: boolean) {
+export async function sendTypingIndicator(connection: HubConnection, chatId: string, isTyping: boolean) {
   if (!connection) throw new Error('SignalR not initialized');
   return connection.invoke('SendTypingIndicator', chatId, isTyping);
 }
 
-export async function markMessagesAsRead(chatId: string, messageIds: string[]) {
+export async function markMessagesAsRead(connection: HubConnection, chatId: string, messageIds: string[]) {
   if (!connection) throw new Error('SignalR not initialized');
   return connection.invoke('MarkMessagesAsRead', chatId, messageIds);
+}
+
+export async function joinChat(connection: HubConnection, chatId: string) {
+  if (!connection) throw new Error('SignalR not initialized');
+  return connection.invoke('JoinChat', chatId);
+}
+
+export async function leaveChat(connection: HubConnection, chatId: string) {
+  if (!connection) throw new Error('SignalR not initialized');
+  return connection.invoke('LeaveChat', chatId);
 }
