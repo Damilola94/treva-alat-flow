@@ -1,28 +1,14 @@
 'use client';
-import { ChatSideModal, MiniLoader, Tab } from '@/components/shared';
-import React, { useMemo, useState } from 'react';
-import { ChatWindow, NotificationsList } from './components';
-import { useMessages, useNotifications } from '@/hooks/Chat';
-import { NotificationTypeEnums } from '@/types';
 
-export interface INotification {
-  id?: string;
-  createdDate?: string;
-  createdBy?: string | null;
-  modifiedDate?: string | null;
-  modifiedBy?: string | null;
-  isDeleted?: boolean;
-  deletedDate?: string | null;
-  deletedBy?: string | null;
-  sourceName?: string | null;
-  sourceAvatar?: string | null;
-  title: string | null;
-  type?: number | string | null;
-  objectId?: string | null;
-  objectSlug?: string | null;
-  objectIdentifier?: string | null;
-  isRead?: boolean;
-}
+import React, { useMemo, useState } from 'react';
+import { ChatSideModal, MiniLoader, Tab } from '@/components/shared';
+import { ChatWindow, NotificationsList } from './components';
+import { useMessages } from '@/hooks/Chat';
+import { NotificationTypeEnums } from '@/types';
+import {
+  INotification,
+  useNotificationContext,
+} from '@/contexts/NotificationProvider';
 
 const Notifications = () => {
   const [activeTab, setActiveTab] = useState(0);
@@ -30,27 +16,15 @@ const Notifications = () => {
   const [selectedNotification, setSelectedNotification] =
     useState<INotification | null>(null);
 
-  const [params] = useState({
-    searchKey: '',
-    pageNumber: 1,
-    pageSize: 50,
-  });
+  const {
+    notifications,
+    loading,
+    refetchNotifications,
+  } = useNotificationContext();
 
-  const { allNotifications, loading, refetch } = useNotifications(params);
   const { chatByIdData, refetch: refetchChat } = useMessages({
     chatId: selectedNotification?.objectId || '',
   });
-
-
-  const notificationsList = useMemo(
-    () => allNotifications?.data || [],
-    [allNotifications?.data],
-  );
-
-  // const chatsFetchedById = useMemo(
-  //   () => chatByIdData?.data || null,
-  //   [chatByIdData?.data],
-  // );
 
   const chatsFetchedById = useMemo(() => {
     const unsorted = chatByIdData?.data || [];
@@ -62,46 +36,42 @@ const Notifications = () => {
   }, [chatByIdData?.data]);
 
   const selectedNotificationItem = useMemo(
-    () => notificationsList?.find((x) => x?.id === selectedNotification?.id),
-    [selectedNotification, notificationsList],
+    () => notifications?.find((x) => x?.id === selectedNotification?.id),
+    [selectedNotification, notifications],
   );
 
   const filteredMessageNotification = useMemo(() => {
-    if (!Array.isArray(notificationsList)) return [];
-    return notificationsList.filter(
+    if (!Array.isArray(notifications)) return [];
+    return notifications.filter(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (notification: any) =>
         notification?.type === NotificationTypeEnums.Message,
     );
-  }, [notificationsList]);
+  }, [notifications]);
 
   const tabs = [
     {
       trigger: 'All Notifications',
       value: 'notifications',
       content: (
-        <>
-          <NotificationsList
-            toggleMessageModal={toggleMessageModal}
-            notifications={notificationsList || []}
-            setSelectedNotification={setSelectedNotification}
-            refetch={refetch}
-          />
-        </>
+        <NotificationsList
+          toggleMessageModal={toggleMessageModal}
+          notifications={notifications || []}
+          setSelectedNotification={setSelectedNotification}
+          refetch={refetchNotifications}
+        />
       ),
     },
     {
       trigger: 'Messages',
       value: 'messages',
       content: (
-        <>
-          <NotificationsList
-            toggleMessageModal={toggleMessageModal}
-            notifications={filteredMessageNotification}
-            setSelectedNotification={setSelectedNotification}
-            refetch={refetch}
-          />
-        </>
+        <NotificationsList
+          toggleMessageModal={toggleMessageModal}
+          notifications={filteredMessageNotification}
+          setSelectedNotification={setSelectedNotification}
+          refetch={refetchNotifications}
+        />
       ),
     },
   ];
@@ -113,7 +83,7 @@ const Notifications = () => {
   return (
     <>
       <div className="p-6">
-        <div className='!mb-36'>
+        <div className="!mb-36">
           <Tab
             variant="pill"
             value={activeTab}
@@ -125,7 +95,6 @@ const Notifications = () => {
         </div>
       </div>
 
-      {/* withdraw funds side modal */}
       <ChatSideModal
         isOpen={messageModal}
         onClose={() => {

@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/semi */
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   usePathname,
   useRouter,
@@ -11,9 +11,10 @@ import {
 import { ArrowLeft, ArrowRightToBracket, Bell, Logo } from '../svgs';
 import Link from 'next/link';
 import routes from '@/lib/routes';
-import { useNotifications } from '@/hooks/Chat';
+// import { useNotifications } from '@/hooks/Chat';
 import { useAppSelector } from '@/store';
 import { handleLogoutRedirect } from '@/utils';
+import { useNotificationContext } from '@/contexts/NotificationProvider';
 
 interface HeaderProps {
   showBackArrow?: boolean;
@@ -69,13 +70,14 @@ export function Header({ showBackArrow = false }: HeaderProps) {
   const rt = useRouter();
 
   const [, setOpen] = useState(false);
-  const { notificationCount } = useNotifications();
+  // const { notificationCount } = useNotifications();
+  const { unreadCount } = useNotificationContext();
 
-  const notificationCountData = useMemo(() => {
-    if (!notificationCount?.isSuccess) return null;
-    return notificationCount?.data ?? 0;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [notificationCount?.data]);
+  // const notificationCountData = useMemo(() => {
+  //   if (!notificationCount?.isSuccess) return null;
+  //   return notificationCount?.data ?? 0;
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [notificationCount?.data]);
 
   const handleNotification = () => {
     if (role?.includes('Client')) {
@@ -121,9 +123,14 @@ export function Header({ showBackArrow = false }: HeaderProps) {
         <div className="flex items-center gap-4">
           <div onClick={handleNotification} className="relative cursor-pointer">
             <Bell />
-            {(notificationCountData as number) > 0 && (
+            {/* {(notificationCountData as number) > 0 && (
               <span className="absolute top-3 -right-2 w-5 h-5 text-white text-center bg-red-800 p-1 text-[8px] rounded-full">
                 {notificationCountData}
+              </span>
+            )} */}
+            {unreadCount > 0 && (
+              <span className="absolute top-3 -right-2 w-5 h-5 text-white text-center bg-red-800 p-1 text-[8px] rounded-full">
+                {unreadCount > 99 ? '99+' : unreadCount}
               </span>
             )}
           </div>
