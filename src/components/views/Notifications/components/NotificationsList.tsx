@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import Image from 'next/image';
 import { NPayment } from '@/app/assets/svgs';
@@ -6,6 +8,7 @@ import { extractName, getAvatar, getFullName } from '@/lib/utils';
 import { Avatar } from '@/components/shared/avatar';
 import { errorToast, useReadNotificationMutation } from '@/services';
 import { getErrorMessage } from '@/utils';
+import { useNotificationContext } from '@/contexts/NotificationProvider';
 
 interface NotificationItem {
   id?: string;
@@ -69,21 +72,33 @@ const NotificationList: React.FC<{
   refetch,
 }) => {
   const [triggerReadNotification] = useReadNotificationMutation();
+  const { markNotificationAsRead } = useNotificationContext();
 
   const handleReadNotification = async (item: NotificationItem) => {
+    if (!item?.id) return;
+
+    if (!item.isRead) {
+      markNotificationAsRead(item.id);
+    }
+
+    setSelectedNotification(item);
+    toggleMessageModal(true);
+
     try {
-      const response = await triggerReadNotification({
-        notificationId: item?.id,
-      });
-      if (response?.data?.isSuccess) {
-        toggleMessageModal(true);
-        setSelectedNotification(item);
-        refetch && refetch();
-      } else {
-        errorToast(response?.data?.message || getErrorMessage(response));
+      if (!item.isRead) {
+        const response = await triggerReadNotification({
+          notificationId: item.id,
+        }).unwrap();
+
+        if (!response?.isSuccess) {
+          errorToast(response?.message || 'Failed to read notification');
+        }
       }
+
+      refetch && refetch();
     } catch (error) {
       errorToast(getErrorMessage(error));
+      refetch && refetch();
     }
   };
 
@@ -107,7 +122,7 @@ const NotificationList: React.FC<{
                 <div className="flex-1 h-px bg-gray-200" />
               </div>
 
-              <div className="">
+              <div>
                 {group.items.map((item) => (
                   <div
                     key={item.id}
@@ -131,6 +146,7 @@ const NotificationList: React.FC<{
                             {item?.type === NotificationTypeEnums.Invoice && (
                               <NPayment />
                             )}
+
                             {item?.type === NotificationTypeEnums.Message && (
                               <Avatar
                                 src={getAvatar({
@@ -146,6 +162,7 @@ const NotificationList: React.FC<{
                           </>
                         )}
                       </div>
+
                       <div>
                         <p className="items-center text-sm text-gray-800">
                           <span className="font-bold">{item?.sourceName} </span>
@@ -155,6 +172,7 @@ const NotificationList: React.FC<{
                             }}
                           />
                         </p>
+
                         <div>
                           <span className="text-xs text-gray-400 mt-1">
                             {item.createdDate &&
@@ -177,7 +195,6 @@ const NotificationList: React.FC<{
                         onClick={() => {
                           if (item.type === NotificationTypeEnums.Message) {
                             handleReadNotification(item);
-                            // toggleMessageModal(true);
                           }
                         }}
                       >
@@ -191,11 +208,9 @@ const NotificationList: React.FC<{
           ))}
         </div>
       ) : (
-        <>
-          <div className="min-h-[65vh] text-xl text-[#7b7575] flex  justify-center items-center">
-            No Notifications found
-          </div>
-        </>
+        <div className="min-h-[65vh] text-xl text-[#7b7575] flex justify-center items-center">
+          No Notifications found
+        </div>
       )}
     </>
   );

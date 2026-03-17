@@ -12,7 +12,12 @@ import {
 import { SendMessageButton } from '@/app/assets/svgs';
 import { Avatar } from '@/components/shared/avatar';
 import { useChat, useMessages } from '@/hooks/Chat';
-import { CheckIcon, DownloadIcon, MiniLoader, SendIcon } from '@/components/shared';
+import {
+  CheckIcon,
+  DownloadIcon,
+  MiniLoader,
+  SendIcon,
+} from '@/components/shared';
 import { getAvatar, getFullName } from '@/lib/utils';
 import { errorToast, usePostMessagesByChatIdMutation } from '@/services';
 import { useAppSelector } from '@/store';
@@ -95,7 +100,9 @@ const BigChatWindow = () => {
   const [connection, setConnection] = useState<any>(null);
   const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
   const [typingUsers, setTypingUsers] = useState<Record<string, string[]>>({});
-  const [readMessages, setReadMessages] = useState<Record<string, string[]>>({});
+  const [readMessages, setReadMessages] = useState<Record<string, string[]>>(
+    {},
+  );
   const [params, setParams] = useState({ searchKey: '' });
   const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
   const [showChatView, setShowChatView] = useState(false);
@@ -159,6 +166,13 @@ const BigChatWindow = () => {
     return onlineUsers.includes(selectedChat?.sender?.id || '');
   }, [onlineUsers, selectedChat]);
 
+  const lastOwnMessageId = useMemo(() => {
+    const ownMessages = [...messageList].filter((msg) => msg.userId === userId);
+    if (ownMessages.length === 0) return null;
+
+    return ownMessages[ownMessages.length - 1]?.id ?? null;
+  }, [messageList, userId]);
+
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     setSelectedFiles((prev) => [...prev, ...files]);
@@ -177,7 +191,9 @@ const BigChatWindow = () => {
     }
 
     typingTimeoutRef.current = setTimeout(() => {
-      sendTypingIndicator(connection, selectedChat.id!, false).catch(() => null);
+      sendTypingIndicator(connection, selectedChat.id!, false).catch(
+        () => null,
+      );
     }, 1200);
   };
 
@@ -205,7 +221,9 @@ const BigChatWindow = () => {
         }
 
         if (connection) {
-          sendTypingIndicator(connection, selectedChat.id, false).catch(() => null);
+          sendTypingIndicator(connection, selectedChat.id, false).catch(
+            () => null,
+          );
         }
       } else {
         errorToast(response?.message || getErrorMessage(response));
@@ -229,11 +247,15 @@ const BigChatWindow = () => {
 
         registerChatHubListeners(conn, {
           onUserOnline: (payload) => {
-            setOnlineUsers((prev) => Array.from(new Set([...prev, payload.userId])));
+            setOnlineUsers((prev) =>
+              Array.from(new Set([...prev, payload.userId])),
+            );
           },
 
           onUserOffline: (payload) => {
-            setOnlineUsers((prev) => prev.filter((id) => id !== payload.userId));
+            setOnlineUsers((prev) =>
+              prev.filter((id) => id !== payload.userId),
+            );
           },
 
           onTypingIndicator: (payload) => {
@@ -243,8 +265,12 @@ const BigChatWindow = () => {
             setTypingUsers((prev) => ({
               ...prev,
               [payload.chatId]: payload.isTyping
-                ? Array.from(new Set([...(prev[payload.chatId] || []), payload.userId]))
-                : (prev[payload.chatId] || []).filter((id) => id !== payload.userId),
+                ? Array.from(
+                    new Set([...(prev[payload.chatId] || []), payload.userId]),
+                  )
+                : (prev[payload.chatId] || []).filter(
+                    (id) => id !== payload.userId,
+                  ),
             }));
           },
 
@@ -252,7 +278,10 @@ const BigChatWindow = () => {
             setReadMessages((prev) => ({
               ...prev,
               [payload.chatId]: Array.from(
-                new Set([...(prev[payload.chatId] || []), ...payload.messageIds]),
+                new Set([
+                  ...(prev[payload.chatId] || []),
+                  ...payload.messageIds,
+                ]),
               ),
             }));
 
@@ -289,7 +318,9 @@ const BigChatWindow = () => {
             }));
 
             setLiveMessages((prev) => {
-              const alreadyExists = prev.some((msg) => msg.id === payload.messageId);
+              const alreadyExists = prev.some(
+                (msg) => msg.id === payload.messageId,
+              );
               if (alreadyExists) return prev;
 
               const newMessage: MessageItem = {
@@ -343,7 +374,9 @@ const BigChatWindow = () => {
         .filter((id): id is string => typeof id === 'string');
 
       if (unreadIds.length > 0) {
-        markMessagesAsRead(connection, selectedChat.id, unreadIds).catch(() => null);
+        markMessagesAsRead(connection, selectedChat.id, unreadIds).catch(
+          () => null,
+        );
       }
     }
   }, [messageList, connection, selectedChat?.id, readMessages, userId]);
@@ -459,7 +492,10 @@ const BigChatWindow = () => {
                       </p>
                       <p className="ml-1 flex-shrink-0 text-[11px] text-gray-400">
                         {chat?.lastMessageTime
-                          ? dayJs.utc(chat.lastMessageTime).local().format('h:mm A')
+                          ? dayJs
+                              .utc(chat.lastMessageTime)
+                              .local()
+                              .format('h:mm A')
                           : ''}
                       </p>
                     </div>
@@ -530,7 +566,8 @@ const BigChatWindow = () => {
 
                 <div className="min-w-0 flex-1">
                   <h2 className="truncate text-[15px] font-bold text-gray-900">
-                    {selectedChat?.sender?.firstName} {selectedChat?.sender?.lastName}
+                    {selectedChat?.sender?.firstName}{' '}
+                    {selectedChat?.sender?.lastName}
                   </h2>
                 </div>
               </div>
@@ -578,7 +615,12 @@ const BigChatWindow = () => {
 
                         {messages.map((chatItem) => {
                           const isOwnMessage = chatItem.userId === userId;
-                          const sentTime = dayJs.utc(chatItem.sentAt).local().format('h:mm A');
+                          const sentTime = dayJs
+                            .utc(chatItem.sentAt)
+                            .local()
+                            .format('h:mm A');
+                          const isLastOwnMessage =
+                            isOwnMessage && chatItem.id === lastOwnMessageId;
 
                           return (
                             <div
@@ -605,7 +647,14 @@ const BigChatWindow = () => {
 
                                   <span className="absolute bottom-1 right-3 flex items-center gap-2 whitespace-nowrap text-[10px] text-[#3D3D3D]">
                                     {sentTime}
-                                    {isOwnMessage && <SendIcon />}
+                                    {isOwnMessage &&
+                                      (isLastOwnMessage ? (
+                                        <span className="text-[10px] font-medium">
+                                          {chatItem.isRead ? 'Seen' : 'Sent'}
+                                        </span>
+                                      ) : (
+                                        <SendIcon />
+                                      ))}
                                   </span>
                                 </div>
                               )}
@@ -617,7 +666,10 @@ const BigChatWindow = () => {
                                     isOwnMessage ? 'ml-auto' : 'mr-auto'
                                   }`}
                                 >
-                                  {isImageFile(file?.filePathUrl, file?.fileType) ? (
+                                  {isImageFile(
+                                    file?.filePathUrl,
+                                    file?.fileType,
+                                  ) ? (
                                     <div className="group relative overflow-hidden rounded-xl shadow-sm">
                                       <Image
                                         src={file.filePathUrl!}
@@ -636,15 +688,21 @@ const BigChatWindow = () => {
                                             fetch(file.filePathUrl)
                                               .then((res) => res.blob())
                                               .then((blob) => {
-                                                const url = URL.createObjectURL(blob);
-                                                const a = document.createElement('a');
+                                                const url =
+                                                  URL.createObjectURL(blob);
+                                                const a =
+                                                  document.createElement('a');
                                                 a.href = url;
-                                                a.download = file.fileName || 'image';
+                                                a.download =
+                                                  file.fileName || 'image';
                                                 a.click();
                                                 URL.revokeObjectURL(url);
                                               })
                                               .catch(() => {
-                                                window.open(file.filePathUrl!, '_blank');
+                                                window.open(
+                                                  file.filePathUrl!,
+                                                  '_blank',
+                                                );
                                               });
                                           }
                                         }}
@@ -656,7 +714,14 @@ const BigChatWindow = () => {
 
                                       <div className="absolute bottom-2 right-2 flex items-center gap-1 rounded-full bg-black/40 px-1.5 py-0.5 text-[10px] text-white">
                                         {sentTime}
-                                        {isOwnMessage && <SendIcon />}
+                                        {isOwnMessage &&
+                                          (isLastOwnMessage ? (
+                                            <span className="font-medium">
+                                              {chatItem.isRead ? 'Seen' : 'Sent'}
+                                            </span>
+                                          ) : (
+                                            <SendIcon />
+                                          ))}
                                       </div>
                                     </div>
                                   ) : (
@@ -691,15 +756,21 @@ const BigChatWindow = () => {
                                             fetch(file.filePathUrl)
                                               .then((res) => res.blob())
                                               .then((blob) => {
-                                                const url = URL.createObjectURL(blob);
-                                                const a = document.createElement('a');
+                                                const url =
+                                                  URL.createObjectURL(blob);
+                                                const a =
+                                                  document.createElement('a');
                                                 a.href = url;
-                                                a.download = file.fileName || 'file';
+                                                a.download =
+                                                  file.fileName || 'file';
                                                 a.click();
                                                 URL.revokeObjectURL(url);
                                               })
                                               .catch(() => {
-                                                window.open(file.filePathUrl!, '_blank');
+                                                window.open(
+                                                  file.filePathUrl!,
+                                                  '_blank',
+                                                );
                                               });
                                           }
                                         }}
@@ -718,13 +789,14 @@ const BigChatWindow = () => {
                       </div>
                     ))}
 
-                    {selectedChat && typingUsers[selectedChat.id || '']?.length > 0 && (
-                      <div className="mb-3 flex items-start">
-                        <div className="max-w-[75%] rounded-2xl rounded-tl-sm bg-white px-4 py-2 text-xs italic text-gray-500 shadow-sm sm:max-w-[65%] md:max-w-[55%] lg:max-w-[50%]">
-                          {selectedChatDisplayName} is typing...
+                    {selectedChat &&
+                      typingUsers[selectedChat.id || '']?.length > 0 && (
+                        <div className="mb-3 flex items-start">
+                          <div className="max-w-[75%] rounded-2xl rounded-tl-sm bg-white px-4 py-2 text-xs italic text-gray-500 shadow-sm sm:max-w-[65%] md:max-w-[55%] lg:max-w-[50%]">
+                            {selectedChatDisplayName} is typing...
+                          </div>
                         </div>
-                      </div>
-                    )}
+                      )}
                   </>
                 )}
               </div>
@@ -737,10 +809,14 @@ const BigChatWindow = () => {
                         key={`${file.name}-${index}`}
                         className="flex items-center rounded-lg border border-blue-200 bg-blue-50 px-3 py-1.5 text-sm text-gray-700"
                       >
-                        <span className="max-w-[120px] truncate text-xs">{file.name}</span>
+                        <span className="max-w-[120px] truncate text-xs">
+                          {file.name}
+                        </span>
                         <button
                           onClick={() =>
-                            setSelectedFiles((prev) => prev.filter((_, i) => i !== index))
+                            setSelectedFiles((prev) =>
+                              prev.filter((_, i) => i !== index),
+                            )
                           }
                           className="ml-2 text-sm font-bold text-red-400 hover:text-red-600"
                           title="Remove"
@@ -787,7 +863,8 @@ const BigChatWindow = () => {
                     onClick={handleSendMessage}
                     disabled={
                       isLoading ||
-                      (message.trim().length === 0 && selectedFiles.length === 0)
+                      (message.trim().length === 0 &&
+                        selectedFiles.length === 0)
                     }
                     className="flex-shrink-0 transition disabled:opacity-40"
                     title="Send"
