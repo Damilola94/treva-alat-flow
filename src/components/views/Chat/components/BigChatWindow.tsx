@@ -266,11 +266,11 @@ const BigChatWindow = () => {
               ...prev,
               [payload.chatId]: payload.isTyping
                 ? Array.from(
-                    new Set([...(prev[payload.chatId] || []), payload.userId]),
-                  )
+                  new Set([...(prev[payload.chatId] || []), payload.userId]),
+                )
                 : (prev[payload.chatId] || []).filter(
-                    (id) => id !== payload.userId,
-                  ),
+                  (id) => id !== payload.userId,
+                ),
             }));
           },
 
@@ -348,9 +348,7 @@ const BigChatWindow = () => {
           },
         });
       })
-      .catch(() => {
-        errorToast('SignalR connection failed');
-      });
+      .catch(() => null);
 
     return () => {
       if (typingTimeoutRef.current) {
@@ -449,13 +447,12 @@ const BigChatWindow = () => {
               return (
                 <button
                   key={chat?.id}
-                  className={`w-full flex items-start gap-3 px-4 py-3.5 text-left transition hover:bg-gray-100 ${
-                    selectedChat?.id === chat?.id
-                      ? 'bg-blue-50'
-                      : chat?.hasUnreadMessages
-                        ? 'bg-[#EDF4FB]'
-                        : ''
-                  }`}
+                  className={`w-full flex items-start gap-3 px-4 py-3.5 text-left transition hover:bg-gray-100 ${selectedChat?.id === chat?.id
+                    ? 'bg-blue-50'
+                    : chat?.hasUnreadMessages
+                      ? 'bg-[#EDF4FB]'
+                      : ''
+                    }`}
                   onClick={() => handleChatSelect(chat)}
                 >
                   <div className="relative flex-shrink-0">
@@ -493,9 +490,9 @@ const BigChatWindow = () => {
                       <p className="ml-1 flex-shrink-0 text-[11px] text-gray-400">
                         {chat?.lastMessageTime
                           ? dayJs
-                              .utc(chat.lastMessageTime)
-                              .local()
-                              .format('h:mm A')
+                            .utc(chat.lastMessageTime)
+                            .local()
+                            .format('h:mm A')
                           : ''}
                       </p>
                     </div>
@@ -625,36 +622,32 @@ const BigChatWindow = () => {
                           return (
                             <div
                               key={chatItem.id}
-                              className={`mb-3 flex flex-col gap-1 ${
-                                isOwnMessage ? 'items-end' : 'items-start'
-                              }`}
+                              className={`mb-3 flex flex-col gap-1 ${isOwnMessage ? 'items-end' : 'items-start'
+                                }`}
                             >
                               {chatItem.content && (
                                 <div
                                   className={`
-                                    relative max-w-[75%] rounded-2xl px-4 py-6 text-sm leading-relaxed shadow-sm
-                                    sm:max-w-[65%] md:max-w-[55%] lg:max-w-[50%]
-                                    ${
-                                      isOwnMessage
-                                        ? 'rounded-tr-sm bg-[#BDF7F6] text-gray-800'
-                                        : 'rounded-tl-sm bg-[#C4E0FF] text-gray-800'
+  relative max-w-[75%] rounded-2xl px-4 pt-3 pb-7 text-sm leading-relaxed shadow-sm
+  min-w-[100px]
+  sm:max-w-[65%] md:max-w-[55%] lg:max-w-[50%]
+  ${isOwnMessage
+                                      ? 'rounded-tr-sm bg-[#BDF7F6] text-gray-800'
+                                      : 'rounded-tl-sm bg-[#C4E0FF] text-gray-800'
                                     }
-                                  `}
+`}
                                 >
-                                  <p className="break-words pr-12 text-justify">
+                                  <p className="break-words text-left ">
                                     {chatItem.content}
                                   </p>
 
                                   <span className="absolute bottom-1 right-3 flex items-center gap-2 whitespace-nowrap text-[10px] text-[#3D3D3D]">
                                     {sentTime}
-                                    {isOwnMessage &&
-                                      (isLastOwnMessage ? (
-                                        <span className="text-[10px] font-medium">
-                                          {chatItem.isRead ? 'Seen' : 'Sent'}
-                                        </span>
-                                      ) : (
-                                        <SendIcon />
-                                      ))}
+                                    {isOwnMessage && isLastOwnMessage && (
+                                      <span className="text-[10px] font-medium">
+                                        {chatItem.isRead ? 'Seen' : 'Sent'}
+                                      </span>
+                                    )}
                                   </span>
                                 </div>
                               )}
@@ -662,9 +655,8 @@ const BigChatWindow = () => {
                               {chatItem.attachments?.map((file) => (
                                 <div
                                   key={file?.id}
-                                  className={`max-w-[75%] sm:max-w-[65%] md:max-w-[55%] ${
-                                    isOwnMessage ? 'ml-auto' : 'mr-auto'
-                                  }`}
+                                  className={`max-w-[75%] sm:max-w-[65%] md:max-w-[55%] ${isOwnMessage ? 'ml-auto' : 'mr-auto'
+                                    }`}
                                 >
                                   {isImageFile(
                                     file?.filePathUrl,
