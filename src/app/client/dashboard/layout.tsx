@@ -116,7 +116,7 @@ function Main({ children }: { children: React.ReactNode }) {
           <div className="app_dash_main__ctt__mn w-full">
           <div className="flex-1 flex flex-col w-full">
             <div className="app_dashboard_page">{children}</div>
-          <div className="fixed bottom-0 w-[1230px] ">
+          <div className="fixed bottom-0 w-[1210px] ">
             {/* w-full bg-white border-t */}
             <Footer />
             </div>
@@ -134,16 +134,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        suppressHydrationWarning
-        className={inter.className}
-        id="app_dashboard_body"
-      >
+    // <html lang="en">
+    //   <body
+    //     suppressHydrationWarning
+    //     className={inter.className}
+    //     id="app_dashboard_body"
+    //   >
         <Suspense fallback={null}>
           <Main>{children}</Main>
         </Suspense>
-      </body>
-    </html>
+    //   </body>
+    // </html>
   );
 }

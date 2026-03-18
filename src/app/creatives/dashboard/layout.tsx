@@ -147,16 +147,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        suppressHydrationWarning
-        className={inter.className}
-        id="app_dashboard_body"
-      >
+    // <html lang="en">
+    //   <body
+    //     suppressHydrationWarning
+    //     className={inter.className}
+    //     id="app_dashboard_body"
+    //   >
         <Suspense fallback={null}>
           <Main>{children}</Main>
         </Suspense>
-      </body>
-    </html>
+    //   </body>
+    // </html>
   );
 }

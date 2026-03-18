@@ -106,25 +106,37 @@ export const NotificationProvider = ({
 
   useEffect(() => {
     const token = getCookie('_tk');
-    const conn = createChatHubConnection(token ?? undefined);
+    if (!token) return;
 
-    conn
-      .start()
-      .then(() => {
-        registerChatHubListeners(conn, {
-          onReceiveNotification: (notification: INotification) => {
-            addNotification({
-              ...notification,
-              isRead: false,
-            });
-          },
+    const conn = createChatHubConnection(token);
+    let isDisposed = false;
+
+    registerChatHubListeners(conn, {
+      onReceiveNotification: (notification: INotification) => {
+        addNotification({
+          ...notification,
+          isRead: false,
         });
-      })
-      .catch((error) => {
-        console.error('Notification SignalR connection failed', error);
-      });
+      },
+    });
+
+    conn.start().catch((error) => {
+      const message =
+        error instanceof Error ? error.message : String(error);
+
+      const isNegotiationAbort =
+        error?.name === 'AbortError' ||
+        message.includes('stopped during negotiation');
+
+      if (isDisposed || isNegotiationAbort) {
+        return;
+      }
+
+      console.error('Notification SignalR connection failed', error);
+    });
 
     return () => {
+      isDisposed = true;
       unregisterChatHubListeners(conn);
       conn.stop().catch(() => null);
     };

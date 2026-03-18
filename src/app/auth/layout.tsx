@@ -3,9 +3,20 @@
 import React, { useState, type ReactNode } from 'react';
 import { ArrowLeft } from '@/components/shared';
 import { useRouter } from 'next/navigation';
-import { Carousel } from 'react-responsive-carousel';
+import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import auth from '@/lib/assets/auth';
+
+const Carousel = dynamic(
+  () =>
+    import('react-responsive-carousel').then((m) => {
+      const C = m.Carousel as React.ComponentType<
+        Partial<import('react-responsive-carousel').CarouselProps>
+      >;
+      return C;
+    }),
+  { ssr: false }
+);
 
 const titleArray = [
   'Empower Your Creativity',
@@ -38,6 +49,7 @@ export default function Layout(props: IProps) {
           infiniteLoop
           interval={5000}
           showIndicators={false}
+          showThumbs={false}
           showArrows={false}
           showStatus={false}
           onChange={(index) => {
