@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect, useState } from 'react';
 import { Footer, Header, Sidebar } from '@/components/shared/dashboard';
-import { Inter } from 'next/font/google';
+// import { Inter } from 'next/font/google';
 import {
   Column,
   Users,
@@ -18,10 +18,10 @@ import { ChatIcon, Notifications } from '@/app/assets/svgs';
 import { useProfile } from '@/hooks/Users';
 import { useAppSelector } from '@/store';
 
-const inter = Inter({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-});
+// const inter = Inter({
+//   subsets: ['latin'],
+//   weight: ['400', '500', '600', '700'],
+// });
 
 function Main({ children }: { children: React.ReactNode }) {
   const pt = usePathname();
