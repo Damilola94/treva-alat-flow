@@ -10,6 +10,9 @@ import {
 const SIGNALR_URL =
   'https://treva-api.wemabank.com/treva-chat-service/hubs/chat';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const noop = (_payload?: any) => undefined;
+
 export function createChatHubConnection(accessToken?: string): HubConnection {
   return new HubConnectionBuilder()
     .withUrl(SIGNALR_URL, {
@@ -44,37 +47,17 @@ export function registerChatHubListeners(
   connection.off('MessageCreated');
   connection.off('ReceiveNotification');
 
-  if (listeners.onUserOnline) {
-    connection.on('UserOnline', listeners.onUserOnline);
-  }
-
-  if (listeners.onUserOffline) {
-    connection.on('UserOffline', listeners.onUserOffline);
-  }
-
-  if (listeners.onTypingIndicator) {
-    connection.on('TypingIndicator', listeners.onTypingIndicator);
-  }
-
-  if (listeners.onMessagesRead) {
-    connection.on('MessagesRead', listeners.onMessagesRead);
-  }
-
-  if (listeners.onChatStarted) {
-    connection.on('ChatStarted', listeners.onChatStarted);
-  }
-
-  if (listeners.onChatUpdated) {
-    connection.on('ChatUpdated', listeners.onChatUpdated);
-  }
-
-  if (listeners.onMessageCreated) {
-    connection.on('MessageCreated', listeners.onMessageCreated);
-  }
-
-  if (listeners.onReceiveNotification) {
-    connection.on('ReceiveNotification', listeners.onReceiveNotification);
-  }
+  connection.on('UserOnline', listeners.onUserOnline ?? noop);
+  connection.on('UserOffline', listeners.onUserOffline ?? noop);
+  connection.on('TypingIndicator', listeners.onTypingIndicator ?? noop);
+  connection.on('MessagesRead', listeners.onMessagesRead ?? noop);
+  connection.on('ChatStarted', listeners.onChatStarted ?? noop);
+  connection.on('ChatUpdated', listeners.onChatUpdated ?? noop);
+  connection.on('MessageCreated', listeners.onMessageCreated ?? noop);
+  connection.on(
+    'ReceiveNotification',
+    listeners.onReceiveNotification ?? noop,
+  );
 }
 
 export function unregisterChatHubListeners(connection: HubConnection) {
@@ -91,7 +74,7 @@ export function unregisterChatHubListeners(connection: HubConnection) {
 }
 
 export async function sendTypingIndicator(
-  connection: any,
+  connection: HubConnection,
   chatId: string,
   isTyping: boolean,
 ) {
@@ -100,7 +83,7 @@ export async function sendTypingIndicator(
 }
 
 export async function markMessagesAsRead(
-  connection: any,
+  connection: HubConnection,
   chatId: string,
   messageIds: string[],
 ) {
@@ -108,12 +91,12 @@ export async function markMessagesAsRead(
   return connection.invoke('MarkMessagesAsRead', chatId, messageIds);
 }
 
-export async function joinChat(connection: any, chatId: string) {
+export async function joinChat(connection: HubConnection, chatId: string) {
   if (!connection) throw new Error('SignalR not initialized');
   return connection.invoke('JoinChat', chatId);
 }
 
-export async function leaveChat(connection: any, chatId: string) {
+export async function leaveChat(connection: HubConnection, chatId: string) {
   if (!connection) throw new Error('SignalR not initialized');
   return connection.invoke('LeaveChat', chatId);
 }

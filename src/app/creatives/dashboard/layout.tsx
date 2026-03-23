@@ -9,7 +9,7 @@ import {
   SubscribeToPlan,
   // SubscribeToPlanLeft,
 } from '@/components/shared/dashboard';
-import { Inter } from 'next/font/google';
+// import { Inter } from 'next/font/google';
 import routes from '@/lib/routes';
 // import queries from '@/services/queries/profile';
 import {
@@ -26,10 +26,10 @@ import { ChatIcon, Notifications } from '@/app/assets/svgs';
 import { useProfile } from '@/hooks/Users';
 import { useAppSelector } from '@/store';
 
-const inter = Inter({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-});
+// const inter = Inter({
+//   subsets: ['latin'],
+//   weight: ['400', '500', '600', '700'],
+// });
 
 function Main({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false);
@@ -147,16 +147,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        suppressHydrationWarning
-        className={inter.className}
-        id="app_dashboard_body"
-      >
+    // <html lang="en">
+    //   <body
+    //     suppressHydrationWarning
+    //     className={inter.className}
+    //     id="app_dashboard_body"
+    //   >
         <Suspense fallback={null}>
           <Main>{children}</Main>
         </Suspense>
-      </body>
-    </html>
+    //   </body>
+    // </html>
   );
 }

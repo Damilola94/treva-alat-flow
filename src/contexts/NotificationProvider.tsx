@@ -148,6 +148,7 @@ export const NotificationProvider = ({
     startConnection();
 
     return () => {
+      // isDisposed = true;
       unregisterChatHubListeners(conn);
       conn.stop().catch(() => null);
     };
