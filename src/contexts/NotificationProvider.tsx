@@ -15,6 +15,7 @@ import {
 } from '@/lib/signalr/chatHub';
 import { getCookie } from '@/utils';
 import { useNotifications } from '@/hooks/Chat';
+import { useAppSelector } from '@/store';
 
 export interface INotification {
   id?: string;
@@ -56,18 +57,31 @@ export const NotificationProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const [params] = useState({
-    searchKey: '',
-    pageNumber: 1,
-    pageSize: 50,
-  });
+  const { loggedIn } = useAppSelector((state) => state.auth);
+
+  const params = useMemo(
+    () => ({
+      searchKey: '',
+      pageNumber: 1,
+      pageSize: 50,
+    }),
+    [],
+  );
 
   const { allNotifications, loading, refetch } = useNotifications(params);
+
   const [notifications, setNotifications] = useState<INotification[]>([]);
 
   useEffect(() => {
-    setNotifications(allNotifications?.data || []);
-  }, [allNotifications?.data]);
+    if (!loggedIn) {
+      setNotifications([]);
+      return;
+    }
+
+    if (Array.isArray(allNotifications?.data)) {
+      setNotifications(allNotifications.data);
+    }
+  }, [loggedIn, allNotifications?.data]);
 
   const addNotification = useCallback((notification: INotification) => {
     setNotifications((prev) => {
@@ -101,16 +115,23 @@ export const NotificationProvider = ({
   }, []);
 
   const refetchNotifications = useCallback(() => {
-    refetch?.();
-  }, [refetch]);
+    if (loggedIn) {
+      refetch?.();
+    }
+  }, [loggedIn, refetch]);
 
   useEffect(() => {
-    const token = getCookie('_tk');
-    const conn = createChatHubConnection(token ?? undefined);
+    if (!loggedIn) return;
 
-    conn
-      .start()
-      .then(() => {
+    const token = getCookie('_tk');
+    if (!token) return;
+
+    const conn = createChatHubConnection(token);
+
+    const startConnection = async () => {
+      try {
+        await conn.start();
+
         registerChatHubListeners(conn, {
           onReceiveNotification: (notification: INotification) => {
             addNotification({
@@ -119,16 +140,18 @@ export const NotificationProvider = ({
             });
           },
         });
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error('Notification SignalR connection failed', error);
-      });
+      }
+    };
+
+    startConnection();
 
     return () => {
       unregisterChatHubListeners(conn);
       conn.stop().catch(() => null);
     };
-  }, [addNotification]);
+  }, [loggedIn, addNotification]);
 
   const unreadCount = useMemo(() => {
     return notifications.filter((item) => !item.isRead).length;
@@ -138,7 +161,7 @@ export const NotificationProvider = ({
     () => ({
       notifications,
       unreadCount,
-      loading,
+      loading: loggedIn ? loading : false,
       setNotifications,
       addNotification,
       markNotificationAsRead,
@@ -149,6 +172,7 @@ export const NotificationProvider = ({
       notifications,
       unreadCount,
       loading,
+      loggedIn,
       addNotification,
       markNotificationAsRead,
       markAllNotificationsAsRead,

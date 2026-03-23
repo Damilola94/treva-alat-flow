@@ -27,17 +27,20 @@ const useNotifications = (params?: IParams) => {
     skip: !loggedIn,
   });
 
-  const { data: notificationCount, isError: notificationCountHasError } =
-    useGetUnreadNotificationCountQuery(undefined, {
-      refetchOnFocus: true,
-      refetchOnMountOrArgChange: true,
-      refetchOnReconnect: true,
-    });
+  const {
+    data: notificationCount,
+    isError: notificationCountHasError,
+  } = useGetUnreadNotificationCountQuery(undefined, {
+    refetchOnFocus: true,
+    refetchOnMountOrArgChange: true,
+    refetchOnReconnect: true,
+    skip: !loggedIn,
+  });
 
   return {
     notificationCount,
     allNotifications,
-    loading: isLoading || isFetching,
+    loading: loggedIn ? isLoading || isFetching : false,
     refetch,
     error,
     notificationCountHasError,
