@@ -114,6 +114,10 @@ const routes = {
           path: '/client/dashboard/settings/notifications',
         },
       },
+        alatflow: {
+        path: '/client/dashboard/alat-flow',
+      },
+      
     },
   },
 

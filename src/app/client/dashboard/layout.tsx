@@ -85,6 +85,11 @@ function Main({ children }: { children: React.ReactNode }) {
       href: routes.client.dashboard.settings.profile.path,
       icon: <Settings />,
     },
+    {
+      label: 'Alat Flow',
+      href: routes.client.dashboard.alatflow.path,
+      icon: <ChatIcon />,
+    },
   ]
     .map((item) => ({
       ...item,
