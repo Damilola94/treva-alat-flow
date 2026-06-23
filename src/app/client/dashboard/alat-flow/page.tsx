@@ -53,14 +53,15 @@ async function computeSignature(
 export default function AlatFlowPage() {
   const { data } = useProfile();
   const { userId } = useAppSelector((state) => state?.auth);
-  const iframeRef = useRef<HTMLIFrameElement>(null); // owned here now
+  const iframeRef = useRef<HTMLIFrameElement>(null); 
   const accessTokenRef = useRef<string | null>(null);
   const embedUrlRef = useRef<string | null>(null);
+console.log(data, "data");
 
-  const firstName = data?.data?.firstName;
-  const lastName = data?.data?.lastName;
-  const userEmail = data?.data?.email;
-  const phoneNumber = data?.data?.phoneNumber;
+  const firstName = data?.data?.firstName || 'John';
+  const lastName = data?.data?.lastName || 'Doe';
+  const userEmail = data?.data?.email || '';
+  const phoneNumber = data?.data?.phoneNumber || '';
 
   const sendTokenToIframe = (token: string, url: string) => {
     const iframe = iframeRef.current;
