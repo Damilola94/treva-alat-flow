@@ -3,10 +3,9 @@ import { useEffect, useRef } from 'react';
 import { useProfile } from '@/hooks/Users';
 import { useAppSelector } from '@/store';
 
-const ALAT_PROVIDER_KEY = 'TESTPROV';
-const ALAT_API_KEY = 'GxxN5foX6iMuHEpMYJucyrmRf4EVWnr08diqwX1zGS8';
-const ALAT_SIGNING_SECRET = 'ekx8JDi3gULZzS0y8LkOlNc9ooIUFHhBTryAqSFoapY';
-const ALAT_PROVIDER_ID = 'cd5533bb-e88e-4389-8de9-d33950f16bcc';
+const ALAT_PROVIDER_KEY = 'POCDEV3';
+const ALAT_API_KEY = 'x7xMyc_4_3atmY1pJEY1e45yjEioSYB7_0OTF4ePwJM';
+const ALAT_SIGNING_SECRET = '_HVTvLosoO5gmipjQNPLdHdqA5k9wqhtMNWVjlK1Xnk';
 
 async function computeSignature(
   providerKey: string,
@@ -32,7 +31,7 @@ async function computeSignature(
     bodyHash,
   ].join('\n');
 
-  const keyBytes = Uint8Array.from(atob(signingSecret), (c) => c.charCodeAt(0));
+  const keyBytes = new TextEncoder().encode(signingSecret);
   const cryptoKey = await crypto.subtle.importKey(
     'raw',
     keyBytes,
@@ -46,27 +45,24 @@ async function computeSignature(
     new TextEncoder().encode(signingString),
   );
 
- return btoa(String.fromCharCode(...Array.from(new Uint8Array(sigBuffer))));
-
+  return btoa(String.fromCharCode(...Array.from(new Uint8Array(sigBuffer))));
 }
 
 export default function AlatFlowPage() {
   const { data } = useProfile();
   const { userId } = useAppSelector((state) => state?.auth);
-  const iframeRef = useRef<HTMLIFrameElement>(null); 
+  const iframeRef = useRef<HTMLIFrameElement>(null);
   const accessTokenRef = useRef<string | null>(null);
   const embedUrlRef = useRef<string | null>(null);
-console.log(data, "data");
 
   const firstName = data?.data?.firstName || 'John';
   const lastName = data?.data?.lastName || 'Doe';
-  const userEmail = data?.data?.email || '';
-  const phoneNumber = data?.data?.phoneNumber || '';
+  const userEmail = data?.data?.email || 'john.doe@example.com';
+  const phoneNumber = data?.data?.phoneNumber || '09012345678';
 
   const sendTokenToIframe = (token: string, url: string) => {
     const iframe = iframeRef.current;
     if (!iframe?.contentWindow) return;
-
     iframe.contentWindow.postMessage(
       { type: 'ALAT_AUTH', accessToken: token },
       new URL(url).origin,
@@ -89,13 +85,13 @@ console.log(data, "data");
         const path = '/api/v1/integration/bootstrap';
 
         const bodyPayload = {
-          email: userEmail || '',
-          firstName: firstName || '',
-          lastName: lastName || '',
-          phoneNumber: phoneNumber || '',
+          email: userEmail,
+          firstName,
+          lastName,
+          phoneNumber,
           externalUserId: userId,
-          externalTenantId: ALAT_PROVIDER_ID,
-          roles: [],
+          externalTenantId: 'ext-tenant-001',
+          roles: ['user'],
           context: {},
         };
 
@@ -128,16 +124,23 @@ console.log(data, "data");
         );
 
         const bootstrapData = await bootstrapRes.json();
-        const { code, embedUrl: url } = bootstrapData?.responseData || {};
-        if (!code || !url) {
+  
+        if (!bootstrapData.isSuccess) {
           console.error('Bootstrap failed:', bootstrapData);
           return;
         }
 
-        embedUrlRef.current = url;
+        const { code, integrationContextId: integrationContextId } = bootstrapData.responseData;
+
+        console.log(code);
+        console.log(integrationContextId      );
+
+        if (!code || !integrationContextId) return;
+
+        embedUrlRef.current = integrationContextId;
 
         const exchangeRes = await fetch(
-          'https://dev-empayment.somee.com/api/v1/integration/exchange',
+          'https://dev-empayment.somee.com/api/v1/integration/exchange?providerKey=' + ALAT_PROVIDER_KEY,
           {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -146,14 +149,19 @@ console.log(data, "data");
         );
 
         const exchangeData = await exchangeRes.json();
-        const token = exchangeData?.responseData?.login?.token;
+        console.log('Exchange response:', exchangeData);
+
+        const token =
+          exchangeData?.responseData?.login?.accessToken ??
+          exchangeData?.responseData?.login?.token;
+
         if (!token) {
-          console.error('Exchange failed:', exchangeData);
+          console.error('Exchange failed — no token:', exchangeData);
           return;
         }
 
         accessTokenRef.current = token;
-        sendTokenToIframe(token, url);
+        sendTokenToIframe(token, integrationContextId);
       } catch (err) {
         console.error('ALAT bootstrap error:', err);
       }
